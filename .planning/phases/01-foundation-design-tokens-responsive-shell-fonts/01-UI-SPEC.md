@@ -27,6 +27,8 @@ created: 2026-07-11
 | Font | Poppins (display) · Inter (body/UI) · Amiri (general Arabic) · Amiri Quran (`.ayah` only) — all self-hosted subset `.woff2`, zero CDN (D-09) |
 | Verification vehicle | `preview.html` at repo root (D-12) — living token/shell/glyph reference |
 
+**`@layer` order rule (binding — 01-RESEARCH.md Pattern 1 / Pitfall 3):** the FULL five-name order statement `@layer tokens, base, components, screens, motion;` MUST be written ONCE, at the very top of `awba-engine.css`, in Phase 1 — even though only `tokens` + `base` receive content now (the other three stay as empty/comment-only blocks). CSS cascade-layer priority is fixed by **first occurrence** of the layer names, not by which layer has content; declaring the full order once makes it immutable for every later phase. No phase after Phase 1 may ever write a bare `@layer` name-list statement again — only `@layer <name> { ... }` content blocks for names already declared.
+
 **shadcn gate outcome:** skipped — project is not React/Next.js/Vite and is bound to a zero-build vanilla stack. Registry safety gate: not applicable.
 
 ---
@@ -144,18 +146,18 @@ Each unit defines its FULL scale explicitly in the `tokens` layer — there is n
 | **u1 · blue** | `#2E6BF5` | `#2135B8` | `#4E82F7` | `#E7EEFF` | `#CBD9F7` | `#23348C` | `#FFFFFF` |
 | **u2 · purple** | `#7C5CE0` | `#5636B0` | `#9B80EC` | `#F0EBFC` | `#D9CCF4` | `#543B9E` | `#FFFFFF` |
 | **u3 · teal** | `#0A7575` | `#075C5C` | `#14B8B8` | `#E1F4F4` | `#ABE1E1` | `#0A6060` | `#FFFFFF` |
-| **u4 · gold** | `#B47F00` | `#8A6000` | `#FFD34D` | `#FDF3DA` | `#F0DCA6` | `#7A5300` | `#3A2B00` |
+| **u4 · gold** | `#B47F00` | `#8A6000` | `#FFD34D` | `#FDF3DA` | `#F0DCA6` | `#7A5300` | `#241A00` |
 
-**WCAG AA pairings (contract — verified selection; automated re-verification is Phase 6 ACC-03):**
+**WCAG AA pairings (contract — ratios measured via the WCAG 2.x relative-luminance formula, 01-RESEARCH.md cross-check + this revision; automated re-verification is Phase 6 ACC-03):**
 
 | Pairing | u1 | u2 | u3 | u4 | Tier required | Status |
 |---------|----|----|----|----|---------------|--------|
-| `--accent-on` text on filled `--accent` (button labels ≥16px/700) | white on #2E6BF5 | white on #7C5CE0 | white on #0A7575 | #3A2B00 on gold | AA Large (≥3:1) min; AA (≥4.5) target | PASS |
-| `--accent-ink` on `--accent-soft` (chip/marker body ≥15px) | #23348C / #E7EEFF | #543B9E / #F0EBFC | #0A6060 / #E1F4F4 | #7A5300 / #FDF3DA | AA (≥4.5:1) | PASS |
-| `--accent-deep` as text on cream `--bg` | #2135B8 | #5636B0 | #075C5C | #8A6000 | AA (≥4.5:1) | PASS |
-| `--accent` as ring/border on cream (non-text UI) | #2E6BF5 | #7C5CE0 | #0A7575 | #B47F00 | UI (≥3:1) | PASS |
+| `--accent-on` text on filled `--accent` (button labels, 16px/700) | white on #2E6BF5 — 4.63 | white on #7C5CE0 — 4.70 | white on #0A7575 — 5.51 | #241A00 on #B47F00 — 4.89 | **AA (≥4.5:1)** — 16px/700 does NOT qualify for the WCAG large-text exception (threshold: ≥18.66px bold / ≥24px regular) | PASS (measured) |
+| `--accent-ink` on `--accent-soft` (chip/marker body ≥15px) | #23348C / #E7EEFF | #543B9E / #F0EBFC | #0A6060 / #E1F4F4 | #7A5300 / #FDF3DA — 6.20 | AA (≥4.5:1) | PASS |
+| `--accent-deep` as text on cream `--bg` | #2135B8 | #5636B0 | #075C5C | #8A6000 — 4.99 | AA (≥4.5:1) | PASS |
+| `--accent` as ring/border on cream (non-text UI) | #2E6BF5 | #7C5CE0 | #0A7575 | #B47F00 — 3.13 | UI (≥3:1) | PASS |
 
-> **Critical correctness note for the executor:** `--accent-on` is **not uniformly white**. Blue/purple/teal filled surfaces take white; **gold (u4) takes dark ink `#3A2B00`** (Gen-3 `.btn.gold` exact). Never white-on-gold. Teal was **deepened from Gen-3's `#0FA3A3` to `#0A7575`** so its ring and button clear the contrast bars (D-05 explicitly permits refining shades for contrast while keeping the recognizable Gen-3 look).
+> **Critical correctness note for the executor:** `--accent-on` is **not uniformly white**. Blue/purple/teal filled surfaces take white; **gold (u4) takes warm near-black `#241A00`** — deepened in this revision from Gen-3's `.btn.gold` `#3A2B00`, which 01-RESEARCH.md measured at only **3.92:1** on #B47F00 (a fail once the actual 16px/700 button-label size disqualifies the WCAG large-text 3:1 tier). `#241A00` measures **4.89:1** — full AA, with sizes kept uniform (no gold-specific CTA resizing). Never white-on-gold. **Scope rule:** `--accent-on` text sits ONLY on `--accent` fills — never on `--accent-deep` fills. Deep-gold `#8A6000` cannot carry AA text at all (even pure black maxes at 3.75:1); per its slot definition, `--accent-deep` is exclusively the gummy shadow offset and a text color on light surfaces — no text is ever placed ON it. Teal was **deepened from Gen-3's `#0FA3A3` to `#0A7575`** so its ring and button clear the contrast bars (D-05 explicitly permits refining shades for contrast while keeping the recognizable Gen-3 look).
 
 **Unit-color single-source rule (D-07):** JS reads unit colors FROM these CSS custom properties via `getComputedStyle` — CSS is the sole source of truth. The Gen-3 duplication (learn.html's hardcoded JS color array) dies here. Back-compat mapping: engine maps `cfg.unitColor` hex → theme (`#2E6BF5`→u1, `#7C5CE0`→u2, `#0FA3A3`→u3, gold hexes→u4); unknown hex falls back to setting `--accent` directly.
 
@@ -224,6 +226,14 @@ Durations and easings are declared in the `tokens` layer so Phase 3 (MOT-01) has
 
 **Kills Gen-3's fixed `380×788` phone card.** The shell is a CSS grid; the app IS the page.
 
+**Viewport meta prerequisite (binding — 01-RESEARCH.md Pitfall 2):** every page MUST include
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+```
+
+Without `viewport-fit=cover`, `env(safe-area-inset-*)` **silently resolves to 0 on notched / Dynamic-Island devices** — no warning, and no visual difference in generic desktop responsive mode. The tag is absent from all 19 Gen-3 files, so it must be an explicit line in the shared `<head>` boilerplate, not an assumed side-effect of "building the responsive shell."
+
 **Grid:** `min-height: 100dvh`, `display: grid`, `grid-template-rows: auto 1fr auto` →
 - **HUD** (row 1, `auto` ≈ 56px + `env(safe-area-inset-top)`) — course/close, progress segments or lamps, streak stat, noor stat.
 - **Stage** (row 2, `1fr`, `overflow-y:auto`, `overscroll-behavior: contain`) — the scrolling content region.
@@ -271,8 +281,11 @@ It MUST showcase:
 5. **Motion demo** — buttons with the gummy press, a node-pop, a sheet-in, each labelled with its easing token; respects `prefers-reduced-motion` (collapses to instant when set).
 6. **Responsive shell skeleton** — HUD / stage / footer with placeholder content; full-bleed on mobile, centered column on desktop (the resize-test target).
 7. **Permanent glyph-test block** — renders, in every relevant face, and visibly labelled:
-   - Clear Quran corner brackets **˹ ˺ (U+02F9 / U+02FA)** — *confirmed from Josh's real lesson files; NOT the U+2E32-area speculated in D-10*.
+   - Clear Quran corner brackets **˹ ˺ (U+02F9 / U+02FA)** — *confirmed from Josh's real lesson files (57× each); NOT the U+2E32-area speculated in D-10*.
    - Transliteration diacritics: **ʿ ʾ ā Ā ī Ī ū ḥ Ḥ ṣ Ṣ ṭ Ṭ ḏ Ḏ** and typographic **’** (in Poppins + Inter).
+   - **Middle dot `·` (U+00B7)** in **Poppins** — 208 occurrences in real content, the citation/kicker separator on every screen ("Unit 1 · Lesson 1"); the most visually prominent at-risk glyph (01-RESEARCH.md byte-scan).
+   - **Punctuation set** in Poppins + Inter: em dash **—** (U+2014, 24×), en dash **–** (U+2013, 2×), curly quotes **‘ ’ “ ”** (U+2018/2019/201C/201D — ’ 77×, “ ” 20× each in real content).
+   - **Circumflexed vowels î â û** (U+00EE / U+00E2 / U+00FB) in Poppins + Inter — Josh's transliteration convention in *Iblîs, Suwâ, Yaghûth, Yaûq* (01-RESEARCH.md byte-scan; Latin-1 Supplement — would tofu under a careless ASCII-only subset).
    - **ﷺ (U+FDFA)** in Amiri/Amiri Quran — *absent from current Gen-3 source but bound by brand law (CNT-04); include defensively in the Amiri subset and render it here so the reviewer confirms the ligature is not tofu.*
    - A verbatim ayah in **Amiri Quran** (`.ayah`, RTL) + a hadith line in **Amiri** — proving the face split.
    - A `.notdef`/tofu FAIL exemplar cell so a missing glyph is unmistakable.
@@ -282,14 +295,14 @@ It MUST showcase:
 
 ## Font Subset Contract (FND-03 / D-09, D-10)
 
-Four families in `shared/fonts/`, subset locally (`pyftsubset`), committed as static `.woff2`. Each subset MUST include:
+Four families in `shared/fonts/`, subset locally (`pyftsubset`), committed as static `.woff2`. Coverage below reflects 01-RESEARCH.md's byte-scan of all 19 real content files (86 unique non-ASCII codepoints, verified against the live Google Fonts glyph API) — NOT CLAUDE.md's generic illustrative Latin range, which under-covers this project's actual content. Each subset MUST include:
 
 | Family | Role | Required glyph coverage |
 |--------|------|--------------------------|
-| Poppins | display/headings/buttons/numerals | Latin + Latin Extended-A (ā ī ū) + Latin Extended Additional (U+1E00–1EFF) + modifier letters U+02BE ʾ / U+02BF ʿ + corner brackets **U+02F9/02FA** |
-| Inter | body/UI (carries translations, transliteration) | same Latin coverage as Poppins (body renders `˹…˺` bracketed translations + diacritics) |
-| Amiri | general Arabic (hadith, terms, du'a) | Arabic (U+0600–06FF) + Arabic Presentation Forms + **ﷺ U+FDFA** |
-| Amiri Quran | `.ayah` only (verbatim Qur'an) | Arabic + Qur'anic diacritics/annotation signs + **ﷺ U+FDFA** |
+| Poppins | display/headings/buttons/numerals | Basic Latin + **Latin-1 Supplement U+0080–00FF** (middle dot `·` U+00B7 — 208×, the citation/kicker separator; circumflexed **î â û** U+00EE/00E2/00FB — Iblîs, Suwâ, Yaghûth, Yaûq) + Latin Extended-A (ā ī ū) + Latin Extended Additional (U+1E00–1EFF) + Spacing Modifier Letters U+02B0–02FF (ʾ U+02BE / ʿ U+02BF + corner brackets **U+02F9/02FA**) + **General Punctuation U+2000–206F** (em dash U+2014, en dash U+2013, curly quotes U+2018/2019/201C/201D, RLM U+200F; ellipsis U+2026 was NOT found in the scan but is covered by the block range) — verified subset range: `U+0000-00FF,U+0100-017F,U+1E00-1EFF,U+02B0-02FF,U+2000-206F` |
+| Inter | body/UI (carries translations, transliteration) | same verified range as Poppins (body renders `˹…˺` bracketed translations + diacritics + the full punctuation set above) |
+| Amiri | general Arabic (hadith, terms, du'a) | Arabic (U+0600–06FF — the byte-scan found ALL Arabic content within this single block, incl. Quranic marks U+0640/0670/0671/06DD/06DE/06DF/06E0/06E2/06E5/06E6) + **ﷺ U+FDFA** (forward-looking inclusion, brand law CNT-04) — verified subset range: `U+0600-06FF,U+FDFA` |
+| Amiri Quran | `.ayah` only (verbatim Qur'an) | same verified range as Amiri (`U+0600-06FF,U+FDFA`) incl. Qur'anic diacritics/annotation signs |
 
 **Loading (D-11):** `font-display: swap` + `<link rel="preload">` for the 2 critical faces per page (Poppins + Inter on chrome pages; Amiri Quran added on scripture-heavy pages) + identical font URLs on every page (cache eliminates FOUC from the second navigation on). Metric-tuned system fallback stacks. **Zero Google Fonts CDN requests at runtime.**
 
@@ -353,5 +366,6 @@ No component registry is used. All components are hand-authored vanilla CSS in o
 | ENGINE-CONTRACT.md §4 + §6 | Gen-3 actual palette values (cream/blue/amber/gold/flame/night, unit hexes) — the starting values being elevated; §6 icon-only-controls accessible-name gap (now closed by the aria-label contract) |
 | Gen-3 `awba-engine.css` | Gummy button physics, radii language, indigo-tinted shadows, scripture-card + sheet Arabic sizing, `.btn.gold` dark-ink pattern |
 | REQUIREMENTS.md | FND-01 (one token layer), FND-02 (full recolor), FND-03 (self-hosted subset fonts + glyph test), PLT-01 (responsive shell) |
+| **01-RESEARCH.md (verified facts, this revision)** | u4 gold `--accent-on` deepened `#3A2B00`→`#241A00` (measured 3.92:1 fail at 16px/700 → 4.89:1 full AA; no-text-on-`--accent-deep` scope rule); `viewport-fit=cover` meta prerequisite (Pitfall 2); `@layer` full-order-once rule (Pattern 1 / Pitfall 3); byte-scan codepoint additions (U+00B7, U+2013/2014, curly quotes, î â û, RLM) + verified subset ranges |
 | Codebase scout (this session) | Greenfield vanilla repo (shadcn N/A); real bracket codepoints U+02F9/02FA; diacritic inventory; ﷺ absent-but-bound |
 | Senior-designer judgment (recorded) | Deepened teal `#0FA3A3`→`#0A7575` for contrast; per-unit `--accent-on` split (white vs gold-dark); AA-tier labelling; weight discipline (5 total, quarantined 800); **type-scale collapse from Gen-3's 10 overlapping roles to 7 honest Latin roles**; spacing normalization of Gen-3 odd values; clamp() breakpoints; focus-visible spec; shell + preview focal-point declarations |
