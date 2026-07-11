@@ -66,20 +66,28 @@ Declared values (multiples of 4). CSS tokens `--sp-*` in the `tokens` layer. Gen
 
 > Deviation from the generic "2 weights max" heuristic is deliberate and recorded: a Duolingo-grade gamified app needs display weight contrast between reading body (Inter) and the celebratory display layer (Poppins). Five weights total across two families, each family internally disciplined to two, with 800 quarantined to one element. Rationale: matches Gen-3's proven register split without weight sprawl.
 
-**Type scale** — fluid via `rem` + `clamp()` where it matters (display, hero numerals); body fixed and comfortably readable at 320px with no overflow (D-03). CSS tokens `--fs-*`.
+**Type scale** — fluid via `rem` + `clamp()` where it matters (display, hero numerals); body fixed and comfortably readable at 320px with no overflow (D-03). CSS tokens `--fs-*`. **Seven honest Latin roles** (collapsed from Gen-3's 10 overlapping roles — see deviation note below).
 
 | Role | Token | Size (min → max) | Family / Weight | Line Height | Notes |
 |------|-------|------------------|-----------------|-------------|-------|
-| Hero numeral | `--fs-hero` | `clamp(3.5rem, 3rem + 2.5vw, 5.125rem)` (56→82px) | Poppins 800 | 1.0 | Streak/returns big number only |
-| Display | `--fs-display` | `clamp(2rem, 1.7rem + 1.5vw, 2.375rem)` (32→38px) | Poppins 700/800 | 1.05 | Noor count-up, verdict |
-| H1 / title | `--fs-h1` | `clamp(1.375rem, 1.25rem + 0.6vw, 1.625rem)` (22→26px) | Poppins 600 | 1.16 | Screen titles |
-| H2 / point | `--fs-h2` | `clamp(1.125rem, 1.05rem + 0.4vw, 1.25rem)` (18→20px) | Poppins 600 | 1.28 | Depth point, quiz question |
-| Lead | `--fs-lead` | `1.0625rem` (17px) | Inter 400 | 1.58 | Opening paragraphs, frame lead |
-| Body | `--fs-body` | `1rem` (16px) | Inter 400 | 1.6 | Default prose |
-| UI / label | `--fs-ui` | `0.9375rem` (15px) | Inter 400/600 | 1.4 | Options, tiles, sheet body |
-| Small | `--fs-sm` | `0.875rem` (14px) | Inter 400 | 1.5 | Panel body, captions, microcopy |
-| Kicker / eyebrow | `--fs-kicker` | `0.78rem` (12.5px) | Poppins 600 | 1.2 | UPPERCASE, `letter-spacing:0.13em` |
-| Micro | `--fs-micro` | `0.6875rem` (11px) | Poppins 600 | 1.2 | Marker labels, pills, source lines |
+| Hero numeral | `--fs-hero` | `clamp(3.5rem, 3rem + 2.5vw, 5.125rem)` (56→82px) | Poppins 800 | 1.0 | Reward-screen big numeral only — streak/returns number |
+| Display | `--fs-display` | `clamp(2rem, 1.7rem + 1.5vw, 2.375rem)` (32→38px) | Poppins 700 | 1.05 | Verdict headline, Noor count-up |
+| Title | `--fs-h1` | `clamp(1.375rem, 1.25rem + 0.6vw, 1.625rem)` (22→26px) | Poppins 600 | 1.16 | Screen / page titles |
+| Heading | `--fs-h2` | `clamp(1.125rem, 1.05rem + 0.4vw, 1.25rem)` (18→20px) | Poppins 600 | 1.28 | Section titles, quiz question, depth point |
+| Body | `--fs-body` | `1rem` (16px) | Inter 400 | 1.6 | All reading prose — default paragraphs, opening / frame leads |
+| UI / control | `--fs-ui` | `0.875rem` (14px) | Inter 400/600 | 1.45 | Quiz options, tiles, sheet body, panel body, captions, microcopy |
+| Kicker / meta | `--fs-kicker` | `0.75rem` (12px) | Poppins 600 | 1.2 | UPPERCASE eyebrows (`letter-spacing:0.13em`) + marker labels, pills, source lines |
+
+> **Deviation recorded — font-size scale (mirrors the weight rationale above):** the generic "max 4 font sizes" heuristic targets a single screen; this is a foundation-phase *design-system token sheet* that every later phase (path, lesson, quiz, reward, review) draws from, so it must carry the full type register up front rather than have each phase invent its own. Gen-3's **10** overlapping roles were audited and collapsed to **7 honest Latin roles**, each mapped to ONE distinct, non-overlapping UI need and its consuming surface:
+> - `--fs-hero` (56→82px) — the single giant celebratory numeral on reward / returns screens; nothing else uses it.
+> - `--fs-display` (32→38px) — verdict headline and Noor count-up on reward beats.
+> - `--fs-h1` (22→26px) — screen / page titles (HUD course name, sheet titles).
+> - `--fs-h2` (18→20px) — section titles, the quiz question, and depth points inside lessons.
+> - `--fs-body` (16px) — all reading prose; the former separate 17px "lead" was **merged here** (a lead is body with more margin, not a different size — the ~1px gap served the same reading need).
+> - `--fs-ui` (14px) — interactive controls and dense meta: options, tiles, sheet / panel body, captions, microcopy (former 15px "ui" + 14px "small" roles **unified** — both within 1px, both Inter, both control/meta surfaces).
+> - `--fs-kicker` (12px) — the smallest label register: uppercase eyebrows plus marker labels, pills, and source / citation lines (former 12.5px "kicker" + 11px "micro" roles **unified**; uppercase-tracking vs. lowercase pill is a *treatment*, not a distinct size).
+>
+> **Arabic sizes are not additional "scale steps"** — they are the Latin body / display roles re-expressed under the binding ≥1.4× Latin law (ASSETS.md, D-09), not free choices: `--fs-ar-body` `1.4rem` (22.4px) is exactly 1.4× the 16px Latin `--fs-body` — the legal minimum for legible Arabic diacritics; `--fs-ayah` `clamp(1.5rem…1.6rem)` lifts verbatim Qur'an one step above general Arabic; sheet Arabic display `2rem` (32px) is the Arabic counterpart of `--fs-display`. Each is governed by the Arabic-typography law block below.
 
 **Arabic & RTL typography laws (binding — ASSETS.md, CNT-04, D-09/D-10):**
 - Every Arabic span carries `lang="ar" dir="rtl"`; Arabic containers use `unicode-bidi: isolate` so mixed Arabic/Latin lines never scramble.
@@ -221,6 +229,8 @@ Durations and easings are declared in the `tokens` layer so Phase 3 (MOT-01) has
 - **Stage** (row 2, `1fr`, `overflow-y:auto`, `overscroll-behavior: contain`) — the scrolling content region.
 - **Footer / tab bar** (row 3, `auto` + `env(safe-area-inset-bottom)`) — primary CTA (lesson/review) or tab bar (learn).
 
+**Focal point (primary visual anchor):** the eye lands first on the footer's single accent-filled gummy CTA — it is the only high-saturation, elevated element against the calm neutral cream field, so it reads as "the thing to do next," while the HUD and stage chrome stay deliberately quiet (neutral ink/line). This is intentional: one primary action per shell, one focal point.
+
 **Mobile (< 600px):** full-bleed edge-to-edge, `100dvh` (dynamic viewport unit — survives iOS URL-bar collapse), safe-area insets honored on HUD top and footer bottom, `overscroll-behavior: contain` prevents rubber-band bleed, `-webkit-tap-highlight-color: transparent` (compensated by `:focus-visible` below). No `.phone` card, no fixed height.
 
 **Desktop (≥ 600px):** **intentional centered column** — `max-width: 460–480px`, full-height, centered on a designed calm backdrop (cream `#EEF2FB` with a very subtle brand radial wash — a soft off-white-to-cream gradient, no hard edges). The column carries `--r-2xl` (28px) corners, `--sh-4` elevation, `--sh-inset` top highlight. Column height breathes with the viewport (`min(100dvh - 2 × gutter, ...)` — never a fixed 788px, never a fake phone bezel). A reviewer resizing the window sees graceful adaptation at every width between 320px and desktop.
@@ -242,11 +252,17 @@ Tap-highlight is globally suppressed (`-webkit-tap-highlight-color: transparent`
 - On the gold/night legendary register, focus ring switches to `--gold2` for visibility against the dark gradient.
 - Contrast: focus outline meets ≥3:1 against both cream `--bg` and the night gradient (verified in Phase 6 ACC-03).
 
+**Accessible name contract (binding — closes ENGINE-CONTRACT §6 "icon-only controls unnamed"):** every icon-only control — HUD close/back, tab-bar items, glyph-only node dots that act as buttons, and any button whose entire visible content is an icon — MUST carry an `aria-label` (or `aria-labelledby`) naming its action (e.g. `aria-label="Close lesson"`, `aria-label="Back"`, `aria-label="Learn tab"`). No icon-only control ships unnamed. This is defined in the `base`/component contract now and inherited by every later phase.
+
 ---
 
 ## `preview.html` Contract (D-12 — the verification vehicle)
 
-`preview.html` at repo root is how Phase 1's success criteria get checked AND stays as the living style reference for Josh. It must already **feel premium** (spacing, shadows, type rhythm) — not a debug sheet. It MUST showcase:
+`preview.html` at repo root is how Phase 1's success criteria get checked AND stays as the living style reference for Josh. It must already **feel premium** (spacing, shadows, type rhythm) — not a debug sheet.
+
+**Focal point (primary visual anchor):** the eye lands first on the **interactive unit-switch cluster** (item 2) — it is the largest saturated-color element on an otherwise neutral cream sheet, so it draws attention before the token tables. That is intentional: live full-recolor is the phase's headline promise, so the page's visual hierarchy leads with the proof of it, then descends into the reference tables.
+
+It MUST showcase:
 
 1. **Color token sheet** — swatch grid: global surface/ink/line + the 4 semantics (amber/green/flame/gold) + **all 4 unit scales side-by-side** (accent / deep / bright / soft / line / ink / on) with hex labels and an AA-contrast badge on each text-bearing pairing.
 2. **Unit-switch control** — a `data-unit` toggle (u1/u2/u3/u4) that live-recolors a sample cluster (primary button, citation chip, active node ring, inline link, tinted panel, progress fill). **Proves the FULL recolor: zero residual blue survives on u2/u3/u4** (the Success-Criterion-2 test).
@@ -286,10 +302,12 @@ This is a foundation/token phase — it ships no product screens, so real produc
 | Element | Copy |
 |---------|------|
 | Primary CTA (button exemplar) | **"Begin, gently"** (canonical mercy-toned lesson primary — the button token's showcase label) |
-| Secondary CTA exemplar | **"Continue"** (neutral advance) |
+| Secondary CTA exemplar | **"Continue"** (neutral advance — preview exemplar only, see note below) |
 | Empty state | N/A — no data surfaces in Phase 1. The `preview.html` "empty" analogue is the glyph-test **FAIL** cell: **"Glyph missing — re-subset this face."** |
 | Error state | Font-load failure degrades silently to the metric-tuned system fallback (no FOUC, no error UI). Contract: **never show a raw error; fall back gracefully.** |
 | Destructive confirmation | **None** — Phase 1 (and v1 broadly) has no destructive-of-progress action; the "un-loseable" promise forbids it. |
+
+> **CTA-label note:** "Continue" here is a *neutral preview exemplar* — it exists only to show the secondary-button token inside `preview.html`. Product phases MUST use contextual, destination-naming CTA labels wherever the next step isn't self-evident (e.g. "Start the lesson", "Claim your noor", "See the answer") — never a bare "Continue" on a real product screen where the destination is ambiguous.
 
 **Mercy copy laws (binding across all phases — ASSETS.md):**
 - **No red for learner error, ever** — amber only. `--danger` red is reserved for safety callouts.
@@ -332,8 +350,8 @@ No component registry is used. All components are hand-authored vanilla CSS in o
 |--------|----------------|
 | CONTEXT.md (D-01…D-12) | Shell strategy, token architecture, per-unit full scales, motion-tokens-now, font families + subset rules, preview.html scope, fluid type |
 | ASSETS.md canon + brand laws | Gen-3 = design authority; mercy laws (amber-not-red, no guilt, celebration-not-over-scripture); Arabic typography laws; `--danger` safety-only |
-| ENGINE-CONTRACT.md §4 | Gen-3 actual palette values (cream/blue/amber/gold/flame/night, unit hexes) — the starting values being elevated |
+| ENGINE-CONTRACT.md §4 + §6 | Gen-3 actual palette values (cream/blue/amber/gold/flame/night, unit hexes) — the starting values being elevated; §6 icon-only-controls accessible-name gap (now closed by the aria-label contract) |
 | Gen-3 `awba-engine.css` | Gummy button physics, radii language, indigo-tinted shadows, scripture-card + sheet Arabic sizing, `.btn.gold` dark-ink pattern |
 | REQUIREMENTS.md | FND-01 (one token layer), FND-02 (full recolor), FND-03 (self-hosted subset fonts + glyph test), PLT-01 (responsive shell) |
 | Codebase scout (this session) | Greenfield vanilla repo (shadcn N/A); real bracket codepoints U+02F9/02FA; diacritic inventory; ﷺ absent-but-bound |
-| Senior-designer judgment (recorded) | Deepened teal `#0FA3A3`→`#0A7575` for contrast; per-unit `--accent-on` split (white vs gold-dark); AA-tier labelling; weight discipline (5 total, quarantined 800); spacing normalization of Gen-3 odd values; clamp() breakpoints; focus-visible spec |
+| Senior-designer judgment (recorded) | Deepened teal `#0FA3A3`→`#0A7575` for contrast; per-unit `--accent-on` split (white vs gold-dark); AA-tier labelling; weight discipline (5 total, quarantined 800); **type-scale collapse from Gen-3's 10 overlapping roles to 7 honest Latin roles**; spacing normalization of Gen-3 odd values; clamp() breakpoints; focus-visible spec; shell + preview focal-point declarations |
