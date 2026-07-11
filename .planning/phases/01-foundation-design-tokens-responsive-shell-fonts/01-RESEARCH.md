@@ -223,17 +223,25 @@ python3 -m fontTools.subset "shared/fonts/src/AmiriQuran-400.ttf" \
 
 ```css
 @layer tokens {
+  /* PATH RULE (file:// compatibility): @font-face URLs resolve relative to THIS CSS file's own
+     location (shared/) — hence 'fonts/...'. NEVER 'url(/shared/fonts/...)': a leading slash is
+     root-absolute (RFC 3986) and resolves to the FILESYSTEM ROOT under file://, 404ing every font
+     in exactly the double-click review workflow this project mandates. */
   @font-face { font-family:'Poppins'; font-weight:500; font-display:swap; font-style:normal;
-    src:url('/shared/fonts/poppins-500.woff2') format('woff2'); }
+    src:url('fonts/poppins-500.woff2') format('woff2'); }
   /* ...repeat per weight/family... */
   @font-face { font-family:'Amiri Quran'; font-weight:400; font-display:swap; font-style:normal;
-    src:url('/shared/fonts/amiri-quran-400.woff2') format('woff2'); }
+    src:url('fonts/amiri-quran-400.woff2') format('woff2'); }
 }
 ```
 ```html
-<!-- identical on every page (D-11) — critical 2 faces preloaded, rest load via normal @font-face -->
-<link rel="preload" href="/shared/fonts/poppins-700.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/shared/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+<!-- boilerplate on every page (D-11) — critical 2 faces preloaded, rest load via normal @font-face.
+     Paths are page-RELATIVE (file:// safe): repo-root pages use shared/fonts/...; nested pages
+     (lessons/, reviews/) will use ../shared/fonts/... — both resolve to the same URL, so the browser
+     cache still dedupes across pages (the D-11 "identical URL" requirement is about the RESOLVED URL).
+     Never a leading-slash /shared/... form — root-absolute breaks file:// review. -->
+<link rel="preload" href="shared/fonts/poppins-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="shared/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
 ```
 `crossorigin` is required on font preloads even for same-origin files per the Fetch spec's anonymous-mode CORS requirement for fonts — omitting it causes the browser to silently double-fetch the font (once for preload, once for actual use) because the requests don't dedupe. This is a common, easy-to-miss mistake.
 
@@ -430,17 +438,19 @@ This is the one requirement in this phase with an objective, machine-checkable p
 | A1 | fontTools/pyftsubset is legitimate, safe dev tooling | Package Legitimacy Audit | Very low — slopcheck unavailable this session, but fonttools is 15+ year old, Google-affiliated, millions-of-downloads/week infrastructure tooling; verified functionally present and working locally (not just "found on a registry") |
 | A2 | Recommended `--layout-features='*'` flag for Latin subsetting (vs. omitting the flag entirely, which uses pyftsubset's smaller default set) | Font Subset Pipeline Step 4 | Low — `'*'` keeps all layout features including ones this project doesn't use (small caps, fractions), slightly larger file size than a tuned default; does not risk breakage, only a few KB of avoidable weight. If minimizing size matters more than simplicity, omit the flag and rely on pyftsubset's default set for Latin (the default set already covers everything this project's content needs per the codepoint scan) |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **u4 gold button-label contrast (Pitfall 1) — needs an explicit design decision, not a silent fix**
    - What we know: `#3A2B00` on `#B47F00` measures 3.92:1, and the actual button font-size (16px/700) falls below WCAG's large-text exception threshold.
    - What's unclear: whether the project accepts this as an intentional, documented brand-color tradeoff (many gamified apps do accept AA-Large-only for a single hero accent used sparingly) or requires a token/type-scale adjustment.
    - Recommendation: Surface this to the planner as an explicit task/checkpoint before Phase 4 propagates the gold button pattern across the legendary-review screens; resolve with either a darker `--accent-on` or a bumped CTA font-size for gold surfaces specifically.
+   - **RESOLVED (2026-07-12, UI-SPEC revision + Plan 01-02):** UI-SPEC locks u4 `--accent-on: #241A00` (4.89:1 — full AA at the real 16px/700 button size, sizes kept uniform); the failing `#3A2B00` is banned and grep-gated to zero occurrences in 01-02-PLAN.md Task 1's acceptance criteria. No Phase-6 late fix needed.
 
 2. **Static vs. variable Inter — final pipeline choice**
    - What we know: Both are legitimate; static keeps all 4 font families on the same subsetting-command shape (simplicity), variable saves ~2-3 extra HTTP requests for Inter specifically (Poppins/Amiri/Amiri Quran are static-only regardless, so the savings only apply to one of four families).
    - What's unclear: whether the project values pipeline uniformity or marginal request-count savings more.
    - Recommendation: Default to static (matches CLAUDE.md's example command shape and keeps the `pyftsubset` invocation pattern identical across all 4 families); flag as low-stakes, reversible later without touching any HTML.
+   - **RESOLVED (2026-07-12, Plan 01-01 Task 2):** static per-weight Inter files (4×) — pipeline uniformity across all four families; variable Inter not used.
 
 ## Environment Availability
 
