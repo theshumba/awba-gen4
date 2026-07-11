@@ -94,4 +94,49 @@ Macro product scope is fixed by Josh's Gen-3 MVP (the owner-approved direction).
 
 ## Traceability
 
-(Filled by roadmap — every v1 requirement maps to exactly one phase.)
+Every v1 requirement maps to exactly one phase. Coverage: 42/42 (100%). See `.planning/ROADMAP.md` for phase detail.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| FND-01 | Phase 1 | Pending |
+| FND-02 | Phase 1 | Pending |
+| FND-03 | Phase 1 | Pending |
+| PLT-01 | Phase 1 | Pending |
+| FND-05 | Phase 2 | Pending |
+| FND-06 | Phase 2 | Pending |
+| FND-07 | Phase 2 | Pending |
+| ENG-07 | Phase 2 | Pending |
+| FND-04 | Phase 3 | Pending |
+| ENG-06 | Phase 3 | Pending |
+| MOT-01 | Phase 3 | Pending |
+| MOT-03 | Phase 3 | Pending |
+| MOT-04 | Phase 3 | Pending |
+| ENG-01 | Phase 4 | Pending |
+| ENG-02 | Phase 4 | Pending |
+| ENG-03 | Phase 4 | Pending |
+| ENG-04 | Phase 4 | Pending |
+| ENG-05 | Phase 4 | Pending |
+| CNT-01 | Phase 4 | Pending |
+| CNT-02 | Phase 4 | Pending |
+| CNT-04 | Phase 4 | Pending |
+| RWD-01 | Phase 4 | Pending |
+| RWD-02 | Phase 4 | Pending |
+| RWD-03 | Phase 4 | Pending |
+| MOT-05 | Phase 4 | Pending |
+| LRN-01 | Phase 5 | Pending |
+| LRN-02 | Phase 5 | Pending |
+| LRN-03 | Phase 5 | Pending |
+| LRN-04 | Phase 5 | Pending |
+| LRN-05 | Phase 5 | Pending |
+| LRN-06 | Phase 5 | Pending |
+| LRN-07 | Phase 5 | Pending |
+| CNT-03 | Phase 5 | Pending |
+| RWD-04 | Phase 5 | Pending |
+| MOT-02 | Phase 5 | Pending |
+| ACC-01 | Phase 6 | Pending |
+| ACC-02 | Phase 6 | Pending |
+| ACC-03 | Phase 6 | Pending |
+| PLT-02 | Phase 7 | Pending |
+| PLT-03 | Phase 7 | Pending |
+| PLT-04 | Phase 7 | Pending |
+| PLT-05 | Phase 7 | Pending |
