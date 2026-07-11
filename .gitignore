@@ -1,0 +1,6 @@
+# Raw downloaded font intermediates (subsetting pipeline input) — never shipped, never committed.
+# Only the subset .woff2 outputs under shared/fonts/ are committed.
+shared/fonts/src/
+
+# OS noise
+.DS_Store
