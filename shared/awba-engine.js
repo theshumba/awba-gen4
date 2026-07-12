@@ -776,8 +776,67 @@ AW.KIT = {
 </svg>`,
 };
 
+/* lantern-gold — the authored, committed night-safe gold variant (D-33), added as the 21st
+   keyed entry of AW.KIT. Hand-recoloured from the blue `lantern` against its true home, the
+   .gold-bg night gradient (#241A05 -> #3A2A08): the lantern's blue metal #2E6BF5 -> --gold
+   #E8A400, the indigo linework #2536CE -> --gold-deep #B47F00, the inner-light panel #EAF0FE
+   -> #FFF3CC (the warm lit window), and the blob halo #C9D7F5 -> a dark warm glow that lifts
+   just off the night field. Night-register safety: every structural highlight that sits
+   directly on the dark background (the hoop, hanger, cap bead, base finial and both sparkles)
+   is authored at --gold2 #FFD34D so the lantern holds contrast; only the flame stays
+   --gold-deep, because it sits on the bright cream panel where a dark ember reads as fire.
+   This is authored art committed once — not a runtime recolour; the Gen-3 regex-recolour
+   anti-pattern is deliberately not ported. */
+AW.KIT['lantern-gold'] = `<svg viewBox="0 0 240 300" fill="none">
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#4A3610"></path>
+        <circle cx="120" cy="46" r="6" fill="none" stroke="#FFD34D" stroke-width="3"></circle>
+        <line x1="120" y1="52" x2="120" y2="66" stroke="#FFD34D" stroke-width="3"></line>
+        <path d="M100 78 L140 78 L131 66 L109 66 Z" fill="#E8A400"></path>
+        <circle cx="120" cy="62" r="4" fill="#FFD34D"></circle>
+        <path d="M98 82 L142 82 Q151 112 142 152 L133 170 L107 170 L98 152 Q89 112 98 82 Z" fill="#E8A400"></path>
+        <path d="M112 98 L128 98 L128 152 L112 152 Z" fill="#FFF3CC"></path>
+        <path d="M120 116 c-5 5 -6 12 0 18 c6 -6 5 -13 0 -18 z" fill="#B47F00"></path>
+        <path d="M108 170 L132 170 L120 186 Z" fill="#E8A400"></path>
+        <circle cx="120" cy="190" r="4" fill="#FFD34D"></circle>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#FFD34D" transform="translate(168,110)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#FFD34D" transform="translate(74,132) scale(0.8)"></path>
+</svg>`;
+
 /* AW.UNIT_ICON — u1..u4 scene mapping (Gen-3 semantics preserved so runner defaults resolve). */
 AW.UNIT_ICON = { u1: 'compass', u2: 'lanterns', u3: 'kaaba', u4: 'mosque' };
+
+/* AW.GLYPHS — the 13 small UI glyphs Gen-3 scattered as standalone + per-page constants,
+   re-homed into ONE ~24x24 square sub-map (D-33). Single source, no per-page constants: these
+   replace every duplicate per-page icon constant. Path data ported from Gen-3's standalone
+   glyph + marker constants; each value is a self-contained <svg …>. */
+AW.GLYPHS = {
+  // flame — streak flame
+  flame: '<svg viewBox="0 0 24 24"><path d="M12 2 C13 6 17 7 16.5 12 C16 16 13 16 13 13 C12 15 10 15.5 10.5 18 C8 16.5 7 14 8 11 C9 13 10.5 12 10 9 C11 8 12 6 12 2Z" fill="#F0730B"/></svg>',
+  // spark — combo/noor spark (gold)
+  spark: '<svg viewBox="0 0 24 24"><path d="M12 3 C13 8 16 11 21 12 C16 13 13 16 12 21 C11 16 8 13 3 12 C8 11 11 8 12 3Z" fill="#E8A400"/></svg>',
+  // check — verdict tick
+  check: '<svg viewBox="0 0 24 24"><path d="M5 12.5 L10 17.5 L19 7" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  // star — earned star (gold)
+  star: '<svg viewBox="0 0 24 24"><path d="M12 2.5 L14.9 9 L22 9.7 L16.7 14.4 L18.3 21.4 L12 17.6 L5.7 21.4 L7.3 14.4 L2 9.7 L9.1 9 Z" fill="#FFD34D" stroke="#E8A400" stroke-width="1"/></svg>',
+  // cite — citation bookmark
+  cite: '<svg viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-3.2L5 21V4a1 1 0 0 1 1-1Z" fill="#2536CE"/></svg>',
+  // lamp — small lantern glyph
+  lamp: '<svg viewBox="0 0 20 24"><path d="M10 2 L13 5 L13 8 Q16 12 13 17 L13 20 L7 20 L7 17 Q4 12 7 8 L7 5 Z" fill="#E8A400"/><path d="M8.5 9 h3 v7 h-3 z" fill="#FFF3CC"/></svg>',
+  // lock — locked node
+  lock: '<svg viewBox="0 0 24 24"><path d="M7 10 V8 a5 5 0 0 1 10 0 v2" fill="none" stroke="#AAB4CC" stroke-width="2.2"/><rect x="5.5" y="10" width="13" height="9.5" rx="2.5" fill="#AAB4CC"/></svg>',
+  // chest — reward chest
+  chest: '<svg viewBox="0 0 24 24"><path d="M4 8 a4 4 0 0 1 4-4 h8 a4 4 0 0 1 4 4 v2 H4 Z" fill="#fff"/><path d="M4 11 h16 v7 a2 2 0 0 1 -2 2 H6 a2 2 0 0 1 -2-2 Z" fill="#fff" opacity=".75"/><rect x="10.6" y="9" width="2.8" height="5" rx="1.2" fill="#B4720C"/></svg>',
+  // trophy — legendary review
+  trophy: '<svg viewBox="0 0 24 24"><path d="M7 3 h10 v3 a5 5 0 0 1 -3.2 4.66 L13 13 h2 l1 4 H8 l1-4 h2 l-.8-2.34 A5 5 0 0 1 7 6 Z" fill="#fff"/><path d="M7 4 H4 v2 a3 3 0 0 0 3 3 M17 4 h3 v2 a3 3 0 0 1 -3 3" fill="none" stroke="#fff" stroke-width="1.6"/><rect x="7" y="18.5" width="10" height="2.6" rx="1.3" fill="#fff"/></svg>',
+  // fact — "worth knowing" marker
+  fact: '<svg viewBox="0 0 24 24"><path d="M12 3 C13 8 16 11 21 12 C16 13 13 16 12 21 C11 16 8 13 3 12 C8 11 11 8 12 3Z" fill="#2E6BF5"/></svg>',
+  // remember — "worth remembering" marker
+  remember: '<svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v17l-6-4-6 4V4a1 1 0 0 1 1-1Z" fill="#2E6BF5"/></svg>',
+  // fard — "the first duty" marker
+  fard: '<svg viewBox="0 0 24 24"><path d="M17 4 A9 9 0 1 0 17 20 A7 7 0 1 1 17 4Z" fill="#2E6BF5"/></svg>',
+  // angle — "another angle" marker
+  angle: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#2E6BF5" stroke-width="2"/><path d="M12 7 L14.5 12 L12 17 L9.5 12Z" fill="#2E6BF5"/></svg>',
+};
 
 /* ============================================================
    COMPONENTS  ·  Phase 3/4 placeholder — shared UI builders (D-22)
