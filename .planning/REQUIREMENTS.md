@@ -11,7 +11,7 @@ Macro product scope is fixed by Josh's Gen-3 MVP (the owner-approved direction).
 - [x] **FND-01**: A single design-token layer (CSS `@layer` in one engine stylesheet) defines all colors, type, radii, shadows, motion durations/easings — no literal hex/px invention in screen code; unit colors exist ONCE (CSS custom properties, consumed by JS from the same source)
 - [x] **FND-02**: Unit theming fully recolors a lesson page (primary AND secondary accents — no half-themed pages on purple/teal units like Gen-3's fixed blue2/blue3)
 - [x] **FND-03**: Fonts self-hosted as subset .woff2 (Poppins, Inter, Amiri, Amiri Quran for ayah text) with font-display strategy — no Google Fonts CDN dependency, no FOUC flash on navigation; ˹ ˺ brackets and transliteration diacritics render correctly (glyph test)
-- [ ] **FND-04**: One icon registry built from the 20 canonical branded SVGs (inline, aria-hidden, single source — no per-page duplicate icon constants); gold lantern is a properly authored variant, not a regex recolor
+- [x] **FND-04**: One icon registry built from the 20 canonical branded SVGs (inline, aria-hidden, single source — no per-page duplicate icon constants); gold lantern is a properly authored variant, not a regex recolor
 - [x] **FND-05**: All progress state lives in one versioned localStorage blob with a migration chain that imports existing Gen-3 `awba_*` keys losslessly, exposed behind the same `AW.S.get/set` call shape
 - [x] **FND-06**: A user-preferences store (sound mute, reduced motion override) exists separately from progress state
 - [x] **FND-07**: Classic scripts + one `AW` global namespace (NO ES modules) so every page works opened directly from file:// — Josh's review workflow
@@ -106,7 +106,7 @@ Every v1 requirement maps to exactly one phase. Coverage: 42/42 (100%). See `.pl
 | FND-06 | Phase 2 | Complete |
 | FND-07 | Phase 2 | Complete |
 | ENG-07 | Phase 2 | Complete |
-| FND-04 | Phase 3 | Pending |
+| FND-04 | Phase 3 | Complete |
 | ENG-06 | Phase 3 | Pending |
 | MOT-01 | Phase 3 | Pending |
 | MOT-03 | Phase 3 | Pending |

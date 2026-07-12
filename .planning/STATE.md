@@ -4,13 +4,13 @@ milestone: v1.5
 milestone_name: milestone
 status: executing
 stopped_at: "Phase 3 executing: plan 03-01 complete (1/5), next 03-02 KIT"
-last_updated: "2026-07-12T14:49:40.297Z"
-last_activity: 2026-07-12 -- Phase 03 execution started
+last_updated: "2026-07-12T15:09:36.890Z"
+last_activity: 2026-07-12
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 11
-  completed_plans: 7
+  completed_plans: 8
   percent: 29
 ---
 
@@ -26,12 +26,12 @@ See: .planning/PROJECT.md (updated 2026-07-11)
 ## Current Position
 
 Phase: 03 (Components, Icon Kit & Motion Language) — EXECUTING
-Plan: 1 of 5
+Plan: 2 of 5
 Phase: 02 (State Layer & Engine-Contract Freeze) — NEXT: /gsd:discuss-phase 2 --auto
-Status: Executing Phase 03
-Last activity: 2026-07-12 -- Phase 03 execution started
+Status: Ready to execute
+Last activity: 2026-07-12
 
-Progress: [██████████] 100%
+Progress: [███████░░░] 73%
 
 ## Performance Metrics
 
@@ -58,6 +58,7 @@ Progress: [██████████] 100%
 | Phase 01 P03 | 10 | 2 tasks | 1 files |
 | Phase 02 P01 | 15min | 3 tasks | 4 files |
 | Phase 02 P02 | 7min | 2 tasks | 5 files |
+| Phase 03-components-icon-kit-motion-language P02 | ~18min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,8 @@ Recent decisions affecting current work:
 - [Phase 02-02]: checkBeats() returns immediately after an unknown-beat-type error, skipping further per-type checks for that beat — Beat shape is undefined by the contract once t is unknown; keeps broken-lesson.html error count exactly 3 with no cascading noise
 - [Phase 02-02]: tile.solution validated via array-membership subset check only, no bank-order requirement — Matches D-27 corrected reading (subset of bank, not length-equal); real content's distractor-bearing tiles pass cleanly
 - [Phase 02-02]: Default CLI file discovery for lessons/*.html and reviews/*.html tolerates missing directories via try/catch — Those directories do not exist until Phase 4; validator degrades to nothing-to-validate exit 0 instead of crashing
+- [Phase ?]: 03-02: lantern-gold is an authored, committed AW.KIT entry hand-recoloured against the dark .gold-bg night gradient (dark-field highlights lifted to --gold2 #FFD34D), never a runtime regex recolour (D-33)
+- [Phase ?]: 03-02: 20 scene icons + lantern-gold + 13 glyphs form ONE inline single-source registry (AW.KIT/AW.GLYPHS/AW.UNIT_ICON); per-page UIC/IC_* constants superseded (FND-04)
 
 ### Pending Todos
 
@@ -113,6 +116,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-12T14:49:40.287Z
+Last session: 2026-07-12T15:09:17.457Z
 Stopped at: Phase 3 executing: plan 03-01 complete (1/5), next 03-02 KIT
-Resume file: .planning/phases/03-components-icon-kit-motion-language/03-02-PLAN.md
+Resume file: None

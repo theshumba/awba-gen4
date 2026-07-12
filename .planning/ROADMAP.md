@@ -65,7 +65,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. With `prefers-reduced-motion` set (or the user override on), all animation quietens globally — a reviewer toggles the OS setting and confetti, bob/glow, and transitions all calm down.
 **Plans**: 5 plans
   - [x] 03-01-PLAN.md — CSS: 4 tokens + @layer components chrome + gummy press + @layer motion vocabulary + dual-trigger reduced-motion (MOT-01/03/04)
-  - [ ] 03-02-PLAN.md — Engine KIT: AW.KIT (20 scenes + authored lantern-gold) + AW.GLYPHS (13) + AW.UNIT_ICON (FND-04)
+  - [x] 03-02-PLAN.md — Engine KIT: AW.KIT (20 scenes + authored lantern-gold) + AW.GLYPHS (13) + AW.UNIT_ICON (FND-04)
   - [ ] 03-03-PLAN.md — Engine COMPONENTS: AW.icon/cite/wire/sheet(+sheetRef face-split/sheetTerm)/confetti/reducedMotion/animate + components.test.js (FND-04/ENG-06/MOT-04)
   - [ ] 03-04-PLAN.md — preview.html sections 9-12: icon grid + verbatim citation/gloss sheets + press inventory + motion & reduced-motion demos (D-43 living reference)
   - [ ] 03-05-PLAN.md — D-44 human visual gate (checkpoint, autonomous:false)
@@ -134,7 +134,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation — Tokens, Shell & Fonts | 4/4 | Complete | 2026-07-12 |
 | 2. State Layer & Engine-Contract Freeze | 2/2 | Complete   | 2026-07-12 |
-| 3. Components, Icon Kit & Motion | 1/5 | In Progress|  |
+| 3. Components, Icon Kit & Motion | 2/5 | In Progress|  |
 | 4. Lesson & Review Engine Port | 0/TBD | Not started | - |
 | 5. Learn Page & View Transitions | 0/TBD | Not started | - |
 | 6. Accessibility, RTL & Typography | 0/TBD | Not started | - |
