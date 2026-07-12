@@ -1,8 +1,8 @@
 ---
 phase: 2
 slug: state-layer-engine-contract-freeze
-status: draft
-nyquist_compliant: false
+status: approved
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-07-12
 ---
@@ -38,10 +38,11 @@ created: 2026-07-12
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| (filled by planner) | | | FND-05 | | corrupted-JSON/quota-throw tolerated, no data loss | unit | `node --test scripts/tests/` | ❌ W0 | ⬜ pending |
-| (filled by planner) | | | FND-06 | | prefs isolated from progress blob | unit | `node --test scripts/tests/` | ❌ W0 | ⬜ pending |
-| (filled by planner) | | | FND-07 | | no ES modules / no raw localStorage outside state section | grep gate | `! grep` assertions per plan | n/a | ⬜ pending |
-| (filled by planner) | | | ENG-07 | | vm sandbox executes untrusted-shaped data files with stubs only | self-test | `node scripts/validate-content.js --self-test` | ❌ W0 | ⬜ pending |
+| 02-01-01 | 01 | 1 | FND-05/06 | T-02-01 | RED scaffold: seeds legacy keys, pins lossless/corrupt-tolerant contract | unit (RED) | `node --test scripts/tests/` (expected non-zero) | ❌ W0 | ⬜ pending |
+| 02-01-02 | 01 | 1 | FND-05, FND-06 | T-02-01/02 | corrupted-JSON/quota-throw tolerated, no data loss; prefs isolated from progress blob | unit | `node --test scripts/tests/state-storage.test.js` | ❌ W0 | ⬜ pending |
+| 02-01-03 | 01 | 1 | FND-05, FND-07 | T-02-04 | helpers pure/DOM-free; no ES modules; localStorage only in engine STATE section | unit + grep gate | `node --test scripts/tests/` + `! grep -q` gates | ❌ W0 | ⬜ pending |
+| 02-02-01 | 02 | 2 | ENG-07 | T-02-06 | fixtures classic-script/no-storage/no-scripture; self-test RED pins error contract | fixture (RED) | `node --test scripts/tests/validate.test.js` (expected non-zero) | ❌ W0 | ⬜ pending |
+| 02-02-02 | 02 | 2 | ENG-07 | T-02-03/06/07 | vm sandbox with 3 stubs only; malformed file = reported error not crash; raw-string id walk | self-test | `node scripts/validate-content.js --self-test && node --test scripts/tests/validate.test.js` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -66,11 +67,11 @@ created: 2026-07-12
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 10s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references (Task 1 of each plan is the RED scaffold)
+- [x] No watch-mode flags
+- [x] Feedback latency < 10s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved 2026-07-12 (plan-checker: 0 blockers; checks 8a–8d pass against final plan tasks)

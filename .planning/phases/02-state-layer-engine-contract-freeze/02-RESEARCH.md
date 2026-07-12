@@ -578,19 +578,19 @@ Reviewer smoke check (SC3, D-30): double-click a fixture/dev page from Finder (`
 
 **If empty:** not empty — three low-risk assumptions above, none blocking.
 
-## Open Questions
+## Open Questions (RESOLVED — all three settled during planning, 2026-07-12)
 
-1. **`deriveNodeState` fixture scope for Phase 2.**
+1. **`deriveNodeState` fixture scope for Phase 2.** — RESOLVED: 02-01 Task 1 follows the recommendation exactly (3–4 hand-built flat-array fixtures in state-helpers.test.js; real map deferred to Phase 5).
    - What we know: D-18 ships it as a pure function with fixture tests now; real-map unlock order is verified Phase 5 (CNT-03).
    - What's unclear: how many synthetic fixtures to include now (e.g., all-locked, mid-progress, chest-available, all-done).
    - Recommendation: 3–4 hand-built flat-array fixtures covering locked/active/done + chest-available-vs-locked; do NOT import the real 24-node map (that's Phase 5). Enough to prove the branching logic.
 
-2. **Migration test harness form: `.test.js` vs HTML dev page.**
+2. **Migration test harness form: `.test.js` vs HTML dev page.** — RESOLVED: 02-01 uses headless node:test as primary proof + seeded-console recipe in the SUMMARY (per recommendation; no dev page shipped).
    - What we know: D-30 leaves this to Claude's discretion; both are proven viable.
    - What's unclear: whether the human gate benefits from a visual dev page.
    - Recommendation: primary proof = `scripts/state.test.js` (headless, CI-style, fast); ALSO record a copy-paste seeded-console recipe in the SUMMARY so a reviewer can reproduce losslessness in their own browser (satisfies the "reproducible by a reviewer" half of D-30 without shipping navigation). An HTML dev page is optional polish, not required.
 
-3. **Should the Gen-4 STATE section expose `AW` on `globalThis`/`window` for test ergonomics?**
+3. **Should the Gen-4 STATE section expose `AW` on `globalThis`/`window` for test ergonomics?** — RESOLVED: 02-01 Task 2 appends `globalThis.AW = AW` at the end of the STATE section (cited "per RESEARCH Open Question 3") while tests still use the concatenated-run pattern.
    - What we know: `const AW` works in-browser (shared script lexical scope) but is not a vm context property (Pitfall 3).
    - What's unclear: pure taste — concat-probe testing works without any engine change.
    - Recommendation: keep `const AW`/`window.AW` per existing Gen-3 style; use concatenation in tests. If the executor finds concat awkward, appending `globalThis.AW = AW;` at the end of the STATE section is a harmless one-liner that simplifies tests — either is fine.
