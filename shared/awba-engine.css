@@ -149,6 +149,15 @@
     --ease-spring:   linear(0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%, 0.849, 0.937 34.6%, 0.968, 0.991, 1.006, 1.013 44.6%, 1.011 50.8%, 1.003 61.3%, 0.999 71.3%, 1);
     --ease-gentle:   linear(0, 0.19 12%, 0.55 24%, 0.83 38%, 0.96 52%, 1.01 66%, 1);
 
+    /* -- Depth & overlay (Phase 3 / D-40) — the ONLY Phase-3 token additions (an addition to
+       the tokens layer, never a layer-order redeclare). They keep the gummy press + celebration
+       overlays literal-free: the press drop derives as calc(--press-rest - --press-active) = 3px,
+       so no third depth literal is ever authored in a component rule. */
+    --press-rest:    5px;                 /* gummy hard-shadow REST offset (Gen-3's 0 5px 0 depth) */
+    --press-active:  2px;                 /* gummy hard-shadow PRESSED offset (= --sp-2) */
+    --scrim:         rgba(30,40,80,.42);  /* bottom-sheet backdrop overlay (the 60/30/10 palette carries no dark tint) */
+    --overlay-hero:  rgba(37,54,206,.94); /* PERFECT overlay field — brand indigo (same hue as --sh-*) at .94 */
+
     /* -- Default accent = Unit 1 (blue) so a page with no data-unit attribute still themes fully.
        Each unit re-declares its FULL 7-slot scale below — there is NO shared cross-unit accent
        triplet for a screen to inherit, which is exactly what makes Gen-3's half-themed-page bug
@@ -302,6 +311,432 @@
   [dir="rtl"] { unicode-bidi: isolate; }
 }
 
-@layer components { /* reserved — Phase 3: .btn / .opt / .tf / .tile chrome + gummy physics (MOT-03) */ }
+@layer components {
+
+  /* ==========================================================================================
+     The shared chrome every screen paints from. Rule-authoring law (inherited from @layer base):
+     every colour / spacing / radius / shadow / type value is a var(--token) — no raw hex/px
+     except where a token genuinely does not exist (translucent overlay text, art-glow rgba).
+     Timing values reference ONLY the Phase-1 motion tokens (--dur-*/--ease-*) — never a raw
+     easing curve or spring literal from this layer onward (the a11y-safety law, gated in Phase 3).
+     ========================================================================================== */
+
+  /* -- Citation & term chips (ENG-06 / D-37) ------------------------------------------------
+     Inline accent surfaces that open a sheet. Vertical padding is the pre-approved 2px inline-chip
+     hairline (never 4px — that breaks line rhythm). The chip fills on hover; on press it shares
+     the app's press TIMING (--dur-2/--ease-press) at translateY(1px) — inline flow can't carry a
+     5px hard-shadow, so this is the documented lighter reconciliation, not a gap. */
+  .cite {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    padding: 2px var(--sp-2s) 2px var(--sp-1);
+    border-radius: var(--r-xs);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9em;
+    line-height: 1.5;
+    white-space: nowrap;
+    vertical-align: baseline;
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-line);
+    cursor: pointer;
+    transition: background var(--dur-3) var(--ease-standard),
+                border-color var(--dur-3) var(--ease-standard),
+                color var(--dur-3) var(--ease-standard),
+                transform var(--dur-2) var(--ease-press);
+  }
+  .term {
+    color: var(--ink);
+    cursor: pointer;
+    text-decoration: underline dotted var(--accent);
+    text-underline-offset: 3px;
+    transition: text-decoration-color var(--dur-3) var(--ease-standard),
+                transform var(--dur-2) var(--ease-press);
+  }
+  .cite:active,
+  .term:active { transform: translateY(1px); }        /* inline-light press — shares the press timing, not the depth */
+
+  .cite svg { width: 14px; height: 14px; flex-shrink: 0; } /* leading cite glyph at glyph-inline */
+
+  /* -- Bottom-sheet primitive (ENG-06 / D-35) ----------------------------------------------
+     ONE singleton scrim+sheet (AW.sheet), reused by every sheet in the app (Phase 5 too). The
+     sheet centres like the shell column on desktop (margin-inline:auto; max-width:480px). Motion
+     is asymmetric per the vocabulary: gentle settle IN, clean exit OUT (D-39). */
+  .scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: var(--scrim);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-4) var(--ease-standard);
+  }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+
+  .sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-inline: auto;
+    width: 100%;
+    max-width: 480px;
+    max-height: 82%;
+    overflow-y: auto;
+    padding: var(--sp-6) var(--sp-6) max(var(--sp-8), env(safe-area-inset-bottom));
+    background: var(--paper);
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    box-shadow: var(--sh-3);
+    transform: translateY(100%);
+    transition: transform var(--dur-4) var(--ease-in);   /* OUT: clean exit */
+  }
+  .scrim.open .sheet {
+    transform: translateY(0);
+    transition-timing-function: var(--ease-gentle);      /* IN: soft settle */
+  }
+  .grip {
+    width: 40px;
+    height: 4px;
+    margin: 0 auto var(--sp-4);
+    border-radius: var(--r-pill);
+    background: var(--line2);
+  }
+  .sheet-x {
+    position: absolute;
+    top: var(--sp-3);
+    right: var(--sp-3);
+    width: 44px;                 /* 44×44 touch-target minimum (inherited exception) */
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--r-round);
+    background: transparent;
+    color: var(--ink3);
+    font-size: var(--fs-h2);
+    line-height: 1;
+    cursor: pointer;
+    transition: background var(--dur-3) var(--ease-standard),
+                color var(--dur-3) var(--ease-standard);
+  }
+  html.sheet-lock { overflow: hidden; }  /* scroll-lock while a sheet is open (file:// + http identical) */
+
+  /* -- Citation-sheet content (ENG-06 / D-36) — the face split is the one real elevation over
+     Gen-3: a Qur'an ref (no grade) renders Arabic in .ayah / Amiri Quran; a hadith ref renders in
+     general Amiri and shows the grade pill. The pending pill is ALWAYS present, calm & neutral. */
+  .r-src {
+    text-align: center;
+    font-family: var(--font-disp);
+    font-weight: 600;
+    font-size: var(--fs-kicker);
+    letter-spacing: .08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin-bottom: var(--sp-4);
+  }
+  .r-ar {
+    direction: rtl;
+    text-align: right;
+    font-family: var(--font-ar);
+    font-size: var(--fs-ar-body);
+    line-height: 1.8;
+    letter-spacing: 0;
+    color: var(--accent-ink);
+    margin-bottom: var(--sp-4);
+  }
+  .r-ar.ayah {                    /* Qur'an face split — Amiri Quran, one step larger, roomier lh */
+    font-family: var(--font-quran);
+    font-size: var(--fs-ayah);
+    line-height: 1.9;
+  }
+  .r-mean {
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--ink);            /* carries the ˹ ˺ brackets via the Poppins→Inter fallback */
+    margin-bottom: var(--sp-3);
+  }
+  .r-ref {
+    font-size: var(--fs-kicker);
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--ink3);
+  }
+  /* Pending pill — CALM NEUTRAL, lowercase copy, never amber / red / --danger (mercy law). */
+  .r-pill {
+    display: inline-block;
+    margin-top: var(--sp-4);
+    padding: var(--sp-2) var(--sp-2s);
+    border-radius: var(--r-pill);
+    font-family: var(--font-disp);
+    font-weight: 600;
+    font-size: var(--fs-kicker);
+    letter-spacing: .04em;
+    line-height: 1;
+    color: var(--ink2);
+    border: 1px solid var(--line2);
+    background: transparent;
+  }
+  .r-pill.grade {                 /* hadith authenticity signal — green = affirm (faithful to Gen-3) */
+    color: var(--green-ink);
+    border-color: var(--green-line);
+  }
+
+  /* -- Term-gloss sheet (ENG-06 / D-36) — Arabic large · transliteration · word · definition · context. */
+  .g-ar {
+    direction: rtl;
+    text-align: center;
+    font-family: var(--font-ar);
+    font-size: var(--fs-ar-display);
+    line-height: 1.8;
+    letter-spacing: 0;
+    color: var(--accent-ink);
+    margin-bottom: var(--sp-1);
+  }
+  .g-tl {
+    text-align: center;
+    font-size: var(--fs-ui);
+    line-height: 1.45;
+    color: var(--ink3);
+    margin-bottom: var(--sp-4);
+  }
+  .g-wd {
+    font-family: var(--font-disp);
+    font-weight: 600;
+    font-size: var(--fs-h2);
+    line-height: 1.28;
+    color: var(--ink);
+    margin-bottom: var(--sp-2s);
+  }
+  .g-df {
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--ink);
+    margin-bottom: var(--sp-3);
+  }
+  .g-cx {
+    font-size: var(--fs-ui);
+    line-height: 1.55;
+    color: var(--ink2);
+  }
+
+  /* -- Tappable inventory — REST chrome (per element) --------------------------------------- */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: var(--sp-4);
+    border: none;
+    border-radius: var(--r-lg);
+    font-family: var(--font-disp);
+    font-weight: 700;
+    font-size: var(--fs-body);
+    letter-spacing: .02em;
+    text-align: center;
+    text-decoration: none;
+    color: var(--accent-on);
+    background: var(--accent);
+    cursor: pointer;
+  }
+  .btn:disabled,
+  .btn.disabled {                 /* v1 has few disabled states — the un-loseable promise keeps actions live */
+    opacity: .5;
+    box-shadow: none;
+    transform: none;
+    pointer-events: none;
+  }
+  .opt {
+    display: block;
+    width: 100%;
+    padding: var(--sp-3) var(--sp-4);
+    border: 2px solid var(--line2);
+    border-radius: var(--r-md);
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    text-align: left;
+    color: var(--ink);
+    background: var(--paper);
+    cursor: pointer;
+  }
+  .tf {
+    flex: 1;
+    padding: var(--sp-3);
+    border: 2px solid var(--line2);
+    border-radius: var(--r-md);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: var(--fs-body);
+    text-align: center;
+    color: var(--ink);
+    background: var(--paper);
+    cursor: pointer;
+  }
+  .tile {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--sp-2s) var(--sp-3);
+    border: 2px solid var(--line2);
+    border-radius: var(--r-sm);
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    color: var(--ink);
+    background: var(--paper);
+    cursor: pointer;
+  }
+  .tab {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2s) var(--sp-3);
+    border: none;
+    border-radius: var(--r-md);
+    font-family: var(--font-body);
+    font-size: var(--fs-kicker);
+    color: var(--ink2);
+    background: var(--paper);
+    cursor: pointer;
+  }
+  .hstat {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    padding: var(--sp-2) var(--sp-2s);
+    border: none;
+    border-radius: var(--r-pill);
+    font-family: var(--font-disp);
+    font-weight: 600;
+    font-size: var(--fs-ui);
+    color: var(--ink);
+    background: var(--card);
+    cursor: pointer;
+  }
+  .hstat svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .tab svg { width: 24px; height: 24px; }
+
+  /* -- Gummy press — ONE shared physics across the FULL tappable inventory (MOT-03 / D-40).
+     Rest lifts on a hard, non-blurred --accent-deep offset (the indigo-tinted 3D base of the whole
+     system) over a soft --sh-1 ambient. :active collapses the offset AND drops the surface by
+     exactly calc(--press-rest - --press-active) = 3px — the depth derives from the two tokens, no
+     third literal. Timing is the shared press signature (--dur-2 / --ease-press). */
+  .btn, .opt, .tf, .tile, .tab, .hstat {
+    box-shadow: 0 var(--press-rest) 0 var(--accent-deep), var(--sh-1);
+    transition: transform var(--dur-2) var(--ease-press),
+                box-shadow var(--dur-2) var(--ease-press);
+  }
+  .btn:active, .opt:active, .tf:active, .tile:active, .tab:active, .hstat:active {
+    transform: translateY(calc(var(--press-rest) - var(--press-active)));
+    box-shadow: 0 var(--press-active) 0 var(--accent-deep), var(--sh-1);
+  }
+
+  /* Sheet rows (Phase-5 course-switcher) — elevated-lite: a light press + a soft accent wash. */
+  .sheet-row {
+    transition: transform var(--dur-2) var(--ease-press),
+                background var(--dur-3) var(--ease-standard);
+  }
+  .sheet-row:active {
+    transform: translateY(1px);
+    background: var(--accent-soft);
+  }
+
+  /* -- Hover states — gated to fine pointers so a tap on touch never sticks a hover fill
+     (touch fires :hover on tap; this keeps the chip fill / brightness from latching). */
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { filter: brightness(1.03); }                          /* already 3D — no structural change */
+    .opt:hover, .tf:hover, .tile:hover { border-color: var(--accent-line); }
+    .cite:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
+    .term:hover { text-decoration-style: solid; }
+    .sheet-x:hover { color: var(--ink); background: var(--tint); }
+  }
+
+  /* -- Combo chip (RWD / D-41) — GOLD / noor register, NOT amber (mercy-coherence: amber is the
+     miss colour; a celebratory chip in amber would conflate with a miss). Pops in from the right
+     via the pop-in overshoot signature. Phase-4 logic toggles .show on a 2+ streak. */
+  .combo {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-1);
+    z-index: 7;
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--r-pill);
+    font-family: var(--font-disp);
+    font-weight: 700;
+    font-size: var(--fs-kicker);
+    letter-spacing: .04em;
+    line-height: 1;
+    color: var(--gold-deep);
+    background: color-mix(in srgb, var(--gold2) 22%, var(--paper));
+    border: 1px solid var(--gold);
+    transform: scale(0);
+    transform-origin: right center;
+    transition: transform var(--dur-3) var(--ease-press);
+  }
+  .combo.show { transform: scale(1); }
+  .combo svg { width: 14px; height: 14px; flex-shrink: 0; }           /* leading spark glyph, --gold-deep */
+
+  /* -- PERFECT overlay (RWD / D-41) — over the quiz stage, NEVER over scripture. Brand-indigo
+     field; heading at Poppins 700 (honours the Phase-1 800-quarantine) with a gold→flame gradient
+     text-clip; the WAAPI scale-pop (Phase-4) carries the celebratory weight the old 800 gave. */
+  .perfect {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2s);
+    padding: var(--sp-6);
+    text-align: center;
+    background: var(--overlay-hero);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-4) var(--ease-standard);
+  }
+  .perfect.show { opacity: 1; pointer-events: auto; }
+  .perfect h1 {
+    margin: 0;
+    font-family: var(--font-disp);
+    font-weight: 700;
+    font-size: var(--fs-display);
+    line-height: 1.05;
+    letter-spacing: .04em;
+    color: var(--gold2);                    /* fallback for the rare no-background-clip engine */
+    background: linear-gradient(90deg, var(--gold2), var(--flame2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .perfect p {
+    margin: 0;
+    font-size: var(--fs-ui);
+    line-height: 1.5;
+    color: rgba(255,255,255,.9);            /* on-overlay body — no token exists for translucent white */
+  }
+
+  /* -- Confetti (RWD / D-41) — a lazily-created fixed overlay; AW.confetti spawns .cf divs with
+     colour/left/animation-duration set inline (brand palette, never rainbow) and self-removes each.
+     The fall keyframe lives in @layer motion; the JS primitive holds its own reduced-motion guard. */
+  .confetti {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .cf {
+    position: absolute;
+    top: -20px;
+    width: 9px;
+    height: 14px;
+    border-radius: 2px;
+    animation-name: fall;
+    animation-timing-function: var(--ease-in);
+    animation-fill-mode: forwards;
+  }
+}
 @layer screens   { /* reserved — Phase 2+: per-screen rules */ }
 @layer motion    { /* reserved — Phase 3: motion + prefers-reduced-motion guards (MOT-01 / MOT-04) */ }
