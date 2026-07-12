@@ -17,43 +17,50 @@
 
 @layer tokens {
 
-  /* -- Self-hosted font faces (FND-03 / D-09) -----------------------------------------------
+  /* -- Self-hosted font faces (Athar · §2.2, scripture-safe subset set) ----------------------
      Zero CDN. `src` is CSS-relative: 'fonts/...' resolves from THIS file's own shared/ folder to
      shared/fonts/..., which is file://-safe. NEVER a leading-slash '/shared/fonts/...' — that is
      root-absolute under RFC 3986, resolves to the filesystem root under file://, and 404s every
      font in the double-click review this project mandates.
-     Wave-1 verified: the subset Poppins faces do NOT carry the Clear-Quran corner brackets
-     (U+02F9 / U+02FA) or the h-class transliteration diacritics (U+1E25 ...); Inter carries full
-     coverage. So --font-disp lists Inter immediately after Poppins (see role vars below) — any
-     such glyph that falls through Poppins renders in Inter, never a random system face. Do not
-     attempt to re-add those glyphs to the Poppins subset. */
-  @font-face { font-family: 'Poppins'; font-weight: 500; font-style: normal; font-display: swap; src: url('fonts/poppins-500.woff2') format('woff2'); }
-  @font-face { font-family: 'Poppins'; font-weight: 600; font-style: normal; font-display: swap; src: url('fonts/poppins-600.woff2') format('woff2'); }
-  @font-face { font-family: 'Poppins'; font-weight: 700; font-style: normal; font-display: swap; src: url('fonts/poppins-700.woff2') format('woff2'); }
-  @font-face { font-family: 'Poppins'; font-weight: 800; font-style: normal; font-display: swap; src: url('fonts/poppins-800.woff2') format('woff2'); }
-  @font-face { font-family: 'Inter'; font-weight: 400; font-style: normal; font-display: swap; src: url('fonts/inter-400.woff2') format('woff2'); }
-  @font-face { font-family: 'Inter'; font-weight: 500; font-style: normal; font-display: swap; src: url('fonts/inter-500.woff2') format('woff2'); }
-  @font-face { font-family: 'Inter'; font-weight: 600; font-style: normal; font-display: swap; src: url('fonts/inter-600.woff2') format('woff2'); }
-  @font-face { font-family: 'Inter'; font-weight: 700; font-style: normal; font-display: swap; src: url('fonts/inter-700.woff2') format('woff2'); }
-  @font-face { font-family: 'Amiri'; font-weight: 400; font-style: normal; font-display: swap; src: url('fonts/amiri-400.woff2') format('woff2'); }
-  @font-face { font-family: 'Amiri'; font-weight: 700; font-style: normal; font-display: swap; src: url('fonts/amiri-700.woff2') format('woff2'); }
-  @font-face { font-family: 'Amiri Quran'; font-weight: 400; font-style: normal; font-display: swap; src: url('fonts/amiri-quran-400.woff2') format('woff2'); }
+     Readex Pro is the sole workhorse (both scripts). Amiri / Amiri Quran carry scripture (law 3).
+     Marcellus, Aref Ruqaa, Rakkas, Courier Prime are the rationed display / marginalia faces (law 5).
+     Inter 400 is retained SOLELY as the silent U+02F9/U+02FA corner-bracket glyph-fallback — the two
+     codepoints Readex Pro lacks, reached only inside Clear-Quran translation prose set in the
+     workhorse; it is never a design voice and lives in no other stack. */
+  @font-face{ font-family:'Readex Pro'; font-weight:300; font-display:swap; src:url('fonts/readex-pro-300.woff2') format('woff2'); }
+  @font-face{ font-family:'Readex Pro'; font-weight:400; font-display:swap; src:url('fonts/readex-pro-400.woff2') format('woff2'); }
+  @font-face{ font-family:'Readex Pro'; font-weight:500; font-display:swap; src:url('fonts/readex-pro-500.woff2') format('woff2'); }
+  @font-face{ font-family:'Readex Pro'; font-weight:600; font-display:swap; src:url('fonts/readex-pro-600.woff2') format('woff2'); }
+  @font-face{ font-family:'Readex Pro'; font-weight:700; font-display:swap; src:url('fonts/readex-pro-700.woff2') format('woff2'); }
+  @font-face{ font-family:'Amiri';      font-weight:400; font-display:swap; src:url('fonts/amiri-400.woff2') format('woff2'); }
+  @font-face{ font-family:'Amiri';      font-weight:700; font-display:swap; src:url('fonts/amiri-700.woff2') format('woff2'); }
+  @font-face{ font-family:'Amiri Quran';font-weight:400; font-display:swap; src:url('fonts/amiri-quran-400.woff2') format('woff2'); }
+  @font-face{ font-family:'Marcellus';  font-weight:400; font-display:swap; src:url('fonts/marcellus-400.woff2') format('woff2'); }
+  @font-face{ font-family:'Aref Ruqaa'; font-weight:400; font-display:swap; src:url('fonts/aref-ruqaa-400.woff2') format('woff2'); }
+  @font-face{ font-family:'Aref Ruqaa'; font-weight:700; font-display:swap; src:url('fonts/aref-ruqaa-700.woff2') format('woff2'); }
+  @font-face{ font-family:'Rakkas';     font-weight:400; font-display:swap; src:url('fonts/rakkas-400.woff2') format('woff2'); }
+  @font-face{ font-family:'Courier Prime'; font-weight:400; font-display:swap; src:url('fonts/courier-prime-400.woff2') format('woff2'); }
+  @font-face{ font-family:'Inter';      font-weight:400; font-display:swap; src:url('fonts/inter-400.woff2') format('woff2'); } /* silent corner-bracket glyph-fallback ONLY */
 
   :root {
 
-    /* -- Font role variables (D-11) ---------------------------------------------------------
-       Metric-tuned fallback stacks: each web font is trailed by system faces chosen for a close
-       x-height / advance so the font-display:swap first paint is gentle — not Gen-3's bare
-       `system-ui, ...` jolt. --font-disp keeps Inter right after Poppins for the glyph fallback
-       noted at the faces above. */
-    --font-disp:  'Poppins', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    --font-body:  'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    --font-ar:    'Amiri', 'Noto Naskh Arabic', 'Geeza Pro', 'Times New Roman', serif;
-    --font-quran: 'Amiri Quran', 'Amiri', 'Noto Naskh Arabic', 'Geeza Pro', serif;
+    /* -- Font role stacks (§2.2 · law 4/law 5) ----------------------------------------------
+       Readex Pro is the one workhorse in both scripts. The fallback slot in --font-work is the
+       silent glyph-fallback for the two corner-bracket codepoints Readex Pro lacks (reached only
+       inside Clear-Quran translation prose) — it is never a design voice and appears in no other
+       stack. Scripture is Amiri / Amiri Quran only; the display faces are rationed by size (§2.2). */
+    --font-work:     'Readex Pro', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-quran:    'Amiri Quran', 'Amiri', 'Noto Naskh Arabic', 'Geeza Pro', serif;   /* .ayah — verbatim ayat ONLY */
+    --font-scrip:    'Amiri', 'Noto Naskh Arabic', 'Geeza Pro', serif;                  /* hadith + du'a */
+    --font-display:  'Marcellus', Georgia, 'Times New Roman', serif;                    /* Orbit/Sky English display ≥28px */
+    --font-term:     'Aref Ruqaa', 'Amiri', serif;                                      /* the 15 chapter key-terms ≥40px, in Farag squares */
+    --font-festival: 'Rakkas', 'Marcellus', serif;                                      /* Festival signage ≥28px; NEVER scripture */
+    --font-marg:     'Courier Prime', ui-monospace, 'SFMono-Regular', Menlo, monospace; /* marginalia ONLY: dates, counters, footnotes */
 
-    /* -- Spacing scale — multiples of 4 (UI-SPEC Spacing). --sp-2 is the 2px hairline exception;
+    /* -- Spacing scale — the Phase-1 4px scale, retained verbatim (D-A1). --sp-2 (2px) is the
+       hairline exception, now also doing duty as the jadwal margin-rule width + card keyline;
        env(safe-area-inset-*) and the 44px touch-target minimum sit OUTSIDE this scale. */
-    --sp-2:   2px;   /* hairline — gummy hard-shadow base unit, 2px borders */
+    --sp-2:   2px;   /* hairline — 2px borders, jadwal rule width, keyline */
     --sp-1:   4px;   /* xs  — icon gaps, chip inline padding, inline stat gaps */
     --sp-2s:  8px;   /* sm  — compact stacking (option gaps, tile gaps, HUD gaps) */
     --sp-3:  12px;   /* md- — card inner padding, marker padding, list rhythm */
@@ -64,136 +71,102 @@
     --sp-12: 48px;   /* 2xl — major section breaks, hero top/bottom */
     --sp-16: 64px;   /* 3xl — page-level spacing, desktop column gutters */
 
-    /* -- Type scale — fluid rem + clamp() where it matters; body fixed and readable at 320px
-       without overflow (UI-SPEC Typography). Line-heights are noted per role for Phase 3. */
-    --fs-hero:    clamp(3.5rem, 3rem + 2.5vw, 5.125rem);      /* 56 -> 82px · Poppins 800 · lh 1.0  — reward hero numeral only */
-    --fs-display: clamp(2rem, 1.7rem + 1.5vw, 2.375rem);      /* 32 -> 38px · Poppins 700 · lh 1.05 — verdict headline, Noor count-up */
-    --fs-h1:      clamp(1.375rem, 1.25rem + 0.6vw, 1.625rem); /* 22 -> 26px · Poppins 600 · lh 1.16 — screen / page titles */
-    --fs-h2:      clamp(1.125rem, 1.05rem + 0.4vw, 1.25rem);  /* 18 -> 20px · Poppins 600 · lh 1.28 — section titles, quiz question */
-    --fs-body:    1rem;                                        /* 16px      · Inter 400     · lh 1.6  — all reading prose */
-    --fs-ui:      0.875rem;                                    /* 14px      · Inter 400/600 · lh 1.45 — controls, meta, captions */
-    --fs-kicker:  0.75rem;                                     /* 12px      · Poppins 600   · lh 1.2  — uppercase eyebrows (ls .13em), pills, source lines */
+    /* -- Type scale — the Athar type roles (§2.2). Fluid clamp where warranted; law-5 display
+       floors baked into the clamp minimums (Marcellus ≥28px, Aref Ruqaa ≥40px, Rakkas ≥28px).
+       The ayah floor 24px = ≥1.5× the 16px translation beneath it (scripture law). */
+    --fs-body:     1rem;                                       /* 16px   · Readex 400     · lh 1.6  — all reading prose */
+    --fs-ar-ui:    1.1rem;                                     /* 17.6px · Readex 400     · lh 1.8  — Arabic UI strings (law 4), ls 0 */
+    --fs-ui:       0.875rem;                                   /* 14px   · Readex 400/500 · lh 1.45 — controls, captions, meta */
+    --fs-h2:       clamp(1.125rem, 1.05rem + 0.4vw, 1.25rem);  /* 18→20  · Readex 500/600 · lh 1.3  — section title, quiz question */
+    --fs-h1:       clamp(1.375rem, 1.25rem + 0.6vw, 1.625rem); /* 22→26  · Readex 600     · lh 1.18 — screen title (Page) */
+    --fs-display:  clamp(28px, 1.6rem + 1.6vw, 46px);          /* 28→46  · Marcellus 400  · lh 1.08 — Orbit/Sky headline, stat numerals */
+    --fs-term:     clamp(40px, 2rem + 2vw, 48px);              /* 40→48  · Aref Ruqaa      · lh 1.0  — 15 chapter key-terms, Farag square */
+    --fs-festival: clamp(28px, 2rem + 1vw, 34px);              /* 28→34  · Rakkas 400      · lh 1.2  — plates/posters only */
+    --fs-marg:     0.75rem;                                    /* 12px   · Courier Prime   · lh 1.4  — dates, "18/65", footnotes */
+    --fs-ayah:     clamp(24px, 22.4px + 0.4vw, 27px);          /* 24→27  · Amiri Quran 400 · lh 1.9  — verbatim ayat, strongest ink */
+    --fs-scrip:    23px;                                       /* ≈1.44× body · Amiri 400/700 · lh 1.85 — hadith / du'a */
 
-    /* Arabic sizes — the Latin roles re-expressed under the >=1.4x Latin law (D-09), not free steps. */
-    --fs-ar-body:    1.4rem;                                /* 22.4px — general Arabic (hadith, du'a, terms) · lh >=1.8 */
-    --fs-ayah:       clamp(1.5rem, 1.4rem + 0.5vw, 1.6rem); /* 24 -> 25.6px — verbatim Qur'an, one step above general · lh 1.9 */
-    --fs-ar-display: 2rem;                                  /* 32px — sheet Arabic display (Arabic counterpart of --fs-display) */
+    /* -- Colour — the 17 Athar tokens, register-grouped (§2.1). Grouped by register so a daily
+       screen pulls ≤6 (law 7). Verbatim contract hex — the LOCKED Athar palette. */
+    /* CORE (Orbit + shared) */
+    --kiswah:    #131013;   /* Kiswah Black — Orbit ground; the ink on cream */
+    --cream:     #F3EDE2;   /* Haram Cream — Page/Festival ground; the ink on dark */
+    --crimson:   #A32C21;   /* Mihrab Crimson — Page rubrication / jadwal rules / Page accent (≤10%) */
+    --ember:     #E8502A;   /* Farag Ember — thermal in-progress; TEXT only on dark grounds */
+    --gold:      #D9A441;   /* Hajar Gold — earned thread, seals, thermal mastered; dark-ground accent + focus ring */
+    --navy:      #1B2436;   /* Layl Navy — deep structural panel; un-inked Ring rows base */
+    /* PAGE */
+    --madder:    #8F4B58;   /* Madder Wash — secondary Page ink: metadata, doodles-at-rest, marginalia tint */
+    --nightfall: #201418;   /* Nightfall — the interstitial ground ONLY (a moment, not a dark mode) */
+    /* SKY */
+    --lastthird: #251D46;   /* Last Third — night canvas ground */
+    --moonmilk:  #F4F0F7;   /* Moonmilk — night text */
+    --apricot:   #F0A583;   /* Horizon Apricot — dawn/horizon warmth; the --dawn degree */
+    --powder:    #A9BFEE;   /* Powder Veil — thermal not-yet (cool end) */
+    --rose:      #E7A5B4;   /* Rose Ember — gentle retry FRAME only; never red; never load-bearing text */
+    /* FESTIVAL */
+    --harissa:   #C13A20;   /* Harissa Tomato — Festival primary folk red */
+    --olive:     #6B682A;   /* Za'atar Olive — Festival ink / secondary; the sound-verified grade ink (D-A9) */
+    --mustard:   #E3A63A;   /* Mustard — Festival fill; NEVER carries text */
+    --pink:      #EFB5AC;   /* Souk Pink — Festival fill; NEVER carries text */
 
-    /* -- Color — 60 / 30 / 10 discipline (UI-SPEC Color). The 10% accent is per-unit (below). */
-    /* Dominant 60% */
-    --bg:    #EEF2FB;   /* cream field — the calm surface everything floats on */
-    /* Secondary 30% */
-    --card:  #F6F9FF;   /* cards, panels, HUD */
-    --paper: #FFFFFF;   /* sheets, model boxes, the mobile shell field */
-    --tint:  #E7EEFF;   /* tinted chrome surfaces */
-    /* Ink hierarchy */
-    --ink:   #232A3D;
-    --ink2:  #59607A;
-    --ink3:  #98A0B8;
-    /* Lines */
-    --line:  #DEE5F3;
-    --line2: #C9D3EA;
-    /* Semantic — mercy (amber) · the ONLY learner-error color, never red */
-    --amber:      #C68A2E;
-    --amber-bg:   #FBEFD6;
-    --amber-ink:  #7A5111;
-    --amber-line: #EBD4A6;
-    /* Semantic — affirm (green) */
-    --green:      #1F9D6B;
-    --green-bg:   #E7F6EF;
-    --green-ink:  #15774F;
-    --green-line: #A6E0C6;
-    /* Semantic — streak (flame) */
-    --flame:  #F0730B;
-    --flame2: #FFB03A;
-    /* Semantic — noor / legendary (gold) */
-    --gold:      #E8A400;
-    --gold2:     #FFD34D;
-    --gold-deep: #B47F00;
-    /* Destructive / safety — RESERVED for safety callouts ONLY; never learner error, never
-       destructive-of-progress (there is none in v1). */
-    --danger:      #8A2E28;
-    --danger-bg:   #FBEDEC;
-    --danger-line: #EFC9C6;
+    /* -- Ink hierarchy = opacity ramps of the two ground inks (§2.1) — NOT new colours (keeps the
+       ≤6-token budget honest; a screen using --ink-62 is still "one colour"). */
+    /* on CREAM grounds — ink = kiswah */
+    --ink:     var(--kiswah);
+    --ink-85:  rgba(19,16,19,.85);   /* strong body */
+    --ink-62:  rgba(19,16,19,.62);   /* secondary / captions */
+    --ink-40:  rgba(19,16,19,.40);   /* muted / disabled ink, quiet icons */
+    --rule:    rgba(19,16,19,.12);   /* jadwal hairline, card keyline, dividers on cream */
+    /* on DARK grounds — ink = cream */
+    --paper-85: rgba(243,237,226,.85);
+    --paper-62: rgba(243,237,226,.62);
+    --paper-45: rgba(243,237,226,.45);
+    --edge:     rgba(243,237,226,.14);  /* light-edge hairline / separation on dark (never a drop shadow) */
 
-    /* -- Radii — soft, large, warm (UI-SPEC Radii) */
-    --r-pill:  999px;
-    --r-xs:    8px;
-    --r-sm:    12px;
-    --r-md:    14px;
-    --r-lg:    16px;
-    --r-xl:    24px;
-    --r-2xl:   28px;
-    --r-round: 50%;
+    /* -- Radii — the Athar manuscript print scale (§2.4 / D-A2). Shallow, crisp corners; circles
+       reserved for the tawaf-dab vocabulary; --r-pill rationed to the thermal chip + marginalia
+       capsule only, never a card. */
+    --r-square: 0;      /* Farag squares, plate frames, jadwal cells — hard manuscript corners */
+    --r-1: 3px;         /* input fields, chips, small controls — a barely-eased edge */
+    --r-2: 6px;         /* tiles, options, cards — a tipped-in leaf */
+    --r-3: 10px;        /* buttons, primary panels */
+    --r-4: 14px;        /* sheet top corners, large panels (paper laid down — the "settle" object) */
+    --r-round: 50%;     /* thermal dabs, rosette seal, Ring head-dot, node */
+    --r-pill: 999px;    /* RATIONED: thermal state chip + marginalia counter capsule only */
 
-    /* -- Shadows — always indigo-tinted rgba(37,54,206,a); never grey/black (UI-SPEC Shadows) */
-    --sh-1:     0 1px 3px rgba(37,54,206,.10);
-    --sh-2:     0 4px 16px rgba(37,54,206,.10);
-    --sh-3:     0 12px 40px rgba(37,54,206,.14);
-    --sh-4:     0 26px 70px rgba(37,54,206,.20);
-    --sh-inset: 0 2px 0 rgba(255,255,255,.7) inset;
+    /* -- Depth — ink-based on cream, light-edge on dark (§2.5 / D-A3); never a coloured glow.
+       On cream, objects cast a faint warm-ink shadow and regions separate with a ruled keyline;
+       on dark a drop shadow is invisible, so depth is a light edge + tint separation. */
+    /* CREAM grounds — warm-ink drop shadows (tight, low-opacity: paper, not float) + keyline */
+    --sh-1: 0 1px 2px rgba(19,16,19,.06);
+    --sh-2: 0 6px 18px rgba(19,16,19,.10);
+    --sh-3: 0 18px 48px rgba(19,16,19,.16);        /* sheet */
+    --keyline: 0 0 0 1px var(--rule);              /* manuscript separation — the primary depth cue on cream */
+    /* DARK grounds — light edge, NEVER a drop shadow */
+    --edge-top:  inset 0 1px 0 rgba(243,237,226,.10); /* light catching the top edge */
+    --edge-line: 0 0 0 1px var(--edge);               /* hairline separation on dark */
 
-    /* -- Motion — durations + easings declared now; the motion LAYER lands Phase 3 (D-08).
-       The two spring curves are copied verbatim from UI-SPEC — never hand-edit these datasets. */
-    --dur-1:   80ms;    /* instant feedback */
-    --dur-2:   120ms;   /* press / tap collapse */
-    --dur-3:   200ms;   /* hover, small state change */
-    --dur-4:   280ms;   /* sheet / scrim in-out */
-    --dur-5:   350ms;   /* accordion, node pop-in */
-    --dur-6:   600ms;   /* reward reveal step */
-    --dur-amb: 4800ms;  /* ambient companion bob / glow loop */
-    --ease-standard: cubic-bezier(.2,.8,.2,1);
-    --ease-out:      cubic-bezier(.16,1,.3,1);
-    --ease-in:       cubic-bezier(.5,0,.75,0);
-    --ease-press:    cubic-bezier(.2,1.4,.5,1);
-    --ease-spring:   linear(0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%, 0.849, 0.937 34.6%, 0.968, 0.991, 1.006, 1.013 44.6%, 1.011 50.8%, 1.003 61.3%, 0.999 71.3%, 1);
-    --ease-gentle:   linear(0, 0.19 12%, 0.55 24%, 0.83 38%, 0.96 52%, 1.01 66%, 1);
+    /* -- Grain — one tile over every ground (§2.6 / law 6). CSS-relative path, NEVER a leading
+       slash. The per-ground --go opacity knob is set on each register scope in @layer base. */
+    --grain: url('img/grain.png');
 
-    /* -- Depth & overlay (Phase 3 / D-40) — the ONLY Phase-3 token additions (an addition to
-       the tokens layer, never a layer-order redeclare). They keep the gummy press + celebration
-       overlays literal-free: the press drop derives as calc(--press-rest - --press-active) = 3px,
-       so no third depth literal is ever authored in a component rule. */
-    --press-rest:    5px;                 /* gummy hard-shadow REST offset (Gen-3's 0 5px 0 depth) */
-    --press-active:  2px;                 /* gummy hard-shadow PRESSED offset (= --sp-2) */
-    --scrim:         rgba(30,40,80,.42);  /* bottom-sheet backdrop overlay (the 60/30/10 palette carries no dark tint) */
-    --overlay-hero:  rgba(37,54,206,.94); /* PERFECT overlay field — brand indigo (same hue as --sh-*) at .94 */
-
-    /* -- Default accent = Unit 1 (blue) so a page with no data-unit attribute still themes fully.
-       Each unit re-declares its FULL 7-slot scale below — there is NO shared cross-unit accent
-       triplet for a screen to inherit, which is exactly what makes Gen-3's half-themed-page bug
-       structurally impossible (FND-02 / D-05 / D-06). */
-    --accent:        #2E6BF5;
-    --accent-deep:   #2135B8;
-    --accent-bright: #4E82F7;
-    --accent-soft:   #E7EEFF;
-    --accent-line:   #CBD9F7;
-    --accent-ink:    #23348C;
-    --accent-on:     #FFFFFF;
-  }
-
-  /* -- Per-unit accent scales (FND-02 / D-06) — WCAG-checked, full 7-slot recolor per unit.
-     Swap the whole 10% accent by setting data-unit on <html>. Slots: --accent (identity hue +
-     button fill), --accent-deep (gummy 3D offset + dark text on light), --accent-bright (glow /
-     gradient highlight, non-text), --accent-soft (pale tint surface), --accent-line (hairline on
-     soft/paper), --accent-ink (text ON --accent-soft), --accent-on (text/icon ON an --accent fill).
-     Baked-in contrast corrections vs Gen-3: u3 --accent deepened to #0A7575 (a lighter teal fails
-     the ring/button bar) and u4 --accent-on = #241A00 — a warm near-black, the ONLY non-white
-     on-fill — both to clear WCAG AA at the real 16px/700 button-label size. */
-  [data-unit="u1"] { /* blue */
-    --accent: #2E6BF5; --accent-deep: #2135B8; --accent-bright: #4E82F7;
-    --accent-soft: #E7EEFF; --accent-line: #CBD9F7; --accent-ink: #23348C; --accent-on: #FFFFFF;
-  }
-  [data-unit="u2"] { /* purple */
-    --accent: #7C5CE0; --accent-deep: #5636B0; --accent-bright: #9B80EC;
-    --accent-soft: #F0EBFC; --accent-line: #D9CCF4; --accent-ink: #543B9E; --accent-on: #FFFFFF;
-  }
-  [data-unit="u3"] { /* teal */
-    --accent: #0A7575; --accent-deep: #075C5C; --accent-bright: #14B8B8;
-    --accent-soft: #E1F4F4; --accent-line: #ABE1E1; --accent-ink: #0A6060; --accent-on: #FFFFFF;
-  }
-  [data-unit="u4"] { /* gold */
-    --accent: #B47F00; --accent-deep: #8A6000; --accent-bright: #FFD34D;
-    --accent-soft: #FDF3DA; --accent-line: #F0DCA6; --accent-ink: #7A5300; --accent-on: #241A00;
+    /* -- Motion — one easing family for EVERYTHING (§2.7 / law 9); the per-register verbs are
+       recipes on top of it. UI durations ≤300ms; ambient durations 4–6s (loops are STOPPED under
+       reduced motion, never collapsed). MOT-01 = the easing family + UI durations; MOT-04 = the
+       separated ambient set + the scripture-only glow rule (established in @layer base). */
+    --ease: cubic-bezier(0.23,1,0.32,1);   /* THE family — no other curve exists in the system */
+    /* UI durations — all ≤300ms */
+    --dur-press:  140ms;   /* press feedback (any register) */
+    --dur-fade:   180ms;   /* micro fade / hover / colour shift */
+    --dur-stamp:  150ms;   /* Festival stamp */
+    --dur-draw:   240ms;   /* Orbit ink-stroke reveal (UI-scale) */
+    --dur-settle: 260ms;   /* Page settle */
+    --dur-sheet:  280ms;   /* sheet in/out (a large Page settle) */
+    --dur-drift:  300ms;   /* Circle single-dab settle (UI-scale) */
+    /* Ambient durations — 4–6s; never collapsed under reduced motion (loops are stopped instead) */
+    --dur-amb:       5200ms;  /* Sky breathe, halo, gold-thread ambient */
+    --dur-amb-drift: 6000ms;  /* Circle crowd-drift ambient */
   }
 }
 
