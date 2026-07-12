@@ -270,7 +270,18 @@ AW.prefs = (function () {
   var mem = null;
 
   function defaultPrefs() {
-    return { schemaVersion: CURRENT, soundMuted: false, motion: 'system' };
+    /* prayerTimes + skyMode seed the prayer-clock Sky (§7.2 / D-A13) for fresh installs. CURRENT is
+       deliberately NOT bumped: AW.prefs.get(k, d) returns d when a key is absent, so an existing v1
+       awba_prefs blob (soundMuted/motion only, no Sky fields) still loads untouched and every Sky
+       read falls back to its default. skyDefaultTimes() returns a fresh object (never a shared
+       singleton) — the single source of truth shared with the boot read's fallback. */
+    return {
+      schemaVersion: CURRENT,
+      soundMuted: false,
+      motion: 'system',
+      prayerTimes: skyDefaultTimes(),
+      skyMode: 'manual',
+    };
   }
 
   function persist(p) {
@@ -444,6 +455,44 @@ if (typeof document !== 'undefined') {
   }
   if (AW.prefs.get('soundMuted', false)) {
     document.documentElement.setAttribute('data-sound', 'muted');
+  }
+
+  /* SKY (§7.2) — paint the manual prayer-clock temperature as the §3.2 [data-sky] tint OVER the
+     Kiswah Orbit ground (law 1: a tint, never a second ground). Manual times are the v1 floor —
+     no device-location API, no network, no timers ever fire (T-03-10). skyTemp/skyDawn/
+     skyDefaultTimes are hoisted declarations (in the SKY block below), so this parse-time DOM
+     touch can call them even though they read later in the file. dataset.sky is stamped on the
+     canonical <html> carrier AND mirrored onto the home shell (a .reg-orbit) when it exists, so
+     the §3.2 painter (.reg-orbit[data-sky]::after) fires. Re-evaluated on tab-return / next open
+     via events — never a timer. */
+  var applySky = function () {
+    var mode = AW.prefs.get('skyMode', 'manual');
+    var times = AW.prefs.get('prayerTimes', skyDefaultTimes());
+    var temp = skyTemp(new Date(), times, mode);
+    document.documentElement.dataset.sky = temp;
+    var home = document.querySelector('.reg-orbit');
+    if (home) home.dataset.sky = temp;
+  };
+  applySky();
+
+  /* --dawn (§7.3) — the subordinate horizon-warmth degree, scaled by course progress and capped by
+     skyDawn so it stays ambient and can never be mistaken for the Ring (the Ring is the metric).
+     Boot proxy: completed nodes over the course shape (15 lessons + 4 reviews) mapped onto the
+     65-atom axis; Phase 5 wires the exact atomsDone into the Ring caller. Set on <html> so
+     .reg-orbit::before inherits var(--dawn). */
+  try {
+    var _st = AW.state();
+    var _nodes = (_st && _st.stars) ? Object.keys(_st.stars).length : 0;
+    var ATOMS = 65, TOTAL_NODES = 19;
+    var _atoms = Math.min(ATOMS, Math.round((_nodes / TOTAL_NODES) * ATOMS));
+    document.documentElement.style.setProperty('--dawn', String(skyDawn(_atoms)));
+  } catch (e) {}
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') applySky();
+  });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applySky);
   }
 }
 
@@ -1195,6 +1244,72 @@ AW.ringSVG = function (cfg) {
     '" data-seed="' + seed + '" data-atoms="' + atomsDone + '" data-circuits="' + circuitsDone +
     '"><g class="ring-dabs">' + parts.join('') + '</g>' + headSVG + '</svg>';
 };
+
+/* ============================================================
+   SKY  ·  MOT-01 / MOT-04 — the prayer-clock temperature + the --dawn progress degree (§7)
+   ------------------------------------------------------------
+   The black home world's ambient Sky: a manual-times prayer clock (the v1 floor — no device-
+   location API, no network, ever) that maps the LOCAL clock to one of five canvas temperatures,
+   painted as the §3.2 [data-sky] tint OVER the Kiswah Orbit ground (law 1 — a tint, never a
+   second ground). The temperature is TRUTHFUL ambience: a static tint is not motion, so it stays
+   under reduced motion (§7.4); only the .sky-breathe pulse is gated off (plan 09 owns that
+   gating). The separate --dawn degree is a subordinate horizon warmth that grows with progress
+   but is never the metric (the Ring is the metric).
+
+   These are hoisted `function` declarations so the parse-time boot-stamp block ABOVE (the one
+   guarded DOM touch) can call them, and so defaultPrefs can seed the same default schedule — with
+   NO awba_prefs schema bump, so existing v1 blobs are never reset. AW.skyTemp / AW.skyDawn expose
+   the pure primitives for the headless suite.
+   ============================================================ */
+
+/* skyDefaultTimes() — the sensible manual DEFAULT schedule (§7.2 / D-A13). A fresh object each call
+   (never a shared mutable singleton). The single source of truth for both defaultPrefs (fresh
+   installs) and the boot read's fallback (existing v1 blobs that predate the prayerTimes field). */
+function skyDefaultTimes() {
+  return { fajr: '05:00', dhuhr: '13:00', asr: '16:30', maghrib: '19:30', isha: '21:00' };
+}
+
+/* skyMinutes("HH:MM") → local minutes-of-day. Pure string→number; no Date, no UTC serialization. */
+function skyMinutes(hhmm) {
+  var p = String(hhmm).split(':');
+  return (Number(p[0]) || 0) * 60 + (Number(p[1]) || 0);
+}
+
+/* skyTemp(now, times, mode) — the PURE now→temperature function (§7.1/§7.2). Given a Date-like
+   `now` (only getHours()/getMinutes() are read — LOCAL time, reusing the D-16 local discipline,
+   NEVER a UTC/ISO serialization), the manual `times` table, and `mode`:
+     · mode "off"  ⇒ always "day" (the opt-out, §7.2)
+     · local midnight → Fajr ⇒ "lastthird"   · Fajr → Dhuhr ⇒ "dawn"    · Dhuhr → Maghrib ⇒ "day"
+     · Maghrib → Isha ⇒ "dusk"               · Isha → local midnight ⇒ "night"
+   Deterministic: identical (now, times, mode) always yield the identical temperature. References
+   no device-location or network API — the Sky reveals nothing about the learner's whereabouts
+   (T-03-10). midnight is local 00:00 (cur === 0). */
+function skyTemp(now, times, mode) {
+  if (mode === 'off') return 'day';
+  times = times || skyDefaultTimes();
+  var cur = now.getHours() * 60 + now.getMinutes();   // local minutes-of-day; midnight = 0
+  var fajr = skyMinutes(times.fajr);
+  var dhuhr = skyMinutes(times.dhuhr);
+  var maghrib = skyMinutes(times.maghrib);
+  var isha = skyMinutes(times.isha);
+  if (cur < fajr) return 'lastthird';    // local midnight → Fajr (the Last Third)
+  if (cur < dhuhr) return 'dawn';        // Fajr → Dhuhr (post-Fajr brightness)
+  if (cur < maghrib) return 'day';       // Dhuhr → Maghrib (neutral day)
+  if (cur < isha) return 'dusk';         // Maghrib → Isha
+  return 'night';                        // Isha → local midnight
+}
+
+/* skyDawn(atomsDone) — the subordinate --dawn degree (§7.3): min(cap, atomsDone/65). A pure 0..1
+   warmth scaled by course progress and CAPPED so it stays ambient and can never compete with the
+   prayer-clock tint or the Ring. One degree of horizon apricot — never the metric. */
+function skyDawn(atomsDone) {
+  var SKY_DAWN_CAP = 0.6, SKY_ATOMS = 65;
+  var frac = Math.max(0, atomsDone | 0) / SKY_ATOMS;
+  return Math.min(SKY_DAWN_CAP, frac);
+}
+
+AW.skyTemp = skyTemp;
+AW.skyDawn = skyDawn;
 
 /* ============================================================
    RUNNERS  ·  Phase 4 placeholder — AwbaLesson(cfg) / AwbaReview(cfg) (D-22)
