@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en" data-unit="u1">
+<head>
+<meta charset="utf-8">
+<!-- The cover fit is the safe-area prerequisite: without it env(safe-area-inset-*) silently
+     resolves to 0 on notched / Dynamic-Island devices (RESEARCH Pitfall 2 / PLT-01). -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba Gen-4 · Design System — preview</title>
+<meta name="description" content="The living verification vehicle for the Awba Gen-4 foundation: one token layer, per-unit theming, self-hosted fonts, responsive shell.">
+<!-- Preload the 2 critical faces. Page-relative (NO leading slash) so double-click file:// review
+     resolves them; crossorigin is required even same-origin or the browser double-fetches (D-11). -->
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/poppins-700.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/inter-400.woff2" crossorigin>
+<!-- One stylesheet, one link, every page (D-04). No Google-Fonts CDN link; no apple-mobile-web-app-capable. -->
+<link rel="stylesheet" href="shared/awba-engine.css">
+
+<style>
+/* ============================================================================================
+   preview-only showcase chrome
+   Consumes the engine token layer via var(--…). Declares NO new custom properties and no raw
+   hex/px for anything the token layer already defines — this is layout scaffolding for the
+   style reference, not a second design system. Rules here are UNLAYERED, so they intentionally
+   sit above the engine's @layer base (e.g. the body override below neutralises the engine's
+   >=600px centered-column body rule, which is meant for real app pages, not this long doc).
+   ============================================================================================ */
+
+/* Page field — calm cream with a very soft brand wash, mirroring the desktop shell backdrop. */
+body{
+  display:block;
+  min-height:100%;
+  background:
+    radial-gradient(130% 90% at 50% -8%, var(--card), transparent 58%),
+    var(--bg);
+}
+
+.pv-wrap{ max-width:1120px; margin-inline:auto; padding-inline:var(--sp-6); }
+
+/* Hero */
+.pv-hero{ padding-block:var(--sp-16) var(--sp-8); }
+.pv-kicker{
+  display:inline-block; font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker);
+  letter-spacing:.13em; text-transform:uppercase; color:var(--accent-deep);
+}
+.pv-hero h1{
+  font-family:var(--font-disp); font-weight:700; font-size:var(--fs-display); line-height:1.05;
+  margin:var(--sp-3) 0 var(--sp-4); color:var(--ink); letter-spacing:-.01em;
+}
+.pv-hero p{ font-size:var(--fs-body); color:var(--ink2); max-width:64ch; margin:0; }
+
+/* Sections */
+.pv-section{ padding-block:var(--sp-12); }
+.pv-section + .pv-section .pv-wrap{ border-top:1px solid var(--line); padding-top:var(--sp-12); }
+.pv-head{ margin-bottom:var(--sp-6); }
+.pv-num{
+  display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px;
+  border-radius:var(--r-round); background:var(--accent-soft); color:var(--accent-ink);
+  font-family:var(--font-disp); font-weight:700; font-size:var(--fs-kicker); margin-right:var(--sp-2s);
+}
+.pv-head h2{
+  font-family:var(--font-disp); font-weight:600; font-size:var(--fs-h1); color:var(--ink);
+  margin:0 0 var(--sp-1); display:flex; align-items:center;
+}
+.pv-head p{ font-size:var(--fs-ui); line-height:1.45; color:var(--ink2); margin:0; max-width:74ch; }
+
+.pv-card{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--r-xl);
+  box-shadow:var(--sh-2); padding:var(--sp-6);
+}
+.pv-subhead{
+  font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink3); margin:0 0 var(--sp-3);
+}
+.pv-stack{ display:grid; gap:var(--sp-5); }
+
+/* ---- Swatches -------------------------------------------------------------------------------- */
+.pv-swatches{ display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:var(--sp-3); }
+.pv-swatch{
+  border-radius:var(--r-md); overflow:hidden; border:1px solid var(--line);
+  background:var(--paper); box-shadow:var(--sh-1);
+}
+.pv-swatch .chip{ height:60px; border-bottom:1px solid var(--line); }
+.pv-swatch .meta{ padding:var(--sp-2s) var(--sp-3); }
+.pv-swatch .name{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); color:var(--ink); }
+.pv-swatch .hex{
+  font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3);
+  text-transform:uppercase; font-variant-numeric:tabular-nums; letter-spacing:.02em;
+}
+
+/* Per-unit accent columns */
+.pv-units{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:var(--sp-5); }
+.pv-unitcol{
+  background:var(--paper); border:1px solid var(--line); border-radius:var(--r-lg);
+  box-shadow:var(--sh-1); padding:var(--sp-4); display:grid; gap:var(--sp-4);
+}
+.pv-unitcol h4{
+  font-family:var(--font-disp); font-weight:700; font-size:var(--fs-ui); margin:0;
+  color:var(--accent-ink); display:flex; align-items:center; gap:var(--sp-2s);
+}
+.pv-unitcol h4 .dot{ width:16px; height:16px; border-radius:var(--r-round); background:var(--accent); box-shadow:var(--sh-1); }
+.pv-slots{ display:grid; grid-template-columns:repeat(2,1fr); gap:var(--sp-2s); }
+.pv-slot{ display:flex; align-items:center; gap:var(--sp-2s); font-size:var(--fs-kicker); color:var(--ink2); }
+.pv-slot .sw{ width:22px; height:22px; border-radius:var(--r-xs); border:1px solid var(--line); flex:0 0 auto; }
+.pv-slot .sl{ display:grid; line-height:1.25; }
+.pv-slot .sl b{ font-family:var(--font-disp); font-weight:600; color:var(--ink); font-size:var(--fs-kicker); }
+.pv-slot .sl span{ font-variant-numeric:tabular-nums; text-transform:uppercase; color:var(--ink3); }
+.pv-pairs{ display:grid; gap:var(--sp-2s); padding-top:var(--sp-3); border-top:1px dashed var(--line); }
+.pv-pair{ display:flex; align-items:center; gap:var(--sp-2s); flex-wrap:wrap; }
+.pv-deeptext{ color:var(--accent-deep); font-weight:600; font-size:var(--fs-ui); }
+.pv-ring{ width:26px; height:26px; border-radius:var(--r-round); box-shadow:0 0 0 3px var(--accent) inset; background:var(--paper); flex:0 0 auto; }
+
+/* AA badge */
+.pv-aa{
+  display:inline-flex; align-items:center; font-family:var(--font-disp); font-weight:600;
+  font-size:var(--fs-kicker); line-height:1; padding:var(--sp-2) var(--sp-2s); border-radius:var(--r-pill);
+  background:var(--green-bg); color:var(--green-ink); border:1px solid var(--green-line);
+  font-variant-numeric:tabular-nums; letter-spacing:.02em;
+}
+.pv-aa.ui{ background:var(--tint); color:var(--ink2); border-color:var(--line2); }
+
+/* ---- Unit switch + sample cluster (focal point) --------------------------------------------- */
+.pv-focal{
+  background:
+    radial-gradient(120% 130% at 8% 0%, var(--accent-soft), transparent 60%),
+    var(--paper);
+  border:1px solid var(--accent-line); border-radius:var(--r-xl); box-shadow:var(--sh-3);
+  padding:var(--sp-8);
+}
+.pv-switchbar{ display:flex; align-items:center; gap:var(--sp-4); flex-wrap:wrap; margin-bottom:var(--sp-6); }
+.pv-seg{
+  display:inline-flex; gap:var(--sp-1); padding:var(--sp-1); background:var(--tint);
+  border-radius:var(--r-pill); border:1px solid var(--line); box-shadow:var(--sh-inset);
+}
+.pv-seg button{
+  font-family:var(--font-disp); font-weight:700; font-size:var(--fs-ui); border:none; cursor:pointer;
+  background:transparent; color:var(--ink2); padding:var(--sp-2s) var(--sp-5); border-radius:var(--r-pill);
+  transition:color var(--dur-3) var(--ease-standard), background var(--dur-3) var(--ease-standard);
+}
+.pv-seg button[aria-pressed="true"]{ background:var(--accent); color:var(--accent-on); box-shadow:var(--sh-1); }
+.pv-readout{
+  font-family:var(--font-body); font-size:var(--fs-ui); font-weight:600; color:var(--ink2);
+  font-variant-numeric:tabular-nums; letter-spacing:.02em;
+}
+.pv-cluster{ display:grid; gap:var(--sp-5); grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); align-items:start; }
+.pv-clab{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); letter-spacing:.06em; text-transform:uppercase; color:var(--ink3); margin-bottom:var(--sp-2s); }
+.pv-cell{ display:grid; gap:var(--sp-2s); }
+
+/* Gummy 3D button — signature hard-offset press (UI-SPEC Shadows). */
+.pv-gummy{
+  font-family:var(--font-disp); font-weight:700; font-size:var(--fs-body); letter-spacing:.01em;
+  border:none; border-radius:var(--r-lg); padding:var(--sp-4) var(--sp-5); width:100%;
+  background:var(--accent); color:var(--accent-on);
+  box-shadow:0 5px 0 var(--accent-deep), var(--sh-2); cursor:pointer;
+  transition:transform var(--dur-2) var(--ease-standard), box-shadow var(--dur-2) var(--ease-standard);
+}
+.pv-gummy:active{ transform:translateY(3px); box-shadow:0 2px 0 var(--accent-deep), var(--sh-1); }
+.pv-chip{
+  display:inline-flex; align-items:center; gap:var(--sp-1); font-family:var(--font-body); font-weight:600;
+  font-size:var(--fs-ui); padding:var(--sp-1) var(--sp-3); background:var(--accent-soft);
+  color:var(--accent-ink); border:1px solid var(--accent-line); border-radius:var(--r-xs);
+}
+.pv-node{
+  width:56px; height:56px; border-radius:var(--r-round); background:var(--accent); color:var(--accent-on);
+  box-shadow:0 0 0 6px var(--accent-soft), var(--sh-2); display:grid; place-items:center;
+  font-family:var(--font-disp); font-weight:700;
+}
+.pv-link{ color:var(--accent-deep); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--accent-line); font-weight:600; }
+.pv-panel{ background:var(--accent-soft); border:1px solid var(--accent-line); border-radius:var(--r-md); padding:var(--sp-4); color:var(--accent-ink); font-size:var(--fs-ui); }
+.pv-progress{ height:var(--sp-3); border-radius:var(--r-pill); background:var(--tint); overflow:hidden; }
+.pv-progress > i{ display:block; height:100%; width:64%; border-radius:var(--r-pill); background:var(--accent); }
+
+/* ---- Type scale ----------------------------------------------------------------------------- */
+.pv-typerow{ display:grid; grid-template-columns:minmax(96px,160px) 1fr; gap:var(--sp-5); align-items:baseline; padding-block:var(--sp-4); border-bottom:1px solid var(--line); }
+.pv-typerow:last-child{ border-bottom:none; }
+.pv-typerow .lab{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3); text-transform:uppercase; letter-spacing:.08em; }
+.pv-typerow .lab span{ display:block; margin-top:var(--sp-1); color:var(--ink3); text-transform:none; letter-spacing:0; }
+.pv-clamp{ background:var(--accent-soft); border:1px dashed var(--accent-line); border-radius:var(--r-md); padding:var(--sp-4) var(--sp-5); color:var(--accent-ink); }
+
+/* ---- Radii + shadow tiles ------------------------------------------------------------------- */
+.pv-tiles{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:var(--sp-4); }
+.pv-tile{ display:flex; flex-direction:column; gap:var(--sp-3); }
+.pv-tile .demo{ width:100%; height:76px; background:var(--accent-soft); border:1px solid var(--accent-line); }
+.pv-tile.shadow .demo{ background:var(--paper); border:none; }
+.pv-tile .tlab{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); color:var(--ink); }
+.pv-tile .tval{ font-size:var(--fs-kicker); color:var(--ink3); font-variant-numeric:tabular-nums; }
+
+/* ---- Motion demos --------------------------------------------------------------------------- */
+.pv-motion{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:var(--sp-5); }
+.pv-mcell{ background:var(--paper); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--sh-1); padding:var(--sp-5); display:flex; flex-direction:column; gap:var(--sp-4); align-items:flex-start; }
+.pv-mcell .easing{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3); font-variant-numeric:tabular-nums; }
+.pv-mcell .mtitle{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-ui); color:var(--ink); }
+.pv-tinybtn{
+  font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); border:1px solid var(--accent-line);
+  background:var(--accent-soft); color:var(--accent-ink); padding:var(--sp-2) var(--sp-3);
+  border-radius:var(--r-pill); cursor:pointer;
+}
+@keyframes pv-pop{ from{ transform:scale(.5); opacity:0; } to{ transform:scale(1); opacity:1; } }
+.pv-popdot{ width:56px; height:56px; border-radius:var(--r-round); background:var(--accent); box-shadow:0 0 0 6px var(--accent-soft), var(--sh-2); }
+.pv-popdot.go{ animation:pv-pop var(--dur-5) var(--ease-spring); }
+.pv-sheetstage{ position:relative; width:100%; height:180px; border-radius:var(--r-md); overflow:hidden; background:var(--tint); border:1px solid var(--line); }
+.pv-scrim{ position:absolute; inset:0; background:rgba(30,40,80,.42); opacity:0; pointer-events:none; transition:opacity var(--dur-4) var(--ease-gentle); }
+.pv-scrim.open{ opacity:1; pointer-events:auto; }
+.pv-sheet{ position:absolute; left:0; right:0; bottom:0; background:var(--paper); border-radius:var(--r-xl) var(--r-xl) 0 0; padding:var(--sp-5); box-shadow:var(--sh-3); transform:translateY(100%); transition:transform var(--dur-4) var(--ease-gentle); }
+.pv-scrim.open .pv-sheet{ transform:translateY(0); }
+.pv-grip{ width:40px; height:4px; border-radius:var(--r-pill); background:var(--line2); margin:0 auto var(--sp-3); }
+
+/* Reduced motion — every preview demo collapses to instant (Phase-1 honours it now). */
+@media (prefers-reduced-motion: reduce){
+  .pv-gummy, .pv-seg button, .pv-popdot.go, .pv-scrim, .pv-sheet{ transition:none !important; animation:none !important; }
+  .pv-popdot.go{ transform:none; opacity:1; }
+}
+
+/* ---- Responsive shell skeleton (real .app-shell) -------------------------------------------- */
+.pv-shellband{
+  background:
+    radial-gradient(120% 90% at 50% -20%, var(--card), transparent 62%),
+    var(--bg);
+}
+.pv-shellband .pv-head{ padding-inline:var(--sp-6); }
+/* Cap the showcased shell height so the reference page stays scannable, while keeping the engine's
+   real full-bleed<->centered-column behaviour (max-width:480px, --r-2xl corners, --sh-4) intact. */
+.pv-shellframe .app-shell{ margin-inline:auto; min-height:540px; }
+.pv-hud{ display:flex; align-items:center; gap:var(--sp-2s); padding:var(--sp-3) var(--sp-4); border-bottom:1px solid var(--line); }
+.pv-iconbtn{ width:44px; height:44px; display:grid; place-items:center; border:none; background:transparent; color:var(--ink3); border-radius:var(--r-round); cursor:pointer; font-size:var(--fs-h2); }
+.pv-segbar{ flex:1; display:flex; gap:var(--sp-1); }
+.pv-segbar .seg{ flex:1; height:var(--sp-2s); border-radius:var(--r-pill); background:var(--tint); overflow:hidden; }
+.pv-segbar .seg i{ display:block; height:100%; border-radius:var(--r-pill); background:var(--accent); }
+.pv-hstat{ display:inline-flex; align-items:center; gap:var(--sp-1); font-family:var(--font-disp); font-weight:700; font-size:var(--fs-ui); }
+.pv-hstat.streak{ color:var(--flame); } .pv-hstat.noor{ color:var(--gold-deep); }
+.pv-stage{ padding:var(--sp-6); display:grid; gap:var(--sp-4); align-content:start; }
+.pv-stagecard{ background:var(--card); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--sh-1); padding:var(--sp-5); }
+.pv-stagecard .eyebrow{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); letter-spacing:.13em; text-transform:uppercase; color:var(--accent-deep); }
+.pv-stagecard h3{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-h2); margin:var(--sp-2) 0 var(--sp-2s); color:var(--ink); }
+.pv-stagecard p{ margin:0; font-size:var(--fs-ui); color:var(--ink2); }
+.pv-foot{ padding:var(--sp-4); border-top:1px solid var(--line); }
+.pv-note{ font-size:var(--fs-ui); color:var(--ink2); text-align:center; margin-top:var(--sp-4); }
+
+/* small helpers */
+.pv-inline-latin{ font-family:var(--font-body); }
+.pv-inline-disp{ font-family:var(--font-disp); }
+</style>
+</head>
+
+<body>
+
+<header class="pv-hero pv-wrap">
+  <span class="pv-kicker">Awba Gen-4 · Foundation</span>
+  <h1>The design system, rendered.</h1>
+  <p>This is <code class="pv-inline-latin">preview.html</code> — the living style reference and the
+  verification vehicle for Phase&nbsp;1. Everything below reads from one stylesheet: one token layer,
+  four self-hosted faces, per-unit theming, and a true responsive shell. Switch the unit in section&nbsp;2
+  and watch the whole sample cluster recolor — that live full-recolor is the headline promise this page exists to prove.</p>
+</header>
+
+<main>
+
+  <!-- ========================================================================================
+       Section 1 — Color token sheet
+       ==================================================================================== -->
+  <section class="pv-section" id="s1">
+    <div class="pv-wrap">
+      <div class="pv-head">
+        <h2><span class="pv-num">1</span>Color</h2>
+        <p>The 60 / 30 / 10 discipline: a calm neutral field, secondary surfaces, and a per-unit 10% accent.
+        Every chip below paints from <code class="pv-inline-latin">var(--…)</code> — the hex beside it is only a label.</p>
+      </div>
+
+      <div class="pv-stack">
+        <div class="pv-card">
+          <p class="pv-subhead">Foundation — surface · ink · line</p>
+          <div class="pv-swatches">
+            <div class="pv-swatch"><div class="chip" style="background:var(--bg)"></div><div class="meta"><div class="name">--bg</div><div class="hex">#EEF2FB</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--card)"></div><div class="meta"><div class="name">--card</div><div class="hex">#F6F9FF</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--paper)"></div><div class="meta"><div class="name">--paper</div><div class="hex">#FFFFFF</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--tint)"></div><div class="meta"><div class="name">--tint</div><div class="hex">#E7EEFF</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--ink)"></div><div class="meta"><div class="name">--ink</div><div class="hex">#232A3D</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--ink2)"></div><div class="meta"><div class="name">--ink2</div><div class="hex">#59607A</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--ink3)"></div><div class="meta"><div class="name">--ink3</div><div class="hex">#98A0B8</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--line)"></div><div class="meta"><div class="name">--line</div><div class="hex">#DEE5F3</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--line2)"></div><div class="meta"><div class="name">--line2</div><div class="hex">#C9D3EA</div></div></div>
+          </div>
+        </div>
+
+        <div class="pv-card">
+          <p class="pv-subhead">Semantic — mercy · affirm · streak · noor · safety</p>
+          <div class="pv-swatches">
+            <div class="pv-swatch"><div class="chip" style="background:var(--amber)"></div><div class="meta"><div class="name">--amber · mercy</div><div class="hex">#C68A2E</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--amber-bg)"></div><div class="meta"><div class="name">--amber-bg</div><div class="hex">#FBEFD6</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--green)"></div><div class="meta"><div class="name">--green · affirm</div><div class="hex">#1F9D6B</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--green-bg)"></div><div class="meta"><div class="name">--green-bg</div><div class="hex">#E7F6EF</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:linear-gradient(120deg,var(--flame2),var(--flame))"></div><div class="meta"><div class="name">--flame · streak</div><div class="hex">#F0730B</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:linear-gradient(120deg,var(--gold2),var(--gold))"></div><div class="meta"><div class="name">--gold · noor</div><div class="hex">#E8A400</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--gold-deep)"></div><div class="meta"><div class="name">--gold-deep</div><div class="hex">#B47F00</div></div></div>
+            <div class="pv-swatch"><div class="chip" style="background:var(--danger)"></div><div class="meta"><div class="name">--danger · safety</div><div class="hex">#8A2E28</div></div></div>
+          </div>
+          <p class="pv-head" style="margin-top:var(--sp-4)"><span class="pv-inline-latin" style="font-size:var(--fs-kicker);color:var(--ink3)">Mercy law: amber is the only learner-error color — never red. <code class="pv-inline-latin">--danger</code> is reserved for safety callouts only.</span></p>
+        </div>
+
+        <div class="pv-card">
+          <p class="pv-subhead">Per-unit accent scales — all four, side by side (data-unit)</p>
+          <div class="pv-units">
+
+            <div class="pv-unitcol" data-unit="u1">
+              <h4><span class="dot"></span>Unit 1 · Blue</h4>
+              <div class="pv-slots">
+                <div class="pv-slot"><span class="sw" style="background:var(--accent)"></span><span class="sl"><b>accent</b><span>#2E6BF5</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-deep)"></span><span class="sl"><b>deep</b><span>#2135B8</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-bright)"></span><span class="sl"><b>bright</b><span>#4E82F7</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-soft)"></span><span class="sl"><b>soft</b><span>#E7EEFF</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-line)"></span><span class="sl"><b>line</b><span>#CBD9F7</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-ink)"></span><span class="sl"><b>ink</b><span>#23348C</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-on);border-color:var(--line2)"></span><span class="sl"><b>on</b><span>#FFFFFF</span></span></div>
+              </div>
+              <div class="pv-pairs">
+                <div class="pv-pair"><button class="pv-gummy" tabindex="-1">Begin, gently</button><span class="pv-aa">AA 4.63</span></div>
+                <div class="pv-pair"><span class="pv-chip">al-Baqarah 2:2</span><span class="pv-aa">AA · ink on soft</span></div>
+                <div class="pv-pair"><span class="pv-deeptext">Aa deep on cream</span><span class="pv-aa">AA 4.99</span></div>
+                <div class="pv-pair"><span class="pv-ring"></span><span class="pv-aa ui">UI ≥3:1 ring</span></div>
+              </div>
+            </div>
+
+            <div class="pv-unitcol" data-unit="u2">
+              <h4><span class="dot"></span>Unit 2 · Purple</h4>
+              <div class="pv-slots">
+                <div class="pv-slot"><span class="sw" style="background:var(--accent)"></span><span class="sl"><b>accent</b><span>#7C5CE0</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-deep)"></span><span class="sl"><b>deep</b><span>#5636B0</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-bright)"></span><span class="sl"><b>bright</b><span>#9B80EC</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-soft)"></span><span class="sl"><b>soft</b><span>#F0EBFC</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-line)"></span><span class="sl"><b>line</b><span>#D9CCF4</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-ink)"></span><span class="sl"><b>ink</b><span>#543B9E</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-on);border-color:var(--line2)"></span><span class="sl"><b>on</b><span>#FFFFFF</span></span></div>
+              </div>
+              <div class="pv-pairs">
+                <div class="pv-pair"><button class="pv-gummy" tabindex="-1">Begin, gently</button><span class="pv-aa">AA 4.70</span></div>
+                <div class="pv-pair"><span class="pv-chip">al-Baqarah 2:2</span><span class="pv-aa">AA · ink on soft</span></div>
+                <div class="pv-pair"><span class="pv-deeptext">Aa deep on cream</span><span class="pv-aa">AA</span></div>
+                <div class="pv-pair"><span class="pv-ring"></span><span class="pv-aa ui">UI ≥3:1 ring</span></div>
+              </div>
+            </div>
+
+            <div class="pv-unitcol" data-unit="u3">
+              <h4><span class="dot"></span>Unit 3 · Teal</h4>
+              <div class="pv-slots">
+                <div class="pv-slot"><span class="sw" style="background:var(--accent)"></span><span class="sl"><b>accent</b><span>#0A7575</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-deep)"></span><span class="sl"><b>deep</b><span>#075C5C</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-bright)"></span><span class="sl"><b>bright</b><span>#14B8B8</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-soft)"></span><span class="sl"><b>soft</b><span>#E1F4F4</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-line)"></span><span class="sl"><b>line</b><span>#ABE1E1</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-ink)"></span><span class="sl"><b>ink</b><span>#0A6060</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-on);border-color:var(--line2)"></span><span class="sl"><b>on</b><span>#FFFFFF</span></span></div>
+              </div>
+              <div class="pv-pairs">
+                <div class="pv-pair"><button class="pv-gummy" tabindex="-1">Begin, gently</button><span class="pv-aa">AA 5.51</span></div>
+                <div class="pv-pair"><span class="pv-chip">al-Baqarah 2:2</span><span class="pv-aa">AA · ink on soft</span></div>
+                <div class="pv-pair"><span class="pv-deeptext">Aa deep on cream</span><span class="pv-aa">AA</span></div>
+                <div class="pv-pair"><span class="pv-ring"></span><span class="pv-aa ui">UI ≥3:1 ring</span></div>
+              </div>
+            </div>
+
+            <div class="pv-unitcol" data-unit="u4">
+              <h4><span class="dot"></span>Unit 4 · Gold</h4>
+              <div class="pv-slots">
+                <div class="pv-slot"><span class="sw" style="background:var(--accent)"></span><span class="sl"><b>accent</b><span>#B47F00</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-deep)"></span><span class="sl"><b>deep</b><span>#8A6000</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-bright)"></span><span class="sl"><b>bright</b><span>#FFD34D</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-soft)"></span><span class="sl"><b>soft</b><span>#FDF3DA</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-line)"></span><span class="sl"><b>line</b><span>#F0DCA6</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-ink)"></span><span class="sl"><b>ink</b><span>#7A5300</span></span></div>
+                <div class="pv-slot"><span class="sw" style="background:var(--accent-on);border-color:var(--line2)"></span><span class="sl"><b>on</b><span>#241A00</span></span></div>
+              </div>
+              <div class="pv-pairs">
+                <div class="pv-pair"><button class="pv-gummy" tabindex="-1">Begin, gently</button><span class="pv-aa">AA 4.89</span></div>
+                <div class="pv-pair"><span class="pv-chip">al-Baqarah 2:2</span><span class="pv-aa">AA 6.20 · ink on soft</span></div>
+                <div class="pv-pair"><span class="pv-deeptext">Aa deep on cream</span><span class="pv-aa">AA 4.99</span></div>
+                <div class="pv-pair"><span class="pv-ring"></span><span class="pv-aa ui">UI 3.13 ring</span></div>
+              </div>
+            </div>
+
+          </div>
+          <p class="pv-head" style="margin-top:var(--sp-4)"><span class="pv-inline-latin" style="font-size:var(--fs-kicker);color:var(--ink3)">Note the correctness split: <code class="pv-inline-latin">--accent-on</code> is white on blue / purple / teal, but a warm near-black <code class="pv-inline-latin">#241A00</code> on gold — the only non-white on-fill, needed to clear AA at the real 16px/700 button size.</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================================
+       Section 2 — Unit switch + live sample cluster  (FOCAL POINT)
+       ==================================================================================== -->
+  <section class="pv-section" id="s2">
+    <div class="pv-wrap">
+      <div class="pv-head">
+        <h2><span class="pv-num">2</span>Live per-unit recolor</h2>
+        <p>The proof: switch the unit and the <em>entire</em> cluster recolors — primary button, citation chip,
+        active node ring, inline link, tinted panel, progress fill. Zero residual blue survives on u2 / u3 / u4.
+        This is the structural fix for Gen-3's half-themed page.</p>
+      </div>
+
+      <div class="pv-focal">
+        <div class="pv-switchbar">
+          <div class="pv-seg" id="pv-unitseg" role="group" aria-label="Choose active unit theme">
+            <button type="button" data-unit="u1" aria-pressed="true">Unit 1</button>
+            <button type="button" data-unit="u2" aria-pressed="false">Unit 2</button>
+            <button type="button" data-unit="u3" aria-pressed="false">Unit 3</button>
+            <button type="button" data-unit="u4" aria-pressed="false">Unit 4</button>
+          </div>
+          <span class="pv-readout" id="pv-unit-readout" aria-live="polite"></span>
+        </div>
+
+        <div class="pv-cluster">
+          <div class="pv-cell"><span class="pv-clab">Primary button</span><button class="pv-gummy">Begin, gently</button></div>
+          <div class="pv-cell"><span class="pv-clab">Citation chip</span><div><span class="pv-chip">al-Ḥujurāt 49:15</span></div></div>
+          <div class="pv-cell"><span class="pv-clab">Active node ring</span><div class="pv-node">3</div></div>
+          <div class="pv-cell"><span class="pv-clab">Inline link</span><div><span class="pv-inline-latin">Read the <a href="#s2" class="pv-link">source note</a> to continue.</span></div></div>
+          <div class="pv-cell"><span class="pv-clab">Tinted panel</span><div class="pv-panel">A calm surface that carries the unit's identity — model boxes, markers, tinted chrome.</div></div>
+          <div class="pv-cell"><span class="pv-clab">Progress fill</span><div class="pv-progress"><i></i></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================================
+       Section 3 — Type scale
+       ==================================================================================== -->
+  <section class="pv-section" id="s3">
+    <div class="pv-wrap">
+      <div class="pv-head">
+        <h2><span class="pv-num">3</span>Type scale</h2>
+        <p>Seven honest Latin roles (Poppins display, Inter body) plus the Arabic roles re-expressed under the
+        ≥1.4× Latin law. Resize the window to watch the fluid roles clamp between their min and max.</p>
+      </div>
+
+      <div class="pv-card">
+        <div class="pv-typerow">
+          <div class="lab">Hero<span>--fs-hero · Poppins 800 · lh 1.0</span></div>
+          <div style="font-family:var(--font-disp);font-weight:800;font-size:var(--fs-hero);line-height:1.0;color:var(--ink)">128</div>
+        </div>
+        <div class="pv-typerow">
+          <div class="lab">Display<span>--fs-display · Poppins 700 · lh 1.05</span></div>
+          <div style="font-family:var(--font-disp);font-weight:700;font-size:var(--fs-display);line-height:1.05;color:var(--ink)">Beautifully done.</div>
+        </div>
+        <div class="pv-typerow">
+          <div class="lab">Title<span>--fs-h1 · Poppins 600 · lh 1.16</span></div>
+          <div style="font-family:var(--font-disp);font-weight:600;font-size:var(--fs-h1);line-height:1.16;color:var(--ink)">The Names of Allah</div>
+        </div>
+        <div class="pv-typerow">
+          <div class="lab">Heading<span>--fs-h2 · Poppins 600 · lh 1.28</span></div>
+          <div style="font-family:var(--font-disp);font-weight:600;font-size:var(--fs-h2);line-height:1.28;color:var(--ink)">What does tawḥīd mean?</div>
+        </div>
+        <div class="pv-typerow">
+          <div class="lab">Body<span>--fs-body · Inter 400 · lh 1.6</span></div>
+          <div style="font-family:var(--font-body);font-weight:400;font-size:var(--fs-body);line-height:1.6;color:var(--ink2)">Reading prose sits at a comfortable 16px and stays legible without overflow all the way down to a 320px screen — the leads, openings, and frame text every lesson depends on.</div>
+        </div>
+        <div class="pv-typerow">
+          <div class="lab">UI / control<span>--fs-ui · Inter 400/600 · lh 1.45</span></div>
+          <div style="font-family:var(--font-body);font-weight:400;font-size:var(--fs-ui);line-height:1.45;color:var(--ink2)">Quiz options, tiles, captions and microcopy — with <b style="font-weight:600">semibold</b> for emphasis and terms.</div>
+        </div>
+        <div class="pv-typerow">
+          <div class="lab">Kicker / meta<span>--fs-kicker · Poppins 600 · ls .13em</span></div>
+          <div style="font-family:var(--font-disp);font-weight:600;font-size:var(--fs-kicker);letter-spacing:.13em;text-transform:uppercase;color:var(--accent-deep)">Unit 1 · Lesson 1</div>
+        </div>
+      </div>
+
+      <div class="pv-card" style="margin-top:var(--sp-5)">
+        <p class="pv-subhead">Fluid clamp demo</p>
+        <div class="pv-clamp" style="font-family:var(--font-disp);font-weight:700;font-size:var(--fs-display);line-height:1.05">
+          I scale with the viewport.
+        </div>
+        <p class="pv-head" style="margin-top:var(--sp-3)"><span class="pv-inline-latin" style="font-size:var(--fs-kicker);color:var(--ink3)">clamp(2rem, 1.7rem + 1.5vw, 2.375rem) — drag the window wider and narrower to see it move between 32px and 38px.</span></p>
+      </div>
+
+      <div class="pv-card" style="margin-top:var(--sp-5)">
+        <p class="pv-subhead">Arabic roles — general (Amiri) &amp; verbatim Qur'an (Amiri Quran)</p>
+        <div class="pv-stack">
+          <div>
+            <div class="lab" style="font-family:var(--font-body);font-size:var(--fs-kicker);color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--sp-2s)">--fs-ar-body · Amiri · lh 1.8</div>
+            <p class="arabic" lang="ar" dir="rtl" style="margin:0">لَا إِلَٰهَ إِلَّا ٱللَّٰهُ مُحَمَّدٌ رَسُولُ ٱللَّٰهِ</p>
+          </div>
+          <div>
+            <div class="lab" style="font-family:var(--font-body);font-size:var(--fs-kicker);color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--sp-2s)">--fs-ayah · Amiri Quran · lh 1.9 · .ayah</div>
+            <p class="ayah" lang="ar" dir="rtl" style="margin:0">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================================
+       Section 4 — Radii + shadow tiles
+       ==================================================================================== -->
+  <section class="pv-section" id="s4">
+    <div class="pv-wrap">
+      <div class="pv-head">
+        <h2><span class="pv-num">4</span>Radii &amp; elevation</h2>
+        <p>Soft, warm corners and indigo-tinted shadows — never grey or black. One tile per token.</p>
+      </div>
+
+      <div class="pv-card">
+        <p class="pv-subhead">Radii · --r-*</p>
+        <div class="pv-tiles">
+          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-xs)"></div><div class="tlab">--r-xs</div><div class="tval">8px</div></div>
+          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-sm)"></div><div class="tlab">--r-sm</div><div class="tval">12px</div></div>
+          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-md)"></div><div class="tlab">--r-md</div><div class="tval">14px</div></div>
+          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-lg)"></div><div class="tlab">--r-lg</div><div class="tval">16px</div></div>
+          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-xl)"></div><div class="tlab">--r-xl</div><div class="tval">24px</div></div>
+          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-2xl)"></div><div class="tlab">--r-2xl</div><div class="tval">28px</div></div>
+          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-pill)"></div><div class="tlab">--r-pill</div><div class="tval">999px</div></div>
+          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-round);aspect-ratio:1;height:auto;width:76px"></div><div class="tlab">--r-round</div><div class="tval">50%</div></div>
+        </div>
+      </div>
+
+      <div class="pv-card" style="margin-top:var(--sp-5)">
+        <p class="pv-subhead">Shadows · --sh-* (indigo-tinted)</p>
+        <div class="pv-tiles">
+          <div class="pv-tile shadow"><div class="demo" style="box-shadow:var(--sh-1);border-radius:var(--r-md)"></div><div class="tlab">--sh-1</div><div class="tval">raised chips</div></div>
+          <div class="pv-tile shadow"><div class="demo" style="box-shadow:var(--sh-2);border-radius:var(--r-md)"></div><div class="tlab">--sh-2</div><div class="tval">cards, panels</div></div>
+          <div class="pv-tile shadow"><div class="demo" style="box-shadow:var(--sh-3);border-radius:var(--r-md)"></div><div class="tlab">--sh-3</div><div class="tval">sheets, popups</div></div>
+          <div class="pv-tile shadow"><div class="demo" style="box-shadow:var(--sh-4);border-radius:var(--r-md)"></div><div class="tlab">--sh-4</div><div class="tval">desktop column</div></div>
+          <div class="pv-tile shadow"><div class="demo" style="box-shadow:var(--sh-inset);border:1px solid var(--line);border-radius:var(--r-md)"></div><div class="tlab">--sh-inset</div><div class="tval">top highlight</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================================
+       Section 5 — Motion demos
+       ==================================================================================== -->
+  <section class="pv-section" id="s5">
+    <div class="pv-wrap">
+      <div class="pv-head">
+        <h2><span class="pv-num">5</span>Motion</h2>
+        <p>Three signatures, each labelled with its easing token. All respect
+        <code class="pv-inline-latin">prefers-reduced-motion</code> — set “Reduce motion” in your OS and they collapse to instant.</p>
+      </div>
+
+      <div class="pv-motion">
+        <div class="pv-mcell">
+          <span class="mtitle">Gummy press</span>
+          <button class="pv-gummy" style="max-width:220px">Press me</button>
+          <span class="easing">--dur-2 (120ms) · --ease-standard · 0 5px 0 → 0 2px 0 + translateY(3px)</span>
+        </div>
+        <div class="pv-mcell">
+          <span class="mtitle">Node pop-in</span>
+          <div class="pv-popdot go" id="pv-pop"></div>
+          <button class="pv-tinybtn" id="pv-pop-replay" type="button">Replay pop</button>
+          <span class="easing">--dur-5 (350ms) · --ease-spring (gummy overshoot)</span>
+        </div>
+        <div class="pv-mcell">
+          <span class="mtitle">Sheet in</span>
+          <div class="pv-sheetstage">
+            <div class="pv-scrim" id="pv-scrim">
+              <div class="pv-sheet">
+                <div class="pv-grip"></div>
+                <p style="margin:0 0 var(--sp-3);font-family:var(--font-disp);font-weight:600;font-size:var(--fs-ui);color:var(--ink)">A calm bottom sheet.</p>
+                <button class="pv-tinybtn" id="pv-sheet-close" type="button">Close</button>
+              </div>
+            </div>
+          </div>
+          <button class="pv-tinybtn" id="pv-sheet-open" type="button">Open sheet</button>
+          <span class="easing">--dur-4 (280ms) · --ease-gentle (soft settle)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================================
+       Section 6 — Responsive shell skeleton (real .app-shell)
+       ==================================================================================== -->
+  <section class="pv-section pv-shellband" id="s6">
+    <div class="pv-head pv-wrap">
+      <h2><span class="pv-num">6</span>Responsive shell</h2>
+      <p>A real <code class="pv-inline-latin">.app-shell</code> grid — HUD / stage / footer. Resize the window across
+      600px: below it goes full-bleed edge-to-edge; above it becomes an intentional centered column with
+      <code class="pv-inline-latin">--r-2xl</code> corners and <code class="pv-inline-latin">--sh-4</code> elevation on the cream wash.
+      No fixed phone card anywhere.</p>
+    </div>
+
+    <div class="pv-shellframe">
+      <div class="app-shell">
+        <div class="app-hud pv-hud">
+          <button class="pv-iconbtn" type="button" aria-label="Close lesson">×</button>
+          <div class="pv-segbar" aria-hidden="true">
+            <span class="seg"><i style="width:100%"></i></span>
+            <span class="seg"><i style="width:60%"></i></span>
+            <span class="seg"><i style="width:0"></i></span>
+          </div>
+          <span class="pv-hstat streak" aria-label="Streak: 5 days">▲ 5</span>
+          <span class="pv-hstat noor" aria-label="Noor: 240">◆ 240</span>
+        </div>
+
+        <div class="app-stage pv-stage">
+          <div class="pv-stagecard">
+            <span class="eyebrow">Unit 1 · Lesson 1</span>
+            <h3>Who is your Lord?</h3>
+            <p>The stage is the one scrolling region — overscroll contained, safe-area padded on its sides.
+            Everything the learner reads lives here.</p>
+          </div>
+          <div class="pv-stagecard">
+            <span class="eyebrow">Depth · 1 of 3</span>
+            <h3>A single, indivisible Creator</h3>
+            <p>Placeholder content stands in for the real lesson beats that Phase 4 ports from Josh's data files.</p>
+          </div>
+        </div>
+
+        <div class="app-foot pv-foot">
+          <button class="pv-gummy">Begin, gently</button>
+        </div>
+      </div>
+    </div>
+    <p class="pv-note pv-wrap">The single accent-filled gummy CTA in the footer is the shell's focal point — one primary action, one focal point.</p>
+  </section>
+
+</main>
+
+<script>
+/* Classic script — no modules, file:// double-click safe. */
+(function () {
+  var root = document.documentElement;
+
+  /* Unit switch — mutate data-unit on <html>; the whole page recolors from CSS. */
+  var seg = document.getElementById('pv-unitseg');
+  var readout = document.getElementById('pv-unit-readout');
+
+  function updateReadout() {
+    if (!readout) return;
+    var acc = getComputedStyle(root).getPropertyValue('--accent').trim().toUpperCase();
+    var unit = (root.getAttribute('data-unit') || 'u1').toUpperCase();
+    readout.textContent = unit + ' · --accent ' + acc;
+  }
+
+  if (seg) {
+    seg.addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('button[data-unit]') : null;
+      if (!btn) return;
+      var unit = btn.getAttribute('data-unit');
+      root.setAttribute('data-unit', unit);
+      var all = seg.querySelectorAll('button[data-unit]');
+      for (var i = 0; i < all.length; i++) {
+        all[i].setAttribute('aria-pressed', all[i] === btn ? 'true' : 'false');
+      }
+      updateReadout();
+    });
+  }
+  updateReadout();
+
+  /* Node pop-in replay. */
+  var pop = document.getElementById('pv-pop');
+  var popReplay = document.getElementById('pv-pop-replay');
+  if (pop && popReplay) {
+    popReplay.addEventListener('click', function () {
+      pop.classList.remove('go');
+      void pop.offsetWidth; /* force reflow so the animation restarts */
+      pop.classList.add('go');
+    });
+  }
+
+  /* Sheet demo. */
+  var scrim = document.getElementById('pv-scrim');
+  var openBtn = document.getElementById('pv-sheet-open');
+  var closeBtn = document.getElementById('pv-sheet-close');
+  if (scrim && openBtn) {
+    openBtn.addEventListener('click', function () { scrim.classList.add('open'); });
+    scrim.addEventListener('click', function (e) { if (e.target === scrim) scrim.classList.remove('open'); });
+    if (closeBtn) closeBtn.addEventListener('click', function () { scrim.classList.remove('open'); });
+  }
+})();
+</script>
+
+</body>
+</html>
