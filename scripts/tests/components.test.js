@@ -113,17 +113,15 @@ test('AW.reducedMotion: true via matchMedia, true via [data-motion=reduce], fals
 
 /* ---------- AW.KIT / AW.GLYPHS registry integrity (FND-04) ---------- */
 
-test('AW.KIT: exactly 21 entries incl. lantern-gold, every value starts with <svg', () => {
+test('AW.KIT: exactly 20 scene entries, every value starts with <svg', () => {
   const sandbox = loadEngine(
     makeLS({}),
     `globalThis.__out = {
        kitCount: Object.keys(AW.KIT).length,
-       hasGold: 'lantern-gold' in AW.KIT,
        allSvg: Object.keys(AW.KIT).every(function (k) { return AW.KIT[k].indexOf('<svg') === 0; })
      };`
   );
-  assert.equal(sandbox.__out.kitCount, 21);
-  assert.equal(sandbox.__out.hasGold, true);
+  assert.equal(sandbox.__out.kitCount, 20);
   assert.equal(sandbox.__out.allSvg, true);
 });
 

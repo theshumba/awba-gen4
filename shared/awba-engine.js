@@ -795,31 +795,31 @@ AW.UNIT_ICON = { u1: 'compass', u2: 'lanterns', u3: 'kaaba', u4: 'mosque' };
    glyph + marker constants; each value is a self-contained <svg …>. */
 AW.GLYPHS = {
   // flame — streak flame
-  flame: '<svg viewBox="0 0 24 24"><path d="M12 2 C13 6 17 7 16.5 12 C16 16 13 16 13 13 C12 15 10 15.5 10.5 18 C8 16.5 7 14 8 11 C9 13 10.5 12 10 9 C11 8 12 6 12 2Z" fill="#F0730B"/></svg>',
+  flame: '<svg viewBox="0 0 24 24"><path d="M12 2 C13 6 17 7 16.5 12 C16 16 13 16 13 13 C12 15 10 15.5 10.5 18 C8 16.5 7 14 8 11 C9 13 10.5 12 10 9 C11 8 12 6 12 2Z" fill="var(--ember)"/></svg>',
   // spark — combo/noor spark (gold)
-  spark: '<svg viewBox="0 0 24 24"><path d="M12 3 C13 8 16 11 21 12 C16 13 13 16 12 21 C11 16 8 13 3 12 C8 11 11 8 12 3Z" fill="#E8A400"/></svg>',
+  spark: '<svg viewBox="0 0 24 24"><path d="M12 3 C13 8 16 11 21 12 C16 13 13 16 12 21 C11 16 8 13 3 12 C8 11 11 8 12 3Z" fill="var(--gold)"/></svg>',
   // check — verdict tick
-  check: '<svg viewBox="0 0 24 24"><path d="M5 12.5 L10 17.5 L19 7" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  check: '<svg viewBox="0 0 24 24"><path d="M5 12.5 L10 17.5 L19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   // star — earned star (gold)
-  star: '<svg viewBox="0 0 24 24"><path d="M12 2.5 L14.9 9 L22 9.7 L16.7 14.4 L18.3 21.4 L12 17.6 L5.7 21.4 L7.3 14.4 L2 9.7 L9.1 9 Z" fill="#FFD34D" stroke="#E8A400" stroke-width="1"/></svg>',
+  star: '<svg viewBox="0 0 24 24"><path d="M12 2.5 L14.9 9 L22 9.7 L16.7 14.4 L18.3 21.4 L12 17.6 L5.7 21.4 L7.3 14.4 L2 9.7 L9.1 9 Z" fill="var(--gold)" stroke="var(--icon-accent)" stroke-width="1"/></svg>',
   // cite — citation bookmark
-  cite: '<svg viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-3.2L5 21V4a1 1 0 0 1 1-1Z" fill="#2536CE"/></svg>',
+  cite: '<svg viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-3.2L5 21V4a1 1 0 0 1 1-1Z" fill="currentColor"/></svg>',
   // lamp — small lantern glyph
-  lamp: '<svg viewBox="0 0 20 24"><path d="M10 2 L13 5 L13 8 Q16 12 13 17 L13 20 L7 20 L7 17 Q4 12 7 8 L7 5 Z" fill="#E8A400"/><path d="M8.5 9 h3 v7 h-3 z" fill="#FFF3CC"/></svg>',
+  lamp: '<svg viewBox="0 0 20 24"><path d="M10 2 L13 5 L13 8 Q16 12 13 17 L13 20 L7 20 L7 17 Q4 12 7 8 L7 5 Z" fill="var(--gold)"/><path d="M8.5 9 h3 v7 h-3 z" fill="currentColor" opacity=".08"/></svg>',
   // lock — locked node
-  lock: '<svg viewBox="0 0 24 24"><path d="M7 10 V8 a5 5 0 0 1 10 0 v2" fill="none" stroke="#AAB4CC" stroke-width="2.2"/><rect x="5.5" y="10" width="13" height="9.5" rx="2.5" fill="#AAB4CC"/></svg>',
+  lock: '<svg viewBox="0 0 24 24"><path d="M7 10 V8 a5 5 0 0 1 10 0 v2" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="2.2"/><rect x="5.5" y="10" width="13" height="9.5" rx="2.5" fill="currentColor" fill-opacity=".45"/></svg>',
   // chest — reward chest
-  chest: '<svg viewBox="0 0 24 24"><path d="M4 8 a4 4 0 0 1 4-4 h8 a4 4 0 0 1 4 4 v2 H4 Z" fill="#fff"/><path d="M4 11 h16 v7 a2 2 0 0 1 -2 2 H6 a2 2 0 0 1 -2-2 Z" fill="#fff" opacity=".75"/><rect x="10.6" y="9" width="2.8" height="5" rx="1.2" fill="#B4720C"/></svg>',
+  chest: '<svg viewBox="0 0 24 24"><path d="M4 8 a4 4 0 0 1 4-4 h8 a4 4 0 0 1 4 4 v2 H4 Z" fill="currentColor"/><path d="M4 11 h16 v7 a2 2 0 0 1 -2 2 H6 a2 2 0 0 1 -2-2 Z" fill="currentColor" opacity=".75"/><rect x="10.6" y="9" width="2.8" height="5" rx="1.2" fill="var(--gold)"/></svg>',
   // trophy — legendary review
-  trophy: '<svg viewBox="0 0 24 24"><path d="M7 3 h10 v3 a5 5 0 0 1 -3.2 4.66 L13 13 h2 l1 4 H8 l1-4 h2 l-.8-2.34 A5 5 0 0 1 7 6 Z" fill="#fff"/><path d="M7 4 H4 v2 a3 3 0 0 0 3 3 M17 4 h3 v2 a3 3 0 0 1 -3 3" fill="none" stroke="#fff" stroke-width="1.6"/><rect x="7" y="18.5" width="10" height="2.6" rx="1.3" fill="#fff"/></svg>',
+  trophy: '<svg viewBox="0 0 24 24"><path d="M7 3 h10 v3 a5 5 0 0 1 -3.2 4.66 L13 13 h2 l1 4 H8 l1-4 h2 l-.8-2.34 A5 5 0 0 1 7 6 Z" fill="var(--gold)"/><path d="M7 4 H4 v2 a3 3 0 0 0 3 3 M17 4 h3 v2 a3 3 0 0 1 -3 3" fill="none" stroke="var(--gold)" stroke-width="1.6"/><rect x="7" y="18.5" width="10" height="2.6" rx="1.3" fill="var(--gold)"/></svg>',
   // fact — "worth knowing" marker
-  fact: '<svg viewBox="0 0 24 24"><path d="M12 3 C13 8 16 11 21 12 C16 13 13 16 12 21 C11 16 8 13 3 12 C8 11 11 8 12 3Z" fill="#2E6BF5"/></svg>',
+  fact: '<svg viewBox="0 0 24 24"><path d="M12 3 C13 8 16 11 21 12 C16 13 13 16 12 21 C11 16 8 13 3 12 C8 11 11 8 12 3Z" fill="var(--icon-accent)"/></svg>',
   // remember — "worth remembering" marker
-  remember: '<svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v17l-6-4-6 4V4a1 1 0 0 1 1-1Z" fill="#2E6BF5"/></svg>',
+  remember: '<svg viewBox="0 0 24 24"><path d="M7 3h10a1 1 0 0 1 1 1v17l-6-4-6 4V4a1 1 0 0 1 1-1Z" fill="var(--icon-accent)"/></svg>',
   // fard — "the first duty" marker
-  fard: '<svg viewBox="0 0 24 24"><path d="M17 4 A9 9 0 1 0 17 20 A7 7 0 1 1 17 4Z" fill="#2E6BF5"/></svg>',
+  fard: '<svg viewBox="0 0 24 24"><path d="M17 4 A9 9 0 1 0 17 20 A7 7 0 1 1 17 4Z" fill="var(--icon-accent)"/></svg>',
   // angle — "another angle" marker
-  angle: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#2E6BF5" stroke-width="2"/><path d="M12 7 L14.5 12 L12 17 L9.5 12Z" fill="#2E6BF5"/></svg>',
+  angle: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="var(--icon-accent)" stroke-width="2"/><path d="M12 7 L14.5 12 L12 17 L9.5 12Z" fill="var(--icon-accent)"/></svg>',
 };
 
 /* ============================================================
