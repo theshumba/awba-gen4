@@ -23,7 +23,7 @@ Macro product scope is fixed by Josh's Gen-3 MVP (the owner-approved direction).
 - [ ] **ENG-03**: Quiz mechanics preserved exactly: +12 noor/correct, +15 reflect, combo chip at 2+, PERFECT at 3-streak, stars 3/2/1 by mistakes (never 0), amber-never-red misses, varied praise pool, good/gentle copy surfaces
 - [ ] **ENG-04**: Review mechanics preserved exactly: 14s soft timer, +15/+5 swift, timeout → auto-skip → untimed no-noor circle-back, any timeout caps at 2★, lamp progress, gold intro/result, no back button
 - [ ] **ENG-05**: 3-Lens depth renders as individually-expanding accordion (Reality amber / Revelation blue / Ruling green, fixed order), always opt-in, never blocking Continue
-- [ ] **ENG-06**: Citation chips open a bottom sheet (Arabic RTL, verbatim translation, source line, grade pill for hadith, `unverified · pending review` pill); term glosses open their sheet (Arabic, transliteration, gloss, definition, context)
+- [x] **ENG-06**: Citation chips open a bottom sheet (Arabic RTL, verbatim translation, source line, grade pill for hadith, `unverified · pending review` pill); term glosses open their sheet (Arabic, transliteration, gloss, definition, context)
 - [x] **ENG-07**: A lesson-config validator (standalone script, runnable via node) checks every lesson/review data file: known beat types, resolvable citation/term IDs, required fields, answer indices in range — CI-style gate for the port and for Josh's future lessons
 
 ### Content port
@@ -52,10 +52,10 @@ Macro product scope is fixed by Josh's Gen-3 MVP (the owner-approved direction).
 
 ### Motion & feel
 
-- [ ] **MOT-01**: One motion vocabulary (token-defined durations + `linear()` spring easings) used across nodes, buttons, sheets, quiz feedback, reward beats
+- [x] **MOT-01**: One motion vocabulary (token-defined durations + `linear()` spring easings) used across nodes, buttons, sheets, quiz feedback, reward beats
 - [ ] **MOT-02**: Cross-document View Transitions wired on every page (`@view-transition`) so path↔lesson↔review navigations cross-fade/morph instead of hard-cutting; graceful no-op on Firefox
-- [ ] **MOT-03**: Tap press physics (gummy shadow-collapse) applied to every tappable surface (options, tiles, chips, sheet rows, tabs — full inventory)
-- [ ] **MOT-04**: `prefers-reduced-motion` respected globally (confetti, PERFECT, bob/glow, transitions all quieten) plus user override in preferences
+- [x] **MOT-03**: Tap press physics (gummy shadow-collapse) applied to every tappable surface (options, tiles, chips, sheet rows, tabs — full inventory)
+- [x] **MOT-04**: `prefers-reduced-motion` respected globally (confetti, PERFECT, bob/glow, transitions all quieten) plus user override in preferences
 - [ ] **MOT-05**: Correct/incorrect/complete/streak sound cues — calm, dignified, own identity (not arcade-bright) — with a visible mute toggle; celebration audio peaks land on meta-progress screens, never the ayah/scripture moment
 
 ### Accessibility
@@ -107,10 +107,10 @@ Every v1 requirement maps to exactly one phase. Coverage: 42/42 (100%). See `.pl
 | FND-07 | Phase 2 | Complete |
 | ENG-07 | Phase 2 | Complete |
 | FND-04 | Phase 3 | Complete |
-| ENG-06 | Phase 3 | Pending |
-| MOT-01 | Phase 3 | Pending |
-| MOT-03 | Phase 3 | Pending |
-| MOT-04 | Phase 3 | Pending |
+| ENG-06 | Phase 3 | Complete |
+| MOT-01 | Phase 3 | Complete |
+| MOT-03 | Phase 3 | Complete |
+| MOT-04 | Phase 3 | Complete |
 | ENG-01 | Phase 4 | Pending |
 | ENG-02 | Phase 4 | Pending |
 | ENG-03 | Phase 4 | Pending |
