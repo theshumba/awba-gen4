@@ -127,3 +127,16 @@ test('ringSVG: with no explicit seed, repeated calls are stable via the stored r
   assert.equal(out.a, out.b, 'without a seed arg the generator falls back to the stable ringSeed');
   assert.ok(out.a.indexOf('data-seed="' + out.seed + '"') !== -1, 'the maker\'s mark seed is stamped into the markup');
 });
+
+/* ---------- (W1) the ringSeed lazy write must NOT clobber an unrecognized-future-schema blob ----------
+   AW.ringSeed()'s first call is a new AW.S.set() site. load() deliberately refuses to persist over
+   a from-the-future blob (CR-01), so set() must not either — the memFallback guard skips persist
+   while working from that in-memory copy. This closes the plan-checker W1 gap; the seed is still
+   stable within the degraded session, it just isn't written back over the untouched real blob. */
+test('ringSeed: a from-the-future awba_state blob survives untouched on disk across a ringSeed() call (W1/CR-01)', () => {
+  const rawBlob = JSON.stringify({ schemaVersion: 2, noor: 500, returns: 9, stars: { u4r: 3 }, days: [], chests: {} });
+  const ls = makeLS({ awba_state: rawBlob });
+  const sandbox = loadEngine(ls, `globalThis.__out = { s1: AW.ringSeed(), s2: AW.ringSeed() };`);
+  assert.equal(sandbox.__out.s1, sandbox.__out.s2, 'the seed is stable within the session');
+  assert.equal(ls._dump().awba_state, rawBlob, 'the future-schema blob must survive untouched on disk');
+});
