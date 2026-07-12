@@ -131,6 +131,54 @@ body{ background: var(--cream); }
 .pv-caption{ font-family: var(--font-marg); font-size: var(--fs-marg); letter-spacing: .04em; color: var(--ink-62); margin-top: var(--sp-2s); }
 .pv-foot{ padding-block: var(--sp-12); text-align: center; }
 .pv-foot p{ margin: 0; font-family: var(--font-marg); font-size: var(--fs-marg); letter-spacing: .1em; color: var(--ink-40); }
+
+/* generic icon slot — one asset re-inks to its ground via currentColor + --icon-accent. */
+[data-pv-icon]{ display: inline-flex; line-height: 0; }
+
+/* -- §4 Component inventory. */
+.pv-inv{ display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-4); }
+.pv-inv-cell{ position: relative; overflow: hidden; padding: var(--sp-5); border-radius: var(--r-3); border: 1px solid var(--rule); background: var(--cream); }
+.pv-inv-cell.reg-orbit{ border-color: transparent; }
+.pv-inv-cell.span2{ grid-column: 1 / -1; }
+.pv-inv-lab{ margin: 0 0 var(--sp-3); font-family: var(--font-marg); font-size: var(--fs-marg); letter-spacing: .06em; color: var(--ink-62); }
+.reg-orbit .pv-inv-lab{ color: var(--paper-62); }
+.pv-row{ display: flex; gap: var(--sp-2s); flex-wrap: wrap; align-items: center; }
+.pv-stack{ display: flex; flex-direction: column; gap: var(--sp-2s); }
+.pv-prose{ margin: 0; font-size: var(--fs-body); line-height: 1.7; color: var(--ink); }
+@media (max-width: 640px){ .pv-inv{ grid-template-columns: 1fr; } }
+
+/* -- §5 Scripture — a clean cream leaf, no grain. */
+.pv-scripture{ padding: var(--sp-8) var(--sp-6); border-radius: var(--r-4); border: 1px solid var(--rule); background: var(--cream); box-shadow: var(--sh-1); }
+.pv-scripture + .pv-scripture{ margin-top: var(--sp-5); }
+
+/* -- §6 Ring demo. */
+.pv-ring-stage{ padding: var(--sp-8) var(--sp-6); border-radius: var(--r-4); }
+.pv-rings{ display: flex; gap: var(--sp-6); flex-wrap: wrap; justify-content: center; }
+.pv-ring-fig{ margin: 0; width: 168px; display: flex; flex-direction: column; align-items: center; gap: var(--sp-3); }
+.pv-ring-fig .ring{ width: 100%; }
+.pv-ring-cap{ font-family: var(--font-marg); font-size: var(--fs-marg); line-height: 1.5; text-align: center; color: var(--paper-62); }
+.pv-btn-mini{ margin-top: var(--sp-2s); font-family: var(--font-marg); font-size: var(--fs-marg); letter-spacing: .08em; color: var(--gold); background: transparent; border: 1px solid var(--edge); border-radius: var(--r-pill); padding: var(--sp-2) var(--sp-3); cursor: pointer; }
+.pv-btn-mini:active{ transform: translateY(1px); }
+
+/* -- §7 Sky demo. */
+.pv-sky{ display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--sp-3); }
+.pv-sky-card{ min-height: 152px; padding: var(--sp-4); border-radius: var(--r-3); overflow: hidden; display: flex; }
+.pv-sky-card .pv-world-in{ justify-content: flex-end; gap: var(--sp-1); height: 100%; }
+.pv-sky-name{ font-family: var(--font-display); font-size: 22px; line-height: 1.05; color: var(--cream); }
+.pv-sky-win{ font-family: var(--font-marg); font-size: var(--fs-marg); line-height: 1.4; color: var(--paper-62); }
+.pv-dawn-card{ margin-top: var(--sp-4); min-height: 150px; padding: var(--sp-6); border-radius: var(--r-3); overflow: hidden; display: flex; }
+.pv-dawn-card .pv-world-in{ justify-content: flex-end; gap: var(--sp-1); height: 100%; }
+@media (max-width: 760px){ .pv-sky{ grid-template-columns: repeat(2, 1fr); } }
+
+/* -- §8 Reduced-motion proof. */
+.pv-motion-stage{ padding: var(--sp-8) var(--sp-6); border-radius: var(--r-4); }
+.pv-motion-in{ align-items: flex-start; gap: var(--sp-6); height: auto; }
+.pv-breather{ width: 72px; height: 72px; border-radius: var(--r-round); background: radial-gradient(circle at 50% 45%, rgba(240,165,131,.55), rgba(240,165,131,.05) 70%); box-shadow: 0 0 40px rgba(240,165,131,.22); }
+.pv-dabs{ display: flex; gap: var(--sp-3); }
+.pv-dabs .dab{ background: rgba(217,164,65,.18); }
+.pv-dabs .dab svg{ color: var(--gold); }
+.pv-motion-ring{ width: 150px; }
+.pv-motion-ring .ring{ width: 100%; }
 </style>
 </head>
 
@@ -273,7 +321,175 @@ body{ background: var(--cream); }
   </div>
 </section>
 
-<!-- __SECTIONS_4_8__ -->
+<!-- ════ §4 · COMPONENT INVENTORY ════════════════════════════════════════════════════════════ -->
+<section class="pv-sec" aria-labelledby="pv-h4">
+  <div class="pv-shell">
+    <p class="pv-eyebrow">§ 4 · Component inventory</p>
+    <h2 class="pv-h" id="pv-h4">One paper-press across the whole kit</h2>
+    <p class="pv-lede">Every tappable shares the one Athar press — a quiet 1px paper settle, no gummy bounce. Buttons, options, tiles, tabs, the HUD, reference marks: real engine components, re-skinned. A wrong answer is a strike, never a colour (law 8) — kept well away from any scripture.</p>
+
+    <div class="reg-page pv-inv">
+      <div class="pv-inv-cell">
+        <p class="pv-inv-lab">Primary CTA · .btn — Page crimson, the ≤10% accent</p>
+        <button class="btn">Begin the lesson</button>
+      </div>
+      <div class="pv-inv-cell reg-orbit grain">
+        <div class="pv-world-in">
+          <p class="pv-inv-lab">On the black world · .btn (cream key) + .btn.ghost (gold thread)</p>
+          <button class="btn">Continue</button>
+          <button class="btn ghost">Not now</button>
+        </div>
+      </div>
+
+      <div class="pv-inv-cell">
+        <p class="pv-inv-lab">Quiz options · .opt — the correct one draws a gold dot</p>
+        <div class="pv-stack">
+          <button class="opt correct">Allah is One — He has no partner</button>
+          <button class="opt">Belief may be split between many gods</button>
+        </div>
+      </div>
+      <div class="pv-inv-cell">
+        <p class="pv-inv-lab">A wrong answer · law 8 — grey mark, one reason, rose retry frame</p>
+        <div class="pv-stack">
+          <button class="opt wrong">The angels can disobey Allah</button>
+          <p class="opt-why">Gently — the angels never disobey; they do only as they are commanded. Look again.</p>
+          <button class="btn retry" style="width:auto;align-self:flex-start;padding-inline:var(--sp-6)">Try again</button>
+        </div>
+      </div>
+
+      <div class="pv-inv-cell">
+        <p class="pv-inv-lab">True / false · .tf</p>
+        <div class="pv-row"><button class="tf">True</button><button class="tf">False</button></div>
+      </div>
+      <div class="pv-inv-cell">
+        <p class="pv-inv-lab">Word bank · .tile</p>
+        <div class="pv-row"><span class="tile">Tawḥīd</span><span class="tile">Īmān</span><span class="tile">Iḥsān</span></div>
+      </div>
+
+      <div class="pv-inv-cell">
+        <p class="pv-inv-lab">Bottom nav · .tab — a ruled tab, never a filled pill</p>
+        <div class="pv-row" style="justify-content:center;gap:var(--sp-6)">
+          <button class="tab"><span data-pv-icon="compass"></span><span>Path</span></button>
+          <button class="tab active"><span data-pv-icon="quran-stand"></span><span>Learn</span></button>
+          <button class="tab"><span data-pv-icon="crescent"></span><span>Sky</span></button>
+        </div>
+      </div>
+      <div class="pv-inv-cell">
+        <p class="pv-inv-lab">HUD stats · .hstat — marginalia, no pill fill</p>
+        <div class="pv-row" style="gap:var(--sp-6)">
+          <button class="hstat"><span data-pv-icon="flame"></span> 7-day streak</button>
+          <button class="hstat"><span data-pv-icon="star"></span> 128 noor</button>
+        </div>
+      </div>
+
+      <div class="pv-inv-cell span2">
+        <p class="pv-inv-lab">Reference marks · .cite / .term — tap to open the sheet</p>
+        <p class="pv-prose" id="pv-inv-cites"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ §5 · SCRIPTURE, UNDER THE LAW ═══════════════════════════════════════════════════════ -->
+<section class="pv-sec" aria-labelledby="pv-h5">
+  <div class="pv-shell">
+    <p class="pv-eyebrow">§ 5 · Scripture, under the law</p>
+    <h2 class="pv-h" id="pv-h5">The Qur'an is the most important thing on the page</h2>
+    <p class="pv-lede">Scripture sits on clean cream — no grain, no ornament — set in Amiri Quran (ayah) or Amiri (hadith), the strongest ink on the page. The always-on <em>pending review</em> pill never leaves; the hadith carries its olive grade. Nothing celebratory sits in or beside it (law 3). Every word below is byte-verbatim and never retyped.</p>
+
+    <p class="pv-prose" id="pv-scripture-demo" style="margin-bottom:var(--sp-8)"></p>
+
+    <div class="pv-scripture" id="pv-scripture-quran"></div>
+    <div class="pv-scripture" id="pv-scripture-hadith"></div>
+    <p class="pv-note pv-note--tight">Qur'an → .ayah / Amiri Quran, no grade. Hadith → general Amiri + the Za'atar-olive grade pill. Both are the same real sheet the reference marks above open.</p>
+  </div>
+</section>
+
+<!-- ════ §6 · THE TAWAF RING ═════════════════════════════════════════════════════════════════ -->
+<section class="pv-sec" aria-labelledby="pv-h6">
+  <div class="pv-shell">
+    <p class="pv-eyebrow">§ 6 · The tawaf ring</p>
+    <h2 class="pv-h" id="pv-h6">Your path, hand-inked and yours alone</h2>
+    <p class="pv-lede">Macro progress is a seeded, deterministic ink-drawing — concentric pilgrim rows of short dab-strokes, a gold thread that closes one arc per circuit, a single static head-dot at the frontier. The centre never animates; only newly-inked frontier dabs draw. Same seed always makes the same ring; two learners never share one.</p>
+
+    <div class="reg-orbit grain pv-ring-stage">
+      <div class="pv-world-in">
+        <div class="pv-rings">
+          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-empty"></div><figcaption class="pv-ring-cap">Empty — 0 / 65, all faint</figcaption></figure>
+          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-mid"></div><figcaption class="pv-ring-cap">Mid — 28 / 65, one circuit sealed, an ember frontier</figcaption></figure>
+          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-full"></div><figcaption class="pv-ring-cap">Complete — 65 / 65, the gold thread closed</figcaption></figure>
+        </div>
+
+        <p class="pv-note" style="color:var(--paper-62);text-align:center;margin-block:var(--sp-8) var(--sp-6)">Only the ember frontier draws — the established ring never re-inks. Watch it again:</p>
+        <div class="pv-rings">
+          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-anim"></div><figcaption class="pv-ring-cap">Animated — the frontier inks itself in</figcaption><button class="pv-btn-mini" id="pv-ring-replay">Replay the draw</button></figure>
+          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-static"></div><figcaption class="pv-ring-cap">Reduced motion — the exact final state, no draw</figcaption></figure>
+        </div>
+
+        <p class="pv-note" style="color:var(--paper-62);text-align:center;margin-block:var(--sp-8) var(--sp-6)">Two learners, two fingerprints — same progress, a different seed:</p>
+        <div class="pv-rings">
+          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-seedA"></div><figcaption class="pv-ring-cap">seed 4711 · 65 / 65</figcaption></figure>
+          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-seedB"></div><figcaption class="pv-ring-cap">seed 9973 · 65 / 65</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ §7 · THE PRAYER-CLOCK SKY ═══════════════════════════════════════════════════════════ -->
+<section class="pv-sec" aria-labelledby="pv-h7">
+  <div class="pv-shell">
+    <p class="pv-eyebrow">§ 7 · The prayer-clock sky</p>
+    <h2 class="pv-h" id="pv-h7">The home warms with the time of day</h2>
+    <p class="pv-lede">The black home carries a Sky tint keyed to the real prayer clock — five temperatures, manual times, no location and no network. It is truthful ambience, never a reward and never the metric. A separate, capped horizon-apricot degree grows with course progress — ambient warmth only.</p>
+
+    <div class="pv-sky">
+      <div class="reg-orbit pv-sky-card" data-sky="dawn"><div class="pv-world-in"><div class="pv-sky-name">Dawn</div><div class="pv-sky-win">Fajr → Duha</div></div></div>
+      <div class="reg-orbit pv-sky-card" data-sky="day"><div class="pv-world-in"><div class="pv-sky-name">Day</div><div class="pv-sky-win">Duha → Maghrib · unwarmed</div></div></div>
+      <div class="reg-orbit pv-sky-card" data-sky="dusk"><div class="pv-world-in"><div class="pv-sky-name">Dusk</div><div class="pv-sky-win">Maghrib → Isha</div></div></div>
+      <div class="reg-orbit pv-sky-card" data-sky="night"><div class="pv-world-in"><div class="pv-sky-name">Night</div><div class="pv-sky-win">Isha → midnight</div></div></div>
+      <div class="reg-orbit pv-sky-card" data-sky="lastthird"><div class="pv-world-in"><div class="pv-sky-name">Last third</div><div class="pv-sky-win">midnight → Fajr</div></div></div>
+    </div>
+
+    <div class="reg-orbit pv-dawn-card" style="--dawn:.55">
+      <div class="pv-world-in">
+        <div class="pv-sky-name">The --dawn degree</div>
+        <div class="pv-sky-win">course-progress warmth on the horizon — ambient, capped, never the metric (the ring is the metric)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ §8 · REDUCED MOTION ═════════════════════════════════════════════════════════════════ -->
+<section class="pv-sec" aria-labelledby="pv-h8">
+  <div class="pv-shell">
+    <p class="pv-eyebrow">§ 8 · Reduced motion</p>
+    <h2 class="pv-h" id="pv-h8">Turn it on and everything goes still</h2>
+    <p class="pv-lede">Two triggers share one quieting: your device's “Reduce Motion” setting, and the in-app override below. Under either, the sky stops breathing, the ink dabs rest where they land, every transition shortens to nothing, and the ring shows its finished state — calm, never frozen mid-gesture.</p>
+
+    <div class="reg-orbit grain pv-motion-stage">
+      <div class="pv-world-in pv-motion-in">
+        <div class="pv-row" style="gap:var(--sp-8);align-items:center">
+          <div class="pv-stack" style="align-items:center;gap:var(--sp-2s)">
+            <div class="sky-breathe halo pv-breather"></div>
+            <span class="pv-ring-cap">the sky breathes</span>
+          </div>
+          <div class="pv-stack" style="align-items:center;gap:var(--sp-2s)">
+            <div class="pv-dabs"><span class="dab" data-pv-icon="spark"></span><span class="dab" data-pv-icon="star"></span><span class="dab" data-pv-icon="spark"></span></div>
+            <span class="pv-ring-cap">dabs drift, then rest</span>
+          </div>
+          <div class="pv-stack" style="align-items:center;gap:var(--sp-2s)">
+            <div class="pv-motion-ring ring-mount" id="pv-motion-ring"></div>
+            <span class="pv-ring-cap">the ring</span>
+          </div>
+        </div>
+        <button class="btn ghost" id="pv-motion-toggle" aria-pressed="false" style="width:auto;align-self:flex-start;padding-inline:var(--sp-6)">Turn on reduce motion</button>
+        <p class="pv-note" id="pv-motion-state" style="color:var(--paper-62)">motion: system — following your OS “Reduce Motion” setting</p>
+        <p class="pv-ring-cap" style="text-align:left;color:var(--paper-45)">The in-app override stamps <code>data-motion="reduce"</code> on the page root; your device's setting is the second, independent path.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
 </main>
 
@@ -338,7 +554,104 @@ body{ background: var(--cream); }
     if (el) el.innerHTML = AW.icon('check', { size: '16px' });
   });
 
-  /*__TASK2_WIRING__*/
+  /* ===== §4-§8 wiring (Task 2) — all real AW.* output ===================================== */
+
+  /* A ring rendered guaranteed-static: toggle the root override around the call so AW.reducedMotion()
+     reports true at generation time and the generator omits the ink-draw animation. */
+  function ringStatic(cfg) {
+    var prev = root.getAttribute('data-motion');
+    root.setAttribute('data-motion', 'reduce');
+    var svg = AW.ringSVG(cfg);
+    if (prev === null) root.removeAttribute('data-motion'); else root.setAttribute('data-motion', prev);
+    return svg;
+  }
+  function mountRingStatic(id, cfg) {   /* NOT added to ringSlots — stays static regardless of toggle. */
+    var el = document.getElementById(id);
+    if (el && AW.ringSVG) el.innerHTML = ringStatic(cfg);
+  }
+
+  /* Generic icon slots — any [data-pv-icon] gets its scene/glyph icon (§4 tabs, HUD, §8 dabs). */
+  document.querySelectorAll('[data-pv-icon]').forEach(function (el) {
+    el.innerHTML = AW.icon(el.getAttribute('data-pv-icon'));
+  });
+
+  /* §4 — the reference marks are real AW.cite output; wire them to open the real sheets. */
+  var invCites = document.getElementById('pv-inv-cites');
+  if (invCites && AW.cite) {
+    invCites.innerHTML = 'Tap a mark to open its sheet — the verse ' +
+      AW.cite('hujurat-49-15', 'al-Ḥujurāt 49:15') +
+      ', or the gloss for <span class="term" data-term="aqeedah">aqeedah</span>.';
+    AW.wire(invCites, demoCfg);
+  }
+
+  /* §5 — scripture on clean cream, byte-verbatim from demoCfg. Mirrors AW.sheetRef's face-split
+     (Qur'an → .ayah/Amiri Quran, no grade; hadith → Amiri + olive grade pill) + the always-on
+     pending pill. Arabic / translation / provenance / grade set via textContent (exact bytes).
+     Nothing celebratory renders here (law 3). */
+  function renderScripture(el, r) {
+    if (!el || !r) return;
+    var isQuran = !r.grade;
+    el.innerHTML =
+      '<div class="r-src"></div>' +
+      '<div class="' + (isQuran ? 'r-ar ayah' : 'r-ar') + '" lang="ar" dir="rtl"></div>' +
+      '<div class="r-mean"></div>' +
+      '<div class="r-ref"></div>' +
+      '<div class="r-pills"><span class="r-pill">unverified · pending review</span>' +
+      (r.grade ? '<span class="r-pill grade"></span>' : '') + '</div>';
+    el.querySelector('.r-src').textContent = (r.kind || 'The verse') + ' · ' + r.ref;
+    el.querySelector('.r-ar').textContent = r.ar;
+    el.querySelector('.r-mean').textContent = r.mean;
+    el.querySelector('.r-ref').textContent = r.src;
+    if (r.grade) el.querySelector('.r-pill.grade').textContent = r.grade;
+  }
+  renderScripture(document.getElementById('pv-scripture-quran'), demoCfg.refs['hujurat-49-15']);
+  renderScripture(document.getElementById('pv-scripture-hadith'), demoCfg.refs['muslim-8']);
+
+  /* §5 — the framing prose + wired reference marks (the ENG-06 mechanism: tap → the sheet). */
+  var scripDemo = document.getElementById('pv-scripture-demo');
+  if (scripDemo && AW.cite) {
+    scripDemo.innerHTML = 'Tap a reference to open its sheet — the verse ' +
+      AW.cite('hujurat-49-15', 'al-Ḥujurāt 49:15') + ', the hadith ' +
+      AW.cite('muslim-8', 'Ṣaḥīḥ Muslim 8') + ', or the gloss for ' +
+      '<span class="term" data-term="aqeedah">aqeedah</span>.';
+    AW.wire(scripDemo, demoCfg);
+  }
+
+  /* §6 — the tawaf ring at three states, an animated/static pair, and two seeds (uniqueness). */
+  mountRing('pv-ring-empty', { seed: 4711, atomsDone: 0, size: 300 });
+  mountRing('pv-ring-mid', { seed: 4711, atomsDone: 28, size: 300 });
+  mountRing('pv-ring-full', { seed: 4711, atomsDone: 65, circuitsDone: 4, size: 300 });
+  mountRing('pv-ring-anim', { seed: 4711, atomsDone: 28, size: 300 });
+  mountRingStatic('pv-ring-static', { seed: 4711, atomsDone: 28, size: 300 });
+  mountRing('pv-ring-seedA', { seed: 4711, atomsDone: 65, circuitsDone: 4, size: 300 });
+  mountRing('pv-ring-seedB', { seed: 9973, atomsDone: 65, circuitsDone: 4, size: 300 });
+
+  /* §6 replay — re-render the animated ring so the ember frontier draws again (only the frontier). */
+  var replay = document.getElementById('pv-ring-replay');
+  if (replay) replay.addEventListener('click', function () {
+    var el = document.getElementById('pv-ring-anim');
+    if (el && AW.ringSVG) el.innerHTML = AW.ringSVG({ seed: 4711, atomsDone: 28, size: 300 });
+  });
+
+  /* §8 — the motion demo ring (follows the toggle) + the reduced-motion toggle. */
+  mountRing('pv-motion-ring', { seed: 4711, atomsDone: 28, size: 300 });
+
+  var mToggle = document.getElementById('pv-motion-toggle');
+  var mState = document.getElementById('pv-motion-state');
+  function setReduced(on) {
+    /* Stamp data-motion on <html> — the in-app override path (the OS setting is the second path).
+       CSS quiets the breathe + dabs and collapses UI durations; re-rendering the rings makes
+       AW.ringSVG omit the draw, so each ring shows its finished state, still. */
+    root.setAttribute('data-motion', on ? 'reduce' : 'system');
+    ringSlots.forEach(function (s) { s.el.innerHTML = AW.ringSVG(s.cfg); });
+    if (mToggle) { mToggle.setAttribute('aria-pressed', String(on)); mToggle.textContent = on ? 'Turn motion back on' : 'Turn on reduce motion'; }
+    if (mState) mState.textContent = on
+      ? 'motion: reduced — the sky is still, the dabs rest, the ring shows finished'
+      : 'motion: system — following your OS “Reduce Motion” setting';
+  }
+  if (mToggle) mToggle.addEventListener('click', function () {
+    setReduced(root.getAttribute('data-motion') !== 'reduce');
+  });
 })();
 </script>
 
