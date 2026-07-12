@@ -320,6 +320,21 @@
   [data-sky="night"]     { --sky-tint: linear-gradient(180deg, rgba(27,22,52,.55) 0%, rgba(27,22,52,0) 50%); }
   [data-sky="lastthird"] { --sky-tint: linear-gradient(180deg, rgba(37,29,70,.62) 0%, rgba(37,29,70,.12) 60%); }
 
+  /* -- --dawn progress warmth (§7.3 / MOT-01) — ONE subordinate degree of horizon apricot on the
+     home Orbit shell, its opacity driven by var(--dawn, 0) (JS sets --dawn on <html> at boot from a
+     progress proxy, capped at 0.6 by skyDawn). Ambient, never the metric (the Ring is the metric):
+     a faint bottom-horizon glow — distinct from the prayer-clock --sky-tint, which warms from the
+     TOP — so it can never be mistaken for the progress ring or compete with the clock tint /
+     scripture. --dawn defaults to 0 ⇒ invisible until progress accrues; layered at z-index 0, under
+     the Ring (.ring is z-index 1). A static glow, not motion — it stays under reduced motion. */
+  .reg-orbit::before{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:150px;
+    pointer-events:none; z-index:0; border-radius:inherit;
+    background: radial-gradient(125% 130% at 50% 128%,
+                rgba(240,165,131,.30), rgba(240,165,131,.06) 55%, transparent 78%);
+    opacity: var(--dawn, 0);
+  }
+
   /* -- Thermal state (§3.3 / D-A8) — the TOKEN layer of a shape-first ramp. Shape is the primary
      channel (colour-blind + cream-contrast safe); colour is secondary. The hollow-ring / half-dab /
      filled+check SHAPE rules belong to plan 09 — here we map --st and the legend ramp bar only. */
