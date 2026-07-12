@@ -909,46 +909,48 @@
 @layer motion {
 
   /* ==========================================================================================
-     The one motion vocabulary (MOT-01 / D-39) + the global reduced-motion quieting (MOT-04 / D-42).
-     Every keyframe is transform / opacity / filter ONLY, so each loop composites on the GPU and
-     never triggers layout/paint. Durations + easings are applied via var(--dur-*)/var(--ease-*)
-     tokens exclusively — no easing curve or spring literal is authored here. Because `motion` is
-     the LAST-declared layer (line 16), the token-collapse below outranks the @layer tokens
-     defaults, so a component that forgets its own guard is quieted anyway — the deliberate
-     a11y-safety property of the cascade order.
+     The one Athar motion vocabulary (MOT-01 · §2.7) + the global reduced-motion quieting (MOT-04).
+     One easing family (--ease) carries every register verb; each keyframe is transform / opacity /
+     stroke-dashoffset ONLY, so it composites on the GPU and never triggers layout/paint. UI
+     durations are ≤300ms and collapse to 1ms under reduced motion; the ambient loops (4–6s) are
+     STOPPED outright, never spun at 1ms. Because `motion` is the LAST-declared layer (line 16), the
+     token-collapse below outranks the @layer tokens defaults, so a screen that forgets its own
+     guard is quieted anyway — the deliberate a11y-safety property of the cascade order.
      ========================================================================================== */
 
-  /* -- Vocabulary keyframes ------------------------------------------------------------------ */
+  /* -- Vocabulary keyframes — one per register verb (§2.7) ----------------------------------- */
 
-  /* Confetti fall — transform-only descent + full spin, fading to a soft settle (ported Gen-3). */
-  @keyframes fall {
-    to { transform: translateY(840px) rotate(720deg); opacity: .3; }
+  /* settle (Page) — cards, options, sheet, quiz reveals: ink soaks up over a short rise. */
+  @keyframes settle {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* Companion bob — a gentle, weightless float (paired with --dur-amb / --ease-gentle). */
-  @keyframes bob {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-9px); }
-  }
-
-  /* Breathing ring — a slow scale+opacity pulse around an available / active node. */
+  /* breathe (Sky) — the ambient night / du'a halo: a slow opacity swell, alternating forever. */
   @keyframes breathe {
-    0%, 100% { transform: scale(1);    opacity: .55; }
-    50%      { transform: scale(1.08); opacity: .9; }
+    from { opacity: .72; }
+    to   { opacity: 1; }
   }
 
-  /* Companion glow — an indigo→warm drop-shadow loop under the lantern (art-glow rgba, smoothly
-     interpolable; re-tokenized off Gen-3's blue to the brand indigo shadow hue). */
-  @keyframes glow {
-    0%, 100% { filter: drop-shadow(0 3px 8px rgba(37,54,206,.35)); }
-    50%      { filter: drop-shadow(0 0 24px rgba(255,190,60,.75)); }
+  /* breathe-halo (Sky) — the halo variant adds a gentle scale to the opacity swell. */
+  @keyframes breathe-halo {
+    from { opacity: .72; transform: scale(.97); }
+    to   { opacity: 1;   transform: scale(1); }
   }
 
-  /* Pop-in — overshoot entrance for node pop-in / combo / icon reveal (paired with --ease-spring).
-     Starts at scale(.9)+opacity, never scale(0): nothing in the real world appears from nothing. */
-  @keyframes popIn {
-    0%   { transform: scale(.9); opacity: 0; }
-    100% { transform: scale(1);  opacity: 1; }
+  /* drift (Circle) — a pilgrim ink-dab arriving around the Ring: translate + rotate + fade in. */
+  @keyframes drift {
+    0%   { transform: translate(var(--dx, 8px), var(--dy, -6px)) rotate(28deg); opacity: 0; }
+    34%  { opacity: .85; }
+    58%  { transform: translate(0, 0) rotate(0); opacity: .9; }
+    100% { transform: translate(0, 0) rotate(0); opacity: 1; }
+  }
+
+  /* stamp (Festival) — the wax-seal press: instant fill, a tiny settle from a hair over-scale. */
+  @keyframes stamp {
+    0%   { transform: scale(1.03); opacity: 0; }
+    60%  { opacity: 1; }
+    100% { transform: scale(1); }
   }
 
   /* draw (Orbit) — the Ring's ink-stroke reveal (MOT-01 / §2.7). Plays ONCE on the newly-inked
@@ -966,27 +968,34 @@
      The centre never animates (law 9): the head-dot is static, only frontier dabs draw. */
   .ring { display: block; position: relative; z-index: 1; width: 100%; height: auto; }
 
-  /* -- Ambient loops (MOT-01) — the ONLY infinite motion in the system; all three are enumerated
-     in the reduced-motion block below and stopped outright there (never spun at 1ms). */
-  .companion { display: inline-block; animation: bob var(--dur-amb) var(--ease-gentle) infinite; }
-  .companion svg { animation: glow var(--dur-amb) var(--ease-gentle) infinite; }
-  .breathing-ring { animation: breathe var(--dur-amb) var(--ease-gentle) infinite; }
+  /* -- Ambient loops — the ONLY infinite motion in the system (4–6s). The Sky breathe swells the
+     night halo; the halo hook eases a gentle scale too. Both are enumerated in the reduced-motion
+     block below and stopped outright there. Any future ambient opts in via [data-ambient] so the
+     one quieting rule covers it. */
+  .sky-breathe { animation: breathe var(--dur-amb) var(--ease) infinite alternate; }
+  .sky-breathe.halo { transform-origin: center; animation: breathe-halo var(--dur-amb) var(--ease) infinite alternate; }
 
-  /* -- Reduced motion (MOT-04 / D-42) — ONE quieting, TWO triggers sharing rule bodies:
+  /* -- Reduced motion (MOT-04) — ONE quieting, TWO triggers sharing rule bodies:
        · @media (prefers-reduced-motion: reduce)  — the OS setting
-       · [data-motion="reduce"]                   — the Phase-2 awba_prefs boot-stamp
-     BOTH are required: the boot-stamp fires ONLY on the in-app override, never the OS setting
-     (Pitfall 2). Collapsing --dur-1..6 to 1ms shortens every finite CSS transition/entrance that
-     references a token — state-communicating motion (press, sheet-in) SHORTENS, never vanishes.
-     Infinite loops are STOPPED with animation:none — collapsing --dur-amb would spin them at a
-     ~1ms period (a seizure risk, the opposite of the goal), so --dur-amb is deliberately NOT
-     collapsed; the loop is stopped outright. JS motion (confetti/WAAPI) self-guards at call time. */
+       · [data-motion="reduce"]                   — the awba_prefs boot-stamp
+     BOTH are required: the boot-stamp fires ONLY on the in-app override, never the OS setting.
+     Collapsing the finite UI durations to 1ms SHORTENS every state-communicating transition/reveal
+     (press, fade, settle, sheet-in, stamp, draw, drift) — it never vanishes. The ambient loops are
+     STOPPED with animation:none (collapsing --dur-amb would spin them at a ~1ms period — a seizure
+     risk), so --dur-amb / --dur-amb-drift are deliberately NOT collapsed. The drift dabs also stop
+     (they render settled-in-place). JS motion self-guards at call time via AW.reducedMotion(). */
   @media (prefers-reduced-motion: reduce) {
-    :root { --dur-1: 1ms; --dur-2: 1ms; --dur-3: 1ms; --dur-4: 1ms; --dur-5: 1ms; --dur-6: 1ms; }
-    .companion, .breathing-ring, [data-ambient] { animation: none !important; }
+    :root {
+      --dur-press: 1ms; --dur-fade: 1ms; --dur-stamp: 1ms; --dur-draw: 1ms;
+      --dur-settle: 1ms; --dur-sheet: 1ms; --dur-drift: 1ms;
+    }
+    .sky-breathe, .dab, [data-ambient] { animation: none !important; }
   }
-  [data-motion="reduce"] { --dur-1: 1ms; --dur-2: 1ms; --dur-3: 1ms; --dur-4: 1ms; --dur-5: 1ms; --dur-6: 1ms; }
-  [data-motion="reduce"] .companion,
-  [data-motion="reduce"] .breathing-ring,
+  [data-motion="reduce"] {
+    --dur-press: 1ms; --dur-fade: 1ms; --dur-stamp: 1ms; --dur-draw: 1ms;
+    --dur-settle: 1ms; --dur-sheet: 1ms; --dur-drift: 1ms;
+  }
+  [data-motion="reduce"] .sky-breathe,
+  [data-motion="reduce"] .dab,
   [data-motion="reduce"] [data-ambient] { animation: none !important; }
 }
