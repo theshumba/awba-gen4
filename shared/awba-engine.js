@@ -839,8 +839,83 @@ AW.GLYPHS = {
 };
 
 /* ============================================================
-   COMPONENTS  ·  Phase 3/4 placeholder — shared UI builders (D-22)
+   COMPONENTS  ·  Phase 3 — shared UI builders (D-22)
    ============================================================ */
+
+/* ---------- escapeHtml / escapeAttr — output-encoding for the dynamic string params this phase
+   controls (AW.icon `label` → aria-label, AW.cite `label`). Closes the ENGINE-CONTRACT §6
+   no-escaping gap for exactly these params (T-03-04 mitigate); author-content scripture injected
+   verbatim by sheetRef/sheetTerm stays as-is per the accept disposition (T-03-03). `&` is escaped
+   FIRST so the entities the later passes introduce are never double-escaped. */
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+function escapeAttr(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+/* ---------- AW.icon(name, {size?, label?}) — the ONE a11y icon accessor (FND-04 / D-32).
+   Resolves the raw SVG from AW.KIT first, AW.GLYPHS second; a missing/malformed name returns ''
+   (never a broken image or tofu, never throws). Injects attributes immediately after the first
+   `<svg` — String.prototype.replace with a STRING first-arg replaces only the first match, so a
+   nested `<svg>` can never be hit. Decorative by default (`aria-hidden="true" focusable="false"`),
+   or an accessible image (`role="img" aria-label="…"`, label escaped) when `label` is passed.
+   `size` sets width + height:auto so the viewBox preserves each icon's aspect (portrait scenes
+   stay 0.8, square glyphs accept a square size). Raw AW.KIT[name] access stays available for
+   legacy runner code. */
+AW.icon = function (name, opts) {
+  opts = opts || {};
+  var raw = (AW.KIT && AW.KIT[name]) || (AW.GLYPHS && AW.GLYPHS[name]) || '';
+  if (raw.indexOf('<svg') !== 0) return ''; // missing/malformed → empty, never throw
+  var attrs = opts.label
+    ? 'role="img" aria-label="' + escapeAttr(opts.label) + '"' // ACC-02 forward-compat
+    : 'aria-hidden="true" focusable="false"'; // default: decorative
+  if (opts.size) attrs += ' style="width:' + escapeAttr(opts.size) + ';height:auto"';
+  return raw.replace('<svg', '<svg ' + attrs); // string first-arg = first match only
+};
+
+/* ---------- AW.cite(id, label) — synchronous, DOM-free, parse-time (Josh's data files call it
+   inside cfg string concatenation, so it must resolve at author time with no DOM). The outer
+   `<span class="cite" data-ref="ID">…</span>` shape is BYTE-preserved so the Phase-2 validator
+   stub and its /data-ref=["']([^"']+)["']/g extractor keep matching — breaking it breaks the
+   Phase-4 port gate. The leading cite glyph precedes the escaped label (id is an author slug key,
+   left verbatim to stay byte-identical to the validator stub). */
+AW.cite = function (id, label) {
+  return (
+    '<span class="cite" data-ref="' +
+    id +
+    '">' +
+    AW.icon('cite') +
+    escapeHtml(label == null ? '' : label) +
+    '</span>'
+  );
+};
+
+/* ---------- AW.wire(root, cfg) — binds citation + term chips on a rendered DOM root to their
+   sheets: `.cite[data-ref]` → AW.sheetRef(cfg.refs, id); `.term[data-term]` → AW.sheetTerm(
+   cfg.terms, id). sheetRef/sheetTerm are defined below and resolved at click time, so forward
+   reference is safe. Runs entirely at call time (no parse-time DOM access). */
+AW.wire = function (root, cfg) {
+  cfg = cfg || {};
+  root.querySelectorAll('.cite[data-ref]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      AW.sheetRef(cfg.refs || {}, el.dataset.ref);
+    });
+  });
+  root.querySelectorAll('.term[data-term]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      AW.sheetTerm(cfg.terms || {}, el.dataset.term);
+    });
+  });
+};
 
 /* ============================================================
    RUNNERS  ·  Phase 4 placeholder — AwbaLesson(cfg) / AwbaReview(cfg) (D-22)
