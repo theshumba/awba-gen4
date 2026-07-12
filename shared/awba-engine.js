@@ -55,6 +55,11 @@ AW.S = (function () {
   var KEY = 'awba_state';
   var CURRENT = 1;
   var mem = null;
+  /* memFallback (W1): set true when load() resolves from an in-memory COPY of an
+     unrecognized-schema blob it deliberately declined to persist (the fall-through below).
+     set() consults it to skip persist() so a later write (e.g. the ringSeed lazy accessor)
+     can never clobber that untouched-on-disk blob. */
+  var memFallback = false;
 
   function defaultState() {
     return { schemaVersion: CURRENT, noor: 0, returns: 0, lastDay: null, days: [], stars: {}, chests: {} };
@@ -210,7 +215,11 @@ AW.S = (function () {
              survives on disk exactly as-is for a build that DOES recognize it (or a human) to
              resolve later. */
           var isPlainObj = typeof s === 'object' && !Array.isArray(s);
-          return isPlainObj ? Object.assign({}, s) : defaultState();
+          if (isPlainObj) {
+            memFallback = true; // W1: work from a copy; never persist over the untouched blob
+            return Object.assign({}, s);
+          }
+          return defaultState();
         }
       } catch (e) {
         /* corrupted awba_state blob — fall through to legacy/default resolution */
@@ -246,7 +255,7 @@ AW.S = (function () {
     set: function (k, v) {
       if (!mem) mem = load();
       mem[k] = v;
-      persist(mem);
+      if (!memFallback) persist(mem); // W1: skip persist over an unrecognized-schema blob
     },
   };
 })();
@@ -1083,6 +1092,31 @@ AW.animate = function (el, keyframes, durToken, easeToken) {
   var ease = cs.getPropertyValue(easeToken).trim() || 'ease'; // linear(…) passes straight through
   if (AW.reducedMotion()) dur = 1; // self-guard — WAAPI won't see the CSS collapse
   return el.animate(keyframes, { duration: dur, easing: ease, fill: 'both' }); // .finished awaitable
+};
+
+/* ============================================================
+   RING  ·  MOT-01 — the tawaf fingerprint (macro progress; the maker's mark, law 10)
+   --------------------------------------------------------------------------------------------
+   The Orbit `draw` verb realised as progressive inking. A seeded, DETERMINISTIC SVG generator:
+   the same `seed` + same `atomsDone`/`circuitsDone` yield BYTE-IDENTICAL markup across reloads
+   and machines. The seed is the only entropy — minted once (below) and stored; the generator
+   path never touches `Date` or `Math.random`. Ink-bleed is stroke/opacity variance + round
+   caps, never a blur filter (perf + no runtime turbulence). See spec §6.
+   ============================================================ */
+
+/* AW.ringSeed() — the learner's stable maker's mark. Read once from awba_state.ringSeed; if
+   absent, mint a 32-bit unsigned int and persist it ONCE through the AW.S seam (D-24 — never
+   localStorage directly). A lazy accessor BY DESIGN, not a schemaVersion bump: adding a random
+   field to defaultState() would rewrite legacy blobs on load and break the blob-survives-
+   untouched state tests. Math.random here mints the seed only (call-time, once); the generator
+   below is seeded from it and never calls Math.random itself. Parse-time-safe (no DOM). */
+AW.ringSeed = function () {
+  var s = AW.S.get('ringSeed', null);
+  if (s === null || typeof s !== 'number') {
+    s = (Math.random() * 0x100000000) >>> 0;
+    AW.S.set('ringSeed', s);
+  }
+  return s;
 };
 
 /* ============================================================
