@@ -12,15 +12,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { makeLS, loadEngine } = require('./ls-stub');
-
-function pad(n) {
-  return String(n).padStart(2, '0');
-}
-function ymd(offsetDays) {
-  const d = new Date();
-  d.setDate(d.getDate() + offsetDays);
-  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
-}
+const { ymd } = require('./date-helpers');
 
 function seedState(overrides) {
   return Object.assign(

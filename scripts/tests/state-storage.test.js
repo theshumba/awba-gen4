@@ -17,15 +17,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const { makeLS, loadEngine, readOut } = require('./ls-stub');
-
-function pad(n) {
-  return String(n).padStart(2, '0');
-}
-function ymd(offsetDays) {
-  const d = new Date();
-  d.setDate(d.getDate() + offsetDays);
-  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
-}
+const { ymd } = require('./date-helpers');
 
 /* ---------- (1) lossless migration — every legacy field lands intact ---------- */
 
@@ -258,6 +250,3 @@ test('AW.prefs isolates soundMuted/motion under awba_prefs, independent of awba_
     assert.ok(!('motion' in stateBlob), 'motion must never appear in the progress blob');
   }
 });
-
-// exported only so state-helpers.test.js can reuse the exact same local-date helper if desired
-module.exports = { ymd };
