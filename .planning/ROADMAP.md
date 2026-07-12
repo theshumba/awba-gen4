@@ -58,17 +58,26 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Mode:** mvp
 **Depends on**: Phase 1 (consumes design tokens)
 **Requirements**: FND-04, ENG-06, MOT-01, MOT-03, MOT-04
+**Design authority (re-cut 2026-07-12):** the Athar System — `03-UI-SPEC-ATHAR.md` supersedes `03-UI-SPEC.md`; the old D-44 gate is superseded by plan 03-12's gate.
 **Success Criteria** (what must be TRUE):
-  1. One icon registry renders every branded icon from the canonical 20-SVG source (inline, `aria-hidden`, single source of truth); the gold lantern is an authored variant, not a regex recolor, and no duplicate per-page icon constants remain.
+  1. One icon registry renders every branded icon from the canonical 20-SVG source (inline, `aria-hidden`, single source of truth); every icon follows the one currentColor + `--icon-accent` re-inking model (no runtime recolour, no bespoke colour variants — lantern-gold deleted per D-A6), and no duplicate per-page icon constants remain.
   2. Tapping a citation chip opens a bottom sheet (RTL Arabic, verbatim translation, source line, grade pill for hadith, `unverified · pending review` pill); tapping a term opens its gloss sheet (Arabic, transliteration, word, definition, context).
-  3. Every tappable surface (buttons, options, tiles, chips, sheet rows, tabs) shares the same token-defined press physics and one `linear()`-easing motion vocabulary used across nodes, sheets, and quiz feedback.
-  4. With `prefers-reduced-motion` set (or the user override on), all animation quietens globally — a reviewer toggles the OS setting and confetti, bob/glow, and transitions all calm down.
-**Plans**: 5 plans
-  - [x] 03-01-PLAN.md — CSS: 4 tokens + @layer components chrome + gummy press + @layer motion vocabulary + dual-trigger reduced-motion (MOT-01/03/04)
-  - [x] 03-02-PLAN.md — Engine KIT: AW.KIT (20 scenes + authored lantern-gold) + AW.GLYPHS (13) + AW.UNIT_ICON (FND-04)
+  3. Every tappable surface (buttons, options, tiles, chips, sheet rows, tabs) shares the same token-defined paper-press and the one Athar motion vocabulary (one easing family, one register verb per screen) across nodes, sheets, and quiz feedback.
+  4. With `prefers-reduced-motion` set (or the user override on), all animation quietens globally — a reviewer toggles the OS setting and every ambient loop and transition calms down; the Ring renders its final state statically.
+  5. The Ring generator (deterministic seeded tawaf-fingerprint, §6 acceptance criteria) and the prayer-clock sky (manual-set times, 5 canvas temperatures, §7 acceptance criteria) are built and proven before Phase 4 consumes them.
+**Plans**: 12 plans (03-05 superseded by the Athar re-cut 2026-07-12)
+  - [x] 03-01-PLAN.md — CSS: 4 tokens + @layer components chrome + gummy press + @layer motion vocabulary + dual-trigger reduced-motion (MOT-01/03/04) — visual values superseded by re-cut
+  - [x] 03-02-PLAN.md — Engine KIT: AW.KIT (20 scenes + authored lantern-gold) + AW.GLYPHS (13) + AW.UNIT_ICON (FND-04) — lantern-gold later deleted by 03-08
   - [x] 03-03-PLAN.md — Engine COMPONENTS: AW.icon/cite/wire/sheet(+sheetRef face-split/sheetTerm)/confetti/reducedMotion/animate + components.test.js (FND-04/ENG-06/MOT-04)
-  - [x] 03-04-PLAN.md — preview.html sections 9-12: icon grid + verbatim citation/gloss sheets + press inventory + motion & reduced-motion demos (D-43 living reference)
-  - [ ] 03-05-PLAN.md — D-44 human visual gate (checkpoint, autonomous:false)
+  - [x] 03-04-PLAN.md — preview.html sections 9-12 (old-look living reference; rebuilt by 03-11)
+  - [~] 03-05-PLAN.md — SUPERSEDED (old D-44 gate; never walked — replaced by 03-12)
+  - [ ] 03-06-PLAN.md — Tokens + base re-ground: @layer tokens rewrite + register architecture (§2/§3)
+  - [ ] 03-07-PLAN.md — Ring generator spike — deterministic tawaf-fingerprint SPOF (§6)
+  - [ ] 03-08-PLAN.md — Icon re-inking: currentColor + `--icon-accent` model, lantern-gold deleted (§5)
+  - [ ] 03-09-PLAN.md — Components re-skin + motion vocabulary rewrite (§4)
+  - [ ] 03-10-PLAN.md — Prayer-clock sky: 5 temperatures, manual times, `--dawn` (§7)
+  - [ ] 03-11-PLAN.md — New Athar preview.html — the living reference (§8)
+  - [ ] 03-12-PLAN.md — Final human visual gate: §12 prechecks + §9 checklist (checkpoint, autonomous:false)
 **UI hint**: yes
 
 ### Phase 4: Lesson & Review Engine Port + Detail Layer
@@ -79,9 +88,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Success Criteria** (what must be TRUE):
   1. All 15 Gen-3 lesson files and 4 review files render end-to-end unmodified through `AwbaLesson(cfg)` / `AwbaReview(cfg)` — every beat type (read, frame, verse, panel×4, depth, reflect, mc, tf, tile) displays correctly and scripture text is byte-identical to source.
   2. Sensitive-content holds are verified present by an explicit grep/diff pass, recorded: U4-03 absent entirely, U3-13 not surfaced, U3-16 principle-only, group-namings held.
-  3. Quiz and review mechanics match Gen-3 exactly: +12 noor/correct, +15 reflect, combo chip at 2+, PERFECT at 3-streak, stars 3/2/1 (never 0), amber-never-red; review 14s soft timer, timeout → auto-skip → untimed no-noor circle-back, any timeout caps at 2★, gold lamp progress, no back button.
-  4. The post-lesson sequence (verdict → noor claim → returns → done) plays as choreography — staggered star/stat reveals, noor count-up, orange returns hero with a week calendar that never shows a "miss" state — and combo pill / PERFECT / confetti fire only on meta-progress screens, never over a scripture (`verse`) beat.
-  5. Calm, dignified sound cues play on correct/incorrect/complete with a visible mute toggle; 3-Lens depth renders as an individually-expanding accordion (amber/blue/green, fixed order) that never blocks Continue; every Arabic span carries `lang="ar" dir="rtl"`, ayah text uses the Quran face, and ﷺ / honorifics / brackets render intact.
+  3. Quiz and review mechanics match Gen-3 exactly in NUMBERS, expressed in Athar language: +12 noor/correct, +15 reflect, combo accrual at 2+ (gold-dot accrual per D-A14), 3-streak celebration (Athar expression, never the retired PERFECT overlay), stars 3/2/1 (never 0), grey-ink mercy — never red, never amber (Athar law 8); review 14s soft timer, timeout → auto-skip → untimed no-noor circle-back, any timeout caps at 2★, gold progress thread, no back button.
+  4. The post-lesson sequence (verdict → noor claim → returns → done) plays as choreography — staggered star/stat reveals, noor count-up, a returns hero in Athar language with a week calendar that never shows a "miss" state — and celebratory expressions (gold-dot accrual, streak celebration, Ring draw, Festival stamp) fire only on meta-progress screens, never over a scripture (`verse`) beat.
+  5. Calm, dignified sound cues play on correct/incorrect/complete with a visible mute toggle; 3-Lens depth renders as an individually-expanding accordion (three visually distinct lenses per the Athar contract, fixed order) that never blocks Continue; every Arabic span carries `lang="ar" dir="rtl"`, ayah text uses the Quran face, and ﷺ / honorifics / brackets render intact.
 **Plans**: TBD
 **UI hint**: yes
 
@@ -91,8 +100,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Depends on**: Phase 4 (proven engine, state derivation, components, motion)
 **Requirements**: LRN-01, LRN-02, LRN-03, LRN-04, LRN-05, LRN-06, LRN-07, CNT-03, RWD-04, MOT-02
 **Success Criteria** (what must be TRUE):
-  1. The Learn page renders the full journey — HUD (course chip, returns flame, noor, all tappable), "NEVER BREAKS" streak band, daily ayah card, 4 colour-coded unit header cards, a real connected winding node path, and a tab bar — and the path animates (nodes pop in with overshoot, path fills as units complete).
-  2. Node states derive live from storage — locked (gentle shake + microcopy on tap, never a buzzer), available, active (breathing ring + lantern mascot), done (stars), review nodes gold, chest nodes gift-framed — and unlock order matches Gen-3 exactly (strictly sequential incl. m3/m3b, m2/m2b splits; chest after review), verified by walking the storage-driven states.
+  1. The Learn page renders the full journey — HUD (course chip, returns, noor, all tappable), streak band, daily ayah card, 4 unit header cards (identity via chapter-term + icon per Athar — no unit colour-coding), a real connected winding node path, and a tab bar — and the path animates per the Athar motion vocabulary as units complete.
+  2. Node states derive live from storage — locked (gentle microcopy on tap, never a buzzer), available, active (Athar active-node treatment — no mascot, aniconism), done (stars), review nodes gold, chest nodes gift-framed — and unlock order matches Gen-3 exactly (strictly sequential incl. m3/m3b, m2/m2b splits; chest after review), verified by walking the storage-driven states.
   3. Node popups anchor to their node with edge clamping + arrow offset (singleton, outside-tap closes) showing START / REVIEW / LEGENDARY CTAs with noor hints; tapping a chest grants a deterministic +25 noor exactly once (idempotent), never randomized.
   4. The daily ayah rotates through the verified 7-verse pool by day-of-year (no monthly repeat) and is revealed reverently; streak / noor / course-switcher bottom sheets share one implementation (Fiqh/Seerah/Qur'an as coming-soon rows), and every tab (Practice/Returns/Profile/More) gives designed coming-soon feedback — never a dead tap.
   5. Navigating path↔lesson↔review cross-fades/morphs via Cross-Document View Transitions wired on every page, degrading gracefully to a normal navigation on browsers without support (e.g. Firefox).

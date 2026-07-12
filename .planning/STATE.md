@@ -9,7 +9,7 @@ last_activity: 2026-07-12
 progress:
   total_phases: 7
   completed_phases: 2
-  total_plans: 11
+  total_plans: 18
   completed_plans: 10
   percent: 29
 ---
