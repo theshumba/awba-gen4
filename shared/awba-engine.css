@@ -179,11 +179,11 @@
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; margin: 0; }
   body {
-    font-family: var(--font-body);
+    font-family: var(--font-work);
     font-size: var(--fs-body);
     line-height: 1.6;
     color: var(--ink);
-    background: var(--bg);
+    background: var(--cream);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -197,7 +197,7 @@
     min-height: 100dvh;
     display: grid;
     grid-template-rows: auto 1fr auto;   /* HUD · stage · footer */
-    background: var(--paper);
+    background: var(--cream);
   }
   /* Row 1 — HUD (course/close, progress segments, streak, noor). Safe-area inset clears the notch. */
   .app-hud {
@@ -221,9 +221,10 @@
     padding-right: env(safe-area-inset-right);
   }
 
-  /* Desktop >=600px — the intentional centered column on a calm cream backdrop with a very subtle
-     brand wash (soft radial, no hard edge). The column breathes with the viewport via
-     min(100dvh, 900px) — never a fixed phone height, never a fake bezel. */
+  /* Desktop >=600px — the intentional centered column laid on the cream ground with a very subtle
+     warm-ink wash at the top edge (soft radial, no hard edge) so the paper column reads as laid on
+     cloth. The column breathes with the viewport via min(100dvh, 900px) — never a fixed phone
+     height, never a fake bezel. Separation is Athar: the sheet shadow + a manuscript keyline. */
   @media (min-width: 600px) {
     body {
       display: flex;
@@ -231,44 +232,138 @@
       justify-content: center;
       padding: var(--sp-8) var(--sp-4);
       background:
-        radial-gradient(135% 95% at 50% -20%, var(--card), transparent 62%),
-        var(--bg);
+        radial-gradient(135% 95% at 50% -20%, rgba(19,16,19,.035), transparent 62%),
+        var(--cream);
     }
     .app-shell {
       width: 100%;
       max-width: 480px;
       min-height: min(100dvh, 900px);
-      border-radius: var(--r-2xl);
-      box-shadow: var(--sh-4), var(--sh-inset);
+      border-radius: var(--r-4);
+      box-shadow: var(--sh-3), var(--keyline);
       overflow: hidden;
     }
   }
 
-  /* -- Focus-visible (ACC-01 foundation) ----------------------------------------------------
-     Shown on :focus-visible only (keyboard) — never on plain :focus — so there is no ring flash
-     on tap. A 3px accent outline + a soft companion ring; radius follows the element's own shape. */
-  :focus-visible {
-    outline: 3px solid var(--accent);
-    outline-offset: 2px;
-    box-shadow: 0 0 0 6px var(--accent-soft);
-  }
-  /* On the gold / night legendary register the calm-field accent ring loses contrast against the
-     dark gradient — switch it to the brighter --gold2 (set data-register="night" on that shell). */
-  [data-register="night"] :focus-visible {
-    outline-color: var(--gold2);
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--gold2) 32%, transparent);
+  /* -- Grain — one tile over every ground (§2.6 / law 6). A .grain wrapper's ::after tiles
+     var(--grain) at the per-ground --go opacity, below content (content sets position:relative;
+     z-index:1). Scripture wrappers set --go:0 — scripture always sits on clean ground (law 3). */
+  .grain { position: relative; }
+  .grain::after{
+    content:""; position:absolute; inset:0;
+    background-image: var(--grain);
+    background-repeat: repeat;
+    background-size: 128px 128px;               /* native tile size */
+    opacity: var(--go, .05);                    /* per-ground density knob */
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 0;                                 /* sits below content */
   }
 
-  /* -- Arabic & RTL laws (D-09 / D-10) ------------------------------------------------------
-     letter-spacing:0 ALWAYS (Arabic is connected — any tracking breaks joining); line-height
-     >=1.8 for diacritics; containers isolate so mixed Arabic/Latin lines never scramble.
-     General Arabic (hadith, du'a, terms) -> Amiri. Verbatim Qur'an -> Amiri Quran, via .ayah ONLY.
-     The ayah-vs-hadith choice is per-instance Phase-4 logic (refs[id].kind), so this layer must
-     NOT blanket-bind --font-quran to all Arabic; the :not(.ayah) guard keeps the two cleanly split. */
-  [lang="ar"]:not(.ayah),
-  .arabic:not(.ayah) {
-    font-family: var(--font-ar);
-    font-size: var(--fs-ar-body);
+  /* -- Register grounds (§3.1 / law 1) — four scoped grounds; ONE ground per screen. Each sets its
+     ink colour, grain density (--go), and --icon-accent (the single expressive detail colour icons
+     in plan 08 + components in plan 09 consume). position:relative anchors each ground's decorative
+     ::before/::after to the ground, not the viewport. */
+  .reg-orbit{                       /* ORBIT — Kiswah Black; the sacred centre (home, Ring, celebrations) */
+    position: relative;
+    background-color: var(--kiswah);
+    color: var(--cream);
+    --go: .07;
+    --icon-accent: var(--gold);
+  }
+  .reg-page{                        /* PAGE — Haram Cream; ~90% of minutes (lessons, quizzes, reading, journal) */
+    position: relative;
+    background-color: var(--cream);
+    color: var(--ink);
+    --go: .028;
+    --rule: rgba(19,16,19,.12);
+    --icon-accent: var(--crimson);
+  }
+  .reg-sky-night{                   /* SKY (night) — Last Third gradient; Sky-OWNED screens (du'a, night, constellation) */
+    position: relative;
+    background: linear-gradient(180deg,#1C1637 0%, var(--lastthird) 58%, #2C2150 100%);
+    color: var(--moonmilk);
+    --go: .07;
+    --icon-accent: var(--gold);
+  }
+  .reg-sky-night::before{           /* Horizon Apricot glow at the base — the dawn edge (ambient, not a ground) */
+    content:""; position:absolute; left:0; right:0; bottom:0; height:120px; pointer-events:none; z-index:0;
+    background: radial-gradient(130% 130% at 50% 122%,
+                rgba(240,165,131,.34), rgba(240,165,131,.08) 55%, transparent 78%);
+  }
+  .reg-festival{                    /* FESTIVAL — Haram Cream + folk trim; thresholds ONLY (plates, poster, Eid, share) */
+    position: relative;
+    background-color: var(--cream);
+    color: var(--ink);
+    --go: .028;
+    --rule: rgba(19,16,19,.12);
+    --icon-accent: var(--harissa);
+    padding-top: 44px;              /* clears the checker trim */
+  }
+  .reg-festival::before{            /* the folk checker trim — Festival's only chrome, day-of only */
+    content:""; position:absolute; left:0; right:0; top:0; height:16px; z-index:0;
+    background: conic-gradient(var(--harissa) 25%, var(--cream) 0 50%, var(--mustard) 0 75%, var(--cream) 0);
+    background-size:16px 16px; border-bottom:2px solid rgba(19,16,19,.65);
+  }
+
+  /* -- Sky-as-tint over the Orbit ground (§3.2 / D-A7) — law 1: home stays Kiswah, Sky is a TINT,
+     never a second ground. The additive overlay is keyed to the real prayer clock (§7); the ground
+     underneath stays Kiswah, so "Sky appears only as a token." */
+  .reg-orbit[data-sky]{ position: relative; }
+  .reg-orbit[data-sky]::after{      /* distinct from .grain::after — a screen uses one, or nests wrappers */
+    content:""; position:absolute; inset:0; pointer-events:none; z-index:0;
+    background-image: var(--sky-tint, none);
+  }
+  [data-sky="dawn"]      { --sky-tint: linear-gradient(180deg, rgba(240,165,131,.30) 0%, rgba(240,165,131,0) 46%); }
+  [data-sky="day"]       { --sky-tint: none; }                       /* neutral — the black world, unwarmed */
+  [data-sky="dusk"]      { --sky-tint: linear-gradient(180deg, rgba(37,29,70,.42) 0%, rgba(37,29,70,0) 42%); }
+  [data-sky="night"]     { --sky-tint: linear-gradient(180deg, rgba(27,22,52,.55) 0%, rgba(27,22,52,0) 50%); }
+  [data-sky="lastthird"] { --sky-tint: linear-gradient(180deg, rgba(37,29,70,.62) 0%, rgba(37,29,70,.12) 60%); }
+
+  /* -- Thermal state (§3.3 / D-A8) — the TOKEN layer of a shape-first ramp. Shape is the primary
+     channel (colour-blind + cream-contrast safe); colour is secondary. The hollow-ring / half-dab /
+     filled+check SHAPE rules belong to plan 09 — here we map --st and the legend ramp bar only. */
+  [data-state="not-yet"]  { --st: var(--powder); }   /* cool end */
+  [data-state="progress"] { --st: var(--ember);  }   /* warming */
+  [data-state="mastered"] { --st: var(--gold);   }   /* earned */
+  .ramp-bar{
+    height: 6px; border-radius: var(--r-pill);
+    background: linear-gradient(90deg, var(--powder) 4%, var(--ember) 52%, var(--gold) 96%);
+  }
+
+  /* -- Focus-visible (ACC-01 / D-A10) -------------------------------------------------------
+     Shown on :focus-visible only (keyboard) — never on plain :focus — so there is no ring flash
+     on tap. Recoloured per ground for AA-safe non-text contrast (≥3:1): Crimson on cream grounds
+     (6.13:1), Gold on dark grounds (6.95–8.40:1). The default ring is Crimson (Page is ~90% of
+     minutes); the dark-ground scopes override to Gold. Radius follows the element's own shape. */
+  :focus-visible {
+    outline: 3px solid var(--crimson);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--crimson) 22%, transparent);
+  }
+  .reg-page :focus-visible,
+  .reg-festival :focus-visible {
+    outline-color: var(--crimson);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--crimson) 22%, transparent);
+  }
+  .reg-orbit :focus-visible,
+  .reg-sky-night :focus-visible,
+  .nightfall :focus-visible {
+    outline-color: var(--gold);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--gold) 28%, transparent);
+  }
+
+  /* -- Scripture law + Arabic/RTL (§2.2 · laws 3/4) -----------------------------------------
+     letter-spacing:0 ALWAYS (Arabic is connected — any tracking breaks joining); containers
+     isolate so mixed Arabic/Latin lines never scramble. Law 4: general Arabic UI stays on the
+     Readex workhorse (NOT Amiri). Law 3: scripture is Amiri only — .ayah = Amiri Quran (verbatim
+     ayat), .scripture = general Amiri (hadith/du'a); ≥1.35–1.5× the adjacent Latin, strongest ink,
+     the ONLY glow in the system (dark grounds only). The per-instance ayah-vs-hadith choice is
+     Phase-4 logic (refs[id].kind); this layer keeps the classes cleanly split. */
+  [lang="ar"]:not(.ayah):not(.scripture),
+  .arabic:not(.ayah):not(.scripture) {
+    font-family: var(--font-work);
+    font-size: var(--fs-ar-ui);
     line-height: 1.8;
     letter-spacing: 0;
     unicode-bidi: isolate;
@@ -281,7 +376,40 @@
     direction: rtl;
     unicode-bidi: isolate;
   }
+  .scripture {
+    font-family: var(--font-scrip);
+    font-size: var(--fs-scrip);
+    line-height: 1.85;
+    letter-spacing: 0;
+    direction: rtl;
+    unicode-bidi: isolate;
+  }
+  /* The only glow any element may carry — scripture, on dark grounds ONLY (§2.2). */
+  .reg-sky-night .ayah, .reg-sky-night .scripture,
+  .nightfall .ayah,     .nightfall .scripture {
+    text-shadow: 0 0 24px rgba(244,240,247,.30);
+  }
   [dir="rtl"] { unicode-bidi: isolate; }
+
+  /* -- Nightfall interstitial (§3.4) — a Page MOMENT, not a register of its own: the weightiest
+     ayah dims the room. Full-bleed overlay on ground --nightfall, text --moonmilk, one ayah under
+     scripture law (with its permitted glow above), the "Sit with this" line in Courier marginalia,
+     and tap-to-return. No grain over the ayah (clean ground); nothing celebratory adjacent. */
+  .nightfall{
+    position: fixed; inset: 0; z-index: 80;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--sp-6);
+    padding: var(--sp-8);
+    background-color: var(--nightfall);
+    color: var(--moonmilk);
+    text-align: center;
+  }
+  .nightfall .sit{
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    letter-spacing: .1em;
+    color: var(--paper-62);
+  }
 }
 
 @layer components {
