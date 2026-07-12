@@ -80,6 +80,8 @@ No other tokens are added. All confetti / gradient / combo colours reuse existin
 
 **Exceptions (inherited):** 44px minimum interactive touch target (sheet close `.sheet-x`, tab items, icon-only controls); `env(safe-area-inset-*)`; the `--sp-2` 2px hairline (gummy shadow base unit).
 
+> **`--sp-2`-as-chip-padding justification (checker Dimension-5 flag, resolved):** inline chips (`.cite`, `.combo`) use 2px vertical padding deliberately — they sit INSIDE running text or a floating pill where a 4px (`--sp-1`) vertical pad would break line rhythm (chips must not exceed line-height × font-size). This extends the documented hairline exception to "inline-chip vertical padding"; it remains a pre-approved token value, and no new off-grid literal is introduced. Block-level components never use `--sp-2` for padding.
+
 ---
 
 ## Typography
@@ -149,6 +151,8 @@ Everything else (sheet body text, icon tiles, grips, dividers) stays neutral cre
 | Confetti `.cf` | brand palette: `--gold2`, `--flame2`, `--accent-bright`, `--green` (never rainbow) | falls, self-removes |
 
 > **Mercy-coherence decision recorded (combo = gold, not amber):** Gen-3's combo chip used an amber-adjacent tone (`#FFF3DE`/`#F2C879`/`#B4720C`). In Gen-4, **amber is the learner-miss colour** — a celebratory combo chip in amber risks conflation with a miss. Phase 3 moves the combo chip to the **gold / noor** register (`--gold`/`--gold2`/`--gold-deep`), cleanly separating celebration-gold from mercy-amber. This is an intentional elevation over Gen-3, not a redirect.
+>
+> **u4 overlap addendum (checker Dimension-3 flag, resolved):** u4's accent scale shares hex values with the gold register (u4 IS the gold unit — by design since Gen-3, where combo was also gold-family on gold-unit pages). On u4 pages the combo chip is differentiated by SHAPE (pill + spark glyph), MOTION (pop-in entrance, ambient chrome is static), and POSITION (floating HUD-adjacent, not in-flow) — hue alone is not the celebration signal. This is intentional; the D-44 human visual gate includes a u4-context check item so the owner confirms the chip still reads as an event on gold-unit pages.
 
 **Semantic — mercy (inherited):** `--amber` is the ONLY learner-miss colour. No red for learner error, ever. `--danger` (#8A2E28) is reserved for safety callouts — it does NOT appear anywhere in this phase's components (the pending pill is neutral, not danger).
 
