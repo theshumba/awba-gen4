@@ -130,6 +130,43 @@ test('migration: corrupted awba_days entry and non-JSON awba_stars are tolerated
   assert.equal(out.days.length, 1); // garbage date filtered, valid one kept
 });
 
+/* ---------- (4b) schemaVersion fall-through — non-destructive handling (CR-01) ----------
+   load() must NEVER silently overwrite an existing awba_state blob whose schemaVersion is
+   missing, non-numeric, or greater than CURRENT — those cases previously fell through into
+   migrateFromLegacy()/defaultState(), both of which unconditionally persist() over the real
+   blob, permanently destroying real noor/stars/days/chests data. Each case below asserts (a)
+   the real field values are still readable in-session, and (b) the on-disk awba_state blob is
+   left byte-identical to what was seeded — never re-persisted. */
+
+test('load: schemaVersion missing on an existing awba_state blob is never destructively overwritten (CR-01)', () => {
+  const rawBlob = JSON.stringify({ noor: 77, returns: 2, stars: { u1m1: 3 }, days: [], chests: {} });
+  const ls = makeLS({ awba_state: rawBlob });
+  const sandbox = loadEngine(ls, `globalThis.__out = { noor: AW.S.get('noor', 0), stars: AW.S.get('stars', {}) };`);
+  const out = readOut(sandbox);
+  assert.equal(out.noor, 77);
+  assert.deepEqual(out.stars, { u1m1: 3 });
+  assert.equal(ls._dump().awba_state, rawBlob, 'the seeded blob must survive untouched on disk');
+});
+
+test('load: schemaVersion greater than CURRENT (from-the-future blob) is used in-memory without being persisted over (CR-01)', () => {
+  const rawBlob = JSON.stringify({ schemaVersion: 2, noor: 500, returns: 9, stars: { u4r: 3 }, days: [], chests: {} });
+  const ls = makeLS({ awba_state: rawBlob });
+  const sandbox = loadEngine(ls, `globalThis.__out = { noor: AW.S.get('noor', 0), stars: AW.S.get('stars', {}) };`);
+  const out = readOut(sandbox);
+  assert.equal(out.noor, 500);
+  assert.deepEqual(out.stars, { u4r: 3 });
+  assert.equal(ls._dump().awba_state, rawBlob, 'the seeded future-schema blob must survive untouched on disk');
+});
+
+test('load: non-numeric schemaVersion ("x") is treated as unrecognized, not silently discarded (CR-01)', () => {
+  const rawBlob = JSON.stringify({ schemaVersion: 'x', noor: 33, returns: 1, stars: {}, days: [], chests: {} });
+  const ls = makeLS({ awba_state: rawBlob });
+  const sandbox = loadEngine(ls, `globalThis.__out = { noor: AW.S.get('noor', 0) };`);
+  const out = readOut(sandbox);
+  assert.equal(out.noor, 33);
+  assert.equal(ls._dump().awba_state, rawBlob, 'the seeded blob with a non-numeric schemaVersion must survive untouched on disk');
+});
+
 /* ---------- (5) prefs isolation from progress state ---------- */
 
 test('AW.prefs isolates soundMuted/motion under awba_prefs, independent of awba_state', () => {

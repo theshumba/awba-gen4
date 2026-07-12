@@ -185,6 +185,19 @@ AW.S = (function () {
           persist(migrated);
           return migrated;
         }
+        if (s) {
+          /* Anything else for a successfully-parsed, truthy blob — schemaVersion missing,
+             non-numeric (incl. NaN/string), or GREATER than CURRENT (a newer tab's build
+             already wrote a higher schemaVersion, or a stray DevTools edit dropped the field).
+             This build doesn't recognize the shape well enough to migrate it, but the existing
+             blob may hold real noor/stars/days/chests progress that must never be silently
+             wiped (non-destructive principle, D-15 extends here). Work this session from an
+             in-memory COPY only — deliberately do NOT persist() over the untouched blob, so it
+             survives on disk exactly as-is for a build that DOES recognize it (or a human) to
+             resolve later. */
+          var isPlainObj = typeof s === 'object' && !Array.isArray(s);
+          return isPlainObj ? Object.assign({}, s) : defaultState();
+        }
       } catch (e) {
         /* corrupted awba_state blob — fall through to legacy/default resolution */
       }
