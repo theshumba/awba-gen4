@@ -167,6 +167,10 @@ function checkBeats(beats, errors) {
             errors.push(
               label + ' (read): marker.type must be one of ' + MARKER_TYPES.join('/') + ', got "' + (beat.marker && beat.marker.type) + '"'
             );
+          } else if (beat.marker.body === undefined) {
+            // ENGINE-CONTRACT.md §1: marker:{type: fact|remember|fard|angle, body} — body is
+            // part of the documented shape, not optional (WR-03).
+            errors.push(label + ' (read): missing required field "marker.body"');
           }
         }
         break;
@@ -244,6 +248,10 @@ function checkBeats(beats, errors) {
             errors.push(label + ' (tile): solution word(s) not found in bank: ' + missing.join(', '));
           }
         }
+        // ENGINE-CONTRACT.md §1: tile | prompt, bank[], solution[], good, gentle — good/gentle
+        // are part of the documented shape, same as mc/tf (WR-03).
+        if (beat.good === undefined) errors.push(label + ' (tile): missing required field "good"');
+        if (beat.gentle === undefined) errors.push(label + ' (tile): missing required field "gentle"');
         break;
     }
   });
