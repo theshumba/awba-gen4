@@ -458,358 +458,333 @@ if (typeof globalThis !== 'undefined') globalThis.AW = AW;
 
 /* AW.KIT — the ONE branded icon registry (FND-04 / D-31 / D-34). The 20 canonical scene
    icons, hand-transformed from _ORGANIZED/03_Branding/icon files/ (240x300 portrait, blob
-   halo + brand-blue + sparkle). Per-icon deterministic transform: strip the root namespace
-   attr + width="240" / height="300"; KEEP viewBox="0 0 240 300" so CSS scales without
-   distorting its 0.8 portrait aspect. Backtick literals, one icon per entry with a naming
-   comment; geometry copied byte-for-byte (svgo NOT run — the id-collision audit found zero
-   ids / defs / gradients across all 20 files, so there is nothing for it to fix). This is the
-   only icon source going forward — Gen-3's embedded 12-icon KIT and the per-page duplicate
-   constants are superseded. The lantern-gold variant + AW.GLYPHS join this section below. */
+   halo + structural body + accent mark). Re-inked to the Athar one-colour model (03-08 /
+   D-A5, §5.1): structural ink -> currentColor (inherits the register ground), halos/panels ->
+   currentColor at authored low opacity or fill="none", and the single sparkle/star mark ->
+   var(--icon-accent). No runtime recolour — this is an authored, committed pass; geometry
+   (every d="...") is byte-identical to the source. KEEP viewBox="0 0 240 300" so CSS scales
+   without distorting the 0.8 portrait aspect. Backtick literals, one icon per entry with a
+   naming comment. This is the only icon source going forward — Gen-3's embedded 12-icon KIT
+   and the per-page duplicate constants are superseded. AW.GLYPHS joins this section below. */
 AW.KIT = {
   // 01-mosque
   mosque: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <rect x="44" y="230" width="152" height="12" rx="6" fill="#2536CE"></rect>
-        <rect x="55" y="120" width="15" height="112" rx="7" fill="#2E6BF5"></rect>
-        <rect x="170" y="120" width="15" height="112" rx="7" fill="#2E6BF5"></rect>
-        <circle cx="62.5" cy="116" r="9" fill="#2E6BF5"></circle>
-        <circle cx="177.5" cy="116" r="9" fill="#2E6BF5"></circle>
-        <circle cx="62.5" cy="100" r="3" fill="#2536CE"></circle>
-        <circle cx="177.5" cy="100" r="3" fill="#2536CE"></circle>
-        <rect x="80" y="150" width="80" height="82" rx="8" fill="#2E6BF5"></rect>
-        <path d="M84 152 C84 120 96 108 108 100 C114 96 116 90 120 84 C124 90 126 96 132 100 C144 108 156 120 156 152 Z" fill="#2E6BF5"></path>
-        <line x1="120" y1="86" x2="120" y2="74" stroke="#2536CE" stroke-width="4" stroke-linecap="round"></line>
-        <path d="M120 74 a5 5 0 1 1 4 2" fill="none" stroke="#2536CE" stroke-width="3.5" stroke-linecap="round"></path>
-        <path d="M110 232 L110 196 Q120 182 130 196 L130 232 Z" fill="#F4F7FE"></path>
-        <path d="M90 196 L90 182 Q96 175 102 182 L102 196 Z" fill="#F4F7FE"></path>
-        <path d="M138 196 L138 182 Q144 175 150 182 L150 196 Z" fill="#F4F7FE"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(42,72)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(196,152) scale(0.8)"></path>
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <rect x="44" y="230" width="152" height="12" rx="6" fill="currentColor"></rect>
+        <rect x="55" y="120" width="15" height="112" rx="7" fill="currentColor"></rect>
+        <rect x="170" y="120" width="15" height="112" rx="7" fill="currentColor"></rect>
+        <circle cx="62.5" cy="116" r="9" fill="currentColor"></circle>
+        <circle cx="177.5" cy="116" r="9" fill="currentColor"></circle>
+        <circle cx="62.5" cy="100" r="3" fill="currentColor"></circle>
+        <circle cx="177.5" cy="100" r="3" fill="currentColor"></circle>
+        <rect x="80" y="150" width="80" height="82" rx="8" fill="currentColor"></rect>
+        <path d="M84 152 C84 120 96 108 108 100 C114 96 116 90 120 84 C124 90 126 96 132 100 C144 108 156 120 156 152 Z" fill="currentColor"></path>
+        <line x1="120" y1="86" x2="120" y2="74" stroke="currentColor" stroke-width="4" stroke-linecap="round"></line>
+        <path d="M120 74 a5 5 0 1 1 4 2" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"></path>
+        <path d="M110 232 L110 196 Q120 182 130 196 L130 232 Z" fill="none"></path>
+        <path d="M90 196 L90 182 Q96 175 102 182 L102 196 Z" fill="none"></path>
+        <path d="M138 196 L138 182 Q144 175 150 182 L150 196 Z" fill="none"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(42,72)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(196,152) scale(0.8)"></path>
 </svg>`,
   // 02-prayer-carpet
   carpet: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <path d="M78 72 Q78 62 88 62 L152 62 Q162 62 162 72 L162 214 L78 214 Z" fill="#2E6BF5"></path>
-        <path d="M88 82 L152 82 L152 204 L88 204 Z" fill="none" stroke="#2536CE" stroke-width="3"></path>
-        <path d="M104 150 L104 116 Q104 100 120 100 Q136 100 136 116 L136 150 Z" fill="#F4F7FE"></path>
-        <line x1="120" y1="112" x2="120" y2="128" stroke="#2536CE" stroke-width="3" stroke-linecap="round"></line>
-        <circle cx="120" cy="132" r="5" fill="#2536CE"></circle>
-        <path d="M108 170 l6 8 l-6 8 l-6 -8 Z" fill="#2536CE"></path>
-        <path d="M132 170 l6 8 l-6 8 l-6 -8 Z" fill="#2536CE"></path>
-        <g stroke="#2536CE" stroke-width="3" stroke-linecap="round">
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <path d="M78 72 Q78 62 88 62 L152 62 Q162 62 162 72 L162 214 L78 214 Z" fill="currentColor"></path>
+        <path d="M88 82 L152 82 L152 204 L88 204 Z" fill="none" stroke="currentColor" stroke-width="3"></path>
+        <path d="M104 150 L104 116 Q104 100 120 100 Q136 100 136 116 L136 150 Z" fill="none"></path>
+        <line x1="120" y1="112" x2="120" y2="128" stroke="currentColor" stroke-width="3" stroke-linecap="round"></line>
+        <circle cx="120" cy="132" r="5" fill="currentColor"></circle>
+        <path d="M108 170 l6 8 l-6 8 l-6 -8 Z" fill="currentColor"></path>
+        <path d="M132 170 l6 8 l-6 8 l-6 -8 Z" fill="currentColor"></path>
+        <g stroke="currentColor" stroke-width="3" stroke-linecap="round">
           <line x1="84" y1="214" x2="84" y2="224"></line><line x1="94" y1="214" x2="94" y2="225"></line><line x1="104" y1="214" x2="104" y2="224"></line><line x1="114" y1="214" x2="114" y2="225"></line><line x1="124" y1="214" x2="124" y2="224"></line><line x1="134" y1="214" x2="134" y2="225"></line><line x1="144" y1="214" x2="144" y2="224"></line><line x1="154" y1="214" x2="154" y2="225"></line>
         </g>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(178,88) scale(0.85)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(178,88) scale(0.85)"></path>
 </svg>`,
   // 03-lantern
   lantern: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <circle cx="120" cy="46" r="6" fill="none" stroke="#2536CE" stroke-width="3"></circle>
-        <line x1="120" y1="52" x2="120" y2="66" stroke="#2536CE" stroke-width="3"></line>
-        <path d="M100 78 L140 78 L131 66 L109 66 Z" fill="#2E6BF5"></path>
-        <circle cx="120" cy="62" r="4" fill="#2536CE"></circle>
-        <path d="M98 82 L142 82 Q151 112 142 152 L133 170 L107 170 L98 152 Q89 112 98 82 Z" fill="#2E6BF5"></path>
-        <path d="M112 98 L128 98 L128 152 L112 152 Z" fill="#EAF0FE"></path>
-        <path d="M120 116 c-5 5 -6 12 0 18 c6 -6 5 -13 0 -18 z" fill="#2536CE"></path>
-        <path d="M108 170 L132 170 L120 186 Z" fill="#2E6BF5"></path>
-        <circle cx="120" cy="190" r="4" fill="#2536CE"></circle>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(168,110)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(74,132) scale(0.8)"></path>
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <circle cx="120" cy="46" r="6" fill="none" stroke="currentColor" stroke-width="3"></circle>
+        <line x1="120" y1="52" x2="120" y2="66" stroke="currentColor" stroke-width="3"></line>
+        <path d="M100 78 L140 78 L131 66 L109 66 Z" fill="currentColor"></path>
+        <circle cx="120" cy="62" r="4" fill="currentColor"></circle>
+        <path d="M98 82 L142 82 Q151 112 142 152 L133 170 L107 170 L98 152 Q89 112 98 82 Z" fill="currentColor"></path>
+        <path d="M112 98 L128 98 L128 152 L112 152 Z" fill="none"></path>
+        <path d="M120 116 c-5 5 -6 12 0 18 c6 -6 5 -13 0 -18 z" fill="currentColor"></path>
+        <path d="M108 170 L132 170 L120 186 Z" fill="currentColor"></path>
+        <circle cx="120" cy="190" r="4" fill="currentColor"></circle>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(168,110)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(74,132) scale(0.8)"></path>
 </svg>`,
   // 04-lanterns
   lanterns: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <path d="M46 58 Q120 46 194 58" fill="none" stroke="#2536CE" stroke-width="4" stroke-linecap="round"></path>
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <path d="M46 58 Q120 46 194 58" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
         <g>
-          <line x1="72" y1="62" x2="72" y2="96" stroke="#2536CE" stroke-width="3"></line>
-          <path d="M60 100 L84 100 L79 92 L65 92 Z" fill="#2E6BF5"></path>
-          <path d="M60 102 L84 102 Q89 124 84 150 L78 162 L66 162 L60 150 Q55 124 60 102 Z" fill="#2E6BF5"></path>
-          <rect x="68" y="114" width="8" height="34" fill="#EAF0FE"></rect>
-          <path d="M66 162 L78 162 L72 172 Z" fill="#2536CE"></path>
+          <line x1="72" y1="62" x2="72" y2="96" stroke="currentColor" stroke-width="3"></line>
+          <path d="M60 100 L84 100 L79 92 L65 92 Z" fill="currentColor"></path>
+          <path d="M60 102 L84 102 Q89 124 84 150 L78 162 L66 162 L60 150 Q55 124 60 102 Z" fill="currentColor"></path>
+          <rect x="68" y="114" width="8" height="34" fill="none"></rect>
+          <path d="M66 162 L78 162 L72 172 Z" fill="currentColor"></path>
         </g>
         <g>
-          <line x1="120" y1="60" x2="120" y2="82" stroke="#2536CE" stroke-width="3"></line>
-          <path d="M106 86 L134 86 L128 78 L112 78 Z" fill="#2E6BF5"></path>
-          <path d="M106 88 L134 88 Q140 114 134 144 L127 158 L113 158 L106 144 Q100 114 106 88 Z" fill="#2E6BF5"></path>
-          <rect x="114" y="102" width="12" height="40" fill="#EAF0FE"></rect>
-          <path d="M113 158 L127 158 L120 170 Z" fill="#2536CE"></path>
+          <line x1="120" y1="60" x2="120" y2="82" stroke="currentColor" stroke-width="3"></line>
+          <path d="M106 86 L134 86 L128 78 L112 78 Z" fill="currentColor"></path>
+          <path d="M106 88 L134 88 Q140 114 134 144 L127 158 L113 158 L106 144 Q100 114 106 88 Z" fill="currentColor"></path>
+          <rect x="114" y="102" width="12" height="40" fill="none"></rect>
+          <path d="M113 158 L127 158 L120 170 Z" fill="currentColor"></path>
         </g>
         <g>
-          <line x1="168" y1="62" x2="168" y2="104" stroke="#2536CE" stroke-width="3"></line>
-          <path d="M156 108 L180 108 L175 100 L161 100 Z" fill="#2E6BF5"></path>
-          <path d="M156 110 L180 110 Q185 132 180 158 L174 170 L162 170 L156 158 Q151 132 156 110 Z" fill="#2E6BF5"></path>
-          <rect x="164" y="122" width="8" height="34" fill="#EAF0FE"></rect>
-          <path d="M162 170 L174 170 L168 180 Z" fill="#2536CE"></path>
+          <line x1="168" y1="62" x2="168" y2="104" stroke="currentColor" stroke-width="3"></line>
+          <path d="M156 108 L180 108 L175 100 L161 100 Z" fill="currentColor"></path>
+          <path d="M156 110 L180 110 Q185 132 180 158 L174 170 L162 170 L156 158 Q151 132 156 110 Z" fill="currentColor"></path>
+          <rect x="164" y="122" width="8" height="34" fill="none"></rect>
+          <path d="M162 170 L174 170 L168 180 Z" fill="currentColor"></path>
         </g>
-        <circle cx="46" cy="118" r="3" fill="#2536CE"></circle>
-        <circle cx="196" cy="150" r="3" fill="#2536CE"></circle>
+        <circle cx="46" cy="118" r="3" fill="currentColor"></circle>
+        <circle cx="196" cy="150" r="3" fill="currentColor"></circle>
 </svg>`,
   // 05-crescent-star
   crescent: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <path d="M118 78 A72 72 0 1 0 118 222 A58 58 0 1 1 118 78 Z" fill="#2E6BF5"></path>
-        <path d="M0 -18 L5.3 -5.6 L18 -5.6 L7.6 2.7 L11.1 15 L0 7.4 L-11.1 15 L-7.6 2.7 L-18 -5.6 L-5.3 -5.6 Z" fill="#2536CE" transform="translate(168,150)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(178,96)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(160,210) scale(0.8)"></path>
-        <circle cx="196" cy="150" r="3" fill="#2536CE"></circle>
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <path d="M118 78 A72 72 0 1 0 118 222 A58 58 0 1 1 118 78 Z" fill="currentColor"></path>
+        <path d="M0 -18 L5.3 -5.6 L18 -5.6 L7.6 2.7 L11.1 15 L0 7.4 L-11.1 15 L-7.6 2.7 L-18 -5.6 L-5.3 -5.6 Z" fill="var(--icon-accent)" transform="translate(168,150)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(178,96)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(160,210) scale(0.8)"></path>
+        <circle cx="196" cy="150" r="3" fill="currentColor"></circle>
 </svg>`,
   // 06-woman-hijab
   hijab: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <rect x="62" y="250" width="116" height="10" rx="5" fill="#2536CE"></rect>
-        <path d="M120 52 C154 52 168 80 168 108 C168 132 158 152 152 164 L88 164 C82 152 72 132 72 108 C72 80 86 52 120 52 Z" fill="#2E6BF5"></path>
-        <ellipse cx="120" cy="96" rx="25" ry="29" fill="#C9D7F5"></ellipse>
-        <path d="M92 152 L148 152 L172 250 L68 250 Z" fill="#2E6BF5"></path>
-        <path d="M104 152 L120 178 L136 152 Z" fill="#2536CE" opacity="0.28"></path>
-        <path d="M95 160 L80 210 Q78 218 86 218 Q92 218 92 210 L102 170 Z" fill="#2E6BF5"></path>
-        <path d="M145 160 L160 210 Q162 218 154 218 Q148 218 148 210 L138 170 Z" fill="#2E6BF5"></path>
-        <path d="M0 2 C-2 -2 -8 -2 -8 2 C-8 6 -3 8 0 11 C3 8 8 6 8 2 C8 -2 2 -2 0 2 Z" fill="#2536CE" transform="translate(120,116) scale(0.75)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(186,138) scale(0.85)"></path>
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <rect x="62" y="250" width="116" height="10" rx="5" fill="currentColor"></rect>
+        <path d="M120 52 C154 52 168 80 168 108 C168 132 158 152 152 164 L88 164 C82 152 72 132 72 108 C72 80 86 52 120 52 Z" fill="currentColor"></path>
+        <ellipse cx="120" cy="96" rx="25" ry="29" fill="currentColor" opacity=".12"></ellipse>
+        <path d="M92 152 L148 152 L172 250 L68 250 Z" fill="currentColor"></path>
+        <path d="M104 152 L120 178 L136 152 Z" fill="currentColor" opacity="0.28"></path>
+        <path d="M95 160 L80 210 Q78 218 86 218 Q92 218 92 210 L102 170 Z" fill="currentColor"></path>
+        <path d="M145 160 L160 210 Q162 218 154 218 Q148 218 148 210 L138 170 Z" fill="currentColor"></path>
+        <path d="M0 2 C-2 -2 -8 -2 -8 2 C-8 6 -3 8 0 11 C3 8 8 6 8 2 C8 -2 2 -2 0 2 Z" fill="var(--icon-accent)" transform="translate(120,116) scale(0.75)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(186,138) scale(0.85)"></path>
 </svg>`,
   // 07-man
   man: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <rect x="62" y="250" width="116" height="10" rx="5" fill="#2536CE"></rect>
-        <ellipse cx="120" cy="94" rx="24" ry="27" fill="#C9D7F5"></ellipse>
-        <path d="M96 88 Q120 56 144 88 Q120 80 96 88 Z" fill="#2E6BF5"></path>
-        <path d="M100 104 Q120 140 140 104 Q120 116 100 104 Z" fill="#2536CE"></path>
-        <path d="M94 152 L146 152 L156 250 L84 250 Z" fill="#2E6BF5"></path>
-        <line x1="120" y1="152" x2="120" y2="250" stroke="#2536CE" stroke-width="2" opacity="0.5"></line>
-        <path d="M96 158 L82 208 Q80 216 88 216 Q94 216 94 208 L102 168 Z" fill="#2E6BF5"></path>
-        <path d="M144 158 L158 208 Q160 216 152 216 Q146 216 146 208 L138 168 Z" fill="#2E6BF5"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(54,84) scale(0.85)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(184,120) scale(0.8)"></path>
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <rect x="62" y="250" width="116" height="10" rx="5" fill="currentColor"></rect>
+        <ellipse cx="120" cy="94" rx="24" ry="27" fill="currentColor" opacity=".12"></ellipse>
+        <path d="M96 88 Q120 56 144 88 Q120 80 96 88 Z" fill="currentColor"></path>
+        <path d="M100 104 Q120 140 140 104 Q120 116 100 104 Z" fill="currentColor"></path>
+        <path d="M94 152 L146 152 L156 250 L84 250 Z" fill="currentColor"></path>
+        <line x1="120" y1="152" x2="120" y2="250" stroke="currentColor" stroke-width="2" opacity="0.5"></line>
+        <path d="M96 158 L82 208 Q80 216 88 216 Q94 216 94 208 L102 168 Z" fill="currentColor"></path>
+        <path d="M144 158 L158 208 Q160 216 152 216 Q146 216 146 208 L138 168 Z" fill="currentColor"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(54,84) scale(0.85)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(184,120) scale(0.8)"></path>
 </svg>`,
   // 08-family
   family: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <rect x="34" y="252" width="172" height="10" rx="5" fill="#2536CE"></rect>
-        <ellipse cx="82" cy="150" rx="17" ry="19" fill="#C9D7F5"></ellipse>
-        <path d="M65 146 Q82 126 99 146 Q82 139 65 146 Z" fill="#2E6BF5"></path>
-        <path d="M64 172 L102 172 L110 252 L56 252 Z" fill="#2E6BF5"></path>
-        <path d="M158 118 C178 118 186 136 186 156 C186 174 179 188 175 196 L141 196 C137 188 130 174 130 156 C130 136 138 118 158 118 Z" fill="#2E6BF5"></path>
-        <ellipse cx="158" cy="152" rx="15" ry="17" fill="#C9D7F5"></ellipse>
-        <path d="M138 186 L178 186 L192 252 L124 252 Z" fill="#2E6BF5"></path>
-        <ellipse cx="120" cy="188" rx="13" ry="14" fill="#C9D7F5"></ellipse>
-        <path d="M106 184 Q120 168 134 184 Q120 178 106 184 Z" fill="#2536CE"></path>
-        <path d="M104 200 L136 200 L142 252 L98 252 Z" fill="#2536CE"></path>
-        <path d="M0 2 C-2 -2 -8 -2 -8 2 C-8 6 -3 8 0 11 C3 8 8 6 8 2 C8 -2 2 -2 0 2 Z" fill="#2536CE" transform="translate(120,116) scale(0.8)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(196,120) scale(0.8)"></path>
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <rect x="34" y="252" width="172" height="10" rx="5" fill="currentColor"></rect>
+        <ellipse cx="82" cy="150" rx="17" ry="19" fill="currentColor" opacity=".12"></ellipse>
+        <path d="M65 146 Q82 126 99 146 Q82 139 65 146 Z" fill="currentColor"></path>
+        <path d="M64 172 L102 172 L110 252 L56 252 Z" fill="currentColor"></path>
+        <path d="M158 118 C178 118 186 136 186 156 C186 174 179 188 175 196 L141 196 C137 188 130 174 130 156 C130 136 138 118 158 118 Z" fill="currentColor"></path>
+        <ellipse cx="158" cy="152" rx="15" ry="17" fill="currentColor" opacity=".12"></ellipse>
+        <path d="M138 186 L178 186 L192 252 L124 252 Z" fill="currentColor"></path>
+        <ellipse cx="120" cy="188" rx="13" ry="14" fill="currentColor" opacity=".12"></ellipse>
+        <path d="M106 184 Q120 168 134 184 Q120 178 106 184 Z" fill="currentColor"></path>
+        <path d="M104 200 L136 200 L142 252 L98 252 Z" fill="currentColor"></path>
+        <path d="M0 2 C-2 -2 -8 -2 -8 2 C-8 6 -3 8 0 11 C3 8 8 6 8 2 C8 -2 2 -2 0 2 Z" fill="var(--icon-accent)" transform="translate(120,116) scale(0.8)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(196,120) scale(0.8)"></path>
 </svg>`,
   // 09-prostration
   prostration: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <rect x="42" y="220" width="156" height="14" rx="7" fill="#2E6BF5"></rect>
-        <g stroke="#2536CE" stroke-width="3" stroke-linecap="round">
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <rect x="42" y="220" width="156" height="14" rx="7" fill="currentColor"></rect>
+        <g stroke="currentColor" stroke-width="3" stroke-linecap="round">
           <line x1="182" y1="234" x2="182" y2="244"></line><line x1="190" y1="234" x2="190" y2="244"></line><line x1="174" y1="234" x2="174" y2="244"></line>
         </g>
-        <path d="M64 222 C64 180 96 166 122 174 C154 184 168 202 178 222 Z" fill="#2E6BF5"></path>
-        <circle cx="70" cy="204" r="17" fill="#2E6BF5"></circle>
-        <path d="M55 200 Q70 182 85 200 Q70 192 55 200 Z" fill="#2536CE"></path>
-        <path d="M76 218 L124 210" fill="none" stroke="#2536CE" stroke-width="3" stroke-linecap="round"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(150,110)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(60,120) scale(0.75)"></path>
+        <path d="M64 222 C64 180 96 166 122 174 C154 184 168 202 178 222 Z" fill="currentColor"></path>
+        <circle cx="70" cy="204" r="17" fill="currentColor"></circle>
+        <path d="M55 200 Q70 182 85 200 Q70 192 55 200 Z" fill="currentColor"></path>
+        <path d="M76 218 L124 210" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(150,110)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(60,120) scale(0.75)"></path>
 </svg>`,
   // 10-standing-prayer
   standing: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <rect x="64" y="248" width="112" height="12" rx="6" fill="#2E6BF5"></rect>
-        <g stroke="#2536CE" stroke-width="3" stroke-linecap="round">
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <rect x="64" y="248" width="112" height="12" rx="6" fill="currentColor"></rect>
+        <g stroke="currentColor" stroke-width="3" stroke-linecap="round">
           <line x1="70" y1="260" x2="70" y2="269"></line><line x1="80" y1="260" x2="80" y2="270"></line><line x1="160" y1="260" x2="160" y2="270"></line><line x1="170" y1="260" x2="170" y2="269"></line>
         </g>
-        <ellipse cx="120" cy="88" rx="23" ry="26" fill="#C9D7F5"></ellipse>
-        <path d="M97 84 Q120 56 143 84 Q120 76 97 84 Z" fill="#2E6BF5"></path>
-        <path d="M96 148 L144 148 L150 248 L90 248 Z" fill="#2E6BF5"></path>
-        <path d="M100 150 L118 194" fill="none" stroke="#2E6BF5" stroke-width="15" stroke-linecap="round"></path>
-        <path d="M140 150 L122 194" fill="none" stroke="#2E6BF5" stroke-width="15" stroke-linecap="round"></path>
-        <circle cx="120" cy="196" r="9" fill="#2E6BF5"></circle>
-        <line x1="120" y1="196" x2="120" y2="204" stroke="#2536CE" stroke-width="2"></line>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(180,110) scale(0.85)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(56,116) scale(0.75)"></path>
+        <ellipse cx="120" cy="88" rx="23" ry="26" fill="currentColor" opacity=".12"></ellipse>
+        <path d="M97 84 Q120 56 143 84 Q120 76 97 84 Z" fill="currentColor"></path>
+        <path d="M96 148 L144 148 L150 248 L90 248 Z" fill="currentColor"></path>
+        <path d="M100 150 L118 194" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"></path>
+        <path d="M140 150 L122 194" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"></path>
+        <circle cx="120" cy="196" r="9" fill="currentColor"></circle>
+        <line x1="120" y1="196" x2="120" y2="204" stroke="currentColor" stroke-width="2"></line>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(180,110) scale(0.85)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(56,116) scale(0.75)"></path>
 </svg>`,
   // 11-quran-stand
   'quran-stand': `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <path d="M78 246 L150 172" fill="none" stroke="#2E6BF5" stroke-width="13" stroke-linecap="round"></path>
-        <path d="M162 246 L90 172" fill="none" stroke="#2E6BF5" stroke-width="13" stroke-linecap="round"></path>
-        <rect x="62" y="236" width="116" height="10" rx="5" fill="#2536CE"></rect>
-        <path d="M56 176 L120 164 L184 176 L184 188 L120 176 L56 188 Z" fill="#2536CE"></path>
-        <path d="M58 180 L118 170 L118 210 Q88 214 58 210 Z" fill="#F4F7FE"></path>
-        <path d="M182 180 L122 170 L122 210 Q152 214 182 210 Z" fill="#F4F7FE"></path>
-        <path d="M117 170 L123 170 L123 210 L117 210 Z" fill="#2E6BF5"></path>
-        <g stroke="#A9BCEB" stroke-width="2.4" stroke-linecap="round">
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <path d="M78 246 L150 172" fill="none" stroke="currentColor" stroke-width="13" stroke-linecap="round"></path>
+        <path d="M162 246 L90 172" fill="none" stroke="currentColor" stroke-width="13" stroke-linecap="round"></path>
+        <rect x="62" y="236" width="116" height="10" rx="5" fill="currentColor"></rect>
+        <path d="M56 176 L120 164 L184 176 L184 188 L120 176 L56 188 Z" fill="currentColor"></path>
+        <path d="M58 180 L118 170 L118 210 Q88 214 58 210 Z" fill="currentColor" opacity=".06"></path>
+        <path d="M182 180 L122 170 L122 210 Q152 214 182 210 Z" fill="currentColor" opacity=".06"></path>
+        <path d="M117 170 L123 170 L123 210 L117 210 Z" fill="currentColor"></path>
+        <g stroke="currentColor" stroke-opacity=".4" stroke-width="2.4" stroke-linecap="round">
           <line x1="68" y1="184" x2="110" y2="178"></line><line x1="68" y1="192" x2="110" y2="186"></line><line x1="68" y1="200" x2="108" y2="195"></line>
           <line x1="130" y1="178" x2="172" y2="184"></line><line x1="130" y1="186" x2="172" y2="192"></line><line x1="132" y1="195" x2="172" y2="200"></line>
         </g>
-        <path d="M120 150 a6 6 0 1 1 4.5 2.3" fill="none" stroke="#2536CE" stroke-width="3.5" stroke-linecap="round"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(184,140) scale(0.8)"></path>
+        <path d="M120 150 a6 6 0 1 1 4.5 2.3" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(184,140) scale(0.8)"></path>
 </svg>`,
   // 12-prayer-beads
   beads: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <path d="M96 82 Q60 118 74 168 Q84 200 120 206 Q156 200 166 168 Q180 118 144 82" fill="none" stroke="#C9D7F5" stroke-width="2"></path>
-        <circle cx="120" cy="76" r="7" fill="none" stroke="#2536CE" stroke-width="3"></circle>
-        <g fill="#2E6BF5">
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <path d="M96 82 Q60 118 74 168 Q84 200 120 206 Q156 200 166 168 Q180 118 144 82" fill="none" stroke="currentColor" stroke-opacity=".12" stroke-width="2"></path>
+        <circle cx="120" cy="76" r="7" fill="none" stroke="currentColor" stroke-width="3"></circle>
+        <g fill="currentColor">
           <circle cx="102" cy="88" r="7"></circle><circle cx="88" cy="104" r="7"></circle><circle cx="80" cy="124" r="7"></circle><circle cx="80" cy="146" r="7"></circle><circle cx="88" cy="166" r="7"></circle><circle cx="102" cy="182" r="7"></circle>
           <circle cx="138" cy="88" r="7"></circle><circle cx="152" cy="104" r="7"></circle><circle cx="160" cy="124" r="7"></circle><circle cx="160" cy="146" r="7"></circle><circle cx="152" cy="166" r="7"></circle><circle cx="138" cy="182" r="7"></circle>
         </g>
-        <circle cx="120" cy="192" r="9" fill="#2536CE"></circle>
-        <g stroke="#2536CE" stroke-width="3" stroke-linecap="round">
+        <circle cx="120" cy="192" r="9" fill="currentColor"></circle>
+        <g stroke="currentColor" stroke-width="3" stroke-linecap="round">
           <line x1="120" y1="200" x2="112" y2="224"></line><line x1="120" y1="201" x2="120" y2="226"></line><line x1="120" y1="200" x2="128" y2="224"></line>
         </g>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(184,120) scale(0.8)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(52,120) scale(0.75)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(184,120) scale(0.8)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(52,120) scale(0.75)"></path>
 </svg>`,
   // 13-kaaba
   kaaba: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <ellipse cx="122" cy="220" rx="82" ry="15" fill="#DCE6FB"></ellipse>
-        <path d="M86 118 L154 118 L154 214 L86 214 Z" fill="#2E6BF5"></path>
-        <path d="M86 118 L108 100 L176 100 L154 118 Z" fill="#5486F8"></path>
-        <path d="M154 118 L176 100 L176 196 L154 214 Z" fill="#2450C9"></path>
-        <rect x="86" y="150" width="68" height="13" fill="#2536CE"></rect>
-        <path d="M154 150 L176 137 L176 150 L154 163 Z" fill="#1C3C9C"></path>
-        <rect x="112" y="168" width="18" height="46" fill="#DCE6FB"></rect>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(64,92)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(190,78) scale(0.85)"></path>
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <ellipse cx="122" cy="220" rx="82" ry="15" fill="none"></ellipse>
+        <path d="M86 118 L154 118 L154 214 L86 214 Z" fill="currentColor"></path>
+        <path d="M86 118 L108 100 L176 100 L154 118 Z" fill="currentColor" opacity=".85"></path>
+        <path d="M154 118 L176 100 L176 196 L154 214 Z" fill="currentColor" opacity=".62"></path>
+        <rect x="86" y="150" width="68" height="13" fill="currentColor"></rect>
+        <path d="M154 150 L176 137 L176 150 L154 163 Z" fill="currentColor" opacity=".45"></path>
+        <rect x="112" y="168" width="18" height="46" fill="none"></rect>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(64,92)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(190,78) scale(0.85)"></path>
 </svg>`,
   // 14-hands-dua
   dua: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <path d="M98 198 L88 248" fill="none" stroke="#2E6BF5" stroke-width="20" stroke-linecap="round"></path>
-        <path d="M142 198 L152 248" fill="none" stroke="#2E6BF5" stroke-width="20" stroke-linecap="round"></path>
-        <path d="M78 168 Q120 146 162 168 Q152 202 120 202 Q88 202 78 168 Z" fill="#2E6BF5"></path>
-        <line x1="120" y1="150" x2="120" y2="200" stroke="#2536CE" stroke-width="2"></line>
-        <circle cx="80" cy="164" r="7" fill="#2E6BF5"></circle>
-        <circle cx="160" cy="164" r="7" fill="#2E6BF5"></circle>
-        <g stroke="#2536CE" stroke-width="2" stroke-linecap="round" opacity="0.5">
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <path d="M98 198 L88 248" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"></path>
+        <path d="M142 198 L152 248" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"></path>
+        <path d="M78 168 Q120 146 162 168 Q152 202 120 202 Q88 202 78 168 Z" fill="currentColor"></path>
+        <line x1="120" y1="150" x2="120" y2="200" stroke="currentColor" stroke-width="2"></line>
+        <circle cx="80" cy="164" r="7" fill="currentColor"></circle>
+        <circle cx="160" cy="164" r="7" fill="currentColor"></circle>
+        <g stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.5">
           <line x1="98" y1="156" x2="100" y2="176"></line><line x1="110" y1="152" x2="111" y2="174"></line><line x1="130" y1="152" x2="129" y2="174"></line><line x1="142" y1="156" x2="140" y2="176"></line>
         </g>
-        <path d="M0 2 C-2 -2 -8 -2 -8 2 C-8 6 -3 8 0 11 C3 8 8 6 8 2 C8 -2 2 -2 0 2 Z" fill="#2536CE" transform="translate(120,104) scale(1.05)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(88,118)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(156,116) scale(0.85)"></path>
+        <path d="M0 2 C-2 -2 -8 -2 -8 2 C-8 6 -3 8 0 11 C3 8 8 6 8 2 C8 -2 2 -2 0 2 Z" fill="var(--icon-accent)" transform="translate(120,104) scale(1.05)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(88,118)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(156,116) scale(0.85)"></path>
 </svg>`,
   // 15-iftar-dates
   dates: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <path d="M158 70 A34 34 0 1 0 158 138 A27 27 0 1 1 158 70 Z" fill="#2536CE"></path>
-        <ellipse cx="98" cy="168" rx="12" ry="7.5" fill="#2536CE" transform="rotate(-16 98 168)"></ellipse>
-        <ellipse cx="120" cy="164" rx="12" ry="7.5" fill="#2536CE"></ellipse>
-        <ellipse cx="142" cy="168" rx="12" ry="7.5" fill="#2536CE" transform="rotate(16 142 168)"></ellipse>
-        <ellipse cx="109" cy="158" rx="11" ry="7" fill="#31489C"></ellipse>
-        <ellipse cx="131" cy="158" rx="11" ry="7" fill="#31489C"></ellipse>
-        <path d="M74 172 Q120 216 166 172 Z" fill="#2E6BF5"></path>
-        <ellipse cx="120" cy="172" rx="46" ry="9" fill="#5486F8"></ellipse>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(66,96) scale(0.85)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(196,150) scale(0.8)"></path>
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <path d="M158 70 A34 34 0 1 0 158 138 A27 27 0 1 1 158 70 Z" fill="currentColor"></path>
+        <ellipse cx="98" cy="168" rx="12" ry="7.5" fill="currentColor" transform="rotate(-16 98 168)"></ellipse>
+        <ellipse cx="120" cy="164" rx="12" ry="7.5" fill="currentColor"></ellipse>
+        <ellipse cx="142" cy="168" rx="12" ry="7.5" fill="currentColor" transform="rotate(16 142 168)"></ellipse>
+        <ellipse cx="109" cy="158" rx="11" ry="7" fill="currentColor" opacity=".45"></ellipse>
+        <ellipse cx="131" cy="158" rx="11" ry="7" fill="currentColor" opacity=".45"></ellipse>
+        <path d="M74 172 Q120 216 166 172 Z" fill="currentColor"></path>
+        <ellipse cx="120" cy="172" rx="46" ry="9" fill="currentColor" opacity=".85"></ellipse>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(66,96) scale(0.85)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(196,150) scale(0.8)"></path>
 </svg>`,
   // 16-qibla-compass
   compass: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <circle cx="120" cy="150" r="68" fill="#2E6BF5"></circle>
-        <circle cx="120" cy="150" r="53" fill="#F4F7FE"></circle>
-        <g fill="#2536CE">
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <circle cx="120" cy="150" r="68" fill="currentColor"></circle>
+        <circle cx="120" cy="150" r="53" fill="none"></circle>
+        <g fill="currentColor">
           <circle cx="120" cy="108" r="3.5"></circle><circle cx="162" cy="150" r="3.5"></circle><circle cx="120" cy="192" r="3.5"></circle><circle cx="78" cy="150" r="3.5"></circle>
         </g>
-        <path d="M120 110 L133 150 L120 150 Z" fill="#2E6BF5"></path>
-        <path d="M120 190 L107 150 L120 150 Z" fill="#4E82F7"></path>
-        <path d="M120 110 L107 150 L120 150 Z" fill="#2536CE"></path>
-        <path d="M120 190 L133 150 L120 150 Z" fill="#3A54C6"></path>
-        <circle cx="120" cy="150" r="6" fill="#F4F7FE"></circle>
-        <path d="M120 96 a5 5 0 1 1 4 2" fill="none" stroke="#2536CE" stroke-width="3.5" stroke-linecap="round"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(194,146) scale(0.8)"></path>
+        <path d="M120 110 L133 150 L120 150 Z" fill="currentColor"></path>
+        <path d="M120 190 L107 150 L120 150 Z" fill="currentColor" opacity=".85"></path>
+        <path d="M120 110 L107 150 L120 150 Z" fill="currentColor"></path>
+        <path d="M120 190 L133 150 L120 150 Z" fill="currentColor" opacity=".62"></path>
+        <circle cx="120" cy="150" r="6" fill="none"></circle>
+        <path d="M120 96 a5 5 0 1 1 4 2" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(194,146) scale(0.8)"></path>
 </svg>`,
   // 17-water-ewer
   ewer: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <rect x="96" y="230" width="48" height="10" rx="5" fill="#2536CE"></rect>
-        <path d="M104 218 L136 218 L142 230 L98 230 Z" fill="#2E6BF5"></path>
-        <path d="M96 152 Q96 220 120 220 Q144 220 144 152 Q144 128 120 128 Q96 128 96 152 Z" fill="#2E6BF5"></path>
-        <rect x="111" y="102" width="18" height="30" fill="#2E6BF5"></rect>
-        <path d="M107 104 Q120 88 133 104 Z" fill="#2536CE"></path>
-        <circle cx="120" cy="84" r="4" fill="#2536CE"></circle>
-        <path d="M144 156 Q178 150 174 118 Q172 106 162 110" fill="none" stroke="#2E6BF5" stroke-width="12" stroke-linecap="round"></path>
-        <path d="M96 148 Q68 152 72 186 Q74 204 96 200" fill="none" stroke="#2E6BF5" stroke-width="12" stroke-linecap="round"></path>
-        <path d="M120 168 Q114 176 120 184 Q126 176 120 168 Z" fill="#EAF0FE"></path>
-        <path d="M166 122 c-4 4 -5 9 0 13 c5 -4 4 -9 0 -13 z" fill="#2536CE"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(56,116) scale(0.8)"></path>
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <rect x="96" y="230" width="48" height="10" rx="5" fill="currentColor"></rect>
+        <path d="M104 218 L136 218 L142 230 L98 230 Z" fill="currentColor"></path>
+        <path d="M96 152 Q96 220 120 220 Q144 220 144 152 Q144 128 120 128 Q96 128 96 152 Z" fill="currentColor"></path>
+        <rect x="111" y="102" width="18" height="30" fill="currentColor"></rect>
+        <path d="M107 104 Q120 88 133 104 Z" fill="currentColor"></path>
+        <circle cx="120" cy="84" r="4" fill="currentColor"></circle>
+        <path d="M144 156 Q178 150 174 118 Q172 106 162 110" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M96 148 Q68 152 72 186 Q74 204 96 200" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"></path>
+        <path d="M120 168 Q114 176 120 184 Q126 176 120 168 Z" fill="none"></path>
+        <path d="M166 122 c-4 4 -5 9 0 13 c5 -4 4 -9 0 -13 z" fill="currentColor"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(56,116) scale(0.8)"></path>
 </svg>`,
   // 18-ramadan-night
   night: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <path d="M74 62 A30 30 0 1 0 74 122 A24 24 0 1 1 74 62 Z" fill="#2536CE"></path>
-        <line x1="168" y1="66" x2="168" y2="92" stroke="#2536CE" stroke-width="3"></line>
-        <path d="M158 96 L178 96 L174 88 L162 88 Z" fill="#2E6BF5"></path>
-        <path d="M158 98 L178 98 Q182 120 178 142 L172 152 L164 152 L158 142 Q154 120 158 98 Z" fill="#2E6BF5"></path>
-        <rect x="164" y="110" width="8" height="30" fill="#EAF0FE"></rect>
-        <path d="M162 152 L174 152 L168 162 Z" fill="#2536CE"></path>
-        <path d="M40 226 L40 208 Q40 194 54 194 Q68 194 68 208 L68 226 Z" fill="#2E6BF5"></path>
-        <path d="M84 226 L84 196 Q84 176 104 176 Q124 176 124 196 L124 226 Z" fill="#2E6BF5"></path>
-        <path d="M140 226 L140 204 Q140 188 156 188 Q172 188 172 204 L172 226 Z" fill="#2E6BF5"></path>
-        <rect x="34" y="224" width="146" height="8" rx="4" fill="#2536CE"></rect>
-        <line x1="104" y1="176" x2="104" y2="166" stroke="#2536CE" stroke-width="3" stroke-linecap="round"></line>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(120,74)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(196,120) scale(0.8)"></path>
-        <circle cx="110" cy="110" r="3" fill="#2536CE"></circle><circle cx="150" cy="70" r="3" fill="#2536CE"></circle>
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <path d="M74 62 A30 30 0 1 0 74 122 A24 24 0 1 1 74 62 Z" fill="currentColor"></path>
+        <line x1="168" y1="66" x2="168" y2="92" stroke="currentColor" stroke-width="3"></line>
+        <path d="M158 96 L178 96 L174 88 L162 88 Z" fill="currentColor"></path>
+        <path d="M158 98 L178 98 Q182 120 178 142 L172 152 L164 152 L158 142 Q154 120 158 98 Z" fill="currentColor"></path>
+        <rect x="164" y="110" width="8" height="30" fill="none"></rect>
+        <path d="M162 152 L174 152 L168 162 Z" fill="currentColor"></path>
+        <path d="M40 226 L40 208 Q40 194 54 194 Q68 194 68 208 L68 226 Z" fill="currentColor"></path>
+        <path d="M84 226 L84 196 Q84 176 104 176 Q124 176 124 196 L124 226 Z" fill="currentColor"></path>
+        <path d="M140 226 L140 204 Q140 188 156 188 Q172 188 172 204 L172 226 Z" fill="currentColor"></path>
+        <rect x="34" y="224" width="146" height="8" rx="4" fill="currentColor"></rect>
+        <line x1="104" y1="176" x2="104" y2="166" stroke="currentColor" stroke-width="3" stroke-linecap="round"></line>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(120,74)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(196,120) scale(0.8)"></path>
+        <circle cx="110" cy="110" r="3" fill="currentColor"></circle><circle cx="150" cy="70" r="3" fill="currentColor"></circle>
 </svg>`,
   // 19-star-pattern
   pattern: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <path d="M120 80 L132.3 120.4 L169.5 100.5 L149.6 137.8 L190 150 L149.6 162.3 L169.5 199.5 L132.3 179.6 L120 220 L107.8 179.6 L70.5 199.5 L90.4 162.3 L50 150 L90.4 137.8 L70.5 100.5 L107.8 120.4 Z" fill="#2E6BF5"></path>
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <path d="M120 80 L132.3 120.4 L169.5 100.5 L149.6 137.8 L190 150 L149.6 162.3 L169.5 199.5 L132.3 179.6 L120 220 L107.8 179.6 L70.5 199.5 L90.4 162.3 L50 150 L90.4 137.8 L70.5 100.5 L107.8 120.4 Z" fill="currentColor"></path>
         <path d="M132.3 120.4 L169.5 100.5 L149.6 137.8 L190 150 L149.6 162.3 L169.5 199.5 L132.3 179.6 L120 220 L107.8 179.6 L70.5 199.5 L90.4 162.3 L50 150 L90.4 137.8 L70.5 100.5 L107.8 120.4 L120 80 Z" fill="none"></path>
-        <path d="M132.3 120.4 L149.6 137.8 L149.6 162.3 L132.3 179.6 L107.8 179.6 L90.4 162.3 L90.4 137.8 L107.8 120.4 Z" fill="#C9D7F5"></path>
-        <path d="M132.3 120.4 L149.6 137.8 L149.6 162.3 L132.3 179.6 L107.8 179.6 L90.4 162.3 L90.4 137.8 L107.8 120.4 Z" fill="none" stroke="#2536CE" stroke-width="2.5"></path>
-        <circle cx="120" cy="150" r="11" fill="#2536CE"></circle>
-        <circle cx="120" cy="150" r="4.5" fill="#C9D7F5"></circle>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(120,86) scale(0.7)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(184,150) scale(0.7)"></path>
+        <path d="M132.3 120.4 L149.6 137.8 L149.6 162.3 L132.3 179.6 L107.8 179.6 L90.4 162.3 L90.4 137.8 L107.8 120.4 Z" fill="currentColor" opacity=".12"></path>
+        <path d="M132.3 120.4 L149.6 137.8 L149.6 162.3 L132.3 179.6 L107.8 179.6 L90.4 162.3 L90.4 137.8 L107.8 120.4 Z" fill="none" stroke="currentColor" stroke-width="2.5"></path>
+        <circle cx="120" cy="150" r="11" fill="currentColor"></circle>
+        <circle cx="120" cy="150" r="4.5" fill="currentColor" opacity=".12"></circle>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(120,86) scale(0.7)"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(184,150) scale(0.7)"></path>
 </svg>`,
   // 20-ramadan-calendar
   calendar: `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#C9D7F5"></path>
-        <rect x="86" y="78" width="6" height="18" rx="3" fill="#2536CE"></rect>
-        <rect x="148" y="78" width="6" height="18" rx="3" fill="#2536CE"></rect>
-        <rect x="60" y="86" width="120" height="148" rx="14" fill="#FFFFFF" stroke="#C9D7F5" stroke-width="3"></rect>
-        <path d="M60 100 Q60 86 74 86 L166 86 Q180 86 180 100 L180 122 L60 122 Z" fill="#2E6BF5"></path>
-        <path d="M126 96 A14 14 0 1 0 126 124 A11 11 0 1 1 126 96 Z" fill="#F4F7FE"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#F4F7FE" transform="translate(146,110) scale(0.7)"></path>
-        <g fill="#C9D7F5">
+<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+        <rect x="86" y="78" width="6" height="18" rx="3" fill="currentColor"></rect>
+        <rect x="148" y="78" width="6" height="18" rx="3" fill="currentColor"></rect>
+        <rect x="60" y="86" width="120" height="148" rx="14" fill="currentColor" fill-opacity=".06" stroke="currentColor" stroke-opacity=".12" stroke-width="3"></rect>
+        <path d="M60 100 Q60 86 74 86 L166 86 Q180 86 180 100 L180 122 L60 122 Z" fill="currentColor"></path>
+        <path d="M126 96 A14 14 0 1 0 126 124 A11 11 0 1 1 126 96 Z" fill="none"></path>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="none" transform="translate(146,110) scale(0.7)"></path>
+        <g fill="currentColor" opacity=".12">
           <circle cx="80" cy="146" r="5"></circle><circle cx="104" cy="146" r="5"></circle><circle cx="128" cy="146" r="5"></circle><circle cx="152" cy="146" r="5"></circle>
           <circle cx="80" cy="170" r="5"></circle><circle cx="104" cy="170" r="5"></circle><circle cx="152" cy="170" r="5"></circle>
           <circle cx="80" cy="194" r="5"></circle><circle cx="104" cy="194" r="5"></circle><circle cx="128" cy="194" r="5"></circle><circle cx="152" cy="194" r="5"></circle>
           <circle cx="80" cy="218" r="5"></circle><circle cx="128" cy="218" r="5"></circle><circle cx="152" cy="218" r="5"></circle>
         </g>
-        <circle cx="128" cy="170" r="9" fill="#2536CE"></circle>
-        <circle cx="104" cy="218" r="9" fill="none" stroke="#2E6BF5" stroke-width="3"></circle>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#2536CE" transform="translate(196,120) scale(0.8)"></path>
+        <circle cx="128" cy="170" r="9" fill="currentColor"></circle>
+        <circle cx="104" cy="218" r="9" fill="none" stroke="currentColor" stroke-width="3"></circle>
+        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(196,120) scale(0.8)"></path>
 </svg>`,
 };
-
-/* lantern-gold — the authored, committed night-safe gold variant (D-33), added as the 21st
-   keyed entry of AW.KIT. Hand-recoloured from the blue `lantern` against its true home, the
-   .gold-bg night gradient (#241A05 -> #3A2A08): the lantern's blue metal #2E6BF5 -> --gold
-   #E8A400, the indigo linework #2536CE -> --gold-deep #B47F00, the inner-light panel #EAF0FE
-   -> #FFF3CC (the warm lit window), and the blob halo #C9D7F5 -> a dark warm glow that lifts
-   just off the night field. Night-register safety: every structural highlight that sits
-   directly on the dark background (the hoop, hanger, cap bead, base finial and both sparkles)
-   is authored at --gold2 #FFD34D so the lantern holds contrast; only the flame stays
-   --gold-deep, because it sits on the bright cream panel where a dark ember reads as fire.
-   This is authored art committed once — not a runtime recolour; the Gen-3 regex-recolour
-   anti-pattern is deliberately not ported. */
-AW.KIT['lantern-gold'] = `<svg viewBox="0 0 240 300" fill="none">
-<path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="#4A3610"></path>
-        <circle cx="120" cy="46" r="6" fill="none" stroke="#FFD34D" stroke-width="3"></circle>
-        <line x1="120" y1="52" x2="120" y2="66" stroke="#FFD34D" stroke-width="3"></line>
-        <path d="M100 78 L140 78 L131 66 L109 66 Z" fill="#E8A400"></path>
-        <circle cx="120" cy="62" r="4" fill="#FFD34D"></circle>
-        <path d="M98 82 L142 82 Q151 112 142 152 L133 170 L107 170 L98 152 Q89 112 98 82 Z" fill="#E8A400"></path>
-        <path d="M112 98 L128 98 L128 152 L112 152 Z" fill="#FFF3CC"></path>
-        <path d="M120 116 c-5 5 -6 12 0 18 c6 -6 5 -13 0 -18 z" fill="#B47F00"></path>
-        <path d="M108 170 L132 170 L120 186 Z" fill="#E8A400"></path>
-        <circle cx="120" cy="190" r="4" fill="#FFD34D"></circle>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#FFD34D" transform="translate(168,110)"></path>
-        <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="#FFD34D" transform="translate(74,132) scale(0.8)"></path>
-</svg>`;
 
 /* AW.UNIT_ICON — u1..u4 scene mapping (Gen-3 semantics preserved so runner defaults resolve). */
 AW.UNIT_ICON = { u1: 'compass', u2: 'lanterns', u3: 'kaaba', u4: 'mosque' };
