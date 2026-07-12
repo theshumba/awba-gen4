@@ -739,4 +739,72 @@
   }
 }
 @layer screens   { /* reserved — Phase 2+: per-screen rules */ }
-@layer motion    { /* reserved — Phase 3: motion + prefers-reduced-motion guards (MOT-01 / MOT-04) */ }
+@layer motion {
+
+  /* ==========================================================================================
+     The one motion vocabulary (MOT-01 / D-39) + the global reduced-motion quieting (MOT-04 / D-42).
+     Every keyframe is transform / opacity / filter ONLY, so each loop composites on the GPU and
+     never triggers layout/paint. Durations + easings are applied via var(--dur-*)/var(--ease-*)
+     tokens exclusively — no easing curve or spring literal is authored here. Because `motion` is
+     the LAST-declared layer (line 16), the token-collapse below outranks the @layer tokens
+     defaults, so a component that forgets its own guard is quieted anyway — the deliberate
+     a11y-safety property of the cascade order.
+     ========================================================================================== */
+
+  /* -- Vocabulary keyframes ------------------------------------------------------------------ */
+
+  /* Confetti fall — transform-only descent + full spin, fading to a soft settle (ported Gen-3). */
+  @keyframes fall {
+    to { transform: translateY(840px) rotate(720deg); opacity: .3; }
+  }
+
+  /* Companion bob — a gentle, weightless float (paired with --dur-amb / --ease-gentle). */
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-9px); }
+  }
+
+  /* Breathing ring — a slow scale+opacity pulse around an available / active node. */
+  @keyframes breathe {
+    0%, 100% { transform: scale(1);    opacity: .55; }
+    50%      { transform: scale(1.08); opacity: .9; }
+  }
+
+  /* Companion glow — an indigo→warm drop-shadow loop under the lantern (art-glow rgba, smoothly
+     interpolable; re-tokenized off Gen-3's blue to the brand indigo shadow hue). */
+  @keyframes glow {
+    0%, 100% { filter: drop-shadow(0 3px 8px rgba(37,54,206,.35)); }
+    50%      { filter: drop-shadow(0 0 24px rgba(255,190,60,.75)); }
+  }
+
+  /* Pop-in — overshoot entrance for node pop-in / combo / icon reveal (paired with --ease-spring).
+     Starts at scale(.9)+opacity, never scale(0): nothing in the real world appears from nothing. */
+  @keyframes popIn {
+    0%   { transform: scale(.9); opacity: 0; }
+    100% { transform: scale(1);  opacity: 1; }
+  }
+
+  /* -- Ambient loops (MOT-01) — the ONLY infinite motion in the system; all three are enumerated
+     in the reduced-motion block below and stopped outright there (never spun at 1ms). */
+  .companion { display: inline-block; animation: bob var(--dur-amb) var(--ease-gentle) infinite; }
+  .companion svg { animation: glow var(--dur-amb) var(--ease-gentle) infinite; }
+  .breathing-ring { animation: breathe var(--dur-amb) var(--ease-gentle) infinite; }
+
+  /* -- Reduced motion (MOT-04 / D-42) — ONE quieting, TWO triggers sharing rule bodies:
+       · @media (prefers-reduced-motion: reduce)  — the OS setting
+       · [data-motion="reduce"]                   — the Phase-2 awba_prefs boot-stamp
+     BOTH are required: the boot-stamp fires ONLY on the in-app override, never the OS setting
+     (Pitfall 2). Collapsing --dur-1..6 to 1ms shortens every finite CSS transition/entrance that
+     references a token — state-communicating motion (press, sheet-in) SHORTENS, never vanishes.
+     Infinite loops are STOPPED with animation:none — collapsing --dur-amb would spin them at a
+     ~1ms period (a seizure risk, the opposite of the goal), so --dur-amb is deliberately NOT
+     collapsed; the loop is stopped outright. JS motion (confetti/WAAPI) self-guards at call time. */
+  @media (prefers-reduced-motion: reduce) {
+    :root { --dur-1: 1ms; --dur-2: 1ms; --dur-3: 1ms; --dur-4: 1ms; --dur-5: 1ms; --dur-6: 1ms; }
+    .companion, .breathing-ring, [data-ambient] { animation: none !important; }
+  }
+  [data-motion="reduce"] { --dur-1: 1ms; --dur-2: 1ms; --dur-3: 1ms; --dur-4: 1ms; --dur-5: 1ms; --dur-6: 1ms; }
+  [data-motion="reduce"] .companion,
+  [data-motion="reduce"] .breathing-ring,
+  [data-motion="reduce"] [data-ambient] { animation: none !important; }
+}
