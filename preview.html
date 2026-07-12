@@ -1,1159 +1,296 @@
 <!DOCTYPE html>
-<html lang="en" data-unit="u1">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <!-- The cover fit is the safe-area prerequisite: without it env(safe-area-inset-*) silently
-     resolves to 0 on notched / Dynamic-Island devices (RESEARCH Pitfall 2 / PLT-01). -->
+     resolves to 0 on notched / Dynamic-Island devices. -->
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Awba Gen-4 · Design System — preview</title>
-<meta name="description" content="The living verification vehicle for the Awba Gen-4 foundation: one token layer, per-unit theming, self-hosted fonts, responsive shell.">
-<!-- Preload the 2 critical faces. Page-relative (NO leading slash) so double-click file:// review
-     resolves them; crossorigin is required even same-origin or the browser double-fetches (D-11). -->
-<link rel="preload" as="font" type="font/woff2" href="shared/fonts/poppins-700.woff2" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="shared/fonts/inter-400.woff2" crossorigin>
-<!-- One stylesheet, one link, every page (D-04). No Google-Fonts CDN link; no apple-mobile-web-app-capable. -->
+<title>The Athar System · living reference</title>
+<meta name="description" content="The living reference for the Athar re-skin of Awba Gen-4: eight sections of real engine output — register worlds, type under scripture law, the thermal ramp, the component inventory, the citation sheet, the tawaf ring, the prayer-clock sky, and the reduced-motion proof.">
+<!-- Preload the two critical Athar faces: the workhorse and the Qur'an face. Page-relative (NO
+     leading slash) so a double-click file:// review resolves them; crossorigin is required even
+     same-origin or the browser double-fetches. The retired display face is gone entirely; Inter
+     stays on disk as the silent corner-bracket fallback only and is not preloaded. -->
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/readex-pro-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/amiri-quran-400.woff2" crossorigin>
+<!-- One stylesheet, one link, every page. No Google-Fonts CDN link; no apple-mobile-web-app-capable. -->
 <link rel="stylesheet" href="shared/awba-engine.css">
-<!-- The real engine (D-43): page-relative, classic (no defer/async/module) so the
-     new §9–12 sections demo REAL AW.* output over file://. Loads before the closing script. -->
+<!-- The real engine: page-relative, classic (no defer/async/module) so every section below demos
+     REAL AW.* output over file://. Loads before the closing script. -->
 <script src="shared/awba-engine.js"></script>
 
 <style>
 /* ============================================================================================
-   preview-only showcase chrome
-   Consumes the engine token layer via var(--…). Declares NO new custom properties and no raw
-   hex/px for anything the token layer already defines — this is layout scaffolding for the
-   style reference, not a second design system. Rules here are UNLAYERED, so they intentionally
-   sit above the engine's @layer base (e.g. the body override below neutralises the engine's
-   >=600px centered-column body rule, which is meant for real app pages, not this long doc).
+   preview-only chrome — the reference-doc scaffolding ONLY.
+   It consumes the engine token layer via var(--…) and declares NO new design system: every
+   colour / size / radius / face here is an Athar token. Rules are UNLAYERED, so they sit above
+   the engine's @layer base (e.g. the body override neutralises the engine's >=600px centred-
+   column rule, which is meant for real app pages, not this long reference).
    ============================================================================================ */
 
-/* Page field — calm cream with a very soft brand wash, mirroring the desktop shell backdrop. */
-body{
-  display:block;
-  min-height:100%;
-  background:
-    radial-gradient(130% 90% at 50% -8%, var(--card), transparent 58%),
-    var(--bg);
+/* This is a long reading reference, not a phone screen — undo the app-shell column enhancement. */
+body{ background: var(--cream); }
+@media (min-width: 600px){
+  body{ display:block; align-items:initial; justify-content:initial; padding:0; background:var(--cream); }
 }
 
-.pv-wrap{ max-width:1120px; margin-inline:auto; padding-inline:var(--sp-6); }
+.pv-shell{ max-width: 1040px; margin-inline: auto; padding-inline: var(--sp-6); }
 
-/* Hero */
-.pv-hero{ padding-block:var(--sp-16) var(--sp-8); }
-.pv-kicker{
-  display:inline-block; font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker);
-  letter-spacing:.13em; text-transform:uppercase; color:var(--accent-deep);
+/* -- Masthead — the sacred centre, the thesis: your own hand-inked tawaf ring on the black world,
+   warmed by the live prayer clock. Grain is nested (an inner .grain) so its ::after never collides
+   with the register's data-sky ::after (the boot stamps the first .reg-orbit with the live sky). */
+.pv-hero{ position: relative; overflow: hidden; }
+.pv-hero-grain{ position: relative; }
+.pv-hero-in{
+  position: relative; z-index: 1;
+  padding-block: var(--sp-16);
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--sp-4);
 }
-.pv-hero h1{
-  font-family:var(--font-disp); font-weight:700; font-size:var(--fs-display); line-height:1.05;
-  margin:var(--sp-3) 0 var(--sp-4); color:var(--ink); letter-spacing:-.01em;
+.pv-hero-kicker{
+  margin: 0; font-family: var(--font-marg); font-size: var(--fs-marg);
+  letter-spacing: .24em; text-transform: uppercase; color: var(--paper-62);
 }
-.pv-hero p{ font-size:var(--fs-body); color:var(--ink2); max-width:64ch; margin:0; }
-
-/* Sections */
-.pv-section{ padding-block:var(--sp-12); }
-.pv-section + .pv-section .pv-wrap{ border-top:1px solid var(--line); padding-top:var(--sp-12); }
-.pv-head{ margin-bottom:var(--sp-6); }
-.pv-num{
-  display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px;
-  border-radius:var(--r-round); background:var(--accent-soft); color:var(--accent-ink);
-  font-family:var(--font-disp); font-weight:700; font-size:var(--fs-kicker); margin-right:var(--sp-2s);
+.pv-hero-ring{ width: min(320px, 74vw); margin-block: var(--sp-3); }
+.pv-hero-title{
+  margin: 0; font-family: var(--font-display); font-weight: 400;
+  font-size: var(--fs-display); line-height: 1.08; color: var(--cream);
 }
-.pv-head h2{
-  font-family:var(--font-disp); font-weight:600; font-size:var(--fs-h1); color:var(--ink);
-  margin:0 0 var(--sp-1); display:flex; align-items:center;
-}
-.pv-head p{ font-size:var(--fs-ui); line-height:1.45; color:var(--ink2); margin:0; max-width:74ch; }
-
-.pv-card{
-  background:var(--card); border:1px solid var(--line); border-radius:var(--r-xl);
-  box-shadow:var(--sh-2); padding:var(--sp-6);
-}
-.pv-subhead{
-  font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); letter-spacing:.1em;
-  text-transform:uppercase; color:var(--ink3); margin:0 0 var(--sp-3);
-}
-.pv-stack{ display:grid; gap:var(--sp-5); }
-
-/* ---- Swatches -------------------------------------------------------------------------------- */
-.pv-swatches{ display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:var(--sp-3); }
-.pv-swatch{
-  border-radius:var(--r-md); overflow:hidden; border:1px solid var(--line);
-  background:var(--paper); box-shadow:var(--sh-1);
-}
-.pv-swatch .chip{ height:60px; border-bottom:1px solid var(--line); }
-.pv-swatch .meta{ padding:var(--sp-2s) var(--sp-3); }
-.pv-swatch .name{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); color:var(--ink); }
-.pv-swatch .hex{
-  font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3);
-  text-transform:uppercase; font-variant-numeric:tabular-nums; letter-spacing:.02em;
+.pv-hero-sub{ margin: 0; font-size: var(--fs-body); color: var(--paper-85); max-width: 58ch; }
+.pv-hero-mark{
+  margin: 0; font-family: var(--font-marg); font-size: var(--fs-marg);
+  letter-spacing: .08em; color: var(--paper-45);
 }
 
-/* Per-unit accent columns */
-.pv-units{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:var(--sp-5); }
-.pv-unitcol{
-  background:var(--paper); border:1px solid var(--line); border-radius:var(--r-lg);
-  box-shadow:var(--sh-1); padding:var(--sp-4); display:grid; gap:var(--sp-4);
+/* -- Section rhythm — manuscript keyline between folios; a Courier folio-mark eyebrow (the eight
+   sections ARE a defined sequence the gate walks in order, so the § numbering encodes real
+   structure, not decoration). */
+.pv-sec{ padding-block: var(--sp-16); }
+.pv-sec + .pv-sec > .pv-shell{ border-top: 1px solid var(--rule); padding-top: var(--sp-16); }
+.pv-eyebrow{
+  margin: 0 0 var(--sp-3); font-family: var(--font-marg); font-size: var(--fs-marg);
+  letter-spacing: .22em; text-transform: uppercase; color: var(--madder);
 }
-.pv-unitcol h4{
-  font-family:var(--font-disp); font-weight:700; font-size:var(--fs-ui); margin:0;
-  color:var(--accent-ink); display:flex; align-items:center; gap:var(--sp-2s);
+.pv-h{
+  margin: 0 0 var(--sp-2s); font-family: var(--font-work); font-weight: 600;
+  font-size: var(--fs-h1); line-height: 1.18; color: var(--ink);
 }
-.pv-unitcol h4 .dot{ width:16px; height:16px; border-radius:var(--r-round); background:var(--accent); box-shadow:var(--sh-1); }
-.pv-slots{ display:grid; grid-template-columns:repeat(2,1fr); gap:var(--sp-2s); }
-.pv-slot{ display:flex; align-items:center; gap:var(--sp-2s); font-size:var(--fs-kicker); color:var(--ink2); }
-.pv-slot .sw{ width:22px; height:22px; border-radius:var(--r-xs); border:1px solid var(--line); flex:0 0 auto; }
-.pv-slot .sl{ display:grid; line-height:1.25; }
-.pv-slot .sl b{ font-family:var(--font-disp); font-weight:600; color:var(--ink); font-size:var(--fs-kicker); }
-.pv-slot .sl span{ font-variant-numeric:tabular-nums; text-transform:uppercase; color:var(--ink3); }
-.pv-pairs{ display:grid; gap:var(--sp-2s); padding-top:var(--sp-3); border-top:1px dashed var(--line); }
-.pv-pair{ display:flex; align-items:center; gap:var(--sp-2s); flex-wrap:wrap; }
-.pv-deeptext{ color:var(--accent-deep); font-weight:600; font-size:var(--fs-ui); }
-.pv-ring{ width:26px; height:26px; border-radius:var(--r-round); box-shadow:0 0 0 3px var(--accent) inset; background:var(--paper); flex:0 0 auto; }
+.pv-lede{ margin: 0 0 var(--sp-8); font-size: var(--fs-body); color: var(--ink-85); max-width: 66ch; }
+.pv-note{ font-family: var(--font-marg); font-size: var(--fs-marg); line-height: 1.55; color: var(--ink-62); }
+.pv-note--tight{ margin-top: var(--sp-4); }
 
-/* AA badge */
-.pv-aa{
-  display:inline-flex; align-items:center; font-family:var(--font-disp); font-weight:600;
-  font-size:var(--fs-kicker); line-height:1; padding:var(--sp-2) var(--sp-2s); border-radius:var(--r-pill);
-  background:var(--green-bg); color:var(--green-ink); border:1px solid var(--green-line);
-  font-variant-numeric:tabular-nums; letter-spacing:.02em;
+/* -- §1 Register worlds — four grounds side by side, each in its own materials. */
+.pv-worlds{ display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-4); }
+.pv-world{
+  position: relative; overflow: hidden;
+  min-height: 220px; padding: var(--sp-6); border-radius: var(--r-3);
+  display: flex; flex-direction: column; gap: var(--sp-3);
 }
-.pv-aa.ui{ background:var(--tint); color:var(--ink2); border-color:var(--line2); }
+.pv-world-in{ position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--sp-3); height: 100%; }
+.pv-world-ico{ line-height: 0; }
+.pv-world-name{ font-family: var(--font-display); font-size: 28px; line-height: 1.05; }
+.reg-page .pv-world-name, .reg-festival .pv-world-name{ font-family: var(--font-work); font-weight: 600; font-size: var(--fs-h1); }
+.pv-world-role{ font-size: var(--fs-ui); line-height: 1.5; opacity: .9; margin-top: auto; }
+.pv-world-verb{
+  align-self: flex-start; margin-top: var(--sp-2s);
+  font-family: var(--font-marg); font-size: var(--fs-marg); letter-spacing: .14em; text-transform: uppercase;
+  padding: var(--sp-2) var(--sp-2s); border-radius: var(--r-pill); border: 1px solid currentColor; opacity: .7;
+}
+@media (max-width: 640px){ .pv-worlds{ grid-template-columns: 1fr; } }
 
-/* ---- Unit switch + sample cluster (focal point) --------------------------------------------- */
-.pv-focal{
-  background:
-    radial-gradient(120% 130% at 8% 0%, var(--accent-soft), transparent 60%),
-    var(--paper);
-  border:1px solid var(--accent-line); border-radius:var(--r-xl); box-shadow:var(--sh-3);
-  padding:var(--sp-8);
+/* -- §2 Type specimens — a label rail + the rendered face. */
+.pv-spec{
+  display: grid; grid-template-columns: 190px 1fr; gap: var(--sp-6); align-items: baseline;
+  padding-block: var(--sp-5); border-top: 1px solid var(--rule);
 }
-.pv-switchbar{ display:flex; align-items:center; gap:var(--sp-4); flex-wrap:wrap; margin-bottom:var(--sp-6); }
-.pv-seg{
-  display:inline-flex; gap:var(--sp-1); padding:var(--sp-1); max-width:100%; background:var(--tint);
-  border-radius:var(--r-pill); border:1px solid var(--line); box-shadow:var(--sh-inset);
-}
-.pv-seg button{
-  font-family:var(--font-disp); font-weight:700; font-size:var(--fs-ui); border:none; cursor:pointer;
-  background:transparent; color:var(--ink2); padding:var(--sp-2s) var(--sp-5); border-radius:var(--r-pill);
-  transition:color var(--dur-3) var(--ease-standard), background var(--dur-3) var(--ease-standard);
-}
-.pv-seg button[aria-pressed="true"]{ background:var(--accent); color:var(--accent-on); box-shadow:var(--sh-1); }
-.pv-readout{
-  font-family:var(--font-body); font-size:var(--fs-ui); font-weight:600; color:var(--ink2);
-  font-variant-numeric:tabular-nums; letter-spacing:.02em;
-}
-/* Narrow viewports (PLT-01: zero horizontal scroll at 320px): the segmented control becomes a
-   full-width row of equal shrinkable segments (flex:1 1 0 + min-width:0), the readout wraps to
-   its own row (the switchbar already wraps), and the focal card steps its padding down one
-   spacing token — the control compresses intentionally, never crushes or overflows. */
-@media (max-width: 519px){
-  .pv-focal{ padding:var(--sp-5); }
-  .pv-seg{ display:flex; width:100%; }
-  .pv-seg button{ flex:1 1 0; min-width:0; padding-inline:var(--sp-1); font-size:var(--fs-kicker); }
-}
-.pv-cluster{ display:grid; gap:var(--sp-5); grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); align-items:start; }
-.pv-clab{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); letter-spacing:.06em; text-transform:uppercase; color:var(--ink3); margin-bottom:var(--sp-2s); }
-.pv-cell{ display:grid; gap:var(--sp-2s); }
+.pv-spec:first-of-type{ border-top: 0; }
+.pv-spec-lab{ font-family: var(--font-marg); font-size: var(--fs-marg); line-height: 1.55; letter-spacing: .04em; color: var(--ink-62); }
+.pv-face-work{ font-family: var(--font-work); font-size: var(--fs-h2); line-height: 1.4; color: var(--ink); }
+.pv-face-work .ar{ display: inline-block; margin-inline-start: .4em; }
+.pv-face-display{ font-family: var(--font-display); font-size: var(--fs-display); line-height: 1.08; color: var(--ink); }
+.pv-face-festival{ font-family: var(--font-festival); font-size: var(--fs-festival); line-height: 1.2; color: var(--harissa); }
+.pv-face-marg{ font-family: var(--font-marg); font-size: var(--fs-marg); letter-spacing: .06em; color: var(--ink-62); }
+@media (max-width: 640px){ .pv-spec{ grid-template-columns: 1fr; gap: var(--sp-2s); } }
 
-/* Gummy 3D button — signature hard-offset press (UI-SPEC Shadows). */
-.pv-gummy{
-  font-family:var(--font-disp); font-weight:700; font-size:var(--fs-body); letter-spacing:.01em;
-  border:none; border-radius:var(--r-lg); padding:var(--sp-4) var(--sp-5); width:100%;
-  background:var(--accent); color:var(--accent-on);
-  box-shadow:0 5px 0 var(--accent-deep), var(--sh-2); cursor:pointer;
-  transition:transform var(--dur-2) var(--ease-standard), box-shadow var(--dur-2) var(--ease-standard);
+/* -- §3 Thermal ramp — the ramp bar + the three shapes, on cream AND dark. */
+.pv-ramp{ display: flex; align-items: center; gap: var(--sp-4); margin-bottom: var(--sp-8); }
+.pv-ramp .ramp-bar{ flex: 1; }
+.pv-ramp-end{ font-family: var(--font-marg); font-size: var(--fs-marg); letter-spacing: .06em; color: var(--ink-62); white-space: nowrap; }
+.pv-thermal-grounds{ display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-4); }
+.pv-thermal-panel{ padding: var(--sp-6); border-radius: var(--r-3); }
+.pv-states{ display: flex; gap: var(--sp-6); flex-wrap: wrap; }
+.pv-statecell{ display: flex; flex-direction: column; align-items: center; gap: var(--sp-2s); text-align: center; }
+.pv-state{
+  width: 32px; height: 32px; border-radius: var(--r-round);
+  display: inline-flex; align-items: center; justify-content: center; line-height: 0;
 }
-.pv-gummy:active{ transform:translateY(3px); box-shadow:0 2px 0 var(--accent-deep), var(--sh-1); }
-.pv-chip{
-  display:inline-flex; align-items:center; gap:var(--sp-1); font-family:var(--font-body); font-weight:600;
-  font-size:var(--fs-ui); padding:var(--sp-1) var(--sp-3); background:var(--accent-soft);
-  color:var(--accent-ink); border:1px solid var(--accent-line); border-radius:var(--r-xs);
-}
-.pv-node{
-  width:56px; height:56px; border-radius:var(--r-round); background:var(--accent); color:var(--accent-on);
-  box-shadow:0 0 0 6px var(--accent-soft), var(--sh-2); display:grid; place-items:center;
-  font-family:var(--font-disp); font-weight:700;
-}
-.pv-link{ color:var(--accent-deep); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--accent-line); font-weight:600; }
-.pv-panel{ background:var(--accent-soft); border:1px solid var(--accent-line); border-radius:var(--r-md); padding:var(--sp-4); color:var(--accent-ink); font-size:var(--fs-ui); }
-.pv-progress{ height:var(--sp-3); border-radius:var(--r-pill); background:var(--tint); overflow:hidden; }
-.pv-progress > i{ display:block; height:100%; width:64%; border-radius:var(--r-pill); background:var(--accent); }
+.pv-state svg{ width: 16px; height: 16px; }
+.pv-state-lab{ font-family: var(--font-marg); font-size: var(--fs-marg); letter-spacing: .04em; opacity: .85; }
+@media (max-width: 640px){ .pv-thermal-grounds{ grid-template-columns: 1fr; } }
 
-/* ---- Type scale ----------------------------------------------------------------------------- */
-.pv-typerow{ display:grid; grid-template-columns:minmax(96px,160px) 1fr; gap:var(--sp-5); align-items:baseline; padding-block:var(--sp-4); border-bottom:1px solid var(--line); }
-.pv-typerow > :last-child{ min-width:0; overflow-wrap:break-word; } /* the 1fr specimen track may shrink below a long display word's min-content */
-.pv-typerow:last-child{ border-bottom:none; }
-.pv-typerow .lab{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3); text-transform:uppercase; letter-spacing:.08em; }
-.pv-typerow .lab span{ display:block; margin-top:var(--sp-1); color:var(--ink3); text-transform:none; letter-spacing:0; }
-.pv-clamp{ background:var(--accent-soft); border:1px dashed var(--accent-line); border-radius:var(--r-md); padding:var(--sp-4) var(--sp-5); color:var(--accent-ink); }
-/* Narrow viewports: stack label above specimen so 32px+ display samples get the full row width. */
-@media (max-width: 519px){
-  .pv-typerow{ grid-template-columns:1fr; gap:var(--sp-2s); }
-}
-
-/* ---- Radii + shadow tiles ------------------------------------------------------------------- */
-.pv-tiles{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:var(--sp-4); }
-.pv-tile{ display:flex; flex-direction:column; gap:var(--sp-3); }
-.pv-tile .demo{ width:100%; height:76px; background:var(--accent-soft); border:1px solid var(--accent-line); }
-.pv-tile.shadow .demo{ background:var(--paper); border:none; }
-.pv-tile .tlab{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); color:var(--ink); }
-.pv-tile .tval{ font-size:var(--fs-kicker); color:var(--ink3); font-variant-numeric:tabular-nums; }
-
-/* ---- Motion demos --------------------------------------------------------------------------- */
-.pv-motion{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:var(--sp-5); }
-.pv-mcell{ background:var(--paper); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--sh-1); padding:var(--sp-5); display:flex; flex-direction:column; gap:var(--sp-4); align-items:flex-start; }
-.pv-mcell .easing{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3); font-variant-numeric:tabular-nums; }
-.pv-mcell .mtitle{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-ui); color:var(--ink); }
-.pv-tinybtn{
-  font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); border:1px solid var(--accent-line);
-  background:var(--accent-soft); color:var(--accent-ink); padding:var(--sp-2) var(--sp-3);
-  border-radius:var(--r-pill); cursor:pointer;
-}
-@keyframes pv-pop{ from{ transform:scale(.5); opacity:0; } to{ transform:scale(1); opacity:1; } }
-.pv-popdot{ width:56px; height:56px; border-radius:var(--r-round); background:var(--accent); box-shadow:0 0 0 6px var(--accent-soft), var(--sh-2); }
-.pv-popdot.go{ animation:pv-pop var(--dur-5) var(--ease-spring); }
-.pv-sheetstage{ position:relative; width:100%; height:180px; border-radius:var(--r-md); overflow:hidden; background:var(--tint); border:1px solid var(--line); }
-.pv-scrim{ position:absolute; inset:0; background:rgba(30,40,80,.42); opacity:0; pointer-events:none; transition:opacity var(--dur-4) var(--ease-gentle); }
-.pv-scrim.open{ opacity:1; pointer-events:auto; }
-.pv-sheet{ position:absolute; left:0; right:0; bottom:0; background:var(--paper); border-radius:var(--r-xl) var(--r-xl) 0 0; padding:var(--sp-5); box-shadow:var(--sh-3); transform:translateY(100%); transition:transform var(--dur-4) var(--ease-gentle); }
-.pv-scrim.open .pv-sheet{ transform:translateY(0); }
-.pv-grip{ width:40px; height:4px; border-radius:var(--r-pill); background:var(--line2); margin:0 auto var(--sp-3); }
-
-/* Reduced motion — every preview demo collapses to instant (Phase-1 honours it now). */
-@media (prefers-reduced-motion: reduce){
-  .pv-gummy, .pv-seg button, .pv-popdot.go, .pv-scrim, .pv-sheet{ transition:none !important; animation:none !important; }
-  .pv-popdot.go{ transform:none; opacity:1; }
-}
-
-/* ---- Responsive shell skeleton (real .app-shell) -------------------------------------------- */
-.pv-shellband{
-  background:
-    radial-gradient(120% 90% at 50% -20%, var(--card), transparent 62%),
-    var(--bg);
-}
-.pv-shellband .pv-head{ padding-inline:var(--sp-6); }
-/* Cap the showcased shell height so the reference page stays scannable, while keeping the engine's
-   real full-bleed<->centered-column behaviour (max-width:480px, --r-2xl corners, --sh-4) intact. */
-.pv-shellframe .app-shell{ margin-inline:auto; min-height:540px; }
-.pv-hud{ display:flex; align-items:center; gap:var(--sp-2s); padding:var(--sp-3) var(--sp-4); border-bottom:1px solid var(--line); }
-.pv-iconbtn{ width:44px; height:44px; display:grid; place-items:center; border:none; background:transparent; color:var(--ink3); border-radius:var(--r-round); cursor:pointer; font-size:var(--fs-h2); }
-.pv-segbar{ flex:1; display:flex; gap:var(--sp-1); }
-.pv-segbar .seg{ flex:1; height:var(--sp-2s); border-radius:var(--r-pill); background:var(--tint); overflow:hidden; }
-.pv-segbar .seg i{ display:block; height:100%; border-radius:var(--r-pill); background:var(--accent); }
-.pv-hstat{ display:inline-flex; align-items:center; gap:var(--sp-1); font-family:var(--font-disp); font-weight:700; font-size:var(--fs-ui); }
-.pv-hstat.streak{ color:var(--flame); } .pv-hstat.noor{ color:var(--gold-deep); }
-.pv-stage{ padding:var(--sp-6); display:grid; gap:var(--sp-4); align-content:start; }
-.pv-stagecard{ background:var(--card); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--sh-1); padding:var(--sp-5); }
-.pv-stagecard .eyebrow{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); letter-spacing:.13em; text-transform:uppercase; color:var(--accent-deep); }
-.pv-stagecard h3{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-h2); margin:var(--sp-2) 0 var(--sp-2s); color:var(--ink); }
-.pv-stagecard p{ margin:0; font-size:var(--fs-ui); color:var(--ink2); }
-.pv-foot{ padding:var(--sp-4); border-top:1px solid var(--line); }
-.pv-note{ font-size:var(--fs-ui); color:var(--ink2); text-align:center; margin-top:var(--sp-4); }
-
-/* ---- Glyph test (section 7) ----------------------------------------------------------------- */
-.pv-glyph{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:var(--sp-4); }
-.pv-gcell{
-  background:var(--paper); border:1px solid var(--line); border-radius:var(--r-md);
-  box-shadow:var(--sh-1); padding:var(--sp-4); display:grid; gap:var(--sp-2s); align-content:start;
-}
-.pv-gcell.wide{ grid-column:1 / -1; }
-.pv-gcell .face{
-  font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); letter-spacing:.06em;
-  text-transform:uppercase; color:var(--ink3);
-}
-.pv-gcell .cp{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--accent-deep); font-variant-numeric:tabular-nums; letter-spacing:.02em; }
-.pv-gcell .render{ color:var(--ink); }
-.pv-gcell .render.big{ font-size:var(--fs-h2); }
-.pv-gpair{ display:grid; gap:var(--sp-1); }
-.pv-gpair .tag{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3); text-transform:uppercase; letter-spacing:.06em; }
-.pv-poppins{ font-family:var(--font-disp); }
-.pv-inter{ font-family:var(--font-body); }
-.pv-quranface{ font-family:var(--font-quran); font-size:var(--fs-ayah); line-height:1.9; letter-spacing:0; }
-.pv-amiriface{ font-family:var(--font-ar); font-size:var(--fs-ar-body); line-height:1.8; letter-spacing:0; }
-.pv-src{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3); }
-
-/* Tofu FAIL exemplar — amber (the only non-safety warning color), never red. */
-.pv-gcell.fail{ background:var(--amber-bg); border-color:var(--amber-line); }
-.pv-gcell.fail .face{ color:var(--amber-ink); }
-.pv-tofu{ display:flex; align-items:center; gap:var(--sp-3); }
-.pv-tofubox{
-  width:38px; height:46px; flex:0 0 auto; border:2px solid var(--amber-ink); border-radius:var(--sp-2);
-  background:repeating-linear-gradient(-45deg, transparent, transparent 5px, var(--amber-line) 5px, var(--amber-line) 7px);
-}
-.pv-tofu .msg{ font-family:var(--font-body); font-weight:600; font-size:var(--fs-ui); color:var(--amber-ink); }
-
-/* ---- Zero-CDN note (section 8) -------------------------------------------------------------- */
-.pv-cdnnote{
-  background:
-    radial-gradient(120% 130% at 6% 0%, var(--accent-soft), transparent 62%),
-    var(--paper);
-  border:1px solid var(--accent-line); border-radius:var(--r-xl); box-shadow:var(--sh-2);
-  padding:var(--sp-6); display:grid; gap:var(--sp-3);
-}
-.pv-cdnnote h3{ font-family:var(--font-disp); font-weight:700; font-size:var(--fs-h2); margin:0; color:var(--ink); }
-.pv-cdnnote p{ margin:0; font-size:var(--fs-body); color:var(--ink2); max-width:70ch; }
-.pv-cdnnote code{ font-family:var(--font-body); background:var(--tint); border:1px solid var(--line); border-radius:var(--r-xs); padding:0 var(--sp-1); }
-
-/* small helpers */
-.pv-inline-latin{ font-family:var(--font-body); }
-.pv-inline-disp{ font-family:var(--font-disp); }
-
-/* ---- §9 Icon registry (real AW.KIT / AW.GLYPHS via AW.icon) ---------------------------------- */
-.pv-icongrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:var(--sp-3); }
-.pv-scene{
-  display:flex; flex-direction:column; align-items:center; gap:var(--sp-2s);
-  padding:var(--sp-3); background:var(--paper); border:1px solid var(--line);
-  border-radius:var(--r-md); box-shadow:var(--sh-1);
-}
-/* accent-tinted well behind each authored icon — recolours live on unit switch (the icon art
-   itself is brand-locked scene art; the well carries the unit identity). */
-.pv-scene .art{
-  display:grid; place-items:center; width:100%; padding:var(--sp-3) 0;
-  background:var(--accent-soft); border-radius:var(--r-sm);
-  transition:background var(--dur-3) var(--ease-standard);
-}
-.pv-scene .art svg{ width:56px; height:auto; display:block; }
-.pv-scene .name{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink2); text-align:center; letter-spacing:.01em; }
-
-.pv-glyphrow{ display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:var(--sp-3); }
-.pv-glyphcell{ display:flex; flex-direction:column; align-items:center; gap:var(--sp-2s); }
-.pv-glyphchip{
-  display:grid; place-items:center; width:46px; height:46px; border-radius:var(--r-sm);
-  background:var(--tint); border:1px solid var(--line);
-}
-.pv-glyphchip svg{ height:20px; width:auto; display:block; }
-/* three glyphs are drawn light-on-fill (correct-answer check, chest & trophy interiors) — they
-   live on a coloured plate in-app, so the row shows them on their real backing (not invisible on cream). */
-.pv-glyphchip[data-glyph="check"]{ background:var(--green); border-color:var(--green-line); }
-.pv-glyphchip[data-glyph="chest"],
-.pv-glyphchip[data-glyph="trophy"]{ background:linear-gradient(160deg,var(--gold2),var(--gold)); border-color:var(--gold); }
-.pv-glyphcell .name{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink2); }
-
-/* lantern-gold on its real home: the night register (authored dark gradient — art literal, D-33). */
-.pv-nightswatch{
-  display:flex; flex-direction:column; align-items:center; gap:var(--sp-3);
-  padding:var(--sp-8); border-radius:var(--r-xl);
-  background:linear-gradient(150deg, #241A05, #3A2A08);
-  box-shadow:var(--sh-2);
-}
-.pv-nightswatch svg{ width:128px; height:auto; display:block; }
-.pv-nightswatch .cap{
-  font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker);
-  letter-spacing:.1em; text-transform:uppercase; color:#FFF3CC;
-}
-
-/* ---- §10 Citation + gloss sheet demos (real AW.cite / AW.wire) ------------------------------- */
-.pv-sheetdemo .pv-prose{
-  margin:0; font-family:var(--font-body); font-size:var(--fs-body); line-height:1.9; color:var(--ink);
-}
-.pv-sheethint{ margin-top:var(--sp-4); font-size:var(--fs-kicker); color:var(--ink3); }
-
-
-/* ---- §11 Press-physics inventory (real engine classes, shared gummy :active) ---------------- */
-.pv-pressgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(172px,1fr)); gap:var(--sp-6) var(--sp-5); align-items:start; }
-.pv-presscell{ display:flex; flex-direction:column; gap:var(--sp-3); align-items:flex-start; }
-.pv-tfrow{ display:flex; gap:var(--sp-2s); width:100%; }
-.plab{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3); letter-spacing:.02em; }
-
-/* ---- §12 Motion vocabulary + reduced-motion --------------------------------------------------- */
-.pv-popin{ width:56px; height:56px; border-radius:var(--r-round); background:var(--accent); box-shadow:0 0 0 6px var(--accent-soft), var(--sh-2); }
-.pv-popin.go{ animation:popIn var(--dur-5) var(--ease-spring); }   /* real engine popIn keyframe */
-.pv-fade{ width:56px; height:56px; border-radius:var(--r-md); background:var(--accent); box-shadow:var(--sh-2);
-  opacity:1; transition:opacity var(--dur-3) var(--ease-standard), transform var(--dur-3) var(--ease-standard); }
-.pv-fade.out{ opacity:0; transform:translateY(10px); }
-.pv-ambient{ position:relative; display:flex; align-items:center; gap:var(--sp-6); min-height:88px; }
-.pv-companion svg{ width:64px; height:auto; display:block; }         /* .companion loop wraps this */
-.pv-bring{ display:block; width:56px; height:56px; border-radius:var(--r-round);
-  box-shadow:0 0 0 4px var(--accent) inset; background:var(--accent-soft); }
-.pv-perfstage{ position:relative; width:100%; min-height:150px; border-radius:var(--r-lg); overflow:hidden;
-  background:var(--tint); border:1px solid var(--line); }           /* positioning context for .perfect */
-.pv-motiontoggle{ display:flex; align-items:center; gap:var(--sp-4); flex-wrap:wrap; }
-#pv-motion-toggle[aria-pressed="true"]{ background:var(--accent); color:var(--accent-on); border-color:var(--accent); }
-.pv-motionstate{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3);
-  font-variant-numeric:tabular-nums; letter-spacing:.02em; }
-
+/* -- Shared little pieces reused by later sections. */
+.pv-caption{ font-family: var(--font-marg); font-size: var(--fs-marg); letter-spacing: .04em; color: var(--ink-62); margin-top: var(--sp-2s); }
+.pv-foot{ padding-block: var(--sp-12); text-align: center; }
+.pv-foot p{ margin: 0; font-family: var(--font-marg); font-size: var(--fs-marg); letter-spacing: .1em; color: var(--ink-40); }
 </style>
 </head>
 
 <body>
 
-<header class="pv-hero pv-wrap">
-  <span class="pv-kicker">Awba Gen-4 · Foundation</span>
-  <h1>The design system, rendered.</h1>
-  <p>This is <code class="pv-inline-latin">preview.html</code> — the living style reference and the
-  verification vehicle for Phase&nbsp;1. Everything below reads from one stylesheet: one token layer,
-  four self-hosted faces, per-unit theming, and a true responsive shell. Switch the unit in section&nbsp;2
-  and watch the whole sample cluster recolor — that live full-recolor is the headline promise this page exists to prove.</p>
+<!-- ════ MASTHEAD — the sacred centre (the thesis) ════════════════════════════════════════════ -->
+<header class="pv-hero reg-orbit">
+  <div class="grain pv-hero-grain">
+    <div class="pv-shell pv-hero-in">
+      <p class="pv-hero-kicker">The Athar System · living reference · pending review</p>
+      <div class="pv-hero-ring" id="pv-hero-ring"></div>
+      <h1 class="pv-hero-title">Your path, traced in ink.</h1>
+      <p class="pv-hero-sub">A page of the book. A night under the sky. A mark that is yours alone. One calm app, shown in its own materials — every panel below is the real engine output, not a mock.</p>
+      <p class="pv-hero-mark">seed 4711 · 44 of 65 inked · warmed by the live prayer clock</p>
+    </div>
+  </div>
 </header>
 
 <main>
 
-  <!-- ========================================================================================
-       Section 1 — Color token sheet
-       ==================================================================================== -->
-  <section class="pv-section" id="s1">
-    <div class="pv-wrap">
-      <div class="pv-head">
-        <h2><span class="pv-num">1</span>Color</h2>
-        <p>The 60 / 30 / 10 discipline: a calm neutral field, secondary surfaces, and a per-unit 10% accent.
-        Every chip below paints from <code class="pv-inline-latin">var(--…)</code> — the hex beside it is only a label.</p>
+<!-- ════ §1 · REGISTER WORLDS ════════════════════════════════════════════════════════════════ -->
+<section class="pv-sec" aria-labelledby="pv-h1">
+  <div class="pv-shell">
+    <p class="pv-eyebrow">§ 1 · Register worlds</p>
+    <h2 class="pv-h" id="pv-h1">Five moods, one calm app</h2>
+    <p class="pv-lede">One ground per screen (law 1). Each register wears its own paper, its own grain, its own single accent, and moves with its own one verb — but they are unmistakably the same product. Circle is not a ground; it is the thermal token layer that <em>drifts</em> a few ink dabs into whatever register hosts it.</p>
+
+    <div class="pv-worlds">
+      <div class="pv-world reg-orbit grain">
+        <div class="pv-world-in">
+          <div class="pv-world-ico" id="pv-ico-orbit"></div>
+          <div class="pv-world-name">Orbit</div>
+          <div class="pv-world-role">Kiswah black — the sacred centre: home, the ring, celebrations. Gold accent.</div>
+          <span class="pv-world-verb">verb · draw</span>
+        </div>
       </div>
-
-      <div class="pv-stack">
-        <div class="pv-card">
-          <p class="pv-subhead">Foundation — surface · ink · line</p>
-          <div class="pv-swatches">
-            <div class="pv-swatch"><div class="chip" style="background:var(--bg)"></div><div class="meta"><div class="name">--bg</div><div class="hex">#EEF2FB</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--card)"></div><div class="meta"><div class="name">--card</div><div class="hex">#F6F9FF</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--paper)"></div><div class="meta"><div class="name">--paper</div><div class="hex">#FFFFFF</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--tint)"></div><div class="meta"><div class="name">--tint</div><div class="hex">#E7EEFF</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--ink)"></div><div class="meta"><div class="name">--ink</div><div class="hex">#232A3D</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--ink2)"></div><div class="meta"><div class="name">--ink2</div><div class="hex">#59607A</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--ink3)"></div><div class="meta"><div class="name">--ink3</div><div class="hex">#98A0B8</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--line)"></div><div class="meta"><div class="name">--line</div><div class="hex">#DEE5F3</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--line2)"></div><div class="meta"><div class="name">--line2</div><div class="hex">#C9D3EA</div></div></div>
-          </div>
+      <div class="pv-world reg-page grain">
+        <div class="pv-world-in">
+          <div class="pv-world-ico" id="pv-ico-page"></div>
+          <div class="pv-world-name">Page</div>
+          <div class="pv-world-role">Haram cream — ~90% of minutes: lessons, quizzes, reading, journal. Crimson accent.</div>
+          <span class="pv-world-verb">verb · settle</span>
         </div>
-
-        <div class="pv-card">
-          <p class="pv-subhead">Semantic — mercy · affirm · streak · noor · safety</p>
-          <div class="pv-swatches">
-            <div class="pv-swatch"><div class="chip" style="background:var(--amber)"></div><div class="meta"><div class="name">--amber · mercy</div><div class="hex">#C68A2E</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--amber-bg)"></div><div class="meta"><div class="name">--amber-bg</div><div class="hex">#FBEFD6</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--green)"></div><div class="meta"><div class="name">--green · affirm</div><div class="hex">#1F9D6B</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--green-bg)"></div><div class="meta"><div class="name">--green-bg</div><div class="hex">#E7F6EF</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:linear-gradient(120deg,var(--flame2),var(--flame))"></div><div class="meta"><div class="name">--flame · streak</div><div class="hex">#F0730B</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:linear-gradient(120deg,var(--gold2),var(--gold))"></div><div class="meta"><div class="name">--gold · noor</div><div class="hex">#E8A400</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--gold-deep)"></div><div class="meta"><div class="name">--gold-deep</div><div class="hex">#B47F00</div></div></div>
-            <div class="pv-swatch"><div class="chip" style="background:var(--danger)"></div><div class="meta"><div class="name">--danger · safety</div><div class="hex">#8A2E28</div></div></div>
-          </div>
-          <p class="pv-head" style="margin-top:var(--sp-4)"><span class="pv-inline-latin" style="font-size:var(--fs-kicker);color:var(--ink3)">Mercy law: amber is the only learner-error color — never red. <code class="pv-inline-latin">--danger</code> is reserved for safety callouts only.</span></p>
+      </div>
+      <div class="pv-world reg-sky-night grain">
+        <div class="pv-world-in">
+          <div class="pv-world-ico" id="pv-ico-sky"></div>
+          <div class="pv-world-name">Sky</div>
+          <div class="pv-world-role">Last-third violet — du'a, night sessions, the constellation. Gold accent, a horizon that breathes.</div>
+          <span class="pv-world-verb">verb · breathe</span>
         </div>
-
-        <div class="pv-card">
-          <p class="pv-subhead">Per-unit accent scales — all four, side by side (data-unit)</p>
-          <div class="pv-units">
-
-            <div class="pv-unitcol" data-unit="u1">
-              <h4><span class="dot"></span>Unit 1 · Blue</h4>
-              <div class="pv-slots">
-                <div class="pv-slot"><span class="sw" style="background:var(--accent)"></span><span class="sl"><b>accent</b><span>#2E6BF5</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-deep)"></span><span class="sl"><b>deep</b><span>#2135B8</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-bright)"></span><span class="sl"><b>bright</b><span>#4E82F7</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-soft)"></span><span class="sl"><b>soft</b><span>#E7EEFF</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-line)"></span><span class="sl"><b>line</b><span>#CBD9F7</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-ink)"></span><span class="sl"><b>ink</b><span>#23348C</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-on);border-color:var(--line2)"></span><span class="sl"><b>on</b><span>#FFFFFF</span></span></div>
-              </div>
-              <div class="pv-pairs">
-                <div class="pv-pair"><button class="pv-gummy" tabindex="-1">Begin, gently</button><span class="pv-aa">AA 4.63</span></div>
-                <div class="pv-pair"><span class="pv-chip">al-Baqarah 2:2</span><span class="pv-aa">AA · ink on soft</span></div>
-                <div class="pv-pair"><span class="pv-deeptext">Aa deep on cream</span><span class="pv-aa">AA 4.99</span></div>
-                <div class="pv-pair"><span class="pv-ring"></span><span class="pv-aa ui">UI ≥3:1 ring</span></div>
-              </div>
-            </div>
-
-            <div class="pv-unitcol" data-unit="u2">
-              <h4><span class="dot"></span>Unit 2 · Purple</h4>
-              <div class="pv-slots">
-                <div class="pv-slot"><span class="sw" style="background:var(--accent)"></span><span class="sl"><b>accent</b><span>#7C5CE0</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-deep)"></span><span class="sl"><b>deep</b><span>#5636B0</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-bright)"></span><span class="sl"><b>bright</b><span>#9B80EC</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-soft)"></span><span class="sl"><b>soft</b><span>#F0EBFC</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-line)"></span><span class="sl"><b>line</b><span>#D9CCF4</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-ink)"></span><span class="sl"><b>ink</b><span>#543B9E</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-on);border-color:var(--line2)"></span><span class="sl"><b>on</b><span>#FFFFFF</span></span></div>
-              </div>
-              <div class="pv-pairs">
-                <div class="pv-pair"><button class="pv-gummy" tabindex="-1">Begin, gently</button><span class="pv-aa">AA 4.70</span></div>
-                <div class="pv-pair"><span class="pv-chip">al-Baqarah 2:2</span><span class="pv-aa">AA · ink on soft</span></div>
-                <div class="pv-pair"><span class="pv-deeptext">Aa deep on cream</span><span class="pv-aa">AA</span></div>
-                <div class="pv-pair"><span class="pv-ring"></span><span class="pv-aa ui">UI ≥3:1 ring</span></div>
-              </div>
-            </div>
-
-            <div class="pv-unitcol" data-unit="u3">
-              <h4><span class="dot"></span>Unit 3 · Teal</h4>
-              <div class="pv-slots">
-                <div class="pv-slot"><span class="sw" style="background:var(--accent)"></span><span class="sl"><b>accent</b><span>#0A7575</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-deep)"></span><span class="sl"><b>deep</b><span>#075C5C</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-bright)"></span><span class="sl"><b>bright</b><span>#14B8B8</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-soft)"></span><span class="sl"><b>soft</b><span>#E1F4F4</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-line)"></span><span class="sl"><b>line</b><span>#ABE1E1</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-ink)"></span><span class="sl"><b>ink</b><span>#0A6060</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-on);border-color:var(--line2)"></span><span class="sl"><b>on</b><span>#FFFFFF</span></span></div>
-              </div>
-              <div class="pv-pairs">
-                <div class="pv-pair"><button class="pv-gummy" tabindex="-1">Begin, gently</button><span class="pv-aa">AA 5.51</span></div>
-                <div class="pv-pair"><span class="pv-chip">al-Baqarah 2:2</span><span class="pv-aa">AA · ink on soft</span></div>
-                <div class="pv-pair"><span class="pv-deeptext">Aa deep on cream</span><span class="pv-aa">AA</span></div>
-                <div class="pv-pair"><span class="pv-ring"></span><span class="pv-aa ui">UI ≥3:1 ring</span></div>
-              </div>
-            </div>
-
-            <div class="pv-unitcol" data-unit="u4">
-              <h4><span class="dot"></span>Unit 4 · Gold</h4>
-              <div class="pv-slots">
-                <div class="pv-slot"><span class="sw" style="background:var(--accent)"></span><span class="sl"><b>accent</b><span>#B47F00</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-deep)"></span><span class="sl"><b>deep</b><span>#8A6000</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-bright)"></span><span class="sl"><b>bright</b><span>#FFD34D</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-soft)"></span><span class="sl"><b>soft</b><span>#FDF3DA</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-line)"></span><span class="sl"><b>line</b><span>#F0DCA6</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-ink)"></span><span class="sl"><b>ink</b><span>#7A5300</span></span></div>
-                <div class="pv-slot"><span class="sw" style="background:var(--accent-on);border-color:var(--line2)"></span><span class="sl"><b>on</b><span>#241A00</span></span></div>
-              </div>
-              <div class="pv-pairs">
-                <div class="pv-pair"><button class="pv-gummy" tabindex="-1">Begin, gently</button><span class="pv-aa">AA 4.89</span></div>
-                <div class="pv-pair"><span class="pv-chip">al-Baqarah 2:2</span><span class="pv-aa">AA 6.20 · ink on soft</span></div>
-                <div class="pv-pair"><span class="pv-deeptext">Aa deep on cream</span><span class="pv-aa">AA 4.99</span></div>
-                <div class="pv-pair"><span class="pv-ring"></span><span class="pv-aa ui">UI 3.13 ring</span></div>
-              </div>
-            </div>
-
-          </div>
-          <p class="pv-head" style="margin-top:var(--sp-4)"><span class="pv-inline-latin" style="font-size:var(--fs-kicker);color:var(--ink3)">Note the correctness split: <code class="pv-inline-latin">--accent-on</code> is white on blue / purple / teal, but a warm near-black <code class="pv-inline-latin">#241A00</code> on gold — the only non-white on-fill, needed to clear AA at the real 16px/700 button size.</span></p>
+      </div>
+      <div class="pv-world reg-festival grain">
+        <div class="pv-world-in">
+          <div class="pv-world-ico" id="pv-ico-festival"></div>
+          <div class="pv-world-name">Festival</div>
+          <div class="pv-world-role">Cream with a folk trim — thresholds only: plates, posters, Eid, share cards. Harissa accent.</div>
+          <span class="pv-world-verb">verb · stamp</span>
         </div>
       </div>
     </div>
-  </section>
+    <p class="pv-note pv-note--tight">The Orbit panel is the live home — the boot stamps it with the real prayer-clock temperature (see §7), so it warms with the time of day. The others show their pure ground and grain.</p>
+  </div>
+</section>
 
-  <!-- ========================================================================================
-       Section 2 — Unit switch + live sample cluster  (FOCAL POINT)
-       ==================================================================================== -->
-  <section class="pv-section" id="s2">
-    <div class="pv-wrap">
-      <div class="pv-head">
-        <h2><span class="pv-num">2</span>Live per-unit recolor</h2>
-        <p>The proof: switch the unit and the <em>entire</em> cluster recolors — primary button, citation chip,
-        active node ring, inline link, tinted panel, progress fill. Zero residual blue survives on u2 / u3 / u4.
-        This is the structural fix for Gen-3's half-themed page.</p>
+<!-- ════ §2 · TYPE SPECIMENS ═════════════════════════════════════════════════════════════════ -->
+<section class="pv-sec" aria-labelledby="pv-h2">
+  <div class="pv-shell">
+    <p class="pv-eyebrow">§ 2 · Type under scripture law</p>
+    <h2 class="pv-h" id="pv-h2">One workhorse, six rationed faces</h2>
+    <p class="pv-lede">Readex Pro carries every UI word in both scripts (law 4). Scripture is Amiri / Amiri Quran only — the strongest, most beautiful thing on any page it appears on (law 3). The display faces are rationed by size (law 5). The vocalised Arabic below is real and byte-verbatim from the citation data — never retyped.</p>
+
+    <div class="pv-specs">
+      <div class="pv-spec">
+        <div class="pv-spec-lab">Readex Pro 400/600<br>the sole workhorse<br>both scripts · body &amp; UI</div>
+        <div class="pv-face-work">The reason, not the reminder.<span class="ar" lang="ar" dir="rtl">ابدأ الدرس</span></div>
       </div>
-
-      <div class="pv-focal">
-        <div class="pv-switchbar">
-          <div class="pv-seg" id="pv-unitseg" role="group" aria-label="Choose active unit theme">
-            <button type="button" data-unit="u1" aria-pressed="true">Unit 1</button>
-            <button type="button" data-unit="u2" aria-pressed="false">Unit 2</button>
-            <button type="button" data-unit="u3" aria-pressed="false">Unit 3</button>
-            <button type="button" data-unit="u4" aria-pressed="false">Unit 4</button>
-          </div>
-          <span class="pv-readout" id="pv-unit-readout" aria-live="polite"></span>
-        </div>
-
-        <div class="pv-cluster">
-          <div class="pv-cell"><span class="pv-clab">Primary button</span><button class="pv-gummy">Begin, gently</button></div>
-          <div class="pv-cell"><span class="pv-clab">Citation chip</span><div><span class="pv-chip">al-Ḥujurāt 49:15</span></div></div>
-          <div class="pv-cell"><span class="pv-clab">Active node ring</span><div class="pv-node">3</div></div>
-          <div class="pv-cell"><span class="pv-clab">Inline link</span><div><span class="pv-inline-latin">Read the <a href="#s2" class="pv-link">source note</a> to continue.</span></div></div>
-          <div class="pv-cell"><span class="pv-clab">Tinted panel</span><div class="pv-panel">A calm surface that carries the unit's identity — model boxes, markers, tinted chrome.</div></div>
-          <div class="pv-cell"><span class="pv-clab">Progress fill</span><div class="pv-progress"><i></i></div></div>
-        </div>
+      <div class="pv-spec">
+        <div class="pv-spec-lab">Amiri Quran 400<br>verbatim ayah · .ayah<br>≥24px · lh 1.9 · strongest ink</div>
+        <div class="ayah" id="pv-spec-ayah" lang="ar" dir="rtl"></div>
+      </div>
+      <div class="pv-spec">
+        <div class="pv-spec-lab">Amiri 400<br>hadith &amp; du'a · .scripture<br>general Arabic scripture</div>
+        <div class="scripture" id="pv-spec-hadith" lang="ar" dir="rtl"></div>
+      </div>
+      <div class="pv-spec">
+        <div class="pv-spec-lab">Aref Ruqaa 400<br>chapter key-term ≥40px<br>in a Farag square</div>
+        <div class="g-ar chapter" id="pv-spec-term" lang="ar" dir="rtl"></div>
+      </div>
+      <div class="pv-spec">
+        <div class="pv-spec-lab">Marcellus 400<br>Orbit / Sky display ≥28px<br>headlines, stat numerals</div>
+        <div class="pv-face-display">The sacred centre</div>
+      </div>
+      <div class="pv-spec">
+        <div class="pv-spec-lab">Rakkas 400<br>Festival signage ≥28px<br>plates &amp; posters only</div>
+        <div class="pv-face-festival"><span lang="ar" dir="rtl">عيد مبارك</span> · Eid Mubarak</div>
+      </div>
+      <div class="pv-spec">
+        <div class="pv-spec-lab">Courier Prime 400<br>marginalia only<br>dates, counters, footnotes</div>
+        <div class="pv-face-marg">18 / 65 · seed 4711 · pp. 12–14 · pending review</div>
       </div>
     </div>
-  </section>
+    <p class="pv-note pv-note--tight">Rakkas and Aref Ruqaa never share a real screen (law 5) — they appear together here only as a specimen. Heavy tashkeel is set in the Amiri faces only; the display faces carry plain or common-tashkeel forms.</p>
+  </div>
+</section>
 
-  <!-- ========================================================================================
-       Section 3 — Type scale
-       ==================================================================================== -->
-  <section class="pv-section" id="s3">
-    <div class="pv-wrap">
-      <div class="pv-head">
-        <h2><span class="pv-num">3</span>Type scale</h2>
-        <p>Seven honest Latin roles (Poppins display, Inter body) plus the Arabic roles re-expressed under the
-        ≥1.4× Latin law. Resize the window to watch the fluid roles clamp between their min and max.</p>
-      </div>
+<!-- ════ §3 · THERMAL RAMP ═══════════════════════════════════════════════════════════════════ -->
+<section class="pv-sec" aria-labelledby="pv-h3">
+  <div class="pv-shell">
+    <p class="pv-eyebrow">§ 3 · The thermal ramp</p>
+    <h2 class="pv-h" id="pv-h3">Not yet, warming, earned — by shape, not colour</h2>
+    <p class="pv-lede">Progress runs cool to warm to gold. But the meaning lives in the <em>shape</em> first, so it holds for a colour-blind reader and where the cream ground weakens contrast: an empty ring, a half-inked dab, a filled dab with a tick. Shown on both grounds to prove the shape-cue carries.</p>
 
-      <div class="pv-card">
-        <div class="pv-typerow">
-          <div class="lab">Hero<span>--fs-hero · Poppins 800 · lh 1.0</span></div>
-          <div style="font-family:var(--font-disp);font-weight:800;font-size:var(--fs-hero);line-height:1.0;color:var(--ink)">128</div>
-        </div>
-        <div class="pv-typerow">
-          <div class="lab">Display<span>--fs-display · Poppins 700 · lh 1.05</span></div>
-          <div style="font-family:var(--font-disp);font-weight:700;font-size:var(--fs-display);line-height:1.05;color:var(--ink)">Beautifully done.</div>
-        </div>
-        <div class="pv-typerow">
-          <div class="lab">Title<span>--fs-h1 · Poppins 600 · lh 1.16</span></div>
-          <div style="font-family:var(--font-disp);font-weight:600;font-size:var(--fs-h1);line-height:1.16;color:var(--ink)">The Names of Allah</div>
-        </div>
-        <div class="pv-typerow">
-          <div class="lab">Heading<span>--fs-h2 · Poppins 600 · lh 1.28</span></div>
-          <div style="font-family:var(--font-disp);font-weight:600;font-size:var(--fs-h2);line-height:1.28;color:var(--ink)">What does tawḥīd mean?</div>
-        </div>
-        <div class="pv-typerow">
-          <div class="lab">Body<span>--fs-body · Inter 400 · lh 1.6</span></div>
-          <div style="font-family:var(--font-body);font-weight:400;font-size:var(--fs-body);line-height:1.6;color:var(--ink2)">Reading prose sits at a comfortable 16px and stays legible without overflow all the way down to a 320px screen — the leads, openings, and frame text every lesson depends on.</div>
-        </div>
-        <div class="pv-typerow">
-          <div class="lab">UI / control<span>--fs-ui · Inter 400/600 · lh 1.45</span></div>
-          <div style="font-family:var(--font-body);font-weight:400;font-size:var(--fs-ui);line-height:1.45;color:var(--ink2)">Quiz options, tiles, captions and microcopy — with <b style="font-weight:600">semibold</b> for emphasis and terms.</div>
-        </div>
-        <div class="pv-typerow">
-          <div class="lab">Kicker / meta<span>--fs-kicker · Poppins 600 · ls .13em</span></div>
-          <div style="font-family:var(--font-disp);font-weight:600;font-size:var(--fs-kicker);letter-spacing:.13em;text-transform:uppercase;color:var(--accent-deep)">Unit 1 · Lesson 1</div>
+    <div class="pv-ramp">
+      <span class="pv-ramp-end">not&nbsp;yet</span>
+      <div class="ramp-bar" role="img" aria-label="Thermal ramp: powder to ember to gold"></div>
+      <span class="pv-ramp-end">earned</span>
+    </div>
+
+    <div class="pv-thermal-grounds">
+      <div class="pv-thermal-panel reg-page">
+        <p class="pv-note" style="margin-bottom:var(--sp-4)">On cream (Page)</p>
+        <div class="pv-states">
+          <div class="pv-statecell"><span class="pv-state" data-state="not-yet"></span><span class="pv-state-lab">not yet</span></div>
+          <div class="pv-statecell"><span class="pv-state" data-state="progress"></span><span class="pv-state-lab">in progress</span></div>
+          <div class="pv-statecell"><span class="pv-state" data-state="mastered" id="pv-state-mastered-cream"></span><span class="pv-state-lab">mastered</span></div>
         </div>
       </div>
-
-      <div class="pv-card" style="margin-top:var(--sp-5)">
-        <p class="pv-subhead">Fluid clamp demo</p>
-        <div class="pv-clamp" style="font-family:var(--font-disp);font-weight:700;font-size:var(--fs-display);line-height:1.05">
-          I scale with the viewport.
-        </div>
-        <p class="pv-head" style="margin-top:var(--sp-3)"><span class="pv-inline-latin" style="font-size:var(--fs-kicker);color:var(--ink3)">clamp(2rem, 1.7rem + 1.5vw, 2.375rem) — drag the window wider and narrower to see it move between 32px and 38px.</span></p>
-      </div>
-
-      <div class="pv-card" style="margin-top:var(--sp-5)">
-        <p class="pv-subhead">Arabic roles — general (Amiri) &amp; verbatim Qur'an (Amiri Quran)</p>
-        <div class="pv-stack">
-          <div>
-            <div class="lab" style="font-family:var(--font-body);font-size:var(--fs-kicker);color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--sp-2s)">--fs-ar-body · Amiri · lh 1.8</div>
-            <p class="arabic" lang="ar" dir="rtl" style="margin:0">لَا إِلَٰهَ إِلَّا ٱللَّٰهُ مُحَمَّدٌ رَسُولُ ٱللَّٰهِ</p>
-          </div>
-          <div>
-            <div class="lab" style="font-family:var(--font-body);font-size:var(--fs-kicker);color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--sp-2s)">--fs-ayah · Amiri Quran · lh 1.9 · .ayah</div>
-            <p class="ayah" lang="ar" dir="rtl" style="margin:0">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
+      <div class="pv-thermal-panel reg-orbit grain">
+        <div class="pv-world-in">
+          <p class="pv-note" style="color:var(--paper-62);margin-bottom:var(--sp-4)">On black (Orbit)</p>
+          <div class="pv-states">
+            <div class="pv-statecell"><span class="pv-state" data-state="not-yet"></span><span class="pv-state-lab" style="color:var(--paper-62)">not yet</span></div>
+            <div class="pv-statecell"><span class="pv-state" data-state="progress"></span><span class="pv-state-lab" style="color:var(--paper-62)">in progress</span></div>
+            <div class="pv-statecell"><span class="pv-state" data-state="mastered" id="pv-state-mastered-dark"></span><span class="pv-state-lab" style="color:var(--paper-62)">mastered</span></div>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ========================================================================================
-       Section 4 — Radii + shadow tiles
-       ==================================================================================== -->
-  <section class="pv-section" id="s4">
-    <div class="pv-wrap">
-      <div class="pv-head">
-        <h2><span class="pv-num">4</span>Radii &amp; elevation</h2>
-        <p>Soft, warm corners and indigo-tinted shadows — never grey or black. One tile per token.</p>
-      </div>
-
-      <div class="pv-card">
-        <p class="pv-subhead">Radii · --r-*</p>
-        <div class="pv-tiles">
-          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-xs)"></div><div class="tlab">--r-xs</div><div class="tval">8px</div></div>
-          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-sm)"></div><div class="tlab">--r-sm</div><div class="tval">12px</div></div>
-          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-md)"></div><div class="tlab">--r-md</div><div class="tval">14px</div></div>
-          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-lg)"></div><div class="tlab">--r-lg</div><div class="tval">16px</div></div>
-          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-xl)"></div><div class="tlab">--r-xl</div><div class="tval">24px</div></div>
-          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-2xl)"></div><div class="tlab">--r-2xl</div><div class="tval">28px</div></div>
-          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-pill)"></div><div class="tlab">--r-pill</div><div class="tval">999px</div></div>
-          <div class="pv-tile"><div class="demo" style="border-radius:var(--r-round);aspect-ratio:1;height:auto;width:76px"></div><div class="tlab">--r-round</div><div class="tval">50%</div></div>
-        </div>
-      </div>
-
-      <div class="pv-card" style="margin-top:var(--sp-5)">
-        <p class="pv-subhead">Shadows · --sh-* (indigo-tinted)</p>
-        <div class="pv-tiles">
-          <div class="pv-tile shadow"><div class="demo" style="box-shadow:var(--sh-1);border-radius:var(--r-md)"></div><div class="tlab">--sh-1</div><div class="tval">raised chips</div></div>
-          <div class="pv-tile shadow"><div class="demo" style="box-shadow:var(--sh-2);border-radius:var(--r-md)"></div><div class="tlab">--sh-2</div><div class="tval">cards, panels</div></div>
-          <div class="pv-tile shadow"><div class="demo" style="box-shadow:var(--sh-3);border-radius:var(--r-md)"></div><div class="tlab">--sh-3</div><div class="tval">sheets, popups</div></div>
-          <div class="pv-tile shadow"><div class="demo" style="box-shadow:var(--sh-4);border-radius:var(--r-md)"></div><div class="tlab">--sh-4</div><div class="tval">desktop column</div></div>
-          <div class="pv-tile shadow"><div class="demo" style="box-shadow:var(--sh-inset);border:1px solid var(--line);border-radius:var(--r-md)"></div><div class="tlab">--sh-inset</div><div class="tval">top highlight</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================================================
-       Section 5 — Motion demos
-       ==================================================================================== -->
-  <section class="pv-section" id="s5">
-    <div class="pv-wrap">
-      <div class="pv-head">
-        <h2><span class="pv-num">5</span>Motion</h2>
-        <p>Three signatures, each labelled with its easing token. All respect
-        <code class="pv-inline-latin">prefers-reduced-motion</code> — set “Reduce motion” in your OS and they collapse to instant.</p>
-      </div>
-
-      <div class="pv-motion">
-        <div class="pv-mcell">
-          <span class="mtitle">Gummy press</span>
-          <button class="pv-gummy" style="max-width:220px">Press me</button>
-          <span class="easing">--dur-2 (120ms) · --ease-standard · 0 5px 0 → 0 2px 0 + translateY(3px)</span>
-        </div>
-        <div class="pv-mcell">
-          <span class="mtitle">Node pop-in</span>
-          <div class="pv-popdot go" id="pv-pop"></div>
-          <button class="pv-tinybtn" id="pv-pop-replay" type="button">Replay pop</button>
-          <span class="easing">--dur-5 (350ms) · --ease-spring (gummy overshoot)</span>
-        </div>
-        <div class="pv-mcell">
-          <span class="mtitle">Sheet in</span>
-          <div class="pv-sheetstage">
-            <div class="pv-scrim" id="pv-scrim">
-              <div class="pv-sheet">
-                <div class="pv-grip"></div>
-                <p style="margin:0 0 var(--sp-3);font-family:var(--font-disp);font-weight:600;font-size:var(--fs-ui);color:var(--ink)">A calm bottom sheet.</p>
-                <button class="pv-tinybtn" id="pv-sheet-close" type="button">Close</button>
-              </div>
-            </div>
-          </div>
-          <button class="pv-tinybtn" id="pv-sheet-open" type="button">Open sheet</button>
-          <span class="easing">--dur-4 (280ms) · --ease-gentle (soft settle)</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================================================
-       Section 6 — Responsive shell skeleton (real .app-shell)
-       ==================================================================================== -->
-  <section class="pv-section pv-shellband" id="s6">
-    <div class="pv-head pv-wrap">
-      <h2><span class="pv-num">6</span>Responsive shell</h2>
-      <p>A real <code class="pv-inline-latin">.app-shell</code> grid — HUD / stage / footer. Resize the window across
-      600px: below it goes full-bleed edge-to-edge; above it becomes an intentional centered column with
-      <code class="pv-inline-latin">--r-2xl</code> corners and <code class="pv-inline-latin">--sh-4</code> elevation on the cream wash.
-      No fixed phone card anywhere.</p>
-    </div>
-
-    <div class="pv-shellframe">
-      <div class="app-shell">
-        <div class="app-hud pv-hud">
-          <button class="pv-iconbtn" type="button" aria-label="Close lesson">×</button>
-          <div class="pv-segbar" aria-hidden="true">
-            <span class="seg"><i style="width:100%"></i></span>
-            <span class="seg"><i style="width:60%"></i></span>
-            <span class="seg"><i style="width:0"></i></span>
-          </div>
-          <span class="pv-hstat streak" aria-label="Streak: 5 days">▲ 5</span>
-          <span class="pv-hstat noor" aria-label="Noor: 240">◆ 240</span>
-        </div>
-
-        <div class="app-stage pv-stage">
-          <div class="pv-stagecard">
-            <span class="eyebrow">Unit 1 · Lesson 1</span>
-            <h3>Who is your Lord?</h3>
-            <p>The stage is the one scrolling region — overscroll contained, safe-area padded on its sides.
-            Everything the learner reads lives here.</p>
-          </div>
-          <div class="pv-stagecard">
-            <span class="eyebrow">Depth · 1 of 3</span>
-            <h3>A single, indivisible Creator</h3>
-            <p>Placeholder content stands in for the real lesson beats that Phase 4 ports from Josh's data files.</p>
-          </div>
-        </div>
-
-        <div class="app-foot pv-foot">
-          <button class="pv-gummy">Begin, gently</button>
-        </div>
-      </div>
-    </div>
-    <p class="pv-note pv-wrap">The single accent-filled gummy CTA in the footer is the shell's focal point — one primary action, one focal point.</p>
-  </section>
-
-  <!-- ========================================================================================
-       Section 7 — Permanent glyph test
-       ==================================================================================== -->
-  <section class="pv-section" id="s7">
-    <div class="pv-wrap">
-      <div class="pv-head">
-        <h2><span class="pv-num">7</span>Glyph test</h2>
-        <p>Every at-risk codepoint from Josh's real content, rendered in its correct self-hosted face and labelled.
-        If any cell shows a tofu box (□) instead of the glyph, that face needs re-subsetting. The final cell is a
-        deliberate FAIL exemplar so a real miss is unmistakable.</p>
-      </div>
-
-      <div class="pv-glyph">
-
-        <div class="pv-gcell">
-          <div class="face">Corner brackets · U+02F9 / U+02FA</div>
-          <div class="cp">Poppins subset lacks these — --font-disp falls through to Inter, cleanly.</div>
-          <div class="pv-gpair">
-            <span class="tag">Poppins string (fallback in action)</span>
-            <span class="render pv-poppins">Say, ˹O Prophet,˺ “He is Allah—One.”</span>
-          </div>
-          <div class="pv-gpair">
-            <span class="tag">Inter</span>
-            <span class="render pv-inter">Say, ˹O Prophet,˺ “He is Allah—One.”</span>
-          </div>
-        </div>
-
-        <div class="pv-gcell">
-          <div class="face">Transliteration diacritics</div>
-          <div class="cp">ʿ ʾ ā Ā ī Ī ū ḥ Ḥ ṣ Ṣ ṭ Ṭ ḏ Ḏ · U+02BF/02BE, U+0101/0100, U+012B/012A, U+016B, U+1E25/1E24, U+1E63/1E62, U+1E6D/1E6C, U+1E0F/1E0E</div>
-          <div class="pv-gpair">
-            <span class="tag">Poppins</span>
-            <span class="render pv-poppins">ʿUmar ibn al-Khaṭṭāb · al-ʾĪmān · Ḥadīth · ḏikr · ṣabr</span>
-          </div>
-          <div class="pv-gpair">
-            <span class="tag">Inter</span>
-            <span class="render pv-inter">ʿUmar ibn al-Khaṭṭāb · al-ʾĪmān · Ḥadīth · ḏikr · ṣabr</span>
-          </div>
-        </div>
-
-        <div class="pv-gcell">
-          <div class="face">Middle dot · U+00B7 · Poppins</div>
-          <div class="cp">208× in real content — the citation / kicker separator on every screen; the most prominent at-risk glyph.</div>
-          <div class="render big pv-poppins" style="font-weight:600;letter-spacing:.02em">Unit 1 · Lesson 1</div>
-        </div>
-
-        <div class="pv-gcell">
-          <div class="face">Punctuation set</div>
-          <div class="cp">— U+2014 · – U+2013 · ‘ ’ U+2018/2019 · “ ” U+201C/201D</div>
-          <div class="pv-gpair">
-            <span class="tag">Poppins</span>
-            <span class="render pv-poppins">The lamp — lit gently — stays. ‘Begin,’ she said. “Return.” pp. 12–14</span>
-          </div>
-          <div class="pv-gpair">
-            <span class="tag">Inter</span>
-            <span class="render pv-inter">The lamp — lit gently — stays. ‘Begin,’ she said. “Return.” pp. 12–14</span>
-          </div>
-        </div>
-
-        <div class="pv-gcell">
-          <div class="face">Circumflex vowels · U+00EE / U+00E2 / U+00FB</div>
-          <div class="cp">Josh's transliteration convention — would tofu under a careless ASCII-only subset.</div>
-          <div class="pv-gpair">
-            <span class="tag">Poppins</span>
-            <span class="render pv-poppins">Iblîs · Suwâ · Yaghûth · Yaûq</span>
-          </div>
-          <div class="pv-gpair">
-            <span class="tag">Inter</span>
-            <span class="render pv-inter">Iblîs · Suwâ · Yaghûth · Yaûq</span>
-          </div>
-        </div>
-
-        <div class="pv-gcell">
-          <div class="face">Honorific ligature ﷺ · U+FDFA</div>
-          <div class="cp">Forward-looking / defensive — bound by brand law; render it so the ligature is confirmed not tofu.</div>
-          <div class="pv-gpair">
-            <span class="tag">Amiri (general)</span>
-            <span class="render pv-amiriface" lang="ar" dir="rtl">مُحَمَّد ﷺ</span>
-          </div>
-          <div class="pv-gpair">
-            <span class="tag">Amiri Quran</span>
-            <span class="render pv-quranface" lang="ar" dir="rtl">مُحَمَّد ﷺ</span>
-          </div>
-        </div>
-
-        <div class="pv-gcell wide">
-          <div class="face">Face split — verbatim Qur'an (.ayah → Amiri Quran) vs. general Arabic (Amiri)</div>
-          <div class="cp">No blanket rule forces the Qur'an face onto hadith — the split is per-instance.</div>
-          <div class="pv-gpair">
-            <span class="tag">.ayah · Amiri Quran · al-Fātiḥah 1:1</span>
-            <span class="ayah" lang="ar" dir="rtl">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</span>
-          </div>
-          <div class="pv-gpair">
-            <span class="tag">General Amiri · hadith</span>
-            <span class="pv-amiriface" lang="ar" dir="rtl">إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ</span>
-            <span class="pv-src">Ṣaḥīḥ al-Bukhārī 1 · Ṣaḥīḥ Muslim 1907</span>
-          </div>
-        </div>
-
-        <div class="pv-gcell fail">
-          <div class="face">FAIL exemplar · what a missing glyph looks like</div>
-          <div class="pv-tofu">
-            <span class="pv-tofubox" aria-hidden="true"></span>
-            <span class="msg">Glyph missing — re-subset this face.</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================================================
-       Section 8 — Zero-CDN assertion note
-       ==================================================================================== -->
-  <section class="pv-section" id="s8">
-    <div class="pv-wrap">
-      <div class="pv-head">
-        <h2><span class="pv-num">8</span>Zero-CDN assertion</h2>
-        <p>Every face on this page is self-hosted and same-origin — a PWA that promises offline can't depend on a third-party font host.</p>
-      </div>
-      <div class="pv-cdnnote">
-        <h3>Confirm it yourself</h3>
-        <p>Open DevTools › Network, filter by <code>font</code>, reload: every request must be same-origin
-        <code>shared/fonts/…</code> — zero Google-Fonts-CDN requests. If you see any third-party font host, the
-        zero-CDN guarantee is broken.</p>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ========================================================================================
-       Section 9 — Icon registry grid (FND-04) — the phase headline, real AW.icon() output
-       ==================================================================================== -->
-  <section class="pv-section" id="s9">
-    <div class="pv-wrap">
-      <div class="pv-head">
-        <h2><span class="pv-num">9</span>Icon registry</h2>
-        <p>The one branded set (FND-04), rendered live from <code class="pv-inline-latin">AW.KIT</code> /
-        <code class="pv-inline-latin">AW.GLYPHS</code> through <code class="pv-inline-latin">AW.icon()</code> — a single
-        inline source, decorative by default, no per-page constants. Twenty scene icons, thirteen UI glyphs, and the
-        authored gold lantern on its night home. Switch the unit and the accent-tinted wells recolour with the theme.</p>
-        <div class="pv-switchbar">
-          <div class="pv-seg" id="pv-icon-unitseg" role="group" aria-label="Recolour the icon grid by unit">
-            <button type="button" data-unit="u1" aria-pressed="true">Unit 1</button>
-            <button type="button" data-unit="u2" aria-pressed="false">Unit 2</button>
-            <button type="button" data-unit="u3" aria-pressed="false">Unit 3</button>
-            <button type="button" data-unit="u4" aria-pressed="false">Unit 4</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="pv-card">
-        <p class="pv-subhead">Scenes · AW.KIT · scene-tile 56px</p>
-        <div class="pv-icongrid" id="pv-scene-grid"><!-- filled by AW.icon() in the closing script --></div>
-      </div>
-
-      <div class="pv-card" style="margin-top:var(--sp-5)">
-        <p class="pv-subhead">UI glyphs · AW.GLYPHS · glyph-ui 20px</p>
-        <div class="pv-glyphrow" id="pv-glyph-grid"><!-- filled by AW.icon() in the closing script --></div>
-      </div>
-
-      <div class="pv-card" style="margin-top:var(--sp-5)">
-        <p class="pv-subhead">Gold lantern · authored night-register variant · scene-hero 128px</p>
-        <div class="pv-nightswatch" data-register="night" id="pv-lantern-night"><!-- lantern-gold, filled below --></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================================================
-       Section 10 — Citation + gloss sheet demos (ENG-06) — verbatim scripture, ZERO celebration
-       ==================================================================================== -->
-  <section class="pv-section" id="s10">
-    <div class="pv-wrap">
-      <div class="pv-head">
-        <h2><span class="pv-num">10</span>Citation &amp; gloss sheets</h2>
-        <p>Real <code class="pv-inline-latin">AW.cite</code> chips, bound by <code class="pv-inline-latin">AW.wire</code>:
-        tap the verse to open its citation sheet (Amiri&nbsp;Quran, no grade), tap the hadith for its sheet
-        (general Amiri with a green <em>Sahih</em> grade pill), and tap the term for its gloss. Every citation carries
-        the calm <em>unverified&nbsp;·&nbsp;pending&nbsp;review</em> pill. The scripture is ported byte-verbatim from
-        Josh&rsquo;s lesson data — and by the mercy law, nothing celebratory ever renders in or beside this block.</p>
-      </div>
-
-      <div class="pv-card">
-        <p class="pv-subhead">Tap a chip to open its sheet</p>
-        <div class="pv-sheetdemo" id="pv-sheet-demo"><!-- real AW.cite chips + term, wired below --></div>
-        <p class="pv-sheethint">Scrim tap, the in-sheet &times; button, or Escape closes it — one singleton
-        <code class="pv-inline-latin">AW.sheet</code> primitive, reused for every sheet in the app.</p>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ========================================================================================
-       Section 11 — Press-physics inventory (MOT-03 / D-40) — one gummy press across the set
-       ==================================================================================== -->
-  <section class="pv-section" id="s11">
-    <div class="pv-wrap">
-      <div class="pv-head">
-        <h2><span class="pv-num">11</span>Press-physics inventory</h2>
-        <p>Every tappable surface shares ONE gummy press: a hard indigo <code class="pv-inline-latin">--accent-deep</code>
-        offset at rest that collapses by <code class="pv-inline-latin">calc(--press-rest &minus; --press-active)</code> = 3px
-        on <code class="pv-inline-latin">:active</code>, over <code class="pv-inline-latin">--dur-2 · --ease-press</code>.
-        Press each one — the whole inventory presses as a single coherent system, gummy-not-mushy. These are the REAL
-        engine classes from <code class="pv-inline-latin">@layer&nbsp;components</code>, not a preview mock.</p>
-      </div>
-
-      <div class="pv-card">
-        <div class="pv-pressgrid">
-          <div class="pv-presscell"><button class="btn" type="button">Begin, gently</button><span class="plab">.btn</span></div>
-          <div class="pv-presscell"><button class="opt" type="button">A settled belief</button><span class="plab">.opt</span></div>
-          <div class="pv-presscell"><div class="pv-tfrow"><button class="tf" type="button">True</button><button class="tf" type="button">False</button></div><span class="plab">.tf</span></div>
-          <div class="pv-presscell"><div class="tile">Tap tile</div><span class="plab">.tile</span></div>
-          <div class="pv-presscell"><span class="cite" id="pv-press-cite">al-Ḥujurāt 49:15</span><span class="plab">.cite · inline-light press</span></div>
-          <div class="pv-presscell"><button class="tab" id="pv-press-tab" type="button">Saved</button><span class="plab">.tab</span></div>
-          <div class="pv-presscell"><button class="hstat" id="pv-press-hstat" type="button">3</button><span class="plab">.hstat</span></div>
-          <div class="pv-presscell"><button class="sheet-row" type="button">Switch course &rarr;</button><span class="plab">.sheet-row · elevated-lite</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================================================
-       Section 12 — Motion vocabulary + dual reduced-motion (MOT-01 / MOT-04 / D-39 / D-42)
-       ==================================================================================== -->
-  <section class="pv-section" id="s12">
-    <div class="pv-wrap">
-      <div class="pv-head">
-        <h2><span class="pv-num">12</span>Motion vocabulary &amp; reduced motion</h2>
-        <p>ONE vocabulary (MOT-01): every signature maps to a Phase-1 duration + easing token — no new curves are authored.
-        The celebration primitives (the burst + the PERFECT WAAPI exemplar) live HERE, spatially separated from the
-        scripture in §10. Then reduced motion is proven BOTH ways: the toggle below, and your OS &ldquo;Reduce
-        Motion&rdquo; setting — under either, the burst no-ops and the companion loop stops.</p>
-      </div>
-
-      <div class="pv-card">
-        <p class="pv-subhead">The one vocabulary — signature · token pair</p>
-        <div class="pv-motion">
-          <div class="pv-mcell">
-            <span class="mtitle">Press / tap collapse</span>
-            <button class="btn" type="button" style="max-width:200px">Press me</button>
-            <span class="easing">--dur-2 (120ms) · --ease-press</span>
-          </div>
-          <div class="pv-mcell">
-            <span class="mtitle">Hover / small state</span>
-            <span class="cite" id="pv-motion-cite">al-Ḥujurāt 49:15</span>
-            <span class="easing">--dur-3 (200ms) · --ease-standard · hover (fine pointer)</span>
-          </div>
-          <div class="pv-mcell">
-            <span class="mtitle">Pop-in (overshoot)</span>
-            <div class="pv-popin go" id="pv-popin"></div>
-            <button class="pv-tinybtn" id="pv-popin-replay" type="button">Replay pop-in</button>
-            <span class="easing">--dur-5 (350ms) · --ease-spring</span>
-          </div>
-          <div class="pv-mcell">
-            <span class="mtitle">Sheet / scrim in</span>
-            <button class="pv-tinybtn" id="pv-motion-sheet" type="button">Open real sheet</button>
-            <span class="easing">--dur-4 (280ms) · --ease-gentle in · --ease-in out</span>
-          </div>
-          <div class="pv-mcell">
-            <span class="mtitle">Fade / slide micro</span>
-            <div class="pv-fade" id="pv-fade"></div>
-            <button class="pv-tinybtn" id="pv-fade-replay" type="button">Replay fade</button>
-            <span class="easing">--dur-3 (200ms) · --ease-standard</span>
-          </div>
-          <div class="pv-mcell">
-            <span class="mtitle">Ambient (the only infinite motion)</span>
-            <div class="pv-ambient">
-              <span class="companion pv-companion" id="pv-companion" data-ambient></span>
-              <span class="breathing-ring pv-bring"></span>
-            </div>
-            <span class="easing">--dur-amb (4800ms) · --ease-gentle · loops — STOP under reduced motion</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="pv-card" style="margin-top:var(--sp-5)">
-        <p class="pv-subhead">Celebration primitives — spatially separate from the scripture (mercy law)</p>
-        <div class="pv-motion">
-          <div class="pv-mcell">
-            <span class="mtitle">Burst primitive</span>
-            <button class="pv-tinybtn" id="pv-confetti" type="button">Fire the burst</button>
-            <span class="easing">AW.confetti(24) · brand palette · no-ops under reduced motion</span>
-          </div>
-          <div class="pv-mcell" style="grid-column:1 / -1">
-            <span class="mtitle">PERFECT overlay — the WAAPI orchestration exemplar Phase 4 copies</span>
-            <div class="pv-perfstage">
-              <div class="perfect" id="pv-perfect"><h1>PERFECT</h1><p>Three in a row. Keep walking.</p></div>
-            </div>
-            <button class="pv-tinybtn" id="pv-perfect-btn" type="button">Play PERFECT</button>
-            <span class="easing">AW.animate(el, keyframes, --dur-5, --ease-spring) · scale-pop</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="pv-card" style="margin-top:var(--sp-5)">
-        <p class="pv-subhead">Reduced motion — both trigger paths (MOT-04)</p>
-        <div class="pv-motiontoggle">
-          <button id="pv-motion-toggle" type="button" aria-pressed="false" class="pv-tinybtn">Simulate reduce motion</button>
-          <span class="pv-motionstate" id="pv-motion-state" aria-live="polite">data-motion: system</span>
-        </div>
-        <p class="pv-head" style="margin-top:var(--sp-3)"><span class="pv-inline-latin" style="font-size:var(--fs-kicker);color:var(--ink3)">Path&nbsp;1 — this toggle stamps <code class="pv-inline-latin">data-motion="reduce"</code> on <code class="pv-inline-latin">&lt;html&gt;</code> (the in-app override the Phase-2 boot-stamp mirrors). Path&nbsp;2 — your OS &ldquo;Reduce Motion&rdquo; accessibility setting (<code class="pv-inline-latin">prefers-reduced-motion</code>). Under EITHER, the durations collapse to ~1ms, the burst button no-ops, and the companion bob / glow / breathing ring above stop outright.</span></p>
-      </div>
-    </div>
-  </section>
+<!-- __SECTIONS_4_8__ -->
 
 </main>
 
+<footer class="pv-foot">
+  <p>The Athar System · every word of scripture verbatim, sourced, pending review</p>
+</footer>
+
 <script>
-/* Classic script — no modules, file:// double-click safe. */
+/* Classic script — no modules, file:// double-click safe. Renders REAL AW.* output. */
 (function () {
   var root = document.documentElement;
+  if (!(window.AW && AW.icon)) return;
 
-  /* Unit switch — mutate data-unit on <html>; the whole page recolors from CSS. Generalised so
-     BOTH segmented controls (§2 focal cluster + §9 icon grid) drive the same root attribute
-     and stay in sync. */
-  var readout = document.getElementById('pv-unit-readout');
-  var unitSegs = [document.getElementById('pv-unitseg'), document.getElementById('pv-icon-unitseg')];
-
-  function updateReadout() {
-    if (!readout) return;
-    var acc = getComputedStyle(root).getPropertyValue('--accent').trim().toUpperCase();
-    var unit = (root.getAttribute('data-unit') || 'u1').toUpperCase();
-    readout.textContent = unit + ' · --accent ' + acc;
-  }
-
-  function applyUnit(unit) {
-    root.setAttribute('data-unit', unit);
-    for (var s = 0; s < unitSegs.length; s++) {
-      if (!unitSegs[s]) continue;
-      var all = unitSegs[s].querySelectorAll('button[data-unit]');
-      for (var i = 0; i < all.length; i++) {
-        all[i].setAttribute('aria-pressed', all[i].getAttribute('data-unit') === unit ? 'true' : 'false');
-      }
-    }
-    updateReadout();
-  }
-
-  for (var s = 0; s < unitSegs.length; s++) {
-    (function (g) {
-      if (!g) return;
-      g.addEventListener('click', function (e) {
-        var btn = e.target.closest ? e.target.closest('button[data-unit]') : null;
-        if (!btn) return;
-        applyUnit(btn.getAttribute('data-unit'));
-      });
-    })(unitSegs[s]);
-  }
-  updateReadout();
-
-  /* Node pop-in replay. */
-  var pop = document.getElementById('pv-pop');
-  var popReplay = document.getElementById('pv-pop-replay');
-  if (pop && popReplay) {
-    popReplay.addEventListener('click', function () {
-      pop.classList.remove('go');
-      void pop.offsetWidth; /* force reflow so the animation restarts */
-      pop.classList.add('go');
-    });
-  }
-
-  /* Sheet demo. */
-  var scrim = document.getElementById('pv-scrim');
-  var openBtn = document.getElementById('pv-sheet-open');
-  var closeBtn = document.getElementById('pv-sheet-close');
-  if (scrim && openBtn) {
-    openBtn.addEventListener('click', function () { scrim.classList.add('open'); });
-    scrim.addEventListener('click', function (e) { if (e.target === scrim) scrim.classList.remove('open'); });
-    if (closeBtn) closeBtn.addEventListener('click', function () { scrim.classList.remove('open'); });
-  }
-
-  /* ============================================================================================
-     Phase 3 (Task 1) — §9 icon grid + §10 sheet demos, all REAL AW.* engine output (D-43).
-     ============================================================================================ */
-  if (window.AW && AW.KIT) {
-
-    /* §9 — 20 scenes from AW.KIT (lantern-gold shown separately on the night swatch below). */
-    var sceneGrid = document.getElementById('pv-scene-grid');
-    if (sceneGrid) {
-      Object.keys(AW.KIT).forEach(function (name) {
-        if (name === 'lantern-gold') return;
-        var cell = document.createElement('div');
-        cell.className = 'pv-scene';
-        cell.innerHTML = '<div class="art">' + AW.icon(name) + '</div><div class="name">' + name + '</div>';
-        sceneGrid.appendChild(cell);
-      });
-    }
-
-    /* §9 — the 13 UI glyphs from AW.GLYPHS at glyph-ui size. */
-    var glyphGrid = document.getElementById('pv-glyph-grid');
-    if (glyphGrid) {
-      Object.keys(AW.GLYPHS).forEach(function (name) {
-        var cell = document.createElement('div');
-        cell.className = 'pv-glyphcell';
-        cell.innerHTML = '<div class="pv-glyphchip" data-glyph="' + name + '">' + AW.icon(name) +
-          '</div><div class="name">' + name + '</div>';
-        glyphGrid.appendChild(cell);
-      });
-    }
-
-    /* §9 — the authored gold lantern on its night home (labelled: it is a meaningful hero icon). */
-    var night = document.getElementById('pv-lantern-night');
-    if (night) {
-      night.innerHTML = AW.icon('lantern-gold', { label: 'Awba gold lantern (legendary)' }) +
-        '<div class="cap">lantern-gold · legendary</div>';
-    }
-  }
-
-  /* §10 — real citation + gloss sheets. The demoCfg refs/terms are BYTE-VERBATIM from Josh's
-     _MVP-BUILD/lessons/u1-m1.html (D-38) — never retyped or paraphrased. Nothing celebratory
-     renders in or beside this block (the mercy law binds the layout). */
+  /* §5/§2 scripture data — BYTE-VERBATIM from the prior preview (originally from _MVP-BUILD),
+     spliced in unaltered: it is verbatim scripture and is never retyped or regenerated. §2's
+     face specimens inject their Arabic from this same object (textContent = exact bytes, no
+     HTML), and §5 (Task 2) wires the citation/gloss sheets from it. */
   var demoCfg = {
     refs: {
       'hujurat-49-15': {ref:'al-Ḥujurāt 49:15',ar:'إِنَّمَا ٱلْمُؤْمِنُونَ ٱلَّذِينَ ءَامَنُوا۟ بِٱللَّهِ وَرَسُولِهِۦ ثُمَّ لَمْ يَرْتَابُوا۟ وَجَـٰهَدُوا۟ بِأَمْوَٰلِهِمْ وَأَنفُسِهِمْ فِى سَبِيلِ ٱللَّهِ ۚ أُو۟لَـٰٓئِكَ هُمُ ٱلصَّـٰدِقُونَ',mean:'The ˹true˺ believers are only those who believe in Allah and His Messenger—never doubting—and strive with their wealth and their lives in the cause of Allah. They are the ones true in faith.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'},
@@ -1163,98 +300,45 @@ body{
       aqeedah: {ar:'عَقِيدَة',tl:'ʿaqīdah',word:'creed, or settled belief',def:'The firm, certain beliefs a person’s heart is bound to.',ctx:'From a root meaning to tie or bind firmly. Not a loose opinion, but a conviction fastened in place, like a knot you trust to hold.'}
     }
   };
-  var sheetDemo = document.getElementById('pv-sheet-demo');
-  if (sheetDemo && window.AW && AW.cite) {
-    sheetDemo.innerHTML =
-      '<p class="pv-prose">The believers are described as those who reach faith and then carry no doubt within it. ' +
-      AW.cite('hujurat-49-15', 'al-Ḥujurāt 49:15') +
-      ' The core things a Muslim holds as certain were gathered by the Prophet in a single, well-known teaching. ' +
-      AW.cite('muslim-8', 'Ṣaḥīḥ Muslim 8') +
-      ' The word for that settled belief is <span class="term" data-term="aqeedah">aqeedah</span>.</p>';
-    AW.wire(sheetDemo, demoCfg);
-  }
 
-  /* ============================================================================================
-     Phase 3 (Task 2) — §11 press-inventory glyph slots + §12 motion vocabulary, the burst, the
-     PERFECT WAAPI exemplar, and the dual reduced-motion toggle. All real AW.* output.
-     ============================================================================================ */
-  if (window.AW && AW.icon) {
-    var pressCite = document.getElementById('pv-press-cite');
-    if (pressCite) pressCite.insertAdjacentHTML('afterbegin', AW.icon('cite'));
-    var pressTab = document.getElementById('pv-press-tab');
-    if (pressTab) pressTab.insertAdjacentHTML('afterbegin', AW.icon('remember'));
-    var pressHstat = document.getElementById('pv-press-hstat');
-    if (pressHstat) pressHstat.insertAdjacentHTML('afterbegin', AW.icon('flame'));
-    var motionCite = document.getElementById('pv-motion-cite');
-    if (motionCite) motionCite.insertAdjacentHTML('afterbegin', AW.icon('cite'));
-    var companion = document.getElementById('pv-companion');
-    if (companion) companion.innerHTML = AW.icon('lantern');
+  /* Ring slots — remembered so the reduced-motion toggle (§8) can re-render them static. */
+  var ringSlots = [];
+  function mountRing(id, cfg) {
+    var el = document.getElementById(id);
+    if (!el || !AW.ringSVG) return;
+    el.innerHTML = AW.ringSVG(cfg);
+    ringSlots.push({ el: el, cfg: cfg });
   }
+  window.__pvRingSlots = ringSlots;   /* Task-2 wiring reuses the same array + helper. */
+  window.__pvMountRing = mountRing;
 
-  /* §12 — pop-in replay (force-reflow idiom, real engine popIn keyframe + tokens). */
-  var popin = document.getElementById('pv-popin');
-  var popinReplay = document.getElementById('pv-popin-replay');
-  if (popin && popinReplay) {
-    popinReplay.addEventListener('click', function () {
-      popin.classList.remove('go');
-      void popin.offsetWidth; /* force reflow so the animation restarts */
-      popin.classList.add('go');
-    });
-  }
+  /* Masthead — the signature ring at mid progress: two gold circuits closed (derived), a run of
+     cream done-dabs, an ember frontier mid-inking (only that frontier draws on load), the rest
+     still faint navy. The thesis of the page. */
+  mountRing('pv-hero-ring', { seed: 4711, atomsDone: 44, size: 300 });
 
-  /* §12 — fade replay. */
-  var fade = document.getElementById('pv-fade');
-  var fadeReplay = document.getElementById('pv-fade-replay');
-  if (fade && fadeReplay) {
-    fadeReplay.addEventListener('click', function () {
-      fade.classList.add('out');
-      setTimeout(function () { fade.classList.remove('out'); }, 220);
-    });
-  }
+  /* §1 — the four register-world scene icons (each re-inks to its ground via currentColor +
+     --icon-accent; one asset, four grounds). */
+  var sceneMap = { 'pv-ico-orbit': 'kaaba', 'pv-ico-page': 'quran-stand', 'pv-ico-sky': 'crescent', 'pv-ico-festival': 'lanterns' };
+  Object.keys(sceneMap).forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.innerHTML = AW.icon(sceneMap[id], { size: '44px' });
+  });
 
-  /* §12 — the REAL sheet primitive (singleton slide-in via the motion vocabulary). */
-  var motionSheet = document.getElementById('pv-motion-sheet');
-  if (motionSheet && window.AW && AW.sheet) {
-    motionSheet.addEventListener('click', function () {
-      AW.sheet('<div class="grip"></div>' +
-        '<div class="r-src">The motion vocabulary</div>' +
-        '<div class="r-mean">Gentle in, clean out — the one calm sheet motion the whole app inherits. ' +
-        'Scrim tap, the in-sheet ×, or Escape closes it.</div>');
-    });
-  }
+  /* §2 — the scripture-face specimens: real vocalised Arabic, byte-verbatim from demoCfg.
+     textContent (never innerHTML) so the exact bytes land untouched. */
+  function setAr(id, s) { var el = document.getElementById(id); if (el) el.textContent = s; }
+  setAr('pv-spec-ayah', demoCfg.refs['hujurat-49-15'].ar);
+  setAr('pv-spec-hadith', demoCfg.refs['muslim-8'].ar);
+  setAr('pv-spec-term', demoCfg.terms.aqeedah.ar);
 
-  /* §12 — the burst primitive; its own call-time guard no-ops under either reduced-motion trigger. */
-  var confettiBtn = document.getElementById('pv-confetti');
-  if (confettiBtn && window.AW && AW.confetti) {
-    confettiBtn.addEventListener('click', function () { AW.confetti(24); });
-  }
+  /* §3 — the mastered dab carries the check glyph (currentColor inks dark on the gold fill). */
+  ['pv-state-mastered-cream', 'pv-state-mastered-dark'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.innerHTML = AW.icon('check', { size: '16px' });
+  });
 
-  /* §12 — PERFECT overlay driven by the AW.animate WAAPI exemplar (scale-pop, --dur-5 / --ease-spring).
-     Lives here, spatially separated from the §10 scripture (mercy law). */
-  var perfectEl = document.getElementById('pv-perfect');
-  var perfectBtn = document.getElementById('pv-perfect-btn');
-  if (perfectEl && perfectBtn && window.AW && AW.animate) {
-    perfectBtn.addEventListener('click', function () {
-      perfectEl.classList.add('show');
-      var h1 = perfectEl.querySelector('h1');
-      if (h1) AW.animate(h1, [{ transform: 'scale(.8)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], '--dur-5', '--ease-spring');
-      setTimeout(function () { perfectEl.classList.remove('show'); }, 1500);
-    });
-  }
-
-  /* §12 — reduced-motion toggle: stamps data-motion="reduce" on <html> (the in-app override path).
-     The OS "Reduce Motion" setting is the second path; under either, the burst no-ops and every
-     ambient loop stops. */
-  var motionToggle = document.getElementById('pv-motion-toggle');
-  var motionState = document.getElementById('pv-motion-state');
-  if (motionToggle) {
-    motionToggle.addEventListener('click', function () {
-      var reduced = root.getAttribute('data-motion') === 'reduce';
-      root.setAttribute('data-motion', reduced ? 'system' : 'reduce');
-      motionToggle.setAttribute('aria-pressed', String(!reduced));
-      if (motionState) motionState.textContent = 'data-motion: ' + (reduced ? 'system' : 'reduce');
-    });
-  }
+  /*__TASK2_WIRING__*/
 })();
 </script>
 
