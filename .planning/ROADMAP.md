@@ -75,7 +75,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   - [x] 03-07-PLAN.md — Ring generator spike — deterministic tawaf-fingerprint SPOF (§6)
   - [x] 03-08-PLAN.md — Icon re-inking: currentColor + `--icon-accent` model, lantern-gold deleted (§5)
   - [x] 03-09-PLAN.md — Components re-skin + motion vocabulary rewrite (§4)
-  - [ ] 03-10-PLAN.md — Prayer-clock sky: 5 temperatures, manual times, `--dawn` (§7)
+  - [x] 03-10-PLAN.md — Prayer-clock sky: 5 temperatures, manual times, `--dawn` (§7) — pure now→temperature fn, no schema bump, boot dataset.sky + home-shell mirror, --dawn horizon glow; suite 53/53
   - [ ] 03-11-PLAN.md — New Athar preview.html — the living reference (§8)
   - [ ] 03-12-PLAN.md — Final human visual gate: §12 prechecks + §9 checklist (checkpoint, autonomous:false)
 **UI hint**: yes

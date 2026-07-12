@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-09-PLAN.md (components re-skin + motion vocab rewrite; retired-token cleanup — whole-file --accent/rgba(37,54, gates now CLOSE, AW.confetti removed, suite 45/45); next 03-10 (prayer-clock Sky)
-last_updated: "2026-07-12T22:02:30.000Z"
+stopped_at: Completed 03-10-PLAN.md (prayer-clock Sky — pure now→temperature fn + manual prayerTimes/skyMode with NO awba_prefs schema bump + boot dataset.sky/home-shell mirror + --dawn horizon glow; suite 45→53/53; rasterised strip reads as times of day); next 03-11 (new Athar preview)
+last_updated: "2026-07-12T23:24:00.000Z"
 last_activity: 2026-07-12
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 18
-  completed_plans: 14
+  completed_plans: 15
   percent: 29
 ---
 
@@ -35,20 +35,21 @@ Phase: 03 (Components, Icon Kit & Motion Language) — **RE-CUT UNDER ATHAR (Gat
 - **Plan 03-07 (Ring generator SPOF): COMPLETE 2026-07-12** — `AW.ringSVG(cfg)` is a seeded (mulberry32) DETERMINISTIC tawaf-fingerprint generator (15 jittered pilgrim-rows / 4 circuits, thermal ink navy→ember→cream→gold, 4-arc gold thread closing at 4, static gold head-dot; byte-identical per seed+progress, no Date/Math.random in path; reduced-motion static; 265 path nodes, no `<filter>`). Paired with a lazy `AW.ringSeed()` maker's mark (no schema bump) + a ≤10-line W1 `memFallback` persist-guard (future-schema blob no longer clobbered by `set()`), and the `ink-draw` Orbit-draw keyframe + `.ring` wrapper added additively to `@layer motion`. Commits `c943437`, `63e64c3`, `e219c90`, `c6eab7a`. Suite 37→45 green. Rasterised + visually confirmed it READS as a hand-inked tawaf (not a spirograph); doubts logged in 03-07-SUMMARY for the preview/human gate.
 - **Plan 03-08 (icon re-inking): COMPLETE 2026-07-12** — `AW.KIT` (20 scenes) + `AW.GLYPHS` (13) re-inked to the Athar one-colour model per the deterministic §5.1/§5 maps: structural ink → `currentColor` (inherits the register ground), blob halos → `currentColor`@.12, lit panels → `.06` ink-wash or `fill="none"` (chosen per-icon by whether the quiet ink-line read survives — wash for focal ground surfaces like quran-stand pages + the calendar card, none for panels on solid ink bodies), kaaba/compass/dates dimensional blues → `currentColor`@.85/.62/.45, and the single sparkle/star mark → `var(--icon-accent)` (35 marks; scattered structural dots stay currentColor to hold the accent budget). `AW.KIT['lantern-gold']` DELETED (D-A6) — the one lantern renders gold on dark grounds automatically (rasterised + confirmed cream→crimson / dark→gold). Every `d="…"` byte-identical (proven vs HEAD), no runtime `.replace()` recolour; `AW.icon`/`AW.UNIT_ICON` untouched. Commits `5fcf52b`, `bc6057c`. `components.test.js` registry integrity → 20/13 (lantern-gold assertion dropped). Whole-file retired-blue-hex gate now closes for `shared/awba-engine.js`. Suite green 45/45.
 - **Plan 03-09 (components re-skin + motion vocab rewrite): COMPLETE 2026-07-12** — `@layer components` re-skinned selector-by-selector to Athar: the ONE paper-press (`translateY(1px)` + ink-deepen over `--dur-press`) across `.btn/.opt/.tf/.tile/.tab/.hstat/.cite/.term`; register-scoped chrome (`.btn` crimson-block/cream-key/gold-ghost, `.opt`/`.tf`/`.tile` cream+`--rule` leaves, `.tab` crimson top-rule, `.hstat` Courier marginalia); law-8 wrong-answer (grey ink-blot `.opt.wrong::after` + `.opt-why` `--ink-85` line + `.retry` `--rose` frame, D-A12); `.cite` crimson rubrication (byte-shape preserved) + `.term` dotted-crimson; the re-skinned singleton sheet (warm-ink scrim, cream ground, `--r-4`, `--sh-3`, settle) with the Amiri-Quran/Amiri face-split, always-on `unverified · pending review` pill + `--olive` grade pill (D-A9); shape-first thermal states (hollow/half/filled+check, D-A8); the four new celebration primitives `.dab`/`.thread`/`.plate`/`.rosette`. `@layer motion` rebuilt to `settle`/`breathe`/`breathe-halo`/`drift`/`stamp` on the one `--ease` family; Gen-3 `fall`/`bob`/`glow`/`popIn`/node-`breathe` keyframes + `.companion`/`.breathing-ring` loops retired; the plan-07 `ink-draw`+`.ring` PRESERVED byte-untouched; both reduced-motion triggers re-based on the Athar finite tokens (collapse→1ms) + `animation:none` on the new ambients, `--dur-amb` never collapsed. `AW.confetti` removed (D-A14); all other `AW.*` builders retained; `AW.cite` byte-shape intact (`validate-content.js --self-test` green). Commits `7d9a105`, `1e18df8`, `ca35d4a`. **The whole-file `--accent` + `rgba(37,54,` gates (deferred by plan 06) now CLOSE for `shared/awba-engine.css`; the `AW.confetti` gate closes for the JS.** Suite green 45/45.
-- NEXT: 03-10 Sky (prayer-clock temperatures + `.sky-breathe`/`breathe-halo` ambient wiring) → 03-11 new preview (injects `AW.ringSVG` + the re-inked registry + the re-skinned inventory) → 03-12 closure/human §9 gate. Components + icons + Ring done; prayer-clock sky still lands in Phase 3, before Phase 4.
+- **Plan 03-10 (prayer-clock Sky — the second flagship): COMPLETE 2026-07-12** — `AW.skyTemp(now, times, mode)` is a PURE, deterministic now→temperature function reading LOCAL `getHours()/getMinutes()` only (D-16 discipline, never a UTC serialization), mapping the manual prayer clock to five canvas temperatures (`lastthird`/`dawn`/`day`/`dusk`/`night`; Dhuhr is the dawn→day boundary since Duha isn't in the manual times) and `day` for `skyMode:"off"`; references no device-location or network path (T-03-10 mitigated, grep gate 0). `prayerTimes` (05:00/13:00/16:30/19:30/21:00) + `skyMode:"manual"` added to `defaultPrefs()` **WITHOUT bumping `CURRENT`** — the critical plan law: an existing v1 `awba_prefs` blob (soundMuted/motion) still loads untouched and every Sky read falls back via `AW.prefs.get(k, d)` (proven by a v1-blob-survival test). The boot-stamp block stamps `document.documentElement.dataset.sky` **and mirrors it onto the `.reg-orbit` home shell** (the §3.2 painter is `.reg-orbit[data-sky]::after`, so the attribute must reach the ground element) + sets `--dawn`; re-evaluated on `visibilitychange`/`DOMContentLoaded` — events, no timers. The `--dawn` degree (`AW.skyDawn` capped 0.6 + `.reg-orbit::before` bottom-horizon apricot glow) is a static, subordinate warmth under the Ring, distinct from the top prayer-clock tint — ambient, never the metric (§7.3). SKY functions are hoisted `function` declarations near RING so the earlier parse-time boot-stamp can call them (no second DOM touch, no timer). `.sky-breathe` + its dual-trigger gating already shipped from plan 09 — not re-declared. New `scripts/tests/sky.test.js` (8 tests): five temperatures + inclusive boundaries, a Maghrib shift moving the dusk boundary, `skyMode:off⇒day`, determinism, no-location/network, fresh-install defaults, v1-blob no-schema-bump survival. Commits `7a1ed4b`, `0e80cb4`. Suite 45→**53/53** green; `validate-content.js --self-test` OK. Rasterised a five-cell strip — the temperatures visually read as times of day.
+- NEXT: 03-11 new preview (injects `AW.ringSVG` + the re-inked registry + the re-skinned inventory + the prayer-clock Sky over the Orbit ground) → 03-12 closure/human §9 gate. Components + icons + Ring + Sky done — both flagships land in Phase 3, before Phase 4.
 
-Status: Executing re-cut waves — 03-09 (components + motion) done, next 03-10 (prayer-clock Sky)
+Status: Executing re-cut waves — 03-10 (prayer-clock Sky) done, next 03-11 (new Athar preview)
 Last activity: 2026-07-12
 
-Progress: [████████░░] 78%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 4
-- Average duration: — min
-- Total execution time: 0 hours
+- Total plans completed: 5 (this phase's re-cut waves: 03-06..03-10)
+- Average duration: ~17 min
+- Total execution time: ~1.5 hours
 
 **By Phase:**
 
@@ -59,8 +60,8 @@ Progress: [████████░░] 78%
 
 **Recent Trend:**
 
-- Last 5 plans: 03-06, 03-07, 03-08, 03-09
-- Trend: Athar re-cut waves executing green (suite 45/45); 03-09 closed the deferred --accent/rgba(37,54, gates
+- Last 5 plans: 03-06, 03-07, 03-08, 03-09, 03-10
+- Trend: Athar re-cut waves executing green (suite 45→53/53); 03-09 closed the deferred --accent/rgba(37,54, gates; 03-10 landed the second flagship (prayer-clock Sky) — both spikes now built before the Phase-4 lesson port
 
 *Updated after each plan completion*
 | Phase 01 P01 | 20 min | 2 tasks | 13 files |
@@ -73,6 +74,7 @@ Progress: [████████░░] 78%
 | Phase 03 P06 | 14 min | 2 tasks | 1 files |
 | Phase 03 P07 | ~17 min | 3 tasks | 3 files |
 | Phase 03 P08 | ~15 min | 2 tasks | 2 files |
+| Phase 03 P10 | ~22 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -112,6 +114,11 @@ Recent decisions affecting current work:
 - [Phase 03]: 03-08: sparkle-accent by PATH signature only (the three decorative sparkle/star shapes → var(--icon-accent), 35 marks); scattered structural <circle r=3> dots stay currentColor to keep the ≤10% accent budget (law 7) and not mis-accent beads/compass cardinal dots
 - [Phase 03]: 03-08: lit-panel wash-vs-none is the only craft choice — .06 ink-wash for focal surfaces on the ground (quran-stand pages, calendar card), fill="none" for panels on solid ink bodies (windows/faces/doors/inner-disc, imperceptible either way); off-map hexes reconciled to their §5.1 family (#FFFFFF=panel, compass facets=dimensional blue, #DCE6FB kaaba shadow→none since Athar has no drop shadows)
 - [Phase 03]: 03-08: AW.KIT['lantern-gold'] DELETED (D-A6) — currentColor renders the one lantern gold on dark grounds automatically (rasterised + confirmed); last hex-literal art variant gone; KIT===20; whole-file retired-blue-hex gate now closes for shared/awba-engine.js (CSS --accent/rgba(37,54, closure still at plan 12)
+- [Phase 03]: 03-10: prayerTimes + skyMode added to defaultPrefs() WITHOUT bumping awba_prefs CURRENT — get-with-default (AW.prefs.get(k,d)) tolerates absence, so existing v1 blobs load untouched (no schema-reset); the pattern for all future prefs additions
+- [Phase 03]: 03-10: AW.skyTemp is a PURE fn of (now, times, mode) reading LOCAL getHours/getMinutes only (D-16), deterministic with fixed-now fixtures; Dhuhr is the dawn→day boundary (Duha isn't in the manual times); asr stored but not a temperature boundary; no device-location/network path (T-03-10, grep gate 0)
+- [Phase 03]: 03-10: boot stamps dataset.sky on BOTH <html> (canonical §7.2) AND the .reg-orbit home shell, because the §3.2 painter is .reg-orbit[data-sky]::after (the attribute must sit on the ground element for the ::after tint to paint); re-evaluated on visibility/DOMContentLoaded events, never a timer
+- [Phase 03]: 03-10: SKY helpers authored as hoisted `function` declarations near RING so the earlier parse-time boot-stamp block can call them — resolves the placement-vs-parse-order gap without a second guarded DOM touch
+- [Phase 03]: 03-10: --dawn is a subordinate bottom-horizon apricot glow (.reg-orbit::before, opacity var(--dawn,0), skyDawn cap 0.6), distinct from the top prayer-clock tint and static under reduced motion — ambient, never the metric; boot value is a coarse completed-nodes proxy until Phase 5 wires exact atomsDone into the Ring caller
 
 ### Pending Todos
 
@@ -140,6 +147,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-12T21:34:43Z
-Stopped at: Completed 03-08-PLAN.md (icon re-ink to currentColor + --icon-accent, lantern-gold deleted, suite 45/45); next 03-09 (components re-skin)
+Last session: 2026-07-12T23:24:00Z
+Stopped at: Completed 03-10-PLAN.md (prayer-clock Sky — pure now→temperature fn, manual prayerTimes/skyMode with NO schema bump, boot dataset.sky + home-shell mirror, --dawn horizon glow; suite 53/53; rasterised strip reads as times of day); next 03-11 (new Athar preview)
 Resume file: None
