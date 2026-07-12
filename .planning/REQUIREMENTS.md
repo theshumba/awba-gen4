@@ -12,9 +12,9 @@ Macro product scope is fixed by Josh's Gen-3 MVP (the owner-approved direction).
 - [x] **FND-02**: Unit theming fully recolors a lesson page (primary AND secondary accents — no half-themed pages on purple/teal units like Gen-3's fixed blue2/blue3)
 - [x] **FND-03**: Fonts self-hosted as subset .woff2 (Poppins, Inter, Amiri, Amiri Quran for ayah text) with font-display strategy — no Google Fonts CDN dependency, no FOUC flash on navigation; ˹ ˺ brackets and transliteration diacritics render correctly (glyph test)
 - [ ] **FND-04**: One icon registry built from the 20 canonical branded SVGs (inline, aria-hidden, single source — no per-page duplicate icon constants); gold lantern is a properly authored variant, not a regex recolor
-- [ ] **FND-05**: All progress state lives in one versioned localStorage blob with a migration chain that imports existing Gen-3 `awba_*` keys losslessly, exposed behind the same `AW.S.get/set` call shape
-- [ ] **FND-06**: A user-preferences store (sound mute, reduced motion override) exists separately from progress state
-- [ ] **FND-07**: Classic scripts + one `AW` global namespace (NO ES modules) so every page works opened directly from file:// — Josh's review workflow
+- [x] **FND-05**: All progress state lives in one versioned localStorage blob with a migration chain that imports existing Gen-3 `awba_*` keys losslessly, exposed behind the same `AW.S.get/set` call shape
+- [x] **FND-06**: A user-preferences store (sound mute, reduced motion override) exists separately from progress state
+- [x] **FND-07**: Classic scripts + one `AW` global namespace (NO ES modules) so every page works opened directly from file:// — Josh's review workflow
 
 ### Engine (lesson + review runners)
 
@@ -102,9 +102,9 @@ Every v1 requirement maps to exactly one phase. Coverage: 42/42 (100%). See `.pl
 | FND-02 | Phase 1 | Complete |
 | FND-03 | Phase 1 | Complete |
 | PLT-01 | Phase 1 | Complete |
-| FND-05 | Phase 2 | Pending |
-| FND-06 | Phase 2 | Pending |
-| FND-07 | Phase 2 | Pending |
+| FND-05 | Phase 2 | Complete |
+| FND-06 | Phase 2 | Complete |
+| FND-07 | Phase 2 | Complete |
 | ENG-07 | Phase 2 | Pending |
 | FND-04 | Phase 3 | Pending |
 | ENG-06 | Phase 3 | Pending |

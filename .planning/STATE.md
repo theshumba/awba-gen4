@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: Phase 2 context gathered
-last_updated: "2026-07-12T11:11:36.224Z"
-last_activity: 2026-07-12 -- Phase 02 planning complete
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-07-12T11:29:22.010Z"
+last_activity: 2026-07-12
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 6
-  completed_plans: 4
+  completed_plans: 5
   percent: 14
 ---
 
@@ -25,12 +25,13 @@ See: .planning/PROJECT.md (updated 2026-07-11)
 
 ## Current Position
 
-Phase: 01 COMPLETE (2026-07-12) — human gate PASSED all 8 D-12 items; 01-VERIFICATION.md PASSED 4/4
+Phase: 02 (State Layer & Engine-Contract Freeze) — EXECUTING
+Plan: 2 of 2
 Phase: 02 (State Layer & Engine-Contract Freeze) — NEXT: /gsd:discuss-phase 2 --auto
 Status: Ready to execute
-Last activity: 2026-07-12 -- Phase 02 planning complete
+Last activity: 2026-07-12
 
-Progress: [█░░░░░░░░░] 1/7 phases
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
@@ -55,6 +56,7 @@ Progress: [█░░░░░░░░░] 1/7 phases
 | Phase 01 P01 | 20 min | 2 tasks | 13 files |
 | Phase 01 P02 | 2 | 2 tasks | 1 files |
 | Phase 01 P03 | 10 | 2 tasks | 1 files |
+| Phase 02 P01 | 15min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -75,6 +77,9 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 01-03] preview.html showcase chrome is an UNLAYERED <style> block that overrides the engine's >=600px body{display:flex} centering (unlayered beats @layer base) so the long reference doc isn't hijacked into a centered column — while section 6's real .app-shell still adapts full-bleed<->column on viewport resize.
 - [Phase ?]: [Phase 01-03] All four unit accent scales render simultaneously by scoping each column with its own [data-unit] container (CSS custom-property re-scoping), so var(--accent) resolves per-column with zero JS and zero raw hex in swatch markup.
 - [Phase ?]: [Phase 01-03] Glyph test proves the documented Poppins->Inter fallback by rendering brackets ˹˺ inside a Poppins Clear-Quran string; ﷺ rendered defensively in Amiri + Amiri Quran; tofu FAIL cell uses amber (mercy law: never red).
+- [Phase 02-01]: AW.deriveNodeState(nodesFlat, progress) returns [{id, state}] for the whole flat array (matching its 2-arg signature, no index param) rather than a single-node lookup — DOM-free, one-read-per-pass, real-map wiring deferred to Phase 5 (CNT-03)
+- [Phase 02-01]: Chest-key legacy migration enumerates via localStorage.length/key(i) instead of Object.keys(localStorage) — Object.keys only works on real browser Storage instances, not a plain-object test stub, so this fix is portable to both
+- [Phase 02-01]: node --test <directory> throws MODULE_NOT_FOUND on this Node v24.13.0 build (reproduced in an isolated scratch dir, not repo-specific); use node --test scripts/tests/*.test.js (glob) or explicit file paths for all future Phase 2+ test runs
 
 ### Pending Todos
 
@@ -103,6 +108,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-12T10:35:52.453Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-state-layer-engine-contract-freeze/02-CONTEXT.md
+Last session: 2026-07-12T11:29:22.003Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None
