@@ -97,7 +97,11 @@ function checkTopLevelLesson(cfg, errors) {
     return;
   }
   ['id', 'unitColor', 'journey'].forEach(function (f) {
+    // IN-03: `id` is the stars/progress key (awba_stars[id], awba_chest_<id>) — an empty
+    // string passes `!== undefined` but would silently collide with every other file's empty
+    // id in the shared stars{}/chests{} keyspace, corrupting progress tracking across files.
     if (cfg[f] === undefined) errors.push('missing required top-level field: "' + f + '"');
+    else if (typeof cfg[f] === 'string' && cfg[f].trim() === '') errors.push('required field "' + f + '" must not be empty');
   });
   if (!isPlainObject(cfg.opener)) {
     errors.push('missing required top-level field: "opener" (object)');
@@ -116,7 +120,10 @@ function checkTopLevelReview(cfg, errors) {
     return;
   }
   ['id', 'title', 'sub', 'mastery'].forEach(function (f) {
+    // IN-03: same empty-string risk as the lesson-side "id" check above — `id` is the
+    // stars/progress key.
     if (cfg[f] === undefined) errors.push('missing required top-level field: "' + f + '"');
+    else if (typeof cfg[f] === 'string' && cfg[f].trim() === '') errors.push('required field "' + f + '" must not be empty');
   });
   if (!Array.isArray(cfg.items)) errors.push('missing required top-level field: "items" (array)');
   if (!isPlainObject(cfg.next)) {

@@ -80,6 +80,31 @@ test('tile beat missing "good"/"gentle" is flagged (WR-03)', () => {
   );
 });
 
+test('empty-string required top-level fields are flagged, not just undefined ones (IN-03)', () => {
+  const lessonCfg = {
+    id: '   ',
+    unitColor: '#000',
+    journey: 'x',
+    opener: { h2: 'x' },
+    terms: {},
+    refs: {},
+    recap: [],
+    beats: [],
+  };
+  const { errors: lessonErrors } = validateCfg(lessonCfg, 'lesson');
+  assert.ok(
+    lessonErrors.some((e) => e.includes('"id"') && e.includes('must not be empty')),
+    `expected an empty-"id" error for the lesson, got: ${lessonErrors.join(' | ')}`
+  );
+
+  const reviewCfg = { id: '', title: 'x', sub: 'x', mastery: 'x', items: [], next: { href: 'x', label: 'x' } };
+  const { errors: reviewErrors } = validateCfg(reviewCfg, 'review');
+  assert.ok(
+    reviewErrors.some((e) => e.includes('"id"') && e.includes('must not be empty')),
+    `expected an empty-"id" error for the review, got: ${reviewErrors.join(' | ')}`
+  );
+});
+
 test('data-ref/data-term ID resolution matches single-quoted attributes too (WR-04)', () => {
   const cfg = {
     id: 'x',
