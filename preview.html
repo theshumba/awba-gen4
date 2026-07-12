@@ -127,7 +127,7 @@ body{
 }
 .pv-switchbar{ display:flex; align-items:center; gap:var(--sp-4); flex-wrap:wrap; margin-bottom:var(--sp-6); }
 .pv-seg{
-  display:inline-flex; gap:var(--sp-1); padding:var(--sp-1); background:var(--tint);
+  display:inline-flex; gap:var(--sp-1); padding:var(--sp-1); max-width:100%; background:var(--tint);
   border-radius:var(--r-pill); border:1px solid var(--line); box-shadow:var(--sh-inset);
 }
 .pv-seg button{
@@ -139,6 +139,15 @@ body{
 .pv-readout{
   font-family:var(--font-body); font-size:var(--fs-ui); font-weight:600; color:var(--ink2);
   font-variant-numeric:tabular-nums; letter-spacing:.02em;
+}
+/* Narrow viewports (PLT-01: zero horizontal scroll at 320px): the segmented control becomes a
+   full-width row of equal shrinkable segments (flex:1 1 0 + min-width:0), the readout wraps to
+   its own row (the switchbar already wraps), and the focal card steps its padding down one
+   spacing token — the control compresses intentionally, never crushes or overflows. */
+@media (max-width: 519px){
+  .pv-focal{ padding:var(--sp-5); }
+  .pv-seg{ display:flex; width:100%; }
+  .pv-seg button{ flex:1 1 0; min-width:0; padding-inline:var(--sp-1); font-size:var(--fs-kicker); }
 }
 .pv-cluster{ display:grid; gap:var(--sp-5); grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); align-items:start; }
 .pv-clab{ font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); letter-spacing:.06em; text-transform:uppercase; color:var(--ink3); margin-bottom:var(--sp-2s); }
@@ -170,10 +179,15 @@ body{
 
 /* ---- Type scale ----------------------------------------------------------------------------- */
 .pv-typerow{ display:grid; grid-template-columns:minmax(96px,160px) 1fr; gap:var(--sp-5); align-items:baseline; padding-block:var(--sp-4); border-bottom:1px solid var(--line); }
+.pv-typerow > :last-child{ min-width:0; overflow-wrap:break-word; } /* the 1fr specimen track may shrink below a long display word's min-content */
 .pv-typerow:last-child{ border-bottom:none; }
 .pv-typerow .lab{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3); text-transform:uppercase; letter-spacing:.08em; }
 .pv-typerow .lab span{ display:block; margin-top:var(--sp-1); color:var(--ink3); text-transform:none; letter-spacing:0; }
 .pv-clamp{ background:var(--accent-soft); border:1px dashed var(--accent-line); border-radius:var(--r-md); padding:var(--sp-4) var(--sp-5); color:var(--accent-ink); }
+/* Narrow viewports: stack label above specimen so 32px+ display samples get the full row width. */
+@media (max-width: 519px){
+  .pv-typerow{ grid-template-columns:1fr; gap:var(--sp-2s); }
+}
 
 /* ---- Radii + shadow tiles ------------------------------------------------------------------- */
 .pv-tiles{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:var(--sp-4); }
