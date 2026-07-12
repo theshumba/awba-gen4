@@ -917,6 +917,174 @@ AW.wire = function (root, cfg) {
   });
 };
 
+/* ---------- AW.reducedMotion() — the ONE self-guard every JS-driven motion primitive calls
+   (D-42). True when the OS asks for reduced motion (matchMedia) OR the in-app awba_prefs override
+   stamped `data-motion="reduce"` onto <html> (the boot-stamp above writes only the override, never
+   the OS setting — so BOTH triggers are checked here). Guarded so bare window/document access can
+   never throw headless (the engine loads in node:vm with neither global). matchMedia is read off
+   the window object (not a bare global) so a stubbed `window` in tests resolves it. */
+AW.reducedMotion = function () {
+  return (
+    (typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches) ||
+    (typeof document !== 'undefined' &&
+      document.documentElement.getAttribute('data-motion') === 'reduce')
+  );
+};
+
+/* ---------- AW.sheet(html) — ONE lazily-created singleton bottom-sheet (D-35). Mirrors the
+   AW.prefs/AW.S closure idiom: private scrim/sheet/invoker, an ensure() that builds the scrim +
+   role="dialog"/aria-modal sheet on <body> once and wires outside-tap + Escape close, and an
+   `api` with open(html)/close(). Opening REPLACES content (singleton — one element), captures the
+   invoker for Phase-6 focus-restore, adds the in-sheet close button (D-35) and the <html>
+   .sheet-lock scroll-lock. close() is idempotent. All DOM access is inside functions, so the IIFE
+   is parse-time-safe (no DOM touched at definition). DEFERRED to Phase 6 (deliberately NOT built
+   here): focus-trap, inert/aria-hidden on the background, full iOS position-fixed scroll lock —
+   the scrim-wraps-sheet structure leaves room for the trap. */
+AW.sheet = (function () {
+  var scrim, sheet, invoker;
+  function ensure() {
+    if (scrim) return;
+    scrim = document.createElement('div');
+    scrim.className = 'scrim';
+    sheet = document.createElement('div');
+    sheet.className = 'sheet';
+    sheet.setAttribute('role', 'dialog');
+    sheet.setAttribute('aria-modal', 'true');
+    scrim.appendChild(sheet);
+    document.body.appendChild(scrim);
+    scrim.addEventListener('click', function (e) {
+      if (e.target === scrim) api.close(); // outside-tap closes
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') api.close();
+    });
+  }
+  var api = {
+    open: function (html) {
+      ensure();
+      invoker = document.activeElement; // Phase-6 hook: restore focus on close
+      sheet.innerHTML = '<button class="sheet-x" aria-label="Close">×</button>' + html;
+      sheet.querySelector('.sheet-x').addEventListener('click', api.close);
+      scrim.classList.add('open'); // singleton: one element ⇒ opening replaces any open content
+      document.documentElement.classList.add('sheet-lock'); // scroll-lock while open
+    },
+    close: function () {
+      if (!scrim) return; // idempotent — safe before any open
+      scrim.classList.remove('open');
+      document.documentElement.classList.remove('sheet-lock');
+      if (invoker && invoker.focus) invoker.focus(); // Phase-6-ready focus restore
+    },
+  };
+  var open = function (html) {
+    api.open(html);
+    return api;
+  };
+  open.close = api.close; // AW.sheet.close()
+  return open;
+})();
+AW.sheetClose = function () {
+  AW.sheet.close();
+};
+
+/* ---------- AW.sheetRef(refs, id) — the citation sheet (ENG-06 / D-36). Unknown id → no-op (never
+   an error). The load-bearing elevation over Gen-3 is the FACE-SPLIT: a Qur'an ref (no `grade`)
+   tags its Arabic block `.ayah` so it renders in Amiri Quran; a hadith ref (grade present) renders
+   in general Amiri and surfaces its grade. The `unverified · pending review` pill is appended on
+   EVERY citation (global pending state); the green grade pill joins the pill row only when the ref
+   carries a grade. Scripture/translation/provenance fields inject verbatim (T-03-03 accept —
+   author-controlled data, never user input). Nothing celebratory ever renders in this sheet. */
+AW.sheetRef = function (refs, id) {
+  var r = refs && refs[id];
+  if (!r) return; // unknown id → no-op
+  var isQuran = !r.grade; // Qur'an ref carries no grade → Amiri Quran (.ayah); hadith → general Amiri
+  var arClass = isQuran ? 'r-ar ayah' : 'r-ar';
+  var gradePill = r.grade ? '<span class="r-pill grade">' + r.grade + '</span>' : '';
+  var html =
+    '<div class="grip"></div>' +
+    '<div class="r-src">' + (r.kind || 'The verse') + ' · ' + r.ref + '</div>' +
+    '<div class="' + arClass + '" lang="ar" dir="rtl">' + r.ar + '</div>' +
+    '<div class="r-mean">' + r.mean + '</div>' +
+    '<div class="r-ref">' + r.src + '</div>' +
+    '<div class="r-pills">' +
+    '<span class="r-pill">unverified · pending review</span>' +
+    gradePill +
+    '</div>';
+  return AW.sheet(html);
+};
+
+/* ---------- AW.sheetTerm(terms, id) — the term gloss sheet (ENG-06 / D-36). Unknown id → no-op.
+   Field-for-field per ENGINE-CONTRACT §1: Arabic (Amiri, large, RTL) · transliteration · gloss
+   word · definition · context. */
+AW.sheetTerm = function (terms, id) {
+  var t = terms && terms[id];
+  if (!t) return; // unknown id → no-op
+  var html =
+    '<div class="grip"></div>' +
+    '<div class="g-ar" lang="ar" dir="rtl">' + t.ar + '</div>' +
+    '<div class="g-tl">' + t.tl + '</div>' +
+    '<div class="g-wd">' + t.word + '</div>' +
+    '<div class="g-df">' + t.def + '</div>' +
+    '<div class="g-cx">' + t.ctx + '</div>';
+  return AW.sheet(html);
+};
+
+/* ---------- AW.confetti(n) — the reward burst primitive (D-41). Its FIRST executable line is the
+   reduced-motion guard (Gen-3 had none — this is the day-one elevation): under reduced motion no
+   div is ever spawned. Lazily creates/finds a `.confetti` overlay on <body> (decoupled from any
+   lesson skeleton), then spawns a capped count of `.cf` divs — random left, colour drawn from the
+   brand tokens (--gold2/--flame2/--accent-bright/--green) via getComputedStyle, transform-only
+   fall of 1.6–2.7s — each self-removing on animationend (setTimeout fallback). Mercy: the caller
+   never fires it over scripture (RWD-03); components read prefs via data attributes / AW.prefs,
+   never the storage layer directly (D-24). */
+AW.confetti = function (n) {
+  if (AW.reducedMotion()) return; // day-one guard — nothing spawns under reduced motion
+  var layer = document.querySelector('.confetti');
+  if (!layer) {
+    layer = document.createElement('div');
+    layer.className = 'confetti';
+    document.body.appendChild(layer);
+  }
+  var cs = getComputedStyle(document.documentElement);
+  var cols = ['--gold2', '--flame2', '--accent-bright', '--green'].map(function (tok) {
+    return cs.getPropertyValue(tok).trim();
+  });
+  var count = Math.min(Math.max(1, n || 24), 30); // performance bound — Gen-3 counts ~16–30
+  for (var i = 0; i < count; i++) {
+    var d = document.createElement('div');
+    d.className = 'cf';
+    d.style.left = Math.random() * 100 + '%';
+    d.style.background = cols[i % cols.length];
+    var dur = 1.6 + (i % 7) * 0.18; // 1.6–2.7s
+    d.style.animationDuration = dur + 's';
+    d.style.animationDelay = (i % 5) * 0.05 + 's';
+    (function (node, ms) {
+      node.addEventListener('animationend', function () {
+        node.remove();
+      });
+      setTimeout(function () {
+        node.remove();
+      }, ms);
+    })(d, (dur + 0.4) * 1000);
+    layer.appendChild(d);
+  }
+};
+
+/* ---------- AW.animate(el, keyframes, durToken, easeToken) — the WAAPI orchestration exemplar
+   Phase 4 COPIES rather than invents (D-41). Reads the ms duration + the linear()/cubic-bezier
+   easing straight off :root via getComputedStyle (`"600ms"` → 600; the linear(…) string is a
+   valid WAAPI easing verbatim), self-guards `dur = 1` under reduced motion (JS snapshots at call
+   time and never sees the CSS token-collapse), and returns the Animation so `.finished` is
+   awaitable for sequencing. */
+AW.animate = function (el, keyframes, durToken, easeToken) {
+  var cs = getComputedStyle(document.documentElement);
+  var dur = parseFloat(cs.getPropertyValue(durToken)) || 300; // "600ms" → 600 (ms)
+  var ease = cs.getPropertyValue(easeToken).trim() || 'ease'; // linear(…) passes straight through
+  if (AW.reducedMotion()) dur = 1; // self-guard — WAAPI won't see the CSS collapse
+  return el.animate(keyframes, { duration: dur, easing: ease, fill: 'both' }); // .finished awaitable
+};
+
 /* ============================================================
    RUNNERS  ·  Phase 4 placeholder — AwbaLesson(cfg) / AwbaReview(cfg) (D-22)
    ============================================================ */
