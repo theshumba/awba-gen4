@@ -1119,6 +1119,148 @@ AW.ringSeed = function () {
   return s;
 };
 
+/* mulberry32 — a tiny, fast, seedable PRNG (~6 lines, inline). Returns a closure producing
+   floats in [0,1). This is the ONLY entropy in the generator: every jitter is pulled from it in
+   a FIXED order, so a given seed reproduces the exact same geometry byte-for-byte. */
+function mulberry32(a) {
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* AW.ringSVG(cfg) — the deterministic tawaf-fingerprint generator (spec §6.2–§6.5).
+   GEOMETRY is a pure function of `seed`, drawn from mulberry32 in a fixed order and INDEPENDENT
+   of progress. PROGRESS (`atomsDone`/`circuitsDone`) only decides each dab's colour-by-state and
+   which frontier dabs carry the `draw` (ink-draw) animation. Concentric jittered pilgrim-rows
+   (15 lessons banded into 4 circuits) of short round-capped dab-strokes with per-dab stroke-width
+   in [1.8,4.1] and opacity in [0.45,0.95]; ink-bleed is that variance + round caps, NEVER a blur.
+   One outer gold thread (up to 4 arcs, one per completed circuit) and a single static gold
+   head-dot at the frontier (the centre never animates, law 9). Reduced motion → the final state,
+   static. Returns an inline <svg> string. No Date, no Math.random in this path. */
+AW.ringSVG = function (cfg) {
+  cfg = cfg || {};
+  var struct = cfg.structure || { circuits: 4, lessons: 15, atoms: 65 };
+  var CIRCUITS = struct.circuits, LESSONS = struct.lessons, ATOMS = struct.atoms;
+  var seed = (typeof cfg.seed === 'number') ? (cfg.seed >>> 0) : AW.ringSeed();
+  var atomsDone = Math.max(0, Math.min(ATOMS, cfg.atomsDone | 0));
+  var size = cfg.size || 300;
+  var reduce = AW.reducedMotion();
+  var rnd = mulberry32(seed);
+
+  // Colour-by-state tokens (§6.3): faint navy → warm ember → bright cream → sealed gold.
+  var C_UNINK = '#4A5C82', C_EMBER = '#E8502A', C_CREAM = '#F3EDE2', C_GOLD = '#D9A441';
+  var TAU = Math.PI * 2, cx = size / 2, cy = size / 2, i;
+  var f = function (x) { return (Math.round(x * 100) / 100).toString(); };
+
+  // Course shape: distribute atoms across lessons, band lessons into circuits.
+  var b = Math.floor(ATOMS / LESSONS), extra = ATOMS - b * LESSONS;
+  var lessonAtoms = [], lessonStart = [], acc = 0;
+  for (i = 0; i < LESSONS; i++) {
+    var na = b + (i < extra ? 1 : 0);
+    lessonAtoms.push(na); lessonStart.push(acc); acc += na;
+  }
+  var perC = Math.floor(LESSONS / CIRCUITS), cExtra = LESSONS - perC * CIRCUITS;
+  var lessonCircuit = [], cc = 0, rem = perC + (0 < cExtra ? 1 : 0);
+  for (i = 0; i < LESSONS; i++) {
+    while (rem === 0 && cc < CIRCUITS - 1) { cc++; rem = perC + (cc < cExtra ? 1 : 0); }
+    lessonCircuit.push(cc); rem--;
+  }
+  var circuitEnd = new Array(CIRCUITS).fill(0);
+  for (i = 0; i < LESSONS; i++) circuitEnd[lessonCircuit[i]] = lessonStart[i] + lessonAtoms[i];
+  var circuitsDone;
+  if (typeof cfg.circuitsDone === 'number') {
+    circuitsDone = Math.max(0, Math.min(CIRCUITS, cfg.circuitsDone | 0));
+  } else { // derive from atomsDone when the caller supplies only progress count
+    circuitsDone = 0;
+    for (i = 0; i < CIRCUITS; i++) if (atomsDone >= circuitEnd[i]) circuitsDone = i + 1;
+  }
+
+  // Radii: pilgrim-rows march inward; the gold thread rides just outside them.
+  var rOuter = size * 0.42, rInner = size * 0.155, span = rOuter - rInner;
+
+  // Build every dab's geometry (seed-driven, progress-INDEPENDENT) in a fixed rnd() order.
+  var dabs = [], frontier = null;
+  for (i = 0; i < LESSONS; i++) {
+    var rowT = LESSONS > 1 ? i / (LESSONS - 1) : 0;
+    var rowR = (rOuter - span * rowT) + (rnd() - 0.5) * (span / LESSONS) * 0.7;
+    var start = rnd() * TAU;                     // where this row's broken arc opens
+    var sweep = (0.60 + rnd() * 0.30) * TAU;      // < full circle → a gap remains
+    var dabCount = 14 + Math.floor(rnd() * 9);    // 14..22
+    var atomN = lessonAtoms[i], atom0 = lessonStart[i];
+    for (var j = 0; j < dabCount; j++) {
+      var t = dabCount > 1 ? j / (dabCount - 1) : 0;
+      var ang = start + sweep * t + (rnd() - 0.5) * (sweep / dabCount) * 0.55;
+      var r = rowR + (rnd() - 0.5) * 3.2;
+      var px = cx + Math.cos(ang) * r, py = cy + Math.sin(ang) * r;
+      var pts = 2 + Math.floor(rnd() * 3);        // 2..4 points per dab
+      var tx = -Math.sin(ang), ty = Math.cos(ang);
+      var lenPx = size * (0.018 + rnd() * 0.022);
+      var coords = [], segLen = 0, prevx = null, prevy = null;
+      for (var k = 0; k < pts; k++) {
+        var along = (pts > 1 ? k / (pts - 1) - 0.5 : 0) * lenPx;
+        var pw = (rnd() - 0.5) * 2.4;             // perpendicular ink wobble
+        var dx = px + tx * along + Math.cos(ang) * pw;
+        var dy = py + ty * along + Math.sin(ang) * pw;
+        coords.push(f(dx) + ' ' + f(dy));
+        if (prevx !== null) segLen += Math.hypot(dx - prevx, dy - prevy);
+        prevx = dx; prevy = dy;
+      }
+      var sw = 1.8 + rnd() * (4.1 - 1.8);
+      var op = 0.45 + rnd() * (0.95 - 0.45);
+      var atomIdx = atom0 + (atomN > 0 ? Math.floor(j * atomN / dabCount) : 0);
+      var dab = { d: 'M' + coords.join(' L'), sw: sw, op: op, lesson: i, atom: atomIdx, x: px, y: py, len: segLen };
+      dabs.push(dab);
+      if (atomIdx < atomsDone) frontier = dab;    // last inked dab in course order = the head
+    }
+  }
+
+  // Emit dab paths: colour-by-state, with the draw animation ONLY on the in-progress frontier row.
+  var parts = [];
+  for (i = 0; i < dabs.length; i++) {
+    var db = dabs[i];
+    var inked = db.atom < atomsDone;
+    var lessonDone = atomsDone >= (lessonStart[db.lesson] + lessonAtoms[db.lesson]);
+    var sealed = lessonCircuit[db.lesson] < circuitsDone;
+    var col, animate = false;
+    if (!inked) col = C_UNINK;
+    else if (sealed) col = C_GOLD;
+    else if (lessonDone) col = C_CREAM;
+    else { col = C_EMBER; animate = !reduce; }     // freshly-inked → the only dabs that draw
+    var a = 'd="' + db.d + '" stroke="' + col + '" stroke-width="' + f(db.sw) +
+      '" stroke-opacity="' + f(db.op) + '" stroke-linecap="round" fill="none"';
+    if (animate) {
+      var L = f(Math.max(1, db.len));
+      a += ' stroke-dasharray="' + L + '" style="--len:' + L + ';animation:ink-draw var(--dur-draw) var(--ease) both"';
+    }
+    parts.push('<path ' + a + '/>');
+  }
+
+  // Outer gold thread: one arc per completed circuit; at CIRCUITS the thread closes the ring.
+  var threadR = rOuter + size * 0.045;
+  for (i = 0; i < circuitsDone; i++) {
+    var a0 = -Math.PI / 2 + (i / CIRCUITS) * TAU, a1 = -Math.PI / 2 + ((i + 1) / CIRCUITS) * TAU;
+    var x0 = cx + Math.cos(a0) * threadR, y0 = cy + Math.sin(a0) * threadR;
+    var x1 = cx + Math.cos(a1) * threadR, y1 = cy + Math.sin(a1) * threadR;
+    parts.push('<path class="ring-thread" d="M' + f(x0) + ' ' + f(y0) + 'A' + f(threadR) + ' ' + f(threadR) +
+      ' 0 0 1 ' + f(x1) + ' ' + f(y1) + '" stroke="' + C_GOLD + '" stroke-width="1.9" stroke-opacity="0.95" stroke-linecap="round" fill="none"/>');
+  }
+
+  // Head-dot: a single static gold circle at the inking frontier (the tawaf head).
+  var head = frontier || dabs[0];
+  var headSVG = head ? '<circle class="ring-head" cx="' + f(head.x) + '" cy="' + f(head.y) +
+    '" r="' + f(size * 0.013) + '" fill="' + C_GOLD + '"/>' : '';
+
+  var label = 'Tawaf ring — ' + atomsDone + ' of ' + ATOMS + ' inked';
+  return '<svg xmlns="http://www.w3.org/2000/svg" class="ring" viewBox="0 0 ' + size + ' ' + size +
+    '" width="' + size + '" height="' + size + '" role="img" aria-label="' + label +
+    '" data-seed="' + seed + '" data-atoms="' + atomsDone + '" data-circuits="' + circuitsDone +
+    '"><g class="ring-dabs">' + parts.join('') + '</g>' + headSVG + '</svg>';
+};
+
 /* ============================================================
    RUNNERS  ·  Phase 4 placeholder — AwbaLesson(cfg) / AwbaReview(cfg) (D-22)
    ============================================================ */

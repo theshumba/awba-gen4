@@ -885,6 +885,21 @@
     100% { transform: scale(1);  opacity: 1; }
   }
 
+  /* draw (Orbit) — the Ring's ink-stroke reveal (MOT-01 / §2.7). Plays ONCE on the newly-inked
+     frontier dabs the generator marks with stroke-dasharray + --len; the established ring never
+     re-draws (the generator only attaches this to the in-progress row). stroke-dashoffset sweep
+     + an 8% opacity kick — no blur filter, ink-bleed is the stroke/opacity variance in the
+     generated geometry. Under reduced motion the generator omits the animation at call time. */
+  @keyframes ink-draw {
+    from { stroke-dashoffset: var(--len); opacity: 0; }
+    8%   { opacity: 1; }
+    to   { stroke-dashoffset: 0; opacity: 1; }
+  }
+
+  /* .ring — the inline tawaf-fingerprint SVG wrapper (macro progress; the maker's mark, law 10).
+     The centre never animates (law 9): the head-dot is static, only frontier dabs draw. */
+  .ring { display: block; position: relative; z-index: 1; width: 100%; height: auto; }
+
   /* -- Ambient loops (MOT-01) — the ONLY infinite motion in the system; all three are enumerated
      in the reduced-motion block below and stopped outright there (never spun at 1ms). */
   .companion { display: inline-block; animation: bob var(--dur-amb) var(--ease-gentle) infinite; }
