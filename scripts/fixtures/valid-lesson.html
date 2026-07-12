@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Fixture · Valid Lesson</title>
+<link rel="stylesheet" href="../../shared/awba-engine.css"></head><body>
+<script src="../../shared/awba-engine.js"></script>
+<script>
+AwbaLesson({
+ id:'fixture-valid-lesson', unitColor:'#2E6BF5',
+ journey:'Fixture · Valid Lesson · Contract Coverage',
+ opener:{h2:'A neutral placeholder heading', p:'Neutral placeholder body copy used only to exercise the validator. Not scripture, not real content.'},
+ terms:{
+  sampleterm:{ar:'كلمة',tl:'kalimah',word:'sample placeholder word',def:'A neutral placeholder definition used only for validator testing.',ctx:'A neutral placeholder context sentence, not scripture.'}
+ },
+ refs:{
+  'sample-ref-1':{ref:'Sample Reference 1:1',ar:'نص عربي تجريبي للاختبار فقط',mean:'A neutral placeholder meaning used only for validator testing, not scripture.',src:'Placeholder Source · pending review'}
+ },
+ beats:[
+  {t:'read',kicker:'Fixture kicker',title:'A neutral read beat',
+   html:'<p>This placeholder paragraph exercises a <span class="term" data-term="sampleterm">sample term</span> and a citation '+AW.cite('sample-ref-1','Sample Reference 1:1')+' inline.</p>',
+   marker:{type:'fard',body:'A neutral placeholder marker body proving the fard marker type is accepted.'}},
+  {t:'frame',kicker:'Fixture kicker',lead:'A neutral placeholder frame lead sentence.'},
+  {t:'verse',kicker:'Fixture kicker',label:'Sample Verse Label',ar:'نص عربي تجريبي للاختبار فقط وليس آية قرآنية',tr:'A neutral placeholder translation line used only for validator testing, not scripture.'},
+  {t:'panel',variant:'check',title:'A neutral panel title',intro:'A neutral placeholder intro sentence.',
+   items:[
+    {name:'First point',body:'A neutral placeholder body sentence for the first panel item.'},
+    {name:'Second point',body:'A neutral placeholder body sentence for the second panel item.'}
+   ]},
+  {t:'depth',point:'A neutral placeholder depth point sentence.',
+   lenses:{reality:'A neutral placeholder reality-lens sentence.',revelation:'A neutral placeholder revelation-lens sentence.',ruling:'A neutral placeholder ruling-lens sentence.'}},
+  {t:'reflect',prompt:'A neutral placeholder reflection prompt?',model:'A neutral placeholder model answer sentence.'},
+  {t:'mc',q:'A neutral placeholder multiple-choice question?',o:['Option A','Option B','Option C','Option D'],c:2,
+   good:'A neutral placeholder correct-answer explanation.',gentle:'A neutral placeholder gentle-miss explanation.'},
+  {t:'tf',q:'A neutral placeholder true/false statement.',c:true,
+   good:'A neutral placeholder correct-answer explanation.',gentle:'A neutral placeholder gentle-miss explanation.'},
+  {t:'tile',prompt:'A neutral placeholder tile-builder prompt.',
+   bank:['alpha','beta','gamma','delta'],solution:['alpha','gamma']}
+ ],
+ recap:['A neutral placeholder recap line one.','A neutral placeholder recap line two.']
+});
+</script></body></html>

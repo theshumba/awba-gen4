@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Fixture · Broken Lesson</title>
+<link rel="stylesheet" href="../../shared/awba-engine.css"></head><body>
+<script src="../../shared/awba-engine.js"></script>
+<script>
+AwbaLesson({
+ id:'fixture-broken-lesson', unitColor:'#2E6BF5',
+ journey:'Fixture · Broken Lesson · Deliberate Violations',
+ opener:{h2:'A neutral placeholder heading'},
+ terms:{},
+ refs:{
+  'sample-ref-1':{ref:'Sample Reference 1:1',ar:'نص عربي تجريبي للاختبار فقط',mean:'A neutral placeholder meaning used only for validator testing, not scripture.',src:'Placeholder Source · pending review'}
+ },
+ beats:[
+  {t:'bogus',q:'This beat type does not exist in the frozen contract.'},
+  {t:'read',kicker:'Fixture kicker',title:'A read beat with a dangling citation',
+   html:'<p>This placeholder paragraph cites '+AW.cite('missing-ref-id','A reference that does not exist')+' on purpose.</p>'},
+  {t:'mc',q:'A neutral placeholder multiple-choice question with an out-of-range answer index?',
+   o:['Option A','Option B','Option C','Option D'],c:9,
+   good:'A neutral placeholder correct-answer explanation.',gentle:'A neutral placeholder gentle-miss explanation.'}
+ ],
+ recap:['A neutral placeholder recap line.']
+});
+</script></body></html>
