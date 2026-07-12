@@ -19,8 +19,8 @@ created: 2026-07-12
 |----------|-------|
 | **Framework** | `node:test` + `node:assert` (Node core, zero npm deps — verified on Node v24.13.0) |
 | **Config file** | none — no package.json required; plain `node --test` |
-| **Quick run command** | `node --test scripts/tests/` |
-| **Full suite command** | `node --test scripts/tests/ && node scripts/validate-content.js --self-test` |
+| **Quick run command** | `node --test scripts/tests/*.test.js` |
+| **Full suite command** | `node --test scripts/tests/*.test.js && node scripts/validate-content.js --self-test` |
 | **Estimated runtime** | ~2–5 seconds |
 
 ---
