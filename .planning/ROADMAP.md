@@ -71,7 +71,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   - [x] 03-03-PLAN.md — Engine COMPONENTS: AW.icon/cite/wire/sheet(+sheetRef face-split/sheetTerm)/confetti/reducedMotion/animate + components.test.js (FND-04/ENG-06/MOT-04)
   - [x] 03-04-PLAN.md — preview.html sections 9-12 (old-look living reference; rebuilt by 03-11)
   - [~] 03-05-PLAN.md — SUPERSEDED (old D-44 gate; never walked — replaced by 03-12)
-  - [ ] 03-06-PLAN.md — Tokens + base re-ground: @layer tokens rewrite + register architecture (§2/§3)
+  - [x] 03-06-PLAN.md — Tokens + base re-ground: @layer tokens rewrite + register architecture (§2/§3)
   - [ ] 03-07-PLAN.md — Ring generator spike — deterministic tawaf-fingerprint SPOF (§6)
   - [ ] 03-08-PLAN.md — Icon re-inking: currentColor + `--icon-accent` model, lantern-gold deleted (§5)
   - [ ] 03-09-PLAN.md — Components re-skin + motion vocabulary rewrite (§4)
@@ -143,7 +143,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation — Tokens, Shell & Fonts | 4/4 | Complete | 2026-07-12 |
 | 2. State Layer & Engine-Contract Freeze | 2/2 | Complete   | 2026-07-12 |
-| 3. Components, Icon Kit & Motion | 4/5 | In Progress|  |
+| 3. Components, Icon Kit & Motion | 5/12 | In Progress|  |
 | 4. Lesson & Review Engine Port | 0/TBD | Not started | - |
 | 5. Learn Page & View Transitions | 0/TBD | Not started | - |
 | 6. Accessibility, RTL & Typography | 0/TBD | Not started | - |

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: "Phase 3 RE-CUT under Athar: 03-01..04 done, 03-05 SUPERSEDED, planning 03-06+ from 03-UI-SPEC-ATHAR.md"
-last_updated: "2026-07-12T15:52:39.300Z"
+stopped_at: Completed 03-06-PLAN.md (tokens + base re-ground to Athar); next 03-07 (Ring SPOF)
+last_updated: "2026-07-12T21:00:04.393Z"
 last_activity: 2026-07-12
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 18
-  completed_plans: 10
-  percent: 29
+  completed_plans: 11
+  percent: 61
 ---
 
 # Project State
@@ -26,15 +26,18 @@ See: .planning/PROJECT.md (updated 2026-07-11)
 ## Current Position
 
 Phase: 03 (Components, Icon Kit & Motion Language) — **RE-CUT UNDER ATHAR (Gate 2 locked 2026-07-12)**
+
 - Design authority CHANGED: pure Athar System (`.planning/ATHAR-SYSTEM.md` + `docs/superpowers/specs/2026-07-12-athar-adoption-design.md`, commit cbdb7e9). Josh's Gen-3 look retired; content/engine contract untouched.
 - Plans 03-01..03-04: complete and committed (their JS layer survives; their visual values are superseded).
 - Plan 03-05 (old D-44 gate): **SUPERSEDED — never walk its checklist.**
 - New design contract: `03-UI-SPEC-ATHAR.md` (supersedes 03-UI-SPEC.md). Athar font kit + grain vendored (b66b75a).
-- NEXT: plan + execute re-skin waves 03-06+ (tokens rewrite → components/icons → new preview → Ring spike → Sky spike → NEW human gate). Ring + prayer-clock sky land in Phase 3, before Phase 4.
-Status: Planning re-cut waves
+- **Plan 03-06 (tokens + base re-ground): COMPLETE 2026-07-12** — `@layer tokens` is the Athar sheet (Readex workhorse, 17 verbatim-hex colours + ink ramps, print radii, ink/edge depth, grain var, one-easing motion) and `@layer base` is the register architecture (four `.reg-*` grounds, `data-sky` tint, `data-state` map, ground focus, scripture law, Nightfall); `data-unit`/`--accent` colour theming dismantled CSS-side. Commits `2cf8ecd`, `15a2b48`. 37/37 tests green. `@layer components`/`@layer motion` keep retired token refs (accepted transient — plan 09 removes; whole-file `--accent`/`rgba(37,54,` closure gated at plan 12).
+- NEXT: 03-07 (Ring SPOF — renders on the new colour tokens) → 03-08 icons → 03-09 components (owns the retired-token cleanup) → 03-10 Sky → 03-11 new preview → 03-12 closure/human gate. Ring + prayer-clock sky land in Phase 3, before Phase 4.
+
+Status: Executing re-cut waves — 03-06 done, next 03-07 (Ring SPOF)
 Last activity: 2026-07-12
 
-Progress: [█████████░] 91%
+Progress: [██████░░░░] 61%
 
 ## Performance Metrics
 
@@ -63,6 +66,7 @@ Progress: [█████████░] 91%
 | Phase 02 P02 | 7min | 2 tasks | 5 files |
 | Phase 03-components-icon-kit-motion-language P02 | ~18min | 2 tasks | 1 files |
 | Phase 03 P04 | 25min | 2 tasks | 1 files |
+| Phase 03 P06 | 14 min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -92,6 +96,8 @@ Recent decisions affecting current work:
 - [Phase 02-02]: Default CLI file discovery for lessons/*.html and reviews/*.html tolerates missing directories via try/catch — Those directories do not exist until Phase 4; validator degrades to nothing-to-validate exit 0 instead of crashing
 - [Phase ?]: 03-02: lantern-gold is an authored, committed AW.KIT entry hand-recoloured against the dark .gold-bg night gradient (dark-field highlights lifted to --gold2 #FFD34D), never a runtime regex recolour (D-33)
 - [Phase ?]: 03-02: 20 scene icons + lantern-gold + 13 glyphs form ONE inline single-source registry (AW.KIT/AW.GLYPHS/AW.UNIT_ICON); per-page UIC/IC_* constants superseded (FND-04)
+- [Phase 03]: 03-06: dismantled data-unit/--accent colour theming CSS-side; AW.UNIT_ICON JS untouched so data-unit survives as the unit-to-icon key only
+- [Phase 03]: 03-06: @layer components/motion keep retired token references as the accepted transient (plan 09 removes them; whole-file closure gated at plan 12)
 
 ### Pending Todos
 
@@ -120,6 +126,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-12T15:52:23.461Z
-Stopped at: Phase 3 executing: plan 03-01 complete (1/5), next 03-02 KIT
+Last session: 2026-07-12T21:00:04.388Z
+Stopped at: Completed 03-06-PLAN.md (tokens + base re-ground to Athar); next 03-07 (Ring SPOF)
 Resume file: None
