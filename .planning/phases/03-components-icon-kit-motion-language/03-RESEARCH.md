@@ -504,16 +504,16 @@ Gen-4 rebuilds these **on top of `AW.sheet(html)`** (not a bare `#sheet`), adds 
 | A5 | `svgo` may be skipped entirely (hand-author) given the clean SVGs | Standard Stack / Audit | Low — strictly safer (no `npx`); only cost is a few KB not trimmed |
 | A6 | KIT icons authored WITHOUT `width`/`height` attrs (keep `viewBox`) so CSS sizes them | Pattern 1/2 | Low — matches Gen-3 KIT shape exactly; forcing square size on 240×300 scenes would distort |
 
-## Open Questions
+## Open Questions (RESOLVED — all three settled by 03-UI-SPEC.md "Recorded Decisions", 2026-07-12)
 
-1. **Press-depth tokenization (D-40 "no literal px where a token exists").** The gummy depths are rest `5px` / active `2px` (=`--sp-2`) / translate `3px`; only `2px` is a token today.
+1. **RESOLVED (UI-SPEC Recorded Decision #1 → plan 03-01 Task 1 adds `--press-rest`/`--press-active` to the tokens layer).** **Press-depth tokenization (D-40 "no literal px where a token exists").** The gummy depths are rest `5px` / active `2px` (=`--sp-2`) / translate `3px`; only `2px` is a token today.
    - Known: D-39 forbids new *easing* literals outside tokens; D-40 wants token-defined *depths*; Phase-1 D-04 says Phase-1 wrote the tokens layer.
    - Unclear: may Phase 3 add two depth tokens (`--press-rest`,`--press-active`) to the tokens layer, or should it accept literal `5px`/`3px` in the one press rule?
    - Recommendation: **add the two depth tokens** to the tokens layer (a token, not an easing literal — consistent with D-05/D-40); flag in the plan's must_haves so plan-check notices the tokens-layer touch. Cheap, keeps the "no literal px" law clean.
 
-2. **`svgo` vs hand-author.** Recommendation: **hand-author** (strip `xmlns`/`width`/`height`, keep `viewBox`) — no `npx`, fully reviewable, and the audit removed the only correctness reason for `svgo`. If the planner prefers `svgo`, gate it behind `checkpoint:human-verify` (never `npx --yes`).
+2. **RESOLVED (UI-SPEC Recorded Decision #2 + D-31 amendment → hand-author, svgo skipped; plan 03-02).** **`svgo` vs hand-author.** Recommendation: **hand-author** (strip `xmlns`/`width`/`height`, keep `viewBox`) — no `npx`, fully reviewable, and the audit removed the only correctness reason for `svgo`. If the planner prefers `svgo`, gate it behind `checkpoint:human-verify` (never `npx --yes`).
 
-3. **Preview Section 5 retrofit vs supersede.** Should §5's preview-only motion mocks be replaced with real engine classes, or left and superseded by new §11–12? Recommendation: leave §5 as the token-value reference it was in Phase 1; add §9–12 demoing real components — but the planner may retrofit §5 for coherence (discretion).
+3. **RESOLVED (UI-SPEC Recorded Decision #3 → §5 left intact as token reference; plan 03-04 adds §9–12).** **Preview Section 5 retrofit vs supersede.** Should §5's preview-only motion mocks be replaced with real engine classes, or left and superseded by new §11–12? Recommendation: leave §5 as the token-value reference it was in Phase 1; add §9–12 demoing real components — but the planner may retrofit §5 for coherence (discretion).
 
 ## Environment Availability
 
