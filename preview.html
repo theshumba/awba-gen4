@@ -234,6 +234,50 @@ body{
 .pv-foot{ padding:var(--sp-4); border-top:1px solid var(--line); }
 .pv-note{ font-size:var(--fs-ui); color:var(--ink2); text-align:center; margin-top:var(--sp-4); }
 
+/* ---- Glyph test (section 7) ----------------------------------------------------------------- */
+.pv-glyph{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:var(--sp-4); }
+.pv-gcell{
+  background:var(--paper); border:1px solid var(--line); border-radius:var(--r-md);
+  box-shadow:var(--sh-1); padding:var(--sp-4); display:grid; gap:var(--sp-2s); align-content:start;
+}
+.pv-gcell.wide{ grid-column:1 / -1; }
+.pv-gcell .face{
+  font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker); letter-spacing:.06em;
+  text-transform:uppercase; color:var(--ink3);
+}
+.pv-gcell .cp{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--accent-deep); font-variant-numeric:tabular-nums; letter-spacing:.02em; }
+.pv-gcell .render{ color:var(--ink); }
+.pv-gcell .render.big{ font-size:var(--fs-h2); }
+.pv-gpair{ display:grid; gap:var(--sp-1); }
+.pv-gpair .tag{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3); text-transform:uppercase; letter-spacing:.06em; }
+.pv-poppins{ font-family:var(--font-disp); }
+.pv-inter{ font-family:var(--font-body); }
+.pv-quranface{ font-family:var(--font-quran); font-size:var(--fs-ayah); line-height:1.9; letter-spacing:0; }
+.pv-amiriface{ font-family:var(--font-ar); font-size:var(--fs-ar-body); line-height:1.8; letter-spacing:0; }
+.pv-src{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3); }
+
+/* Tofu FAIL exemplar — amber (the only non-safety warning color), never red. */
+.pv-gcell.fail{ background:var(--amber-bg); border-color:var(--amber-line); }
+.pv-gcell.fail .face{ color:var(--amber-ink); }
+.pv-tofu{ display:flex; align-items:center; gap:var(--sp-3); }
+.pv-tofubox{
+  width:38px; height:46px; flex:0 0 auto; border:2px solid var(--amber-ink); border-radius:var(--sp-2);
+  background:repeating-linear-gradient(-45deg, transparent, transparent 5px, var(--amber-line) 5px, var(--amber-line) 7px);
+}
+.pv-tofu .msg{ font-family:var(--font-body); font-weight:600; font-size:var(--fs-ui); color:var(--amber-ink); }
+
+/* ---- Zero-CDN note (section 8) -------------------------------------------------------------- */
+.pv-cdnnote{
+  background:
+    radial-gradient(120% 130% at 6% 0%, var(--accent-soft), transparent 62%),
+    var(--paper);
+  border:1px solid var(--accent-line); border-radius:var(--r-xl); box-shadow:var(--sh-2);
+  padding:var(--sp-6); display:grid; gap:var(--sp-3);
+}
+.pv-cdnnote h3{ font-family:var(--font-disp); font-weight:700; font-size:var(--fs-h2); margin:0; color:var(--ink); }
+.pv-cdnnote p{ margin:0; font-size:var(--fs-body); color:var(--ink2); max-width:70ch; }
+.pv-cdnnote code{ font-family:var(--font-body); background:var(--tint); border:1px solid var(--line); border-radius:var(--r-xs); padding:0 var(--sp-1); }
+
 /* small helpers */
 .pv-inline-latin{ font-family:var(--font-body); }
 .pv-inline-disp{ font-family:var(--font-disp); }
@@ -606,6 +650,135 @@ body{
       </div>
     </div>
     <p class="pv-note pv-wrap">The single accent-filled gummy CTA in the footer is the shell's focal point — one primary action, one focal point.</p>
+  </section>
+
+  <!-- ========================================================================================
+       Section 7 — Permanent glyph test
+       ==================================================================================== -->
+  <section class="pv-section" id="s7">
+    <div class="pv-wrap">
+      <div class="pv-head">
+        <h2><span class="pv-num">7</span>Glyph test</h2>
+        <p>Every at-risk codepoint from Josh's real content, rendered in its correct self-hosted face and labelled.
+        If any cell shows a tofu box (□) instead of the glyph, that face needs re-subsetting. The final cell is a
+        deliberate FAIL exemplar so a real miss is unmistakable.</p>
+      </div>
+
+      <div class="pv-glyph">
+
+        <div class="pv-gcell">
+          <div class="face">Corner brackets · U+02F9 / U+02FA</div>
+          <div class="cp">Poppins subset lacks these — --font-disp falls through to Inter, cleanly.</div>
+          <div class="pv-gpair">
+            <span class="tag">Poppins string (fallback in action)</span>
+            <span class="render pv-poppins">Say, ˹O Prophet,˺ “He is Allah—One.”</span>
+          </div>
+          <div class="pv-gpair">
+            <span class="tag">Inter</span>
+            <span class="render pv-inter">Say, ˹O Prophet,˺ “He is Allah—One.”</span>
+          </div>
+        </div>
+
+        <div class="pv-gcell">
+          <div class="face">Transliteration diacritics</div>
+          <div class="cp">ʿ ʾ ā Ā ī Ī ū ḥ Ḥ ṣ Ṣ ṭ Ṭ ḏ Ḏ · U+02BF/02BE, U+0101/0100, U+012B/012A, U+016B, U+1E25/1E24, U+1E63/1E62, U+1E6D/1E6C, U+1E0F/1E0E</div>
+          <div class="pv-gpair">
+            <span class="tag">Poppins</span>
+            <span class="render pv-poppins">ʿUmar ibn al-Khaṭṭāb · al-ʾĪmān · Ḥadīth · ḏikr · ṣabr</span>
+          </div>
+          <div class="pv-gpair">
+            <span class="tag">Inter</span>
+            <span class="render pv-inter">ʿUmar ibn al-Khaṭṭāb · al-ʾĪmān · Ḥadīth · ḏikr · ṣabr</span>
+          </div>
+        </div>
+
+        <div class="pv-gcell">
+          <div class="face">Middle dot · U+00B7 · Poppins</div>
+          <div class="cp">208× in real content — the citation / kicker separator on every screen; the most prominent at-risk glyph.</div>
+          <div class="render big pv-poppins" style="font-weight:600;letter-spacing:.02em">Unit 1 · Lesson 1</div>
+        </div>
+
+        <div class="pv-gcell">
+          <div class="face">Punctuation set</div>
+          <div class="cp">— U+2014 · – U+2013 · ‘ ’ U+2018/2019 · “ ” U+201C/201D</div>
+          <div class="pv-gpair">
+            <span class="tag">Poppins</span>
+            <span class="render pv-poppins">The lamp — lit gently — stays. ‘Begin,’ she said. “Return.” pp. 12–14</span>
+          </div>
+          <div class="pv-gpair">
+            <span class="tag">Inter</span>
+            <span class="render pv-inter">The lamp — lit gently — stays. ‘Begin,’ she said. “Return.” pp. 12–14</span>
+          </div>
+        </div>
+
+        <div class="pv-gcell">
+          <div class="face">Circumflex vowels · U+00EE / U+00E2 / U+00FB</div>
+          <div class="cp">Josh's transliteration convention — would tofu under a careless ASCII-only subset.</div>
+          <div class="pv-gpair">
+            <span class="tag">Poppins</span>
+            <span class="render pv-poppins">Iblîs · Suwâ · Yaghûth · Yaûq</span>
+          </div>
+          <div class="pv-gpair">
+            <span class="tag">Inter</span>
+            <span class="render pv-inter">Iblîs · Suwâ · Yaghûth · Yaûq</span>
+          </div>
+        </div>
+
+        <div class="pv-gcell">
+          <div class="face">Honorific ligature ﷺ · U+FDFA</div>
+          <div class="cp">Forward-looking / defensive — bound by brand law; render it so the ligature is confirmed not tofu.</div>
+          <div class="pv-gpair">
+            <span class="tag">Amiri (general)</span>
+            <span class="render pv-amiriface" lang="ar" dir="rtl">مُحَمَّد ﷺ</span>
+          </div>
+          <div class="pv-gpair">
+            <span class="tag">Amiri Quran</span>
+            <span class="render pv-quranface" lang="ar" dir="rtl">مُحَمَّد ﷺ</span>
+          </div>
+        </div>
+
+        <div class="pv-gcell wide">
+          <div class="face">Face split — verbatim Qur'an (.ayah → Amiri Quran) vs. general Arabic (Amiri)</div>
+          <div class="cp">No blanket rule forces the Qur'an face onto hadith — the split is per-instance.</div>
+          <div class="pv-gpair">
+            <span class="tag">.ayah · Amiri Quran · al-Fātiḥah 1:1</span>
+            <span class="ayah" lang="ar" dir="rtl">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</span>
+          </div>
+          <div class="pv-gpair">
+            <span class="tag">General Amiri · hadith</span>
+            <span class="pv-amiriface" lang="ar" dir="rtl">إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ</span>
+            <span class="pv-src">Ṣaḥīḥ al-Bukhārī 1 · Ṣaḥīḥ Muslim 1907</span>
+          </div>
+        </div>
+
+        <div class="pv-gcell fail">
+          <div class="face">FAIL exemplar · what a missing glyph looks like</div>
+          <div class="pv-tofu">
+            <span class="pv-tofubox" aria-hidden="true"></span>
+            <span class="msg">Glyph missing — re-subset this face.</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================================
+       Section 8 — Zero-CDN assertion note
+       ==================================================================================== -->
+  <section class="pv-section" id="s8">
+    <div class="pv-wrap">
+      <div class="pv-head">
+        <h2><span class="pv-num">8</span>Zero-CDN assertion</h2>
+        <p>Every face on this page is self-hosted and same-origin — a PWA that promises offline can't depend on a third-party font host.</p>
+      </div>
+      <div class="pv-cdnnote">
+        <h3>Confirm it yourself</h3>
+        <p>Open DevTools › Network, filter by <code>font</code>, reload: every request must be same-origin
+        <code>shared/fonts/…</code> — zero Google-Fonts-CDN requests. If you see any third-party font host, the
+        zero-CDN guarantee is broken.</p>
+      </div>
+    </div>
   </section>
 
 </main>
