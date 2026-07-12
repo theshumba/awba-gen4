@@ -80,6 +80,34 @@ test('tile beat missing "good"/"gentle" is flagged (WR-03)', () => {
   );
 });
 
+test('data-ref/data-term ID resolution matches single-quoted attributes too (WR-04)', () => {
+  const cfg = {
+    id: 'x',
+    unitColor: '#000',
+    journey: 'x',
+    opener: { h2: 'x' },
+    terms: { sampleterm: { ar: 'x', tl: 'x', word: 'x', def: 'x', ctx: 'x' } },
+    refs: { 'sample-ref': { ref: 'x', ar: 'x', mean: 'x', src: 'x' } },
+    recap: [],
+    beats: [
+      {
+        t: 'read',
+        html: "<p><span class='term' data-term='sampleterm'>x</span> <span class='cite' data-ref='sample-ref'>x</span></p>",
+      },
+    ],
+  };
+  const { errors, warnings } = validateCfg(cfg, 'lesson');
+  assert.deepStrictEqual(errors, [], `expected zero errors, got: ${errors.join(' | ')}`);
+  assert.ok(
+    !warnings.some((w) => w.includes('unused term')),
+    `single-quoted data-term must be recognized as used, got: ${warnings.join(' | ')}`
+  );
+  assert.ok(
+    !warnings.some((w) => w.includes('unused ref')),
+    `single-quoted data-ref must be recognized as used, got: ${warnings.join(' | ')}`
+  );
+});
+
 test('read beat marker missing "body" is flagged (WR-03)', () => {
   const cfg = {
     id: 'x',

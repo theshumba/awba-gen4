@@ -286,13 +286,17 @@ function checkReviewItems(items, errors) {
 /* ---------- ID resolution: data-ref / data-term (Pattern 3, Pitfall 2) ---------- */
 function checkIdResolution(cfg, errors, warnings) {
   const blob = collectStrings(cfg, []).join('\n'); // RAW strings, never JSON.stringify
+  // WR-04: match both quote styles. AW.cite()'s sandbox stub always emits double-quoted
+  // data-ref="...", but .term[data-term] spans are hand-authored directly in lesson HTML
+  // strings and may use single quotes — a single-quote-only author would otherwise silently
+  // escape both the dangling-citation check AND get a false "unused term" warning.
   const refIds = uniq(
-    Array.from(blob.matchAll(/data-ref="([^"]+)"/g)).map(function (m) {
+    Array.from(blob.matchAll(/data-ref=["']([^"']+)["']/g)).map(function (m) {
       return m[1];
     })
   );
   const termIds = uniq(
-    Array.from(blob.matchAll(/data-term="([^"]+)"/g)).map(function (m) {
+    Array.from(blob.matchAll(/data-term=["']([^"']+)["']/g)).map(function (m) {
       return m[1];
     })
   );
