@@ -73,7 +73,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   - [~] 03-05-PLAN.md — SUPERSEDED (old D-44 gate; never walked — replaced by 03-12)
   - [x] 03-06-PLAN.md — Tokens + base re-ground: @layer tokens rewrite + register architecture (§2/§3)
   - [x] 03-07-PLAN.md — Ring generator spike — deterministic tawaf-fingerprint SPOF (§6)
-  - [ ] 03-08-PLAN.md — Icon re-inking: currentColor + `--icon-accent` model, lantern-gold deleted (§5)
+  - [x] 03-08-PLAN.md — Icon re-inking: currentColor + `--icon-accent` model, lantern-gold deleted (§5)
   - [ ] 03-09-PLAN.md — Components re-skin + motion vocabulary rewrite (§4)
   - [ ] 03-10-PLAN.md — Prayer-clock sky: 5 temperatures, manual times, `--dawn` (§7)
   - [ ] 03-11-PLAN.md — New Athar preview.html — the living reference (§8)
@@ -143,7 +143,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation — Tokens, Shell & Fonts | 4/4 | Complete | 2026-07-12 |
 | 2. State Layer & Engine-Contract Freeze | 2/2 | Complete   | 2026-07-12 |
-| 3. Components, Icon Kit & Motion | 6/12 | In Progress|  |
+| 3. Components, Icon Kit & Motion | 7/12 | In Progress|  |
 | 4. Lesson & Review Engine Port | 0/TBD | Not started | - |
 | 5. Learn Page & View Transitions | 0/TBD | Not started | - |
 | 6. Accessibility, RTL & Typography | 0/TBD | Not started | - |

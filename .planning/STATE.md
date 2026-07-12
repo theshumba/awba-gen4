@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-06-PLAN.md (tokens + base re-ground to Athar); next 03-07 (Ring SPOF)
-last_updated: "2026-07-12T21:17:54.164Z"
+stopped_at: Completed 03-08-PLAN.md (icon re-ink to currentColor + --icon-accent, lantern-gold deleted); next 03-09 (components re-skin)
+last_updated: "2026-07-12T21:34:43.000Z"
 last_activity: 2026-07-12
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 18
-  completed_plans: 12
+  completed_plans: 13
   percent: 29
 ---
 
@@ -33,12 +33,13 @@ Phase: 03 (Components, Icon Kit & Motion Language) — **RE-CUT UNDER ATHAR (Gat
 - New design contract: `03-UI-SPEC-ATHAR.md` (supersedes 03-UI-SPEC.md). Athar font kit + grain vendored (b66b75a).
 - **Plan 03-06 (tokens + base re-ground): COMPLETE 2026-07-12** — `@layer tokens` is the Athar sheet (Readex workhorse, 17 verbatim-hex colours + ink ramps, print radii, ink/edge depth, grain var, one-easing motion) and `@layer base` is the register architecture (four `.reg-*` grounds, `data-sky` tint, `data-state` map, ground focus, scripture law, Nightfall); `data-unit`/`--accent` colour theming dismantled CSS-side. Commits `2cf8ecd`, `15a2b48`. 37/37 tests green. `@layer components`/`@layer motion` keep retired token refs (accepted transient — plan 09 removes; whole-file `--accent`/`rgba(37,54,` closure gated at plan 12).
 - **Plan 03-07 (Ring generator SPOF): COMPLETE 2026-07-12** — `AW.ringSVG(cfg)` is a seeded (mulberry32) DETERMINISTIC tawaf-fingerprint generator (15 jittered pilgrim-rows / 4 circuits, thermal ink navy→ember→cream→gold, 4-arc gold thread closing at 4, static gold head-dot; byte-identical per seed+progress, no Date/Math.random in path; reduced-motion static; 265 path nodes, no `<filter>`). Paired with a lazy `AW.ringSeed()` maker's mark (no schema bump) + a ≤10-line W1 `memFallback` persist-guard (future-schema blob no longer clobbered by `set()`), and the `ink-draw` Orbit-draw keyframe + `.ring` wrapper added additively to `@layer motion`. Commits `c943437`, `63e64c3`, `e219c90`, `c6eab7a`. Suite 37→45 green. Rasterised + visually confirmed it READS as a hand-inked tawaf (not a spirograph); doubts logged in 03-07-SUMMARY for the preview/human gate.
-- NEXT: 03-08 icons → 03-09 components (owns the retired-token cleanup) → 03-10 Sky → 03-11 new preview (injects `AW.ringSVG`) → 03-12 closure/human gate. Ring done; prayer-clock sky still lands in Phase 3, before Phase 4.
+- **Plan 03-08 (icon re-inking): COMPLETE 2026-07-12** — `AW.KIT` (20 scenes) + `AW.GLYPHS` (13) re-inked to the Athar one-colour model per the deterministic §5.1/§5 maps: structural ink → `currentColor` (inherits the register ground), blob halos → `currentColor`@.12, lit panels → `.06` ink-wash or `fill="none"` (chosen per-icon by whether the quiet ink-line read survives — wash for focal ground surfaces like quran-stand pages + the calendar card, none for panels on solid ink bodies), kaaba/compass/dates dimensional blues → `currentColor`@.85/.62/.45, and the single sparkle/star mark → `var(--icon-accent)` (35 marks; scattered structural dots stay currentColor to hold the accent budget). `AW.KIT['lantern-gold']` DELETED (D-A6) — the one lantern renders gold on dark grounds automatically (rasterised + confirmed cream→crimson / dark→gold). Every `d="…"` byte-identical (proven vs HEAD), no runtime `.replace()` recolour; `AW.icon`/`AW.UNIT_ICON` untouched. Commits `5fcf52b`, `bc6057c`. `components.test.js` registry integrity → 20/13 (lantern-gold assertion dropped). Whole-file retired-blue-hex gate now closes for `shared/awba-engine.js`. Suite green 45/45.
+- NEXT: 03-09 components re-skin + motion vocab rewrite (owns the retired-token cleanup) → 03-10 Sky → 03-11 new preview (injects `AW.ringSVG` + the re-inked registry) → 03-12 closure/human gate. Icons + Ring done; prayer-clock sky still lands in Phase 3, before Phase 4.
 
-Status: Executing re-cut waves — 03-07 (Ring SPOF) done, next 03-08 (icons)
+Status: Executing re-cut waves — 03-08 (icons) done, next 03-09 (components re-skin)
 Last activity: 2026-07-12
 
-Progress: [███████░░░] 67%
+Progress: [███████░░░] 72%
 
 ## Performance Metrics
 
@@ -69,6 +70,7 @@ Progress: [███████░░░] 67%
 | Phase 03 P04 | 25min | 2 tasks | 1 files |
 | Phase 03 P06 | 14 min | 2 tasks | 1 files |
 | Phase 03 P07 | ~17 min | 3 tasks | 3 files |
+| Phase 03 P08 | ~15 min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -104,6 +106,10 @@ Recent decisions affecting current work:
 - [Phase 03]: 03-07: ringSVG geometry is a pure fn of seed and progress-INDEPENDENT; progress only recolours dabs + toggles the draw animation — the ring is a stable fingerprint that inks in place
 - [Phase 03]: 03-07: the draw (ink-draw) animation attaches ONLY to the in-progress frontier row's ember dabs — the deterministic proxy for "newly inked" so the established ring never re-draws (law 9) without a previous-state input
 - [Phase 03]: 03-07: W1 gap closed with a ≤10-line memFallback guard (set() skips persist when working from an unrecognized-schema in-memory copy); proved with a test that a from-the-future blob survives a ringSeed() call untouched on disk
+- [Phase 03]: 03-08: icons re-inked to the ONE currentColor + --icon-accent model via an authored scripted fill/stroke/opacity transform (no runtime .replace() recolour); every d="…" byte-identical, proven by diffing the unique d= set vs HEAD (111 values, zero added/removed)
+- [Phase 03]: 03-08: sparkle-accent by PATH signature only (the three decorative sparkle/star shapes → var(--icon-accent), 35 marks); scattered structural <circle r=3> dots stay currentColor to keep the ≤10% accent budget (law 7) and not mis-accent beads/compass cardinal dots
+- [Phase 03]: 03-08: lit-panel wash-vs-none is the only craft choice — .06 ink-wash for focal surfaces on the ground (quran-stand pages, calendar card), fill="none" for panels on solid ink bodies (windows/faces/doors/inner-disc, imperceptible either way); off-map hexes reconciled to their §5.1 family (#FFFFFF=panel, compass facets=dimensional blue, #DCE6FB kaaba shadow→none since Athar has no drop shadows)
+- [Phase 03]: 03-08: AW.KIT['lantern-gold'] DELETED (D-A6) — currentColor renders the one lantern gold on dark grounds automatically (rasterised + confirmed); last hex-literal art variant gone; KIT===20; whole-file retired-blue-hex gate now closes for shared/awba-engine.js (CSS --accent/rgba(37,54, closure still at plan 12)
 
 ### Pending Todos
 
@@ -132,6 +138,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-12T22:15:19Z
-Stopped at: Completed 03-07-PLAN.md (Ring generator SPOF — deterministic tawaf-fingerprint generator, visually confirmed); next 03-08 (icons)
+Last session: 2026-07-12T21:34:43Z
+Stopped at: Completed 03-08-PLAN.md (icon re-ink to currentColor + --icon-accent, lantern-gold deleted, suite 45/45); next 03-09 (components re-skin)
 Resume file: None
