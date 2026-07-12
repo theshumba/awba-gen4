@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-08-PLAN.md (icon re-ink to currentColor + --icon-accent, lantern-gold deleted); next 03-09 (components re-skin)
-last_updated: "2026-07-12T21:34:43.000Z"
+stopped_at: Completed 03-09-PLAN.md (components re-skin + motion vocab rewrite; retired-token cleanup — whole-file --accent/rgba(37,54, gates now CLOSE, AW.confetti removed, suite 45/45); next 03-10 (prayer-clock Sky)
+last_updated: "2026-07-12T22:02:30.000Z"
 last_activity: 2026-07-12
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 18
-  completed_plans: 13
+  completed_plans: 14
   percent: 29
 ---
 
@@ -34,18 +34,19 @@ Phase: 03 (Components, Icon Kit & Motion Language) — **RE-CUT UNDER ATHAR (Gat
 - **Plan 03-06 (tokens + base re-ground): COMPLETE 2026-07-12** — `@layer tokens` is the Athar sheet (Readex workhorse, 17 verbatim-hex colours + ink ramps, print radii, ink/edge depth, grain var, one-easing motion) and `@layer base` is the register architecture (four `.reg-*` grounds, `data-sky` tint, `data-state` map, ground focus, scripture law, Nightfall); `data-unit`/`--accent` colour theming dismantled CSS-side. Commits `2cf8ecd`, `15a2b48`. 37/37 tests green. `@layer components`/`@layer motion` keep retired token refs (accepted transient — plan 09 removes; whole-file `--accent`/`rgba(37,54,` closure gated at plan 12).
 - **Plan 03-07 (Ring generator SPOF): COMPLETE 2026-07-12** — `AW.ringSVG(cfg)` is a seeded (mulberry32) DETERMINISTIC tawaf-fingerprint generator (15 jittered pilgrim-rows / 4 circuits, thermal ink navy→ember→cream→gold, 4-arc gold thread closing at 4, static gold head-dot; byte-identical per seed+progress, no Date/Math.random in path; reduced-motion static; 265 path nodes, no `<filter>`). Paired with a lazy `AW.ringSeed()` maker's mark (no schema bump) + a ≤10-line W1 `memFallback` persist-guard (future-schema blob no longer clobbered by `set()`), and the `ink-draw` Orbit-draw keyframe + `.ring` wrapper added additively to `@layer motion`. Commits `c943437`, `63e64c3`, `e219c90`, `c6eab7a`. Suite 37→45 green. Rasterised + visually confirmed it READS as a hand-inked tawaf (not a spirograph); doubts logged in 03-07-SUMMARY for the preview/human gate.
 - **Plan 03-08 (icon re-inking): COMPLETE 2026-07-12** — `AW.KIT` (20 scenes) + `AW.GLYPHS` (13) re-inked to the Athar one-colour model per the deterministic §5.1/§5 maps: structural ink → `currentColor` (inherits the register ground), blob halos → `currentColor`@.12, lit panels → `.06` ink-wash or `fill="none"` (chosen per-icon by whether the quiet ink-line read survives — wash for focal ground surfaces like quran-stand pages + the calendar card, none for panels on solid ink bodies), kaaba/compass/dates dimensional blues → `currentColor`@.85/.62/.45, and the single sparkle/star mark → `var(--icon-accent)` (35 marks; scattered structural dots stay currentColor to hold the accent budget). `AW.KIT['lantern-gold']` DELETED (D-A6) — the one lantern renders gold on dark grounds automatically (rasterised + confirmed cream→crimson / dark→gold). Every `d="…"` byte-identical (proven vs HEAD), no runtime `.replace()` recolour; `AW.icon`/`AW.UNIT_ICON` untouched. Commits `5fcf52b`, `bc6057c`. `components.test.js` registry integrity → 20/13 (lantern-gold assertion dropped). Whole-file retired-blue-hex gate now closes for `shared/awba-engine.js`. Suite green 45/45.
-- NEXT: 03-09 components re-skin + motion vocab rewrite (owns the retired-token cleanup) → 03-10 Sky → 03-11 new preview (injects `AW.ringSVG` + the re-inked registry) → 03-12 closure/human gate. Icons + Ring done; prayer-clock sky still lands in Phase 3, before Phase 4.
+- **Plan 03-09 (components re-skin + motion vocab rewrite): COMPLETE 2026-07-12** — `@layer components` re-skinned selector-by-selector to Athar: the ONE paper-press (`translateY(1px)` + ink-deepen over `--dur-press`) across `.btn/.opt/.tf/.tile/.tab/.hstat/.cite/.term`; register-scoped chrome (`.btn` crimson-block/cream-key/gold-ghost, `.opt`/`.tf`/`.tile` cream+`--rule` leaves, `.tab` crimson top-rule, `.hstat` Courier marginalia); law-8 wrong-answer (grey ink-blot `.opt.wrong::after` + `.opt-why` `--ink-85` line + `.retry` `--rose` frame, D-A12); `.cite` crimson rubrication (byte-shape preserved) + `.term` dotted-crimson; the re-skinned singleton sheet (warm-ink scrim, cream ground, `--r-4`, `--sh-3`, settle) with the Amiri-Quran/Amiri face-split, always-on `unverified · pending review` pill + `--olive` grade pill (D-A9); shape-first thermal states (hollow/half/filled+check, D-A8); the four new celebration primitives `.dab`/`.thread`/`.plate`/`.rosette`. `@layer motion` rebuilt to `settle`/`breathe`/`breathe-halo`/`drift`/`stamp` on the one `--ease` family; Gen-3 `fall`/`bob`/`glow`/`popIn`/node-`breathe` keyframes + `.companion`/`.breathing-ring` loops retired; the plan-07 `ink-draw`+`.ring` PRESERVED byte-untouched; both reduced-motion triggers re-based on the Athar finite tokens (collapse→1ms) + `animation:none` on the new ambients, `--dur-amb` never collapsed. `AW.confetti` removed (D-A14); all other `AW.*` builders retained; `AW.cite` byte-shape intact (`validate-content.js --self-test` green). Commits `7d9a105`, `1e18df8`, `ca35d4a`. **The whole-file `--accent` + `rgba(37,54,` gates (deferred by plan 06) now CLOSE for `shared/awba-engine.css`; the `AW.confetti` gate closes for the JS.** Suite green 45/45.
+- NEXT: 03-10 Sky (prayer-clock temperatures + `.sky-breathe`/`breathe-halo` ambient wiring) → 03-11 new preview (injects `AW.ringSVG` + the re-inked registry + the re-skinned inventory) → 03-12 closure/human §9 gate. Components + icons + Ring done; prayer-clock sky still lands in Phase 3, before Phase 4.
 
-Status: Executing re-cut waves — 03-08 (icons) done, next 03-09 (components re-skin)
+Status: Executing re-cut waves — 03-09 (components + motion) done, next 03-10 (prayer-clock Sky)
 Last activity: 2026-07-12
 
-Progress: [███████░░░] 72%
+Progress: [████████░░] 78%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: — min
 - Total execution time: 0 hours
 
@@ -54,11 +55,12 @@ Progress: [███████░░░] 72%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 02 | 2 | - | - |
+| 03 | 6 | - | ~20 min (03-09) |
 
 **Recent Trend:**
 
-- Last 5 plans: —
-- Trend: —
+- Last 5 plans: 03-06, 03-07, 03-08, 03-09
+- Trend: Athar re-cut waves executing green (suite 45/45); 03-09 closed the deferred --accent/rgba(37,54, gates
 
 *Updated after each plan completion*
 | Phase 01 P01 | 20 min | 2 tasks | 13 files |
