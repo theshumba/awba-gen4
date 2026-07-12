@@ -422,57 +422,52 @@
      easing curve or spring literal from this layer onward (the a11y-safety law, gated in Phase 3).
      ========================================================================================== */
 
-  /* -- Citation & term chips (ENG-06 / D-37) ------------------------------------------------
-     Inline accent surfaces that open a sheet. Vertical padding is the pre-approved 2px inline-chip
-     hairline (never 4px — that breaks line rhythm). The chip fills on hover; on press it shares
-     the app's press TIMING (--dur-2/--ease-press) at translateY(1px) — inline flow can't carry a
-     5px hard-shadow, so this is the documented lighter reconciliation, not a gap. */
+  /* -- Citation & term chips (ENG-06 · §4.2) ------------------------------------------------
+     Inline reference marks that open a sheet. .cite reads as Page rubrication — a crimson reference
+     underline, never a filled tag; its leading glyph inks to --icon-accent. .term is a dotted-
+     crimson gloss cue. Vertical padding stays the 2px inline hairline (never 4px — that breaks line
+     rhythm). The <span class="cite" data-ref="…"> byte-shape is preserved (validator); only the CSS
+     changes. Press is the one shared paper-press below (translateY(1px), no depth). */
   .cite {
     display: inline-flex;
     align-items: center;
     gap: var(--sp-1);
-    padding: 2px var(--sp-2s) 2px var(--sp-1);
-    border-radius: var(--r-xs);
-    font-family: var(--font-body);
-    font-weight: 600;
+    padding: 2px var(--sp-1);
+    font-family: var(--font-work);
+    font-weight: 500;
     font-size: 0.9em;
     line-height: 1.5;
     white-space: nowrap;
     vertical-align: baseline;
-    color: var(--accent-ink);
-    background: var(--accent-soft);
-    border: 1px solid var(--accent-line);
+    color: var(--crimson);
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid var(--crimson);
+    border-radius: 0;
     cursor: pointer;
-    transition: background var(--dur-3) var(--ease-standard),
-                border-color var(--dur-3) var(--ease-standard),
-                color var(--dur-3) var(--ease-standard),
-                transform var(--dur-2) var(--ease-press);
   }
   .term {
-    color: var(--ink);
+    color: inherit;
     cursor: pointer;
-    text-decoration: underline dotted var(--accent);
+    text-decoration: underline dotted var(--crimson);
     text-underline-offset: 3px;
-    transition: text-decoration-color var(--dur-3) var(--ease-standard),
-                transform var(--dur-2) var(--ease-press);
   }
-  .cite:active,
-  .term:active { transform: translateY(1px); }        /* inline-light press — shares the press timing, not the depth */
+  .cite svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--icon-accent); } /* leading cite glyph → --icon-accent */
 
-  .cite svg { width: 14px; height: 14px; flex-shrink: 0; } /* leading cite glyph at glyph-inline */
-
-  /* -- Bottom-sheet primitive (ENG-06 / D-35) ----------------------------------------------
-     ONE singleton scrim+sheet (AW.sheet), reused by every sheet in the app (Phase 5 too). The
-     sheet centres like the shell column on desktop (margin-inline:auto; max-width:480px). Motion
-     is asymmetric per the vocabulary: gentle settle IN, clean exit OUT (D-39). */
+  /* -- Bottom-sheet primitive (ENG-06 · §4.3) ----------------------------------------------
+     ONE singleton scrim+sheet (AW.sheet), reused by every sheet in the app. The sheet centres like
+     the shell column on desktop (margin-inline:auto; max-width:480px). It is a Page object — cream
+     ground, --r-4 top corners — even when opened from Orbit/Sky (paper laid over the world), so
+     scripture inside renders under Page rubrication on clean ground. Motion = settle: IN and OUT on
+     the one easing family over --dur-sheet (no separate ease-in). */
   .scrim {
     position: fixed;
     inset: 0;
     z-index: 90;
-    background: var(--scrim);
+    background: rgba(19,16,19,.52);   /* warm-ink dim */
     opacity: 0;
     pointer-events: none;
-    transition: opacity var(--dur-4) var(--ease-standard);
+    transition: opacity var(--dur-sheet) var(--ease);
   }
   .scrim.open { opacity: 1; pointer-events: auto; }
 
@@ -487,22 +482,20 @@
     max-height: 82%;
     overflow-y: auto;
     padding: var(--sp-6) var(--sp-6) max(var(--sp-8), env(safe-area-inset-bottom));
-    background: var(--paper);
-    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    background: var(--cream);
+    color: var(--ink);
+    border-radius: var(--r-4) var(--r-4) 0 0;
     box-shadow: var(--sh-3);
     transform: translateY(100%);
-    transition: transform var(--dur-4) var(--ease-in);   /* OUT: clean exit */
+    transition: transform var(--dur-sheet) var(--ease);   /* settle IN/OUT — one easing family */
   }
-  .scrim.open .sheet {
-    transform: translateY(0);
-    transition-timing-function: var(--ease-gentle);      /* IN: soft settle */
-  }
+  .scrim.open .sheet { transform: translateY(0); }
   .grip {
     width: 40px;
     height: 4px;
     margin: 0 auto var(--sp-4);
     border-radius: var(--r-pill);
-    background: var(--line2);
+    background: var(--rule);
   }
   .sheet-x {
     position: absolute;
@@ -516,37 +509,37 @@
     border: none;
     border-radius: var(--r-round);
     background: transparent;
-    color: var(--ink3);
+    color: var(--ink-40);
     font-size: var(--fs-h2);
     line-height: 1;
     cursor: pointer;
-    transition: background var(--dur-3) var(--ease-standard),
-                color var(--dur-3) var(--ease-standard);
+    transition: background var(--dur-fade) var(--ease),
+                color var(--dur-fade) var(--ease);
   }
   html.sheet-lock { overflow: hidden; }  /* scroll-lock while a sheet is open (file:// + http identical) */
 
-  /* -- Citation-sheet content (ENG-06 / D-36) — the face split is the one real elevation over
-     Gen-3: a Qur'an ref (no grade) renders Arabic in .ayah / Amiri Quran; a hadith ref renders in
-     general Amiri and shows the grade pill. The pending pill is ALWAYS present, calm & neutral. */
-  .r-src {
+  /* -- Citation-sheet rows (ENG-06 · §4.3) — the face split is the elevation: a Qur'an ref (no
+     grade) renders its Arabic in .ayah / Amiri Quran; a hadith ref renders in general Amiri and
+     shows the grade pill. Strongest ink on clean cream (the sheet carries no grain). The pending
+     pill is ALWAYS present, calm and neutral. */
+  .r-src {                        /* provenance kicker — Courier marginalia in Madder Wash */
     text-align: center;
-    font-family: var(--font-disp);
-    font-weight: 600;
-    font-size: var(--fs-kicker);
-    letter-spacing: .08em;
-    line-height: 1.2;
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    letter-spacing: .14em;
+    line-height: 1.4;
     text-transform: uppercase;
-    color: var(--accent-ink);
+    color: var(--madder);
     margin-bottom: var(--sp-4);
   }
-  .r-ar {
+  .r-ar {                         /* hadith / du'a — general Amiri, strongest ink */
     direction: rtl;
     text-align: right;
-    font-family: var(--font-ar);
-    font-size: var(--fs-ar-body);
-    line-height: 1.8;
+    font-family: var(--font-scrip);
+    font-size: var(--fs-scrip);
+    line-height: 1.85;
     letter-spacing: 0;
-    color: var(--accent-ink);
+    color: var(--kiswah);
     margin-bottom: var(--sp-4);
   }
   .r-ar.ayah {                    /* Qur'an face split — Amiri Quran, one step larger, roomier lh */
@@ -557,55 +550,74 @@
   .r-mean {
     font-size: var(--fs-body);
     line-height: 1.6;
-    color: var(--ink);            /* carries the ˹ ˺ brackets via the Poppins→Inter fallback */
+    color: var(--ink-85);         /* carries the ˹ ˺ corner brackets via the Readex→Inter glyph-fallback */
     margin-bottom: var(--sp-3);
   }
-  .r-ref {
-    font-size: var(--fs-kicker);
+  .r-ref {                        /* provenance line — Courier marginalia italic in Madder Wash */
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
     font-style: italic;
     line-height: 1.4;
-    color: var(--ink3);
+    color: var(--madder);
   }
-  /* Pending pill — CALM NEUTRAL, lowercase copy, never amber / red / --danger (mercy law). */
+  .r-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2s);
+    margin-top: var(--sp-4);
+  }
+  /* Pending pill — CALM NEUTRAL: always renders `unverified · pending review` (lowercase, from
+     AW.sheetRef); never rose, never a warm alarm colour (law 8). */
   .r-pill {
     display: inline-block;
-    margin-top: var(--sp-4);
     padding: var(--sp-2) var(--sp-2s);
     border-radius: var(--r-pill);
-    font-family: var(--font-disp);
-    font-weight: 600;
-    font-size: var(--fs-kicker);
-    letter-spacing: .04em;
+    font-family: var(--font-work);
+    font-weight: 500;
+    font-size: var(--fs-ui);
+    letter-spacing: .02em;
     line-height: 1;
-    color: var(--ink2);
-    border: 1px solid var(--line2);
+    color: var(--ink-62);
+    border: 1px solid var(--rule);
     background: transparent;
   }
-  .r-pill.grade {                 /* hadith authenticity signal — green = affirm (faithful to Gen-3) */
-    color: var(--green-ink);
-    border-color: var(--green-line);
+  .r-pill.grade {                 /* hadith authenticity signal — Za'atar Olive "sound/verified" ink (D-A9) */
+    color: var(--olive);
+    border-color: color-mix(in srgb, var(--olive) 55%, transparent);
   }
 
-  /* -- Term-gloss sheet (ENG-06 / D-36) — Arabic large · transliteration · word · definition · context. */
+  /* -- Term-gloss sheet (ENG-06 · §4.3) — Arabic (general Amiri, or Aref Ruqaa in a Farag square
+     for the 15 chapter key-terms) · transliteration · word · definition · context. */
   .g-ar {
     direction: rtl;
     text-align: center;
-    font-family: var(--font-ar);
-    font-size: var(--fs-ar-display);
-    line-height: 1.8;
+    font-family: var(--font-scrip);
+    font-size: var(--fs-scrip);
+    line-height: 1.85;
     letter-spacing: 0;
-    color: var(--accent-ink);
+    color: var(--kiswah);
     margin-bottom: var(--sp-1);
+  }
+  .g-ar.chapter {                 /* one of the 15 chapter key-terms — Aref Ruqaa in a Farag square */
+    font-family: var(--font-term);
+    font-size: var(--fs-term);
+    line-height: 1.1;
+    color: var(--crimson);
+    width: fit-content;
+    margin-inline: auto;
+    padding: var(--sp-3) var(--sp-5);
+    border: 2px solid var(--rule);
+    border-radius: var(--r-square);
   }
   .g-tl {
     text-align: center;
     font-size: var(--fs-ui);
     line-height: 1.45;
-    color: var(--ink3);
+    color: var(--ink-62);
     margin-bottom: var(--sp-4);
   }
   .g-wd {
-    font-family: var(--font-disp);
+    font-family: var(--font-work);
     font-weight: 600;
     font-size: var(--fs-h2);
     line-height: 1.28;
@@ -621,25 +633,38 @@
   .g-cx {
     font-size: var(--fs-ui);
     line-height: 1.55;
-    color: var(--ink2);
+    color: var(--ink-62);
   }
 
-  /* -- Tappable inventory — REST chrome (per element) --------------------------------------- */
-  .btn {
+  /* -- Tappable inventory — REST chrome (per element · §4.1) --------------------------------- */
+  .btn {                          /* primary CTA — Page: a crimson ink block (the ≤10% expressive colour) */
     display: block;
     width: 100%;
     padding: var(--sp-4);
     border: none;
-    border-radius: var(--r-lg);
-    font-family: var(--font-disp);
-    font-weight: 700;
+    border-radius: var(--r-3);
+    font-family: var(--font-work);
+    font-weight: 600;
     font-size: var(--fs-body);
-    letter-spacing: .02em;
+    letter-spacing: .01em;
     text-align: center;
     text-decoration: none;
-    color: var(--accent-on);
-    background: var(--accent);
+    color: var(--cream);
+    background: var(--crimson);
+    box-shadow: var(--sh-1);
     cursor: pointer;
+  }
+  .reg-orbit .btn,                /* dark grounds — a cream key on the black world (light-edge depth) */
+  .reg-sky-night .btn {
+    background: var(--cream);
+    color: var(--kiswah);
+    box-shadow: var(--edge-top);
+  }
+  .reg-orbit .btn.ghost,          /* the quieter gold-thread button on dark grounds */
+  .reg-sky-night .btn.ghost {
+    background: transparent;
+    color: var(--gold);
+    box-shadow: var(--edge-line);
   }
   .btn:disabled,
   .btn.disabled {                 /* v1 has few disabled states — the un-loseable promise keeps actions live */
@@ -649,195 +674,236 @@
     pointer-events: none;
   }
   .opt {
+    position: relative;
     display: block;
     width: 100%;
     padding: var(--sp-3) var(--sp-4);
-    border: 2px solid var(--line2);
-    border-radius: var(--r-md);
-    font-family: var(--font-body);
+    border: 2px solid var(--rule);
+    border-radius: var(--r-2);
+    font-family: var(--font-work);
     font-size: var(--fs-body);
     text-align: left;
     color: var(--ink);
-    background: var(--paper);
+    background: var(--cream);
+    box-shadow: var(--sh-1);
     cursor: pointer;
+    animation: settle var(--dur-settle) var(--ease) both;   /* Page reveal on mount */
   }
   .tf {
     flex: 1;
     padding: var(--sp-3);
-    border: 2px solid var(--line2);
-    border-radius: var(--r-md);
-    font-family: var(--font-body);
+    border: 2px solid var(--rule);
+    border-radius: var(--r-2);
+    font-family: var(--font-work);
     font-weight: 600;
     font-size: var(--fs-body);
     text-align: center;
     color: var(--ink);
-    background: var(--paper);
+    background: var(--cream);
+    box-shadow: var(--sh-1);
     cursor: pointer;
   }
   .tile {
     display: inline-flex;
     align-items: center;
     padding: var(--sp-2s) var(--sp-3);
-    border: 2px solid var(--line2);
-    border-radius: var(--r-sm);
-    font-family: var(--font-body);
+    border: 2px solid var(--rule);
+    border-radius: var(--r-2);
+    font-family: var(--font-work);
     font-size: var(--fs-body);
     color: var(--ink);
-    background: var(--paper);
+    background: var(--cream);
     cursor: pointer;
   }
-  .tab {
+  .tab {                          /* bottom-nav — a ruled tab, never a filled pill */
+    position: relative;
     display: inline-flex;
     flex-direction: column;
     align-items: center;
     gap: var(--sp-2);
+    min-height: 44px;             /* 44px touch-target minimum */
     padding: var(--sp-2s) var(--sp-3);
     border: none;
-    border-radius: var(--r-md);
-    font-family: var(--font-body);
-    font-size: var(--fs-kicker);
-    color: var(--ink2);
-    background: var(--paper);
+    border-radius: var(--r-3);
+    font-family: var(--font-work);
+    font-size: var(--fs-marg);
+    color: var(--ink-62);
+    background: transparent;
     cursor: pointer;
   }
-  .hstat {
+  .tab.active {                   /* active = crimson ink + a 2px crimson top-rule (not a pill fill) */
+    color: var(--crimson);
+    box-shadow: inset 0 2px 0 var(--crimson);
+  }
+  .tab.active svg { color: var(--icon-accent); }
+  .hstat {                        /* HUD stat reads as marginalia, not game chrome — no pill fill */
     display: inline-flex;
     align-items: center;
     gap: var(--sp-1);
-    padding: var(--sp-2) var(--sp-2s);
+    padding: var(--sp-2) 0;
     border: none;
-    border-radius: var(--r-pill);
-    font-family: var(--font-disp);
-    font-weight: 600;
+    background: transparent;
+    font-family: var(--font-marg);
+    font-weight: 400;
     font-size: var(--fs-ui);
-    color: var(--ink);
-    background: var(--card);
+    color: var(--ink-62);
     cursor: pointer;
   }
-  .hstat svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .reg-orbit .hstat,
+  .reg-sky-night .hstat { color: var(--paper-62); }
+  .hstat svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--icon-accent); }
   .tab svg { width: 24px; height: 24px; }
 
-  /* -- Gummy press — ONE shared physics across the FULL tappable inventory (MOT-03 / D-40).
-     Rest lifts on a hard, non-blurred --accent-deep offset (the indigo-tinted 3D base of the whole
-     system) over a soft --sh-1 ambient. :active collapses the offset AND drops the surface by
-     exactly calc(--press-rest - --press-active) = 3px — the depth derives from the two tokens, no
-     third literal. Timing is the shared press signature (--dur-2 / --ease-press). */
-  .btn, .opt, .tf, .tile, .tab, .hstat {
-    box-shadow: 0 var(--press-rest) 0 var(--accent-deep), var(--sh-1);
-    transition: transform var(--dur-2) var(--ease-press),
-                box-shadow var(--dur-2) var(--ease-press);
+  /* -- The ONE Athar paper-press (MOT-03 · §4.1 · D-A4) — a quiet paper press across the FULL
+     inventory: translateY(1px) + a one-step ink deepen of border/fill over --dur-press on the one
+     easing family. No drop shadow, no bounce — coherence over per-element flourish. */
+  .btn, .opt, .tf, .tile, .tab, .hstat, .cite, .term {
+    transition: transform var(--dur-press) var(--ease),
+                border-color var(--dur-press) var(--ease),
+                background var(--dur-press) var(--ease),
+                filter var(--dur-press) var(--ease);
   }
-  .btn:active, .opt:active, .tf:active, .tile:active, .tab:active, .hstat:active {
-    transform: translateY(calc(var(--press-rest) - var(--press-active)));
-    box-shadow: 0 var(--press-active) 0 var(--accent-deep), var(--sh-1);
+  .btn:active, .opt:active, .tf:active, .tile:active,
+  .tab:active, .hstat:active, .cite:active, .term:active {
+    transform: translateY(1px);
+  }
+  .btn:active { filter: brightness(.95); }                            /* fill inks one step */
+  .opt:active, .tf:active, .tile:active { border-color: var(--crimson); }  /* border inks one step */
+
+  /* -- Quiz option verdicts (§4.1) — correct draws a gold dot on a faint gold-washed leaf; wrong
+     follows law 8: a soft grey ink-blot mark + a one-line explanation in --ink-85 + a --rose retry
+     frame. Never red, nothing shakes, nothing flashes — shape and text carry the signal, rose only
+     frames the retry (decorative, D-A12). */
+  .opt.correct {
+    border-color: var(--gold);
+    background: rgba(217,164,65,.10);
+  }
+  .opt.correct::before {
+    content: "";
+    display: inline-block;
+    width: 10px; height: 10px;
+    margin-right: var(--sp-2s);
+    border-radius: var(--r-round);
+    background: var(--gold);
+    box-shadow: var(--keyline);           /* --rule keyline so the gold dot's edge reads on cream */
+    vertical-align: middle;
+    animation: settle var(--dur-draw) var(--ease) both;
+  }
+  .opt.wrong { border-color: var(--rule); }
+  .opt.wrong::after {                     /* the soft grey ink-blot mark — a calm stain, never a flash */
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--ink-40);
+    opacity: .14;
+    pointer-events: none;
+    animation: settle var(--dur-settle) var(--ease) both;
+  }
+  .opt-why {                              /* the one-line wrong-answer explanation — carries the signal */
+    margin-top: var(--sp-2);
+    font-size: var(--fs-ui);
+    line-height: 1.5;
+    color: var(--ink-85);
+    animation: settle var(--dur-settle) var(--ease) both;
+  }
+  .btn.retry, .retry {                    /* the retry control — framed by Rose Ember (frame only, D-A12) */
+    background: var(--cream);
+    color: var(--ink);
+    border: 2px solid var(--rose);
+    box-shadow: none;
   }
 
-  /* Sheet rows (Phase-5 course-switcher) — elevated-lite: a light press + a soft accent wash. */
+  /* Sheet rows (Phase-5 course-switcher) — a light paper press + a faint crimson wash. */
   .sheet-row {
-    transition: transform var(--dur-2) var(--ease-press),
-                background var(--dur-3) var(--ease-standard);
+    transition: transform var(--dur-press) var(--ease),
+                background var(--dur-fade) var(--ease);
   }
   .sheet-row:active {
     transform: translateY(1px);
-    background: var(--accent-soft);
+    background: rgba(163,44,33,.06);
   }
 
   /* -- Hover states — gated to fine pointers so a tap on touch never sticks a hover fill
      (touch fires :hover on tap; this keeps the chip fill / brightness from latching). */
   @media (hover: hover) and (pointer: fine) {
-    .btn:hover { filter: brightness(1.03); }                          /* already 3D — no structural change */
-    .opt:hover, .tf:hover, .tile:hover { border-color: var(--accent-line); }
-    .cite:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
+    .btn:hover { filter: brightness(1.04); }
+    .reg-orbit .btn.ghost:hover,
+    .reg-sky-night .btn.ghost:hover { background: rgba(217,164,65,.12); }
+    .opt:hover, .tf:hover, .tile:hover { border-color: var(--ink-40); }
+    .cite:hover { background: rgba(163,44,33,.08); }
     .term:hover { text-decoration-style: solid; }
-    .sheet-x:hover { color: var(--ink); background: var(--tint); }
+    .sheet-x:hover { color: var(--ink); background: rgba(19,16,19,.06); }
   }
 
-  /* -- Combo chip (RWD / D-41) — GOLD / noor register, NOT amber (mercy-coherence: amber is the
-     miss colour; a celebratory chip in amber would conflate with a miss). Pops in from the right
-     via the pop-in overshoot signature. Phase-4 logic toggles .show on a 2+ streak. */
-  .combo {
-    position: absolute;
+  /* -- Thermal state shapes (§3.3 · D-A8) — SHAPE is the primary channel (colour-blind + cream-
+     contrast safe); colour is secondary. A state indicator reads by form on every ground:
+     not-yet = a hollow ring · progress = a half-inked dab · mastered = a filled dab + check.
+     (@layer base maps --st per data-state; these are the shapes that consume it.) */
+  [data-state="not-yet"] {
+    border: 2px solid var(--ink-40);      /* powder fails on cream (1.58:1) — ink outline on Page */
+    background: transparent;
+  }
+  .reg-orbit [data-state="not-yet"],
+  .reg-sky-night [data-state="not-yet"] { border-color: var(--powder); }  /* powder is home on dark */
+  [data-state="progress"] {
+    border: 2px solid var(--st);
+    background: linear-gradient(90deg, var(--st) 50%, transparent 50%);   /* half-inked dab */
+  }
+  [data-state="mastered"] {
+    border: 0;
+    background: var(--gold);
+    box-shadow: var(--keyline);           /* --rule keyline so the filled dab's edge reads on cream */
+    color: var(--kiswah);                 /* the check glyph inks dark on the gold fill */
+  }
+  .reg-orbit [data-state="mastered"],
+  .reg-sky-night [data-state="mastered"] { box-shadow: none; }
+
+  /* -- Celebration primitives (§4.4) — the Athar replacements for the retired menagerie. Rare and
+     tasteful: a few ink dabs drift, a gold thread draws, a Festival plate / review seal is stamped
+     at thresholds only. Never a full-screen burst, never a mascot, never adjacent to scripture. */
+  .dab {                          /* an ink dab that drifts into place (Circle "drift") */
     display: inline-flex;
     align-items: center;
-    gap: var(--sp-1);
-    z-index: 7;
-    padding: var(--sp-2) var(--sp-3);
-    border-radius: var(--r-pill);
-    font-family: var(--font-disp);
-    font-weight: 700;
-    font-size: var(--fs-kicker);
-    letter-spacing: .04em;
-    line-height: 1;
-    color: var(--gold-deep);
-    background: color-mix(in srgb, var(--gold2) 22%, var(--paper));
-    border: 1px solid var(--gold);
-    transform: scale(0);
-    transform-origin: right center;
-    transition: transform var(--dur-3) var(--ease-press);
+    justify-content: center;
+    width: 20px; height: 20px;
+    border-radius: var(--r-round);
+    box-sizing: border-box;
+    animation: drift var(--dur-drift) var(--ease) both;
   }
-  .combo.show { transform: scale(1); }
-  .combo svg { width: 14px; height: 14px; flex-shrink: 0; }           /* leading spark glyph, --gold-deep */
-
-  /* -- PERFECT overlay (RWD / D-41) — over the quiz stage, NEVER over scripture. Brand-indigo
-     field; heading at Poppins 700 (honours the Phase-1 800-quarantine) with a gold→flame gradient
-     text-clip; the WAAPI scale-pop (Phase-4) carries the celebratory weight the old 800 gave. */
-  .perfect {
-    position: absolute;
-    inset: 0;
-    z-index: 20;
-    display: flex;
-    flex-direction: column;
+  .dab svg { width: 12px; height: 12px; }
+  .thread {                       /* the Orbit gold-thread arc that inks itself in (draw verb) — an SVG stroke */
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 2;
+    stroke-linecap: round;
+    animation: ink-draw var(--dur-draw) var(--ease) both;
+  }
+  .plate {                        /* the Festival plate — a folk-framed threshold piece, stamped in */
+    display: block;
+    padding: var(--sp-6);
+    background: var(--cream);
+    border: 2px solid var(--olive);
+    border-radius: var(--r-square);
+    box-shadow: var(--sh-2);
+    font-family: var(--font-festival);
+    font-size: var(--fs-festival);
+    color: var(--harissa);
+    text-align: center;
+    animation: stamp var(--dur-stamp) var(--ease) both;
+  }
+  .rosette {                      /* the gold review seal — a filled circle + inked rim + check, stamped */
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--sp-2s);
-    padding: var(--sp-6);
-    text-align: center;
-    background: var(--overlay-hero);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--dur-4) var(--ease-standard);
+    width: 64px; height: 64px;
+    border-radius: var(--r-round);
+    background: var(--gold);
+    box-shadow: 0 0 0 2px var(--kiswah), var(--sh-1);   /* inked rim */
+    color: var(--kiswah);                               /* the check glyph inks dark on gold */
+    animation: stamp var(--dur-stamp) var(--ease) both;
   }
-  .perfect.show { opacity: 1; pointer-events: auto; }
-  .perfect h1 {
-    margin: 0;
-    font-family: var(--font-disp);
-    font-weight: 700;
-    font-size: var(--fs-display);
-    line-height: 1.05;
-    letter-spacing: .04em;
-    color: var(--gold2);                    /* fallback for the rare no-background-clip engine */
-    background: linear-gradient(90deg, var(--gold2), var(--flame2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .perfect p {
-    margin: 0;
-    font-size: var(--fs-ui);
-    line-height: 1.5;
-    color: rgba(255,255,255,.9);            /* on-overlay body — no token exists for translucent white */
-  }
-
-  /* -- Confetti (RWD / D-41) — a lazily-created fixed overlay; AW.confetti spawns .cf divs with
-     colour/left/animation-duration set inline (brand palette, never rainbow) and self-removes each.
-     The fall keyframe lives in @layer motion; the JS primitive holds its own reduced-motion guard. */
-  .confetti {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  .cf {
-    position: absolute;
-    top: -20px;
-    width: 9px;
-    height: 14px;
-    border-radius: 2px;
-    animation-name: fall;
-    animation-timing-function: var(--ease-in);
-    animation-fill-mode: forwards;
-  }
+  .rosette svg { width: 28px; height: 28px; }
 }
 @layer screens   { /* reserved — Phase 2+: per-screen rules */ }
 @layer motion {
