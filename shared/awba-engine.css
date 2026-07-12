@@ -189,7 +189,117 @@
 }
 
 @layer base {
-  /* Reset · responsive shell · focus-visible · Arabic/RTL laws — authored in Task 2, below. */
+
+  /* -- Reset --------------------------------------------------------------------------------
+     The tap-highlight is globally suppressed for a clean touch feel — which is precisely why
+     every interactive element MUST carry a :focus-visible style (below), or keyboard users are
+     stranded (the exact Gen-3 accessibility gap this base layer closes). */
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* -- The responsive shell (PLT-01 / D-01, D-02) -------------------------------------------
+     The app IS the page. One .app-shell serves both breakpoints: mobile is the undecorated,
+     full-bleed default; >=600px progressively enhances into an intentional centered column.
+     min-height:100dvh on the container (never a fixed height on the rows) survives the iOS
+     URL-bar collapse without per-row repaint jank. There is NO fixed 380x788 card anywhere. */
+  .app-shell {
+    min-height: 100dvh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;   /* HUD · stage · footer */
+    background: var(--paper);
+  }
+  /* Row 1 — HUD (course/close, progress segments, streak, noor). Safe-area inset clears the notch. */
+  .app-hud {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  /* Row 2 — stage: the one scrolling region. overscroll contained so rubber-band never bleeds to
+     the page; min-height:0 stops the grid child from blowing out its own scroll container. */
+  .app-stage {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  /* Row 3 — footer / tab bar (the single accent CTA lives here). Safe-area inset clears the home bar. */
+  .app-foot {
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Desktop >=600px — the intentional centered column on a calm cream backdrop with a very subtle
+     brand wash (soft radial, no hard edge). The column breathes with the viewport via
+     min(100dvh, 900px) — never a fixed phone height, never a fake bezel. */
+  @media (min-width: 600px) {
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-8) var(--sp-4);
+      background:
+        radial-gradient(135% 95% at 50% -20%, var(--card), transparent 62%),
+        var(--bg);
+    }
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      min-height: min(100dvh, 900px);
+      border-radius: var(--r-2xl);
+      box-shadow: var(--sh-4), var(--sh-inset);
+      overflow: hidden;
+    }
+  }
+
+  /* -- Focus-visible (ACC-01 foundation) ----------------------------------------------------
+     Shown on :focus-visible only (keyboard) — never on plain :focus — so there is no ring flash
+     on tap. A 3px accent outline + a soft companion ring; radius follows the element's own shape. */
+  :focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px var(--accent-soft);
+  }
+  /* On the gold / night legendary register the calm-field accent ring loses contrast against the
+     dark gradient — switch it to the brighter --gold2 (set data-register="night" on that shell). */
+  [data-register="night"] :focus-visible {
+    outline-color: var(--gold2);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--gold2) 32%, transparent);
+  }
+
+  /* -- Arabic & RTL laws (D-09 / D-10) ------------------------------------------------------
+     letter-spacing:0 ALWAYS (Arabic is connected — any tracking breaks joining); line-height
+     >=1.8 for diacritics; containers isolate so mixed Arabic/Latin lines never scramble.
+     General Arabic (hadith, du'a, terms) -> Amiri. Verbatim Qur'an -> Amiri Quran, via .ayah ONLY.
+     The ayah-vs-hadith choice is per-instance Phase-4 logic (refs[id].kind), so this layer must
+     NOT blanket-bind --font-quran to all Arabic; the :not(.ayah) guard keeps the two cleanly split. */
+  [lang="ar"]:not(.ayah),
+  .arabic:not(.ayah) {
+    font-family: var(--font-ar);
+    font-size: var(--fs-ar-body);
+    line-height: 1.8;
+    letter-spacing: 0;
+    unicode-bidi: isolate;
+  }
+  .ayah {
+    font-family: var(--font-quran);
+    font-size: var(--fs-ayah);
+    line-height: 1.9;
+    letter-spacing: 0;
+    direction: rtl;
+    unicode-bidi: isolate;
+  }
+  [dir="rtl"] { unicode-bidi: isolate; }
 }
 
 @layer components { /* reserved — Phase 3: .btn / .opt / .tf / .tile chrome + gummy physics (MOT-03) */ }
