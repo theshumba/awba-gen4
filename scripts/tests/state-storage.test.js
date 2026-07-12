@@ -167,6 +167,37 @@ test('load: non-numeric schemaVersion ("x") is treated as unrecognized, not sile
   assert.equal(ls._dump().awba_state, rawBlob, 'the seeded blob with a non-numeric schemaVersion must survive untouched on disk');
 });
 
+/* ---------- (4c) defensive copies — mutation can't bypass AW.S.set() (WR-01) ---------- */
+
+test('AW.S.get()/AW.state() return defensive copies — mutating the returned object never alters persisted state (WR-01)', () => {
+  const ls = makeLS({
+    awba_state: JSON.stringify({ schemaVersion: 1, noor: 0, returns: 0, lastDay: null, days: [], stars: { u1m1: 2 }, chests: {} }),
+  });
+  const sandbox = loadEngine(
+    ls,
+    `var gotStars = AW.S.get('stars', {});
+     gotStars.u1m1 = 999;
+     gotStars.injected = true;
+     var snap = AW.state();
+     snap.stars.u1m1 = 111;
+     snap.days.push('bogus-injected-day');
+     globalThis.__out = {
+       afterMutation: AW.S.get('stars', {}),
+       stateAfterMutation: AW.state(),
+     };`
+  );
+  const out = readOut(sandbox);
+  // mem.stars must be unaffected by mutating either the AW.S.get() result or the AW.state()
+  // snapshot — both were defensive copies, not live references (WR-01).
+  assert.deepEqual(out.afterMutation, { u1m1: 2 });
+  assert.deepEqual(out.stateAfterMutation.stars, { u1m1: 2 });
+  assert.deepEqual(out.stateAfterMutation.days, []);
+  // and the on-disk blob must never have been touched by these in-memory mutations.
+  const persisted = JSON.parse(ls._dump().awba_state);
+  assert.deepEqual(persisted.stars, { u1m1: 2 });
+  assert.deepEqual(persisted.days, []);
+});
+
 /* ---------- (5) prefs isolation from progress state ---------- */
 
 test('AW.prefs isolates soundMuted/motion under awba_prefs, independent of awba_state', () => {

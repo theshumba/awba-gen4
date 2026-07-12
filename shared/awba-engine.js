@@ -212,10 +212,22 @@ AW.S = (function () {
     return def;
   }
 
+  /* defensiveCopy: WR-01 — never return a live reference into `mem` for object/array-valued
+     keys (stars/days/chests). Without this, `AW.S.get('stars', {})[id] = 3` (or any future
+     RUNNERS caller doing the same) would mutate `mem.stars` in place WITHOUT ever calling
+     `AW.S.set()`, silently bypassing the get/set-only write contract this file's header
+     documents as load-bearing. Values here are always small, JSON-safe (numbers/strings/
+     booleans/plain objects/arrays), so a JSON round-trip is correct and cheap; `structuredClone`
+     is used when available as the more direct native primitive. */
+  function defensiveCopy(v) {
+    if (v === null || typeof v !== 'object') return v;
+    return typeof structuredClone === 'function' ? structuredClone(v) : JSON.parse(JSON.stringify(v));
+  }
+
   return {
     get: function (k, d) {
       if (!mem) mem = load();
-      return k in mem && mem[k] !== undefined ? mem[k] : d;
+      return k in mem && mem[k] !== undefined ? defensiveCopy(mem[k]) : d;
     },
     set: function (k, v) {
       if (!mem) mem = load();
@@ -300,7 +312,10 @@ AW.todayStr = function () {
 };
 
 /* AW.state() — one-read snapshot; consumers read once per render pass and never re-read inside
-   loops (anti-pattern 3). Adds `chests` to the Gen-3 snapshot shape (D-13). */
+   loops (anti-pattern 3). Adds `chests` to the Gen-3 snapshot shape (D-13). Every field below is
+   built from AW.S.get(), whose object/array-valued results are already defensive copies
+   (WR-01) — so mutating the snapshot this returns (e.g. `AW.state().stars[id] = 3`) can never
+   corrupt `mem` or bypass AW.S.set(). */
 AW.state = function () {
   return {
     noor: AW.S.get('noor', 0),
