@@ -13,6 +13,9 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
 const { makeLS, loadEngine, readOut } = require('./ls-stub');
 
 function pad(n) {
@@ -196,6 +199,36 @@ test('AW.S.get()/AW.state() return defensive copies — mutating the returned ob
   const persisted = JSON.parse(ls._dump().awba_state);
   assert.deepEqual(persisted.stars, { u1m1: 2 });
   assert.deepEqual(persisted.days, []);
+});
+
+/* ---------- (4d) runMigrations forward-progress guard (WR-02) ----------
+   `migrations` is genuinely empty at v1, so this branch isn't reachable through the public
+   AW.S surface today. To prove the guard against a real future footgun (a migration step that
+   forgets to bump schemaVersion, which would otherwise spin the while loop forever), this test
+   loads a PATCHED copy of the real engine source with CURRENT bumped and a broken stub
+   migration injected — the exact one-line mistake WR-02 describes — and asserts load() still
+   returns promptly (guard fired) instead of hanging. */
+
+test('runMigrations: a migration step that fails to bump schemaVersion is guarded against — no infinite loop (WR-02)', () => {
+  const enginePath = path.join(__dirname, '..', '..', 'shared', 'awba-engine.js');
+  let engineSrc = fs.readFileSync(enginePath, 'utf8');
+  // `.replace(string, string)` only rewrites the FIRST occurrence — that's AW.S's `CURRENT`
+  // (AW.prefs declares its own separate `CURRENT` further down the file and is untouched).
+  engineSrc = engineSrc.replace('var CURRENT = 1;', 'var CURRENT = 2;');
+  engineSrc = engineSrc.replace('var migrations = [];', 'var migrations = [function (s) { return s; }];'); // broken: never bumps schemaVersion
+
+  const ls = makeLS({
+    awba_state: JSON.stringify({ schemaVersion: 1, noor: 5, returns: 0, lastDay: null, days: [], stars: {}, chests: {} }),
+  });
+  const sandbox = { localStorage: ls, Date, Math, JSON, console };
+  vm.createContext(sandbox);
+
+  const start = Date.now();
+  assert.doesNotThrow(() => {
+    vm.runInContext(engineSrc + `\nglobalThis.__out = AW.S.get('noor', 0);`, sandbox, { filename: enginePath });
+  }, 'a stuck migration step must be guarded against — never hang or crash the caller');
+  const elapsed = Date.now() - start;
+  assert.ok(elapsed < 2000, 'guard must trip promptly, not spin for a long time');
 });
 
 /* ---------- (5) prefs isolation from progress state ---------- */

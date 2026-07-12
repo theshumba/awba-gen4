@@ -66,10 +66,24 @@ AW.S = (function () {
 
   function runMigrations(state) {
     var s = state;
+    var guard = 0;
     while (s.schemaVersion < CURRENT) {
+      if (++guard > 50) {
+        // Safety valve — never trust a migration step blindly. 50 is far more than this app
+        // will ever need (one bump per schema change), so hitting it means something is wrong.
+        throw new Error('runMigrations: exceeded 50 iterations without reaching schemaVersion ' + CURRENT + ' — aborting to avoid an infinite loop');
+      }
       var step = migrations[s.schemaVersion];
       if (typeof step !== 'function') break; // no migration registered — stop where we are
-      s = step(s);
+      var next = step(s);
+      if (!next || typeof next.schemaVersion !== 'number' || next.schemaVersion <= s.schemaVersion) {
+        // WR-02: a migration step that doesn't bump schemaVersion would otherwise spin this
+        // while loop forever (a full synchronous main-thread hang, not a crash) — bail loudly
+        // instead. The caller (load()) already wraps this in a try/catch and falls back to
+        // legacy/default resolution.
+        throw new Error('runMigrations: migration step for schemaVersion ' + s.schemaVersion + ' did not advance schemaVersion — aborting to avoid an infinite loop');
+      }
+      s = next;
     }
     if (s.schemaVersion !== CURRENT) s.schemaVersion = CURRENT;
     return s;
