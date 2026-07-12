@@ -13,6 +13,9 @@
 <link rel="preload" as="font" type="font/woff2" href="shared/fonts/inter-400.woff2" crossorigin>
 <!-- One stylesheet, one link, every page (D-04). No Google-Fonts CDN link; no apple-mobile-web-app-capable. -->
 <link rel="stylesheet" href="shared/awba-engine.css">
+<!-- The real engine (D-43): page-relative, classic (no defer/async/module) so the
+     new §9–12 sections demo REAL AW.* output over file://. Loads before the closing script. -->
+<script src="shared/awba-engine.js"></script>
 
 <style>
 /* ============================================================================================
@@ -295,6 +298,57 @@ body{
 /* small helpers */
 .pv-inline-latin{ font-family:var(--font-body); }
 .pv-inline-disp{ font-family:var(--font-disp); }
+
+/* ---- §9 Icon registry (real AW.KIT / AW.GLYPHS via AW.icon) ---------------------------------- */
+.pv-icongrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:var(--sp-3); }
+.pv-scene{
+  display:flex; flex-direction:column; align-items:center; gap:var(--sp-2s);
+  padding:var(--sp-3); background:var(--paper); border:1px solid var(--line);
+  border-radius:var(--r-md); box-shadow:var(--sh-1);
+}
+/* accent-tinted well behind each authored icon — recolours live on unit switch (the icon art
+   itself is brand-locked scene art; the well carries the unit identity). */
+.pv-scene .art{
+  display:grid; place-items:center; width:100%; padding:var(--sp-3) 0;
+  background:var(--accent-soft); border-radius:var(--r-sm);
+  transition:background var(--dur-3) var(--ease-standard);
+}
+.pv-scene .art svg{ width:56px; height:auto; display:block; }
+.pv-scene .name{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink2); text-align:center; letter-spacing:.01em; }
+
+.pv-glyphrow{ display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:var(--sp-3); }
+.pv-glyphcell{ display:flex; flex-direction:column; align-items:center; gap:var(--sp-2s); }
+.pv-glyphchip{
+  display:grid; place-items:center; width:46px; height:46px; border-radius:var(--r-sm);
+  background:var(--tint); border:1px solid var(--line);
+}
+.pv-glyphchip svg{ height:20px; width:auto; display:block; }
+/* three glyphs are drawn light-on-fill (correct-answer check, chest & trophy interiors) — they
+   live on a coloured plate in-app, so the row shows them on their real backing (not invisible on cream). */
+.pv-glyphchip[data-glyph="check"]{ background:var(--green); border-color:var(--green-line); }
+.pv-glyphchip[data-glyph="chest"],
+.pv-glyphchip[data-glyph="trophy"]{ background:linear-gradient(160deg,var(--gold2),var(--gold)); border-color:var(--gold); }
+.pv-glyphcell .name{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink2); }
+
+/* lantern-gold on its real home: the night register (authored dark gradient — art literal, D-33). */
+.pv-nightswatch{
+  display:flex; flex-direction:column; align-items:center; gap:var(--sp-3);
+  padding:var(--sp-8); border-radius:var(--r-xl);
+  background:linear-gradient(150deg, #241A05, #3A2A08);
+  box-shadow:var(--sh-2);
+}
+.pv-nightswatch svg{ width:128px; height:auto; display:block; }
+.pv-nightswatch .cap{
+  font-family:var(--font-disp); font-weight:600; font-size:var(--fs-kicker);
+  letter-spacing:.1em; text-transform:uppercase; color:#FFF3CC;
+}
+
+/* ---- §10 Citation + gloss sheet demos (real AW.cite / AW.wire) ------------------------------- */
+.pv-sheetdemo .pv-prose{
+  margin:0; font-family:var(--font-body); font-size:var(--fs-body); line-height:1.9; color:var(--ink);
+}
+.pv-sheethint{ margin-top:var(--sp-4); font-size:var(--fs-kicker); color:var(--ink3); }
+
 </style>
 </head>
 
@@ -795,6 +849,68 @@ body{
     </div>
   </section>
 
+
+  <!-- ========================================================================================
+       Section 9 — Icon registry grid (FND-04) — the phase headline, real AW.icon() output
+       ==================================================================================== -->
+  <section class="pv-section" id="s9">
+    <div class="pv-wrap">
+      <div class="pv-head">
+        <h2><span class="pv-num">9</span>Icon registry</h2>
+        <p>The one branded set (FND-04), rendered live from <code class="pv-inline-latin">AW.KIT</code> /
+        <code class="pv-inline-latin">AW.GLYPHS</code> through <code class="pv-inline-latin">AW.icon()</code> — a single
+        inline source, decorative by default, no per-page constants. Twenty scene icons, thirteen UI glyphs, and the
+        authored gold lantern on its night home. Switch the unit and the accent-tinted wells recolour with the theme.</p>
+        <div class="pv-switchbar">
+          <div class="pv-seg" id="pv-icon-unitseg" role="group" aria-label="Recolour the icon grid by unit">
+            <button type="button" data-unit="u1" aria-pressed="true">Unit 1</button>
+            <button type="button" data-unit="u2" aria-pressed="false">Unit 2</button>
+            <button type="button" data-unit="u3" aria-pressed="false">Unit 3</button>
+            <button type="button" data-unit="u4" aria-pressed="false">Unit 4</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pv-card">
+        <p class="pv-subhead">Scenes · AW.KIT · scene-tile 56px</p>
+        <div class="pv-icongrid" id="pv-scene-grid"><!-- filled by AW.icon() in the closing script --></div>
+      </div>
+
+      <div class="pv-card" style="margin-top:var(--sp-5)">
+        <p class="pv-subhead">UI glyphs · AW.GLYPHS · glyph-ui 20px</p>
+        <div class="pv-glyphrow" id="pv-glyph-grid"><!-- filled by AW.icon() in the closing script --></div>
+      </div>
+
+      <div class="pv-card" style="margin-top:var(--sp-5)">
+        <p class="pv-subhead">Gold lantern · authored night-register variant · scene-hero 128px</p>
+        <div class="pv-nightswatch" data-register="night" id="pv-lantern-night"><!-- lantern-gold, filled below --></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================================
+       Section 10 — Citation + gloss sheet demos (ENG-06) — verbatim scripture, ZERO celebration
+       ==================================================================================== -->
+  <section class="pv-section" id="s10">
+    <div class="pv-wrap">
+      <div class="pv-head">
+        <h2><span class="pv-num">10</span>Citation &amp; gloss sheets</h2>
+        <p>Real <code class="pv-inline-latin">AW.cite</code> chips, bound by <code class="pv-inline-latin">AW.wire</code>:
+        tap the verse to open its citation sheet (Amiri&nbsp;Quran, no grade), tap the hadith for its sheet
+        (general Amiri with a green <em>Sahih</em> grade pill), and tap the term for its gloss. Every citation carries
+        the calm <em>unverified&nbsp;·&nbsp;pending&nbsp;review</em> pill. The scripture is ported byte-verbatim from
+        Josh&rsquo;s lesson data — and by the mercy law, nothing celebratory ever renders in or beside this block.</p>
+      </div>
+
+      <div class="pv-card">
+        <p class="pv-subhead">Tap a chip to open its sheet</p>
+        <div class="pv-sheetdemo" id="pv-sheet-demo"><!-- real AW.cite chips + term, wired below --></div>
+        <p class="pv-sheethint">Scrim tap, the in-sheet &times; button, or Escape closes it — one singleton
+        <code class="pv-inline-latin">AW.sheet</code> primitive, reused for every sheet in the app.</p>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <script>
@@ -802,9 +918,11 @@ body{
 (function () {
   var root = document.documentElement;
 
-  /* Unit switch — mutate data-unit on <html>; the whole page recolors from CSS. */
-  var seg = document.getElementById('pv-unitseg');
+  /* Unit switch — mutate data-unit on <html>; the whole page recolors from CSS. Generalised so
+     BOTH segmented controls (§2 focal cluster + §9 icon grid) drive the same root attribute
+     and stay in sync. */
   var readout = document.getElementById('pv-unit-readout');
+  var unitSegs = [document.getElementById('pv-unitseg'), document.getElementById('pv-icon-unitseg')];
 
   function updateReadout() {
     if (!readout) return;
@@ -813,18 +931,27 @@ body{
     readout.textContent = unit + ' · --accent ' + acc;
   }
 
-  if (seg) {
-    seg.addEventListener('click', function (e) {
-      var btn = e.target.closest ? e.target.closest('button[data-unit]') : null;
-      if (!btn) return;
-      var unit = btn.getAttribute('data-unit');
-      root.setAttribute('data-unit', unit);
-      var all = seg.querySelectorAll('button[data-unit]');
+  function applyUnit(unit) {
+    root.setAttribute('data-unit', unit);
+    for (var s = 0; s < unitSegs.length; s++) {
+      if (!unitSegs[s]) continue;
+      var all = unitSegs[s].querySelectorAll('button[data-unit]');
       for (var i = 0; i < all.length; i++) {
-        all[i].setAttribute('aria-pressed', all[i] === btn ? 'true' : 'false');
+        all[i].setAttribute('aria-pressed', all[i].getAttribute('data-unit') === unit ? 'true' : 'false');
       }
-      updateReadout();
-    });
+    }
+    updateReadout();
+  }
+
+  for (var s = 0; s < unitSegs.length; s++) {
+    (function (g) {
+      if (!g) return;
+      g.addEventListener('click', function (e) {
+        var btn = e.target.closest ? e.target.closest('button[data-unit]') : null;
+        if (!btn) return;
+        applyUnit(btn.getAttribute('data-unit'));
+      });
+    })(unitSegs[s]);
   }
   updateReadout();
 
@@ -847,6 +974,66 @@ body{
     openBtn.addEventListener('click', function () { scrim.classList.add('open'); });
     scrim.addEventListener('click', function (e) { if (e.target === scrim) scrim.classList.remove('open'); });
     if (closeBtn) closeBtn.addEventListener('click', function () { scrim.classList.remove('open'); });
+  }
+
+  /* ============================================================================================
+     Phase 3 (Task 1) — §9 icon grid + §10 sheet demos, all REAL AW.* engine output (D-43).
+     ============================================================================================ */
+  if (window.AW && AW.KIT) {
+
+    /* §9 — 20 scenes from AW.KIT (lantern-gold shown separately on the night swatch below). */
+    var sceneGrid = document.getElementById('pv-scene-grid');
+    if (sceneGrid) {
+      Object.keys(AW.KIT).forEach(function (name) {
+        if (name === 'lantern-gold') return;
+        var cell = document.createElement('div');
+        cell.className = 'pv-scene';
+        cell.innerHTML = '<div class="art">' + AW.icon(name) + '</div><div class="name">' + name + '</div>';
+        sceneGrid.appendChild(cell);
+      });
+    }
+
+    /* §9 — the 13 UI glyphs from AW.GLYPHS at glyph-ui size. */
+    var glyphGrid = document.getElementById('pv-glyph-grid');
+    if (glyphGrid) {
+      Object.keys(AW.GLYPHS).forEach(function (name) {
+        var cell = document.createElement('div');
+        cell.className = 'pv-glyphcell';
+        cell.innerHTML = '<div class="pv-glyphchip" data-glyph="' + name + '">' + AW.icon(name) +
+          '</div><div class="name">' + name + '</div>';
+        glyphGrid.appendChild(cell);
+      });
+    }
+
+    /* §9 — the authored gold lantern on its night home (labelled: it is a meaningful hero icon). */
+    var night = document.getElementById('pv-lantern-night');
+    if (night) {
+      night.innerHTML = AW.icon('lantern-gold', { label: 'Awba gold lantern (legendary)' }) +
+        '<div class="cap">lantern-gold · legendary</div>';
+    }
+  }
+
+  /* §10 — real citation + gloss sheets. The demoCfg refs/terms are BYTE-VERBATIM from Josh's
+     _MVP-BUILD/lessons/u1-m1.html (D-38) — never retyped or paraphrased. Nothing celebratory
+     renders in or beside this block (the mercy law binds the layout). */
+  var demoCfg = {
+    refs: {
+      'hujurat-49-15': {ref:'al-Ḥujurāt 49:15',ar:'إِنَّمَا ٱلْمُؤْمِنُونَ ٱلَّذِينَ ءَامَنُوا۟ بِٱللَّهِ وَرَسُولِهِۦ ثُمَّ لَمْ يَرْتَابُوا۟ وَجَـٰهَدُوا۟ بِأَمْوَٰلِهِمْ وَأَنفُسِهِمْ فِى سَبِيلِ ٱللَّهِ ۚ أُو۟لَـٰٓئِكَ هُمُ ٱلصَّـٰدِقُونَ',mean:'The ˹true˺ believers are only those who believe in Allah and His Messenger—never doubting—and strive with their wealth and their lives in the cause of Allah. They are the ones true in faith.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'},
+      'muslim-8': {kind:'The hadith',ref:'Ṣaḥīḥ Muslim 8',grade:'Sahih',ar:'قَالَ فَأَخْبِرْنِي عَنِ الْإِيمَانِ ‏.‏ قَالَ أَنْ تُؤْمِنَ بِاللَّهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ وَالْيَوْمِ الْآخِرِ وَتُؤْمِنَ بِالْقَدَرِ خَيْرِهِ وَشَرِّهِ',mean:'He said: Inform me about faith. He (the Messenger of Allah) replied: That you believe in Allah, His angels, His Books, His Messengers, and the Last Day, and that you believe in the Divine Decree, its good and its evil.',src:'Hadith of Jibril, Ṣaḥīḥ Muslim 8 · via Sunnah.com · pending review'}
+    },
+    terms: {
+      aqeedah: {ar:'عَقِيدَة',tl:'ʿaqīdah',word:'creed, or settled belief',def:'The firm, certain beliefs a person’s heart is bound to.',ctx:'From a root meaning to tie or bind firmly. Not a loose opinion, but a conviction fastened in place, like a knot you trust to hold.'}
+    }
+  };
+  var sheetDemo = document.getElementById('pv-sheet-demo');
+  if (sheetDemo && window.AW && AW.cite) {
+    sheetDemo.innerHTML =
+      '<p class="pv-prose">The believers are described as those who reach faith and then carry no doubt within it. ' +
+      AW.cite('hujurat-49-15', 'al-Ḥujurāt 49:15') +
+      ' The core things a Muslim holds as certain were gathered by the Prophet in a single, well-known teaching. ' +
+      AW.cite('muslim-8', 'Ṣaḥīḥ Muslim 8') +
+      ' The word for that settled belief is <span class="term" data-term="aqeedah">aqeedah</span>.</p>';
+    AW.wire(sheetDemo, demoCfg);
   }
 })();
 </script>
