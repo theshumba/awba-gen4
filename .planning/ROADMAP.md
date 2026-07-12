@@ -12,7 +12,7 @@ Awba Gen-4 is a detail-layer execution rebuild of Josh's owner-approved Gen-3 MV
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation — Design Tokens, Responsive Shell & Fonts** - True full-viewport shell, one token layer, self-hosted fonts; kills the fixed 380px card
+- [x] **Phase 1: Foundation — Design Tokens, Responsive Shell & Fonts** - True full-viewport shell, one token layer, self-hosted fonts; kills the fixed 380px card (completed 2026-07-12, VERIFICATION PASSED 4/4)
 - [ ] **Phase 2: State Layer & Engine-Contract Freeze** - Versioned storage + migration, frozen `AW`/`AwbaLesson`/`AwbaReview` contract, standing validator
 - [ ] **Phase 3: Components, Icon Kit & Motion Language** - Shared chrome, one 20-SVG icon registry, citation/gloss sheets, one `linear()` motion vocabulary
 - [ ] **Phase 4: Lesson & Review Engine Port + Detail Layer** - All 19 data files render verbatim; reward choreography, sound, holds verified
@@ -125,7 +125,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation — Tokens, Shell & Fonts | 4/4 | Verifying |  |
+| 1. Foundation — Tokens, Shell & Fonts | 4/4 | Complete | 2026-07-12 |
 | 2. State Layer & Engine-Contract Freeze | 0/TBD | Not started | - |
 | 3. Components, Icon Kit & Motion | 0/TBD | Not started | - |
 | 4. Lesson & Review Engine Port | 0/TBD | Not started | - |
