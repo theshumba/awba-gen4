@@ -76,7 +76,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   - [x] 03-08-PLAN.md — Icon re-inking: currentColor + `--icon-accent` model, lantern-gold deleted (§5)
   - [x] 03-09-PLAN.md — Components re-skin + motion vocabulary rewrite (§4)
   - [x] 03-10-PLAN.md — Prayer-clock sky: 5 temperatures, manual times, `--dawn` (§7) — pure now→temperature fn, no schema bump, boot dataset.sky + home-shell mirror, --dawn horizon glow; suite 53/53
-  - [ ] 03-11-PLAN.md — New Athar preview.html — the living reference (§8)
+  - [x] 03-11-PLAN.md — New Athar preview.html — the living reference (§8) — rebuilt from scratch as 8 sections of real AW.* output (register worlds / type under scripture law / thermal ramp / component inventory / byte-verbatim citation sheet / deterministic tawaf ring / prayer-clock sky / reduced-motion proof); demoCfg spliced byte-identical (SHA f7ec7f07); the four poppins-*.woff2 deleted (Poppins fully retired); suite 53/53; watched live in headless Chrome
   - [ ] 03-12-PLAN.md — Final human visual gate: §12 prechecks + §9 checklist (checkpoint, autonomous:false)
 **UI hint**: yes
 
@@ -143,7 +143,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation — Tokens, Shell & Fonts | 4/4 | Complete | 2026-07-12 |
 | 2. State Layer & Engine-Contract Freeze | 2/2 | Complete   | 2026-07-12 |
-| 3. Components, Icon Kit & Motion | 8/12 | In Progress|  |
+| 3. Components, Icon Kit & Motion | 10/12 | In Progress|  |
 | 4. Lesson & Review Engine Port | 0/TBD | Not started | - |
 | 5. Learn Page & View Transitions | 0/TBD | Not started | - |
 | 6. Accessibility, RTL & Typography | 0/TBD | Not started | - |
