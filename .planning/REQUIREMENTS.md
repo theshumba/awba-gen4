@@ -24,7 +24,7 @@ Macro product scope is fixed by Josh's Gen-3 MVP (the owner-approved direction).
 - [ ] **ENG-04**: Review mechanics preserved exactly: 14s soft timer, +15/+5 swift, timeout → auto-skip → untimed no-noor circle-back, any timeout caps at 2★, lamp progress, gold intro/result, no back button
 - [ ] **ENG-05**: 3-Lens depth renders as individually-expanding accordion (Reality amber / Revelation blue / Ruling green, fixed order), always opt-in, never blocking Continue
 - [ ] **ENG-06**: Citation chips open a bottom sheet (Arabic RTL, verbatim translation, source line, grade pill for hadith, `unverified · pending review` pill); term glosses open their sheet (Arabic, transliteration, gloss, definition, context)
-- [ ] **ENG-07**: A lesson-config validator (standalone script, runnable via node) checks every lesson/review data file: known beat types, resolvable citation/term IDs, required fields, answer indices in range — CI-style gate for the port and for Josh's future lessons
+- [x] **ENG-07**: A lesson-config validator (standalone script, runnable via node) checks every lesson/review data file: known beat types, resolvable citation/term IDs, required fields, answer indices in range — CI-style gate for the port and for Josh's future lessons
 
 ### Content port
 
@@ -105,7 +105,7 @@ Every v1 requirement maps to exactly one phase. Coverage: 42/42 (100%). See `.pl
 | FND-05 | Phase 2 | Complete |
 | FND-06 | Phase 2 | Complete |
 | FND-07 | Phase 2 | Complete |
-| ENG-07 | Phase 2 | Pending |
+| ENG-07 | Phase 2 | Complete |
 | FND-04 | Phase 3 | Pending |
 | ENG-06 | Phase 3 | Pending |
 | MOT-01 | Phase 3 | Pending |

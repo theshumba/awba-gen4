@@ -13,7 +13,7 @@ Awba Gen-4 is a detail-layer execution rebuild of Josh's owner-approved Gen-3 MV
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation — Design Tokens, Responsive Shell & Fonts** - True full-viewport shell, one token layer, self-hosted fonts; kills the fixed 380px card (completed 2026-07-12, VERIFICATION PASSED 4/4)
-- [ ] **Phase 2: State Layer & Engine-Contract Freeze** - Versioned storage + migration, frozen `AW`/`AwbaLesson`/`AwbaReview` contract, standing validator
+- [x] **Phase 2: State Layer & Engine-Contract Freeze** - Versioned storage + migration, frozen `AW`/`AwbaLesson`/`AwbaReview` contract, standing validator (completed 2026-07-12)
 - [ ] **Phase 3: Components, Icon Kit & Motion Language** - Shared chrome, one 20-SVG icon registry, citation/gloss sheets, one `linear()` motion vocabulary
 - [ ] **Phase 4: Lesson & Review Engine Port + Detail Layer** - All 19 data files render verbatim; reward choreography, sound, holds verified
 - [ ] **Phase 5: Learn Page & Cross-Page View Transitions** - Winding node path, live states, daily ayah, native page-to-page transitions
@@ -51,7 +51,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. A standalone validator (runnable via `node`) checks every lesson/review data file for known beat types, resolvable citation/term IDs, required per-type fields, and in-range answer indices — it flags a deliberately broken fixture and passes all real files.
 **Plans**: 2 plans
   - [x] 02-01-PLAN.md — State layer: versioned `awba_state` blob + lossless Gen-3 migration + `awba_prefs` store, all under one parse-time `AW` namespace, headless node:test proven (FND-05/06/07)
-  - [ ] 02-02-PLAN.md — Content validator: node:vm cfg ingestion + frozen contract checks + fixtures + self-test (ENG-07)
+  - [x] 02-02-PLAN.md — Content validator: node:vm cfg ingestion + frozen contract checks + fixtures + self-test (ENG-07)
 
 ### Phase 3: Components, Icon Kit & Motion Language
 **Goal**: A shared component library, a single icon registry, and one motion vocabulary exist and are proven before the screen runners consume them.
@@ -128,7 +128,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation — Tokens, Shell & Fonts | 4/4 | Complete | 2026-07-12 |
-| 2. State Layer & Engine-Contract Freeze | 1/2 | In Progress|  |
+| 2. State Layer & Engine-Contract Freeze | 2/2 | Complete   | 2026-07-12 |
 | 3. Components, Icon Kit & Motion | 0/TBD | Not started | - |
 | 4. Lesson & Review Engine Port | 0/TBD | Not started | - |
 | 5. Learn Page & View Transitions | 0/TBD | Not started | - |

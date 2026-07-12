@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
-status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-07-12T11:29:22.010Z"
+status: verifying
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-07-12T11:39:51.294Z"
 last_activity: 2026-07-12
 progress:
   total_phases: 7
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 5
-  percent: 14
+  completed_plans: 6
+  percent: 29
 ---
 
 # Project State
@@ -28,10 +28,10 @@ See: .planning/PROJECT.md (updated 2026-07-11)
 Phase: 02 (State Layer & Engine-Contract Freeze) — EXECUTING
 Plan: 2 of 2
 Phase: 02 (State Layer & Engine-Contract Freeze) — NEXT: /gsd:discuss-phase 2 --auto
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-07-12
 
-Progress: [████████░░] 83%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Progress: [████████░░] 83%
 | Phase 01 P02 | 2 | 2 tasks | 1 files |
 | Phase 01 P03 | 10 | 2 tasks | 1 files |
 | Phase 02 P01 | 15min | 3 tasks | 4 files |
+| Phase 02 P02 | 7min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,10 @@ Recent decisions affecting current work:
 - [Phase 02-01]: AW.deriveNodeState(nodesFlat, progress) returns [{id, state}] for the whole flat array (matching its 2-arg signature, no index param) rather than a single-node lookup — DOM-free, one-read-per-pass, real-map wiring deferred to Phase 5 (CNT-03)
 - [Phase 02-01]: Chest-key legacy migration enumerates via localStorage.length/key(i) instead of Object.keys(localStorage) — Object.keys only works on real browser Storage instances, not a plain-object test stub, so this fix is portable to both
 - [Phase 02-01]: node --test <directory> throws MODULE_NOT_FOUND on this Node v24.13.0 build (reproduced in an isolated scratch dir, not repo-specific); use node --test scripts/tests/*.test.js (glob) or explicit file paths for all future Phase 2+ test runs
+- [Phase 02-02]: Validator error-message wording co-designed with the self-test so assertions target exact substrings (mc.c=9, missing-ref-id, unknown beat type bogus) — Keeps the contract's failure surface precisely specified rather than fails-somehow
+- [Phase 02-02]: checkBeats() returns immediately after an unknown-beat-type error, skipping further per-type checks for that beat — Beat shape is undefined by the contract once t is unknown; keeps broken-lesson.html error count exactly 3 with no cascading noise
+- [Phase 02-02]: tile.solution validated via array-membership subset check only, no bank-order requirement — Matches D-27 corrected reading (subset of bank, not length-equal); real content's distractor-bearing tiles pass cleanly
+- [Phase 02-02]: Default CLI file discovery for lessons/*.html and reviews/*.html tolerates missing directories via try/catch — Those directories do not exist until Phase 4; validator degrades to nothing-to-validate exit 0 instead of crashing
 
 ### Pending Todos
 
@@ -108,6 +113,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-12T11:29:22.003Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-07-12T11:39:51.288Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None
