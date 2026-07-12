@@ -64,7 +64,8 @@ A learner opens `learn.html`, walks a beautiful winding path through the full Aq
 | Josh's Gen-3 MVP is the design + product authority | It's the owner-built, owner-reviewed direction (5 review rounds in one day); Gen-4 elevates execution, not direction | — Pending |
 | Engine API stays `AwbaLesson`/`AwbaReview`-compatible | Josh's 15 lesson data files are the content asset; they must port verbatim and stay editable by him | — Pending |
 | Points-forward rewards kept as shipped | Owner preference; Gen-2 research's overjustification concern is logged for Josh/Melusi, not silently overridden | — Pending |
-| localStorage-only progress, no accounts | Matches Josh's MVP; ships fastest; awba-app repo holds the future account/back-end path | — Pending |
+| localStorage-only progress, no accounts | Matches Josh's MVP; ships fastest; awba-app repo holds the future account/back-end path | Validated in Phase 2 — versioned `awba_state` + lossless Gen-3 migration shipped, 26 headless tests green |
+| Engine contract frozen as executable checks | `scripts/validate-content.js` (node:vm ingest + full D-27 contract) is the Phase-4 port gate; broken fixture fails with named violations | Validated in Phase 2 (ENG-07) |
 
 ## Evolution
 
@@ -84,4 +85,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-11 after initialization*
+*Last updated: 2026-07-12 after Phase 2 completion (state layer + engine-contract freeze verified 15/15; Phases 1–2 of 7 complete)*
