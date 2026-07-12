@@ -134,6 +134,21 @@ None — pure static HTML/CSS + classic inline JS; opens directly via double-cli
 - All task-level and plan-level acceptance greps re-ran clean (values recorded under Verification above).
 - Headless Chrome render over `file://` produced no console errors and no font load failures.
 
+## Post-Plan Follow-up (Deviations addendum)
+
+**1. [Rule 1 - Bug] Fixed +36px horizontal overflow at a true 320px viewport (PLT-01 violation)**
+- **Found during:** Orchestrator visual QA after plan completion, before the Wave-4 human gate.
+- **Issue:** At 320px, `document.scrollingElement.scrollWidth` measured **356** (should be 320). Primary offender: the section-2 segmented unit-switch (`.pv-seg` — four fixed-padding buttons + readout don't compress). Root-causing with an element-walk harness surfaced a **second** offender the original report's chain masked: the section-3 type-scale Display specimen ("Beautifully done." at 32px) blowing out the `.pv-typerow` `1fr` track via the grid item's implicit `min-width:auto` (residual scrollWidth 344 after the seg fix alone).
+- **Fix (preview chrome only — `shared/awba-engine.css` untouched):** `.pv-seg` gets `max-width:100%`; a `@media (max-width:519px)` block makes it a full-width flex row of equal shrinkable segments (`flex:1 1 0`, `min-width:0`, kicker size, tighter padding) with the accent readout wrapping to its own row and `.pv-focal` stepping its padding down one spacing token. `.pv-typerow`'s specimen cell gets `min-width:0` + `overflow-wrap:break-word`, and rows stack label-above-specimen at ≤519px so display samples get the full row width. The 519px threshold is deliberately generous so the compact pill only appears where its natural width genuinely fits, whatever the font metrics.
+- **Verification (iframe harness — headless Chrome `--allow-file-access-from-files`, reading `contentDocument.scrollingElement.scrollWidth`; window-size screenshots are unreliable because Chrome clamps minimum window width):**
+  - 320px viewport → scrollWidth **320** exactly (was 356, then 344 after seg fix alone)
+  - 390px viewport → scrollWidth **390** exactly
+  - 600px viewport → scrollWidth **600** exactly
+  - Segment buttons report `scrollWidth == clientWidth` at all three widths — no label bleed, the control reads intentional (compressed, not crushed).
+  - All plan/task acceptance greps re-ran with identical values; headless console still clean.
+- **Files modified:** `preview.html`
+- **Commit:** `ad75c47` (fix)
+
 ---
 *Phase: 01-foundation-design-tokens-responsive-shell-fonts*
 *Completed: 2026-07-12*
