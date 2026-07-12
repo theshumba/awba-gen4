@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-11-PLAN.md (new Athar preview.html — the living reference; rebuilt from scratch as 8 sections of REAL AW.* output: register worlds / type under scripture law / thermal ramp / component inventory / byte-verbatim citation sheet / deterministic tawaf ring / prayer-clock sky / reduced-motion proof; demoCfg spliced byte-identical SHA f7ec7f07; the four poppins-*.woff2 DELETED — Poppins fully retired; suite 53/53; watched live in headless Chrome — reads like the locked Athar gallery); next 03-12 (closure / human §9 gate)
+stopped_at: "03-12 Task 1 prechecks ALL GREEN (every §12 grep gate + validator self-test + suite 53/53, --accent/poppins independently re-counted 0 past the ugrep quirk); WAITING at the §9 BLOCKING human gate — Melusi walks preview.html (opened in his browser 2026-07-13); on 'approved' → 03-12-SUMMARY + phase close-out (code-review gate → verifier → Phase 4); on NO-list → route items to owning plans per 03-12 map"
 last_updated: "2026-07-12T23:59:00.000Z"
 last_activity: 2026-07-12
 progress:
