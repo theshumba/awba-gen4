@@ -16,7 +16,8 @@
                    the lossless Gen-3 migration chain, and the pure state-derivation helpers
                    (FND-05, FND-06, FND-07). DOM-independent by design.
      KIT         — Phase 3/4 placeholder. Icon kit (AW.KIT), companion lantern art, glyphs.
-     COMPONENTS  — Phase 3/4 placeholder. Shared UI builders (sheets, cite chips, confetti).
+     COMPONENTS  — Phase 3/4 placeholder. Shared UI builders (icon accessor, cite/term chips,
+                   the singleton sheet, the reduced-motion self-guard, the WAAPI exemplar).
      RUNNERS     — Phase 4 placeholder. AwbaLesson(cfg) / AwbaReview(cfg) engine runners.
 
    `AW.S`/`AW.prefs` (below) are the ONLY code in this codebase allowed to touch `localStorage`
@@ -1012,47 +1013,6 @@ AW.sheetTerm = function (terms, id) {
     '<div class="g-df">' + t.def + '</div>' +
     '<div class="g-cx">' + t.ctx + '</div>';
   return AW.sheet(html);
-};
-
-/* ---------- AW.confetti(n) — the reward burst primitive (D-41). Its FIRST executable line is the
-   reduced-motion guard (Gen-3 had none — this is the day-one elevation): under reduced motion no
-   div is ever spawned. Lazily creates/finds a `.confetti` overlay on <body> (decoupled from any
-   lesson skeleton), then spawns a capped count of `.cf` divs — random left, colour drawn from the
-   brand tokens (--gold2/--flame2/--accent-bright/--green) via getComputedStyle, transform-only
-   fall of 1.6–2.7s — each self-removing on animationend (setTimeout fallback). Mercy: the caller
-   never fires it over scripture (RWD-03); components read prefs via data attributes / AW.prefs,
-   never the storage layer directly (D-24). */
-AW.confetti = function (n) {
-  if (AW.reducedMotion()) return; // day-one guard — nothing spawns under reduced motion
-  var layer = document.querySelector('.confetti');
-  if (!layer) {
-    layer = document.createElement('div');
-    layer.className = 'confetti';
-    document.body.appendChild(layer);
-  }
-  var cs = getComputedStyle(document.documentElement);
-  var cols = ['--gold2', '--flame2', '--accent-bright', '--green'].map(function (tok) {
-    return cs.getPropertyValue(tok).trim();
-  });
-  var count = Math.min(Math.max(1, n || 24), 30); // performance bound — Gen-3 counts ~16–30
-  for (var i = 0; i < count; i++) {
-    var d = document.createElement('div');
-    d.className = 'cf';
-    d.style.left = Math.random() * 100 + '%';
-    d.style.background = cols[i % cols.length];
-    var dur = 1.6 + (i % 7) * 0.18; // 1.6–2.7s
-    d.style.animationDuration = dur + 's';
-    d.style.animationDelay = (i % 5) * 0.05 + 's';
-    (function (node, ms) {
-      node.addEventListener('animationend', function () {
-        node.remove();
-      });
-      setTimeout(function () {
-        node.remove();
-      }, ms);
-    })(d, (dur + 0.4) * 1000);
-    layer.appendChild(d);
-  }
 };
 
 /* ---------- AW.animate(el, keyframes, durToken, easeToken) — the WAAPI orchestration exemplar
