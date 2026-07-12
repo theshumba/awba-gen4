@@ -1,0 +1,197 @@
+/* ============================================================================================
+   awba-engine.css  ·  Awba Gen-4 — the one engine stylesheet
+   --------------------------------------------------------------------------------------------
+   The design constitution every page and every later phase consumes. Vanilla, zero-build,
+   CDN-free. Authored against 01-UI-SPEC.md (approved) — every value below is sourced there;
+   nothing is invented at this layer (FND-01).
+
+   Cascade order is declared ONCE, in full, on the next line and is immutable for the life of
+   the project. Layer priority runs left -> right by first-occurrence, NOT by which layer holds
+   content: tokens < base < components < screens < motion. `motion` is declared last = highest
+   priority, so a prefers-reduced-motion guard written there (Phase 3) always beats a screen
+   animation that forgets its own guard — a deliberate accessibility-safety property of this
+   order (D-04). After Phase 1, no file may ever write a bare name-list layer statement again —
+   only content blocks for names already declared here.
+   ============================================================================================ */
+@layer tokens, base, components, screens, motion;
+
+@layer tokens {
+
+  /* -- Self-hosted font faces (FND-03 / D-09) -----------------------------------------------
+     Zero CDN. `src` is CSS-relative: 'fonts/...' resolves from THIS file's own shared/ folder to
+     shared/fonts/..., which is file://-safe. NEVER a leading-slash '/shared/fonts/...' — that is
+     root-absolute under RFC 3986, resolves to the filesystem root under file://, and 404s every
+     font in the double-click review this project mandates.
+     Wave-1 verified: the subset Poppins faces do NOT carry the Clear-Quran corner brackets
+     (U+02F9 / U+02FA) or the h-class transliteration diacritics (U+1E25 ...); Inter carries full
+     coverage. So --font-disp lists Inter immediately after Poppins (see role vars below) — any
+     such glyph that falls through Poppins renders in Inter, never a random system face. Do not
+     attempt to re-add those glyphs to the Poppins subset. */
+  @font-face { font-family: 'Poppins'; font-weight: 500; font-style: normal; font-display: swap; src: url('fonts/poppins-500.woff2') format('woff2'); }
+  @font-face { font-family: 'Poppins'; font-weight: 600; font-style: normal; font-display: swap; src: url('fonts/poppins-600.woff2') format('woff2'); }
+  @font-face { font-family: 'Poppins'; font-weight: 700; font-style: normal; font-display: swap; src: url('fonts/poppins-700.woff2') format('woff2'); }
+  @font-face { font-family: 'Poppins'; font-weight: 800; font-style: normal; font-display: swap; src: url('fonts/poppins-800.woff2') format('woff2'); }
+  @font-face { font-family: 'Inter'; font-weight: 400; font-style: normal; font-display: swap; src: url('fonts/inter-400.woff2') format('woff2'); }
+  @font-face { font-family: 'Inter'; font-weight: 500; font-style: normal; font-display: swap; src: url('fonts/inter-500.woff2') format('woff2'); }
+  @font-face { font-family: 'Inter'; font-weight: 600; font-style: normal; font-display: swap; src: url('fonts/inter-600.woff2') format('woff2'); }
+  @font-face { font-family: 'Inter'; font-weight: 700; font-style: normal; font-display: swap; src: url('fonts/inter-700.woff2') format('woff2'); }
+  @font-face { font-family: 'Amiri'; font-weight: 400; font-style: normal; font-display: swap; src: url('fonts/amiri-400.woff2') format('woff2'); }
+  @font-face { font-family: 'Amiri'; font-weight: 700; font-style: normal; font-display: swap; src: url('fonts/amiri-700.woff2') format('woff2'); }
+  @font-face { font-family: 'Amiri Quran'; font-weight: 400; font-style: normal; font-display: swap; src: url('fonts/amiri-quran-400.woff2') format('woff2'); }
+
+  :root {
+
+    /* -- Font role variables (D-11) ---------------------------------------------------------
+       Metric-tuned fallback stacks: each web font is trailed by system faces chosen for a close
+       x-height / advance so the font-display:swap first paint is gentle — not Gen-3's bare
+       `system-ui, ...` jolt. --font-disp keeps Inter right after Poppins for the glyph fallback
+       noted at the faces above. */
+    --font-disp:  'Poppins', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-body:  'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-ar:    'Amiri', 'Noto Naskh Arabic', 'Geeza Pro', 'Times New Roman', serif;
+    --font-quran: 'Amiri Quran', 'Amiri', 'Noto Naskh Arabic', 'Geeza Pro', serif;
+
+    /* -- Spacing scale — multiples of 4 (UI-SPEC Spacing). --sp-2 is the 2px hairline exception;
+       env(safe-area-inset-*) and the 44px touch-target minimum sit OUTSIDE this scale. */
+    --sp-2:   2px;   /* hairline — gummy hard-shadow base unit, 2px borders */
+    --sp-1:   4px;   /* xs  — icon gaps, chip inline padding, inline stat gaps */
+    --sp-2s:  8px;   /* sm  — compact stacking (option gaps, tile gaps, HUD gaps) */
+    --sp-3:  12px;   /* md- — card inner padding, marker padding, list rhythm */
+    --sp-4:  16px;   /* md  — default element spacing, button padding, footer padding */
+    --sp-5:  20px;   /* lg- — between-block spacing, sheet body rhythm */
+    --sp-6:  24px;   /* lg  — stage horizontal padding, section padding */
+    --sp-8:  32px;   /* xl  — layout gaps, hero vertical rhythm */
+    --sp-12: 48px;   /* 2xl — major section breaks, hero top/bottom */
+    --sp-16: 64px;   /* 3xl — page-level spacing, desktop column gutters */
+
+    /* -- Type scale — fluid rem + clamp() where it matters; body fixed and readable at 320px
+       without overflow (UI-SPEC Typography). Line-heights are noted per role for Phase 3. */
+    --fs-hero:    clamp(3.5rem, 3rem + 2.5vw, 5.125rem);      /* 56 -> 82px · Poppins 800 · lh 1.0  — reward hero numeral only */
+    --fs-display: clamp(2rem, 1.7rem + 1.5vw, 2.375rem);      /* 32 -> 38px · Poppins 700 · lh 1.05 — verdict headline, Noor count-up */
+    --fs-h1:      clamp(1.375rem, 1.25rem + 0.6vw, 1.625rem); /* 22 -> 26px · Poppins 600 · lh 1.16 — screen / page titles */
+    --fs-h2:      clamp(1.125rem, 1.05rem + 0.4vw, 1.25rem);  /* 18 -> 20px · Poppins 600 · lh 1.28 — section titles, quiz question */
+    --fs-body:    1rem;                                        /* 16px      · Inter 400     · lh 1.6  — all reading prose */
+    --fs-ui:      0.875rem;                                    /* 14px      · Inter 400/600 · lh 1.45 — controls, meta, captions */
+    --fs-kicker:  0.75rem;                                     /* 12px      · Poppins 600   · lh 1.2  — uppercase eyebrows (ls .13em), pills, source lines */
+
+    /* Arabic sizes — the Latin roles re-expressed under the >=1.4x Latin law (D-09), not free steps. */
+    --fs-ar-body:    1.4rem;                                /* 22.4px — general Arabic (hadith, du'a, terms) · lh >=1.8 */
+    --fs-ayah:       clamp(1.5rem, 1.4rem + 0.5vw, 1.6rem); /* 24 -> 25.6px — verbatim Qur'an, one step above general · lh 1.9 */
+    --fs-ar-display: 2rem;                                  /* 32px — sheet Arabic display (Arabic counterpart of --fs-display) */
+
+    /* -- Color — 60 / 30 / 10 discipline (UI-SPEC Color). The 10% accent is per-unit (below). */
+    /* Dominant 60% */
+    --bg:    #EEF2FB;   /* cream field — the calm surface everything floats on */
+    /* Secondary 30% */
+    --card:  #F6F9FF;   /* cards, panels, HUD */
+    --paper: #FFFFFF;   /* sheets, model boxes, the mobile shell field */
+    --tint:  #E7EEFF;   /* tinted chrome surfaces */
+    /* Ink hierarchy */
+    --ink:   #232A3D;
+    --ink2:  #59607A;
+    --ink3:  #98A0B8;
+    /* Lines */
+    --line:  #DEE5F3;
+    --line2: #C9D3EA;
+    /* Semantic — mercy (amber) · the ONLY learner-error color, never red */
+    --amber:      #C68A2E;
+    --amber-bg:   #FBEFD6;
+    --amber-ink:  #7A5111;
+    --amber-line: #EBD4A6;
+    /* Semantic — affirm (green) */
+    --green:      #1F9D6B;
+    --green-bg:   #E7F6EF;
+    --green-ink:  #15774F;
+    --green-line: #A6E0C6;
+    /* Semantic — streak (flame) */
+    --flame:  #F0730B;
+    --flame2: #FFB03A;
+    /* Semantic — noor / legendary (gold) */
+    --gold:      #E8A400;
+    --gold2:     #FFD34D;
+    --gold-deep: #B47F00;
+    /* Destructive / safety — RESERVED for safety callouts ONLY; never learner error, never
+       destructive-of-progress (there is none in v1). */
+    --danger:      #8A2E28;
+    --danger-bg:   #FBEDEC;
+    --danger-line: #EFC9C6;
+
+    /* -- Radii — soft, large, warm (UI-SPEC Radii) */
+    --r-pill:  999px;
+    --r-xs:    8px;
+    --r-sm:    12px;
+    --r-md:    14px;
+    --r-lg:    16px;
+    --r-xl:    24px;
+    --r-2xl:   28px;
+    --r-round: 50%;
+
+    /* -- Shadows — always indigo-tinted rgba(37,54,206,a); never grey/black (UI-SPEC Shadows) */
+    --sh-1:     0 1px 3px rgba(37,54,206,.10);
+    --sh-2:     0 4px 16px rgba(37,54,206,.10);
+    --sh-3:     0 12px 40px rgba(37,54,206,.14);
+    --sh-4:     0 26px 70px rgba(37,54,206,.20);
+    --sh-inset: 0 2px 0 rgba(255,255,255,.7) inset;
+
+    /* -- Motion — durations + easings declared now; the motion LAYER lands Phase 3 (D-08).
+       The two spring curves are copied verbatim from UI-SPEC — never hand-edit these datasets. */
+    --dur-1:   80ms;    /* instant feedback */
+    --dur-2:   120ms;   /* press / tap collapse */
+    --dur-3:   200ms;   /* hover, small state change */
+    --dur-4:   280ms;   /* sheet / scrim in-out */
+    --dur-5:   350ms;   /* accordion, node pop-in */
+    --dur-6:   600ms;   /* reward reveal step */
+    --dur-amb: 4800ms;  /* ambient companion bob / glow loop */
+    --ease-standard: cubic-bezier(.2,.8,.2,1);
+    --ease-out:      cubic-bezier(.16,1,.3,1);
+    --ease-in:       cubic-bezier(.5,0,.75,0);
+    --ease-press:    cubic-bezier(.2,1.4,.5,1);
+    --ease-spring:   linear(0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%, 0.849, 0.937 34.6%, 0.968, 0.991, 1.006, 1.013 44.6%, 1.011 50.8%, 1.003 61.3%, 0.999 71.3%, 1);
+    --ease-gentle:   linear(0, 0.19 12%, 0.55 24%, 0.83 38%, 0.96 52%, 1.01 66%, 1);
+
+    /* -- Default accent = Unit 1 (blue) so a page with no data-unit attribute still themes fully.
+       Each unit re-declares its FULL 7-slot scale below — there is NO shared cross-unit accent
+       triplet for a screen to inherit, which is exactly what makes Gen-3's half-themed-page bug
+       structurally impossible (FND-02 / D-05 / D-06). */
+    --accent:        #2E6BF5;
+    --accent-deep:   #2135B8;
+    --accent-bright: #4E82F7;
+    --accent-soft:   #E7EEFF;
+    --accent-line:   #CBD9F7;
+    --accent-ink:    #23348C;
+    --accent-on:     #FFFFFF;
+  }
+
+  /* -- Per-unit accent scales (FND-02 / D-06) — WCAG-checked, full 7-slot recolor per unit.
+     Swap the whole 10% accent by setting data-unit on <html>. Slots: --accent (identity hue +
+     button fill), --accent-deep (gummy 3D offset + dark text on light), --accent-bright (glow /
+     gradient highlight, non-text), --accent-soft (pale tint surface), --accent-line (hairline on
+     soft/paper), --accent-ink (text ON --accent-soft), --accent-on (text/icon ON an --accent fill).
+     Baked-in contrast corrections vs Gen-3: u3 --accent deepened to #0A7575 (a lighter teal fails
+     the ring/button bar) and u4 --accent-on = #241A00 — a warm near-black, the ONLY non-white
+     on-fill — both to clear WCAG AA at the real 16px/700 button-label size. */
+  [data-unit="u1"] { /* blue */
+    --accent: #2E6BF5; --accent-deep: #2135B8; --accent-bright: #4E82F7;
+    --accent-soft: #E7EEFF; --accent-line: #CBD9F7; --accent-ink: #23348C; --accent-on: #FFFFFF;
+  }
+  [data-unit="u2"] { /* purple */
+    --accent: #7C5CE0; --accent-deep: #5636B0; --accent-bright: #9B80EC;
+    --accent-soft: #F0EBFC; --accent-line: #D9CCF4; --accent-ink: #543B9E; --accent-on: #FFFFFF;
+  }
+  [data-unit="u3"] { /* teal */
+    --accent: #0A7575; --accent-deep: #075C5C; --accent-bright: #14B8B8;
+    --accent-soft: #E1F4F4; --accent-line: #ABE1E1; --accent-ink: #0A6060; --accent-on: #FFFFFF;
+  }
+  [data-unit="u4"] { /* gold */
+    --accent: #B47F00; --accent-deep: #8A6000; --accent-bright: #FFD34D;
+    --accent-soft: #FDF3DA; --accent-line: #F0DCA6; --accent-ink: #7A5300; --accent-on: #241A00;
+  }
+}
+
+@layer base {
+  /* Reset · responsive shell · focus-visible · Arabic/RTL laws — authored in Task 2, below. */
+}
+
+@layer components { /* reserved — Phase 3: .btn / .opt / .tf / .tile chrome + gummy physics (MOT-03) */ }
+@layer screens   { /* reserved — Phase 2+: per-screen rules */ }
+@layer motion    { /* reserved — Phase 3: motion + prefers-reduced-motion guards (MOT-01 / MOT-04) */ }
