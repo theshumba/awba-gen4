@@ -4,14 +4,14 @@ milestone: v1.5
 milestone_name: milestone
 status: executing
 stopped_at: Completed 03-06-PLAN.md (tokens + base re-ground to Athar); next 03-07 (Ring SPOF)
-last_updated: "2026-07-12T21:00:04.393Z"
+last_updated: "2026-07-12T21:17:54.164Z"
 last_activity: 2026-07-12
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 18
-  completed_plans: 11
-  percent: 61
+  completed_plans: 12
+  percent: 29
 ---
 
 # Project State
@@ -32,18 +32,19 @@ Phase: 03 (Components, Icon Kit & Motion Language) — **RE-CUT UNDER ATHAR (Gat
 - Plan 03-05 (old D-44 gate): **SUPERSEDED — never walk its checklist.**
 - New design contract: `03-UI-SPEC-ATHAR.md` (supersedes 03-UI-SPEC.md). Athar font kit + grain vendored (b66b75a).
 - **Plan 03-06 (tokens + base re-ground): COMPLETE 2026-07-12** — `@layer tokens` is the Athar sheet (Readex workhorse, 17 verbatim-hex colours + ink ramps, print radii, ink/edge depth, grain var, one-easing motion) and `@layer base` is the register architecture (four `.reg-*` grounds, `data-sky` tint, `data-state` map, ground focus, scripture law, Nightfall); `data-unit`/`--accent` colour theming dismantled CSS-side. Commits `2cf8ecd`, `15a2b48`. 37/37 tests green. `@layer components`/`@layer motion` keep retired token refs (accepted transient — plan 09 removes; whole-file `--accent`/`rgba(37,54,` closure gated at plan 12).
-- NEXT: 03-07 (Ring SPOF — renders on the new colour tokens) → 03-08 icons → 03-09 components (owns the retired-token cleanup) → 03-10 Sky → 03-11 new preview → 03-12 closure/human gate. Ring + prayer-clock sky land in Phase 3, before Phase 4.
+- **Plan 03-07 (Ring generator SPOF): COMPLETE 2026-07-12** — `AW.ringSVG(cfg)` is a seeded (mulberry32) DETERMINISTIC tawaf-fingerprint generator (15 jittered pilgrim-rows / 4 circuits, thermal ink navy→ember→cream→gold, 4-arc gold thread closing at 4, static gold head-dot; byte-identical per seed+progress, no Date/Math.random in path; reduced-motion static; 265 path nodes, no `<filter>`). Paired with a lazy `AW.ringSeed()` maker's mark (no schema bump) + a ≤10-line W1 `memFallback` persist-guard (future-schema blob no longer clobbered by `set()`), and the `ink-draw` Orbit-draw keyframe + `.ring` wrapper added additively to `@layer motion`. Commits `c943437`, `63e64c3`, `e219c90`, `c6eab7a`. Suite 37→45 green. Rasterised + visually confirmed it READS as a hand-inked tawaf (not a spirograph); doubts logged in 03-07-SUMMARY for the preview/human gate.
+- NEXT: 03-08 icons → 03-09 components (owns the retired-token cleanup) → 03-10 Sky → 03-11 new preview (injects `AW.ringSVG`) → 03-12 closure/human gate. Ring done; prayer-clock sky still lands in Phase 3, before Phase 4.
 
-Status: Executing re-cut waves — 03-06 done, next 03-07 (Ring SPOF)
+Status: Executing re-cut waves — 03-07 (Ring SPOF) done, next 03-08 (icons)
 Last activity: 2026-07-12
 
-Progress: [██████░░░░] 61%
+Progress: [███████░░░] 67%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 2
+- Total plans completed: 3
 - Average duration: — min
 - Total execution time: 0 hours
 
@@ -67,6 +68,7 @@ Progress: [██████░░░░] 61%
 | Phase 03-components-icon-kit-motion-language P02 | ~18min | 2 tasks | 1 files |
 | Phase 03 P04 | 25min | 2 tasks | 1 files |
 | Phase 03 P06 | 14 min | 2 tasks | 1 files |
+| Phase 03 P07 | ~17 min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -98,6 +100,10 @@ Recent decisions affecting current work:
 - [Phase ?]: 03-02: 20 scene icons + lantern-gold + 13 glyphs form ONE inline single-source registry (AW.KIT/AW.GLYPHS/AW.UNIT_ICON); per-page UIC/IC_* constants superseded (FND-04)
 - [Phase 03]: 03-06: dismantled data-unit/--accent colour theming CSS-side; AW.UNIT_ICON JS untouched so data-unit survives as the unit-to-icon key only
 - [Phase 03]: 03-06: @layer components/motion keep retired token references as the accepted transient (plan 09 removes them; whole-file closure gated at plan 12)
+- [Phase 03]: 03-07: AW.ringSeed() is a lazy accessor (mint-once into awba_state.ringSeed via AW.S), NOT a schemaVersion bump — keeps defaultState byte-unchanged and CR-01/WR-01 blob-survival tests green (plan CONTRACT NOTE)
+- [Phase 03]: 03-07: ringSVG geometry is a pure fn of seed and progress-INDEPENDENT; progress only recolours dabs + toggles the draw animation — the ring is a stable fingerprint that inks in place
+- [Phase 03]: 03-07: the draw (ink-draw) animation attaches ONLY to the in-progress frontier row's ember dabs — the deterministic proxy for "newly inked" so the established ring never re-draws (law 9) without a previous-state input
+- [Phase 03]: 03-07: W1 gap closed with a ≤10-line memFallback guard (set() skips persist when working from an unrecognized-schema in-memory copy); proved with a test that a from-the-future blob survives a ringSeed() call untouched on disk
 
 ### Pending Todos
 
@@ -126,6 +132,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-12T21:00:04.388Z
-Stopped at: Completed 03-06-PLAN.md (tokens + base re-ground to Athar); next 03-07 (Ring SPOF)
+Last session: 2026-07-12T22:15:19Z
+Stopped at: Completed 03-07-PLAN.md (Ring generator SPOF — deterministic tawaf-fingerprint generator, visually confirmed); next 03-08 (icons)
 Resume file: None
