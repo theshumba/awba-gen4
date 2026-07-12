@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: "Phase 3 executing: plan 03-01 complete (1/5), next 03-02 KIT"
+stopped_at: "Phase 3 RE-CUT under Athar: 03-01..04 done, 03-05 SUPERSEDED, planning 03-06+ from 03-UI-SPEC-ATHAR.md"
 last_updated: "2026-07-12T15:52:39.300Z"
 last_activity: 2026-07-12
 progress:
@@ -25,10 +25,13 @@ See: .planning/PROJECT.md (updated 2026-07-11)
 
 ## Current Position
 
-Phase: 03 (Components, Icon Kit & Motion Language) — EXECUTING
-Plan: 4 of 5
-Phase: 02 (State Layer & Engine-Contract Freeze) — NEXT: /gsd:discuss-phase 2 --auto
-Status: Ready to execute
+Phase: 03 (Components, Icon Kit & Motion Language) — **RE-CUT UNDER ATHAR (Gate 2 locked 2026-07-12)**
+- Design authority CHANGED: pure Athar System (`.planning/ATHAR-SYSTEM.md` + `docs/superpowers/specs/2026-07-12-athar-adoption-design.md`, commit cbdb7e9). Josh's Gen-3 look retired; content/engine contract untouched.
+- Plans 03-01..03-04: complete and committed (their JS layer survives; their visual values are superseded).
+- Plan 03-05 (old D-44 gate): **SUPERSEDED — never walk its checklist.**
+- New design contract: `03-UI-SPEC-ATHAR.md` (supersedes 03-UI-SPEC.md). Athar font kit + grain vendored (b66b75a).
+- NEXT: plan + execute re-skin waves 03-06+ (tokens rewrite → components/icons → new preview → Ring spike → Sky spike → NEW human gate). Ring + prayer-clock sky land in Phase 3, before Phase 4.
+Status: Planning re-cut waves
 Last activity: 2026-07-12
 
 Progress: [█████████░] 91%
