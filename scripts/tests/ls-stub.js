@@ -51,4 +51,16 @@ function loadEngine(ls, probeSrc) {
   return sandbox;
 }
 
-module.exports = { makeLS, loadEngine };
+/**
+ * readOut(sandbox) — normalizes `sandbox.__out` (an object graph created inside the vm's own
+ * realm) into a plain main-realm value via a JSON round-trip. Required before using
+ * `assert.deepEqual`/`deepStrictEqual`: objects/arrays from a different vm context have a
+ * different `Object.prototype`/`Array.prototype` than the test file's realm, so Node's strict
+ * deep-equality (which checks prototype identity) fails even when the values are structurally
+ * identical. Primitives pass through unaffected.
+ */
+function readOut(sandbox) {
+  return sandbox.__out === undefined ? undefined : JSON.parse(JSON.stringify(sandbox.__out));
+}
+
+module.exports = { makeLS, loadEngine, readOut };

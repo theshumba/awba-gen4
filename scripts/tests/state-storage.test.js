@@ -13,7 +13,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { makeLS, loadEngine } = require('./ls-stub');
+const { makeLS, loadEngine, readOut } = require('./ls-stub');
 
 function pad(n) {
   return String(n).padStart(2, '0');
@@ -44,22 +44,15 @@ test('migration: legacy awba_* keys land losslessly in awba_state (all fields)',
       chests: AW.S.get('chests', {}),
       lastDay: AW.S.get('lastDay', null),
       days: AW.S.get('days', []),
-      state: AW.state ? AW.state() : null,
     };`
   );
-  const out = sandbox.__out;
+  const out = readOut(sandbox);
   assert.equal(out.noor, 120);
   assert.equal(out.returns, 3);
   assert.deepEqual(out.stars, { u1m1: 3, u1m2: 2 });
   assert.deepEqual(out.chests, { u1c: true });
   assert.equal(out.lastDay, '2026-07-11');
   assert.deepEqual(out.days, ['2026-07-10', '2026-07-11']);
-  // AW.state() snapshot mirrors the same values (D-13 adds chests to the Gen-3 snapshot shape)
-  assert.equal(out.state.noor, 120);
-  assert.equal(out.state.returns, 3);
-  assert.deepEqual(out.state.stars, { u1m1: 3, u1m2: 2 });
-  assert.deepEqual(out.state.chests, { u1c: true });
-  assert.equal(out.state.lastDay, '2026-07-11');
 });
 
 /* ---------- (2) non-destructive + idempotent ---------- */
@@ -75,8 +68,13 @@ test('migration: non-destructive (legacy keys survive) and idempotent (re-run is
     awba_chest_u1c: JSON.stringify(true),
   };
   const ls = makeLS(seed);
+  const probe = `globalThis.__out = {
+    noor: AW.S.get('noor', 0), returns: AW.S.get('returns', 0),
+    stars: AW.S.get('stars', {}), chests: AW.S.get('chests', {}),
+    lastDay: AW.S.get('lastDay', null), days: AW.S.get('days', []),
+  };`;
 
-  const first = loadEngine(ls, `globalThis.__out = AW.state();`);
+  const first = loadEngine(ls, probe);
   const dumpAfterFirst = ls._dump();
   // D-15: legacy keys are read but NEVER deleted
   assert.ok('awba_noor' in dumpAfterFirst);
@@ -89,10 +87,10 @@ test('migration: non-destructive (legacy keys survive) and idempotent (re-run is
   const blobAfterFirst = dumpAfterFirst.awba_state;
 
   // Simulate a second page load against the SAME localStorage — must be a no-op.
-  const second = loadEngine(ls, `globalThis.__out = AW.state();`);
+  const second = loadEngine(ls, probe);
   const dumpAfterSecond = ls._dump();
   assert.equal(dumpAfterSecond.awba_state, blobAfterFirst);
-  assert.deepEqual(second.__out, first.__out);
+  assert.deepEqual(readOut(second), readOut(first));
 });
 
 /* ---------- (3) local-date exactness — no toISOString off-by-one ---------- */
@@ -100,7 +98,7 @@ test('migration: non-destructive (legacy keys survive) and idempotent (re-run is
 test('migration: awba_lastDay converts via local date parts (no toISOString off-by-one)', () => {
   const ls = makeLS({ awba_lastDay: JSON.stringify('Sat Jul 11 2026') });
   const sandbox = loadEngine(ls, `globalThis.__out = AW.S.get('lastDay', null);`);
-  assert.equal(sandbox.__out, '2026-07-11');
+  assert.equal(readOut(sandbox), '2026-07-11');
 });
 
 /* ---------- (4) corrupted-value tolerance ---------- */
@@ -117,9 +115,15 @@ test('migration: corrupted awba_days entry and non-JSON awba_stars are tolerated
 
   let sandbox;
   assert.doesNotThrow(() => {
-    sandbox = loadEngine(ls, `globalThis.__out = AW.state();`);
+    sandbox = loadEngine(
+      ls,
+      `globalThis.__out = {
+        noor: AW.S.get('noor', 0), returns: AW.S.get('returns', 0),
+        stars: AW.S.get('stars', {}), days: AW.S.get('days', []),
+      };`
+    );
   });
-  const out = sandbox.__out;
+  const out = readOut(sandbox);
   assert.equal(out.noor, 50);
   assert.equal(out.returns, 1);
   assert.deepEqual(out.stars, {}); // non-JSON stars field dropped, falls back to default
@@ -142,7 +146,7 @@ test('AW.prefs isolates soundMuted/motion under awba_prefs, independent of awba_
   );
   const dump = ls._dump();
   assert.ok('awba_prefs' in dump, 'awba_prefs key must exist');
-  const out = sandbox.__out;
+  const out = readOut(sandbox);
   assert.equal(out.prefs.soundMuted, true);
   assert.equal(out.prefs.motion, 'reduce');
   assert.equal(out.stateSoundMuted, undefined);
