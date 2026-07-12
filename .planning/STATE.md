@@ -4,7 +4,7 @@ milestone: v1.5
 milestone_name: milestone
 status: executing
 stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-07-12T00:18:03.328Z"
+last_updated: "2026-07-12T00:34:43.010Z"
 last_activity: 2026-07-12
 progress:
   total_phases: 7
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-07-11)
 ## Current Position
 
 Phase: 01 (Foundation — Design Tokens, Responsive Shell & Fonts) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-07-12
 
@@ -54,6 +54,7 @@ Progress: [█████░░░░░] 50%
 *Updated after each plan completion*
 | Phase 01 P01 | 20 min | 2 tasks | 13 files |
 | Phase 01 P02 | 2 | 2 tasks | 1 files |
+| Phase 01 P03 | 10 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,9 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 01-02] --font-disp lists Inter immediately after Poppins (Wave-1 verified Poppins glyph gap for U+02F9/02FA + h-class diacritics), so those glyphs fall through to Inter not a system face.
 - [Phase ?]: [Phase 01-02] Shell region rows namespaced .app-hud/.app-stage/.app-foot so Phase-3 HUD chrome component classes stay unambiguous; safe-area insets applied at the base layer.
 - [Phase ?]: [Phase 01-02] Night/legendary focus ring switches to --gold2 via a forward-looking [data-register=night] hook (Phase 3/4 sets the attribute) since the calm-field --accent ring loses contrast on the dark gradient.
+- [Phase ?]: [Phase 01-03] preview.html showcase chrome is an UNLAYERED <style> block that overrides the engine's >=600px body{display:flex} centering (unlayered beats @layer base) so the long reference doc isn't hijacked into a centered column — while section 6's real .app-shell still adapts full-bleed<->column on viewport resize.
+- [Phase ?]: [Phase 01-03] All four unit accent scales render simultaneously by scoping each column with its own [data-unit] container (CSS custom-property re-scoping), so var(--accent) resolves per-column with zero JS and zero raw hex in swatch markup.
+- [Phase ?]: [Phase 01-03] Glyph test proves the documented Poppins->Inter fallback by rendering brackets ˹˺ inside a Poppins Clear-Quran string; ﷺ rendered defensively in Amiri + Amiri Quran; tofu FAIL cell uses amber (mercy law: never red).
 
 ### Pending Todos
 
@@ -99,6 +103,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-12T00:15:52.570Z
+Last session: 2026-07-12T00:34:07.498Z
 Stopped at: Completed 01-01-PLAN.md
 Resume file: None
