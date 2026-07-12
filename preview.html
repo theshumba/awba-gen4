@@ -349,6 +349,30 @@ body{
 }
 .pv-sheethint{ margin-top:var(--sp-4); font-size:var(--fs-kicker); color:var(--ink3); }
 
+
+/* ---- §11 Press-physics inventory (real engine classes, shared gummy :active) ---------------- */
+.pv-pressgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(172px,1fr)); gap:var(--sp-6) var(--sp-5); align-items:start; }
+.pv-presscell{ display:flex; flex-direction:column; gap:var(--sp-3); align-items:flex-start; }
+.pv-tfrow{ display:flex; gap:var(--sp-2s); width:100%; }
+.plab{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3); letter-spacing:.02em; }
+
+/* ---- §12 Motion vocabulary + reduced-motion --------------------------------------------------- */
+.pv-popin{ width:56px; height:56px; border-radius:var(--r-round); background:var(--accent); box-shadow:0 0 0 6px var(--accent-soft), var(--sh-2); }
+.pv-popin.go{ animation:popIn var(--dur-5) var(--ease-spring); }   /* real engine popIn keyframe */
+.pv-fade{ width:56px; height:56px; border-radius:var(--r-md); background:var(--accent); box-shadow:var(--sh-2);
+  opacity:1; transition:opacity var(--dur-3) var(--ease-standard), transform var(--dur-3) var(--ease-standard); }
+.pv-fade.out{ opacity:0; transform:translateY(10px); }
+.pv-ambient{ position:relative; display:flex; align-items:center; gap:var(--sp-6); min-height:88px; }
+.pv-companion svg{ width:64px; height:auto; display:block; }         /* .companion loop wraps this */
+.pv-bring{ display:block; width:56px; height:56px; border-radius:var(--r-round);
+  box-shadow:0 0 0 4px var(--accent) inset; background:var(--accent-soft); }
+.pv-perfstage{ position:relative; width:100%; min-height:150px; border-radius:var(--r-lg); overflow:hidden;
+  background:var(--tint); border:1px solid var(--line); }           /* positioning context for .perfect */
+.pv-motiontoggle{ display:flex; align-items:center; gap:var(--sp-4); flex-wrap:wrap; }
+#pv-motion-toggle[aria-pressed="true"]{ background:var(--accent); color:var(--accent-on); border-color:var(--accent); }
+.pv-motionstate{ font-family:var(--font-body); font-size:var(--fs-kicker); color:var(--ink3);
+  font-variant-numeric:tabular-nums; letter-spacing:.02em; }
+
 </style>
 </head>
 
@@ -911,6 +935,120 @@ body{
     </div>
   </section>
 
+
+  <!-- ========================================================================================
+       Section 11 — Press-physics inventory (MOT-03 / D-40) — one gummy press across the set
+       ==================================================================================== -->
+  <section class="pv-section" id="s11">
+    <div class="pv-wrap">
+      <div class="pv-head">
+        <h2><span class="pv-num">11</span>Press-physics inventory</h2>
+        <p>Every tappable surface shares ONE gummy press: a hard indigo <code class="pv-inline-latin">--accent-deep</code>
+        offset at rest that collapses by <code class="pv-inline-latin">calc(--press-rest &minus; --press-active)</code> = 3px
+        on <code class="pv-inline-latin">:active</code>, over <code class="pv-inline-latin">--dur-2 · --ease-press</code>.
+        Press each one — the whole inventory presses as a single coherent system, gummy-not-mushy. These are the REAL
+        engine classes from <code class="pv-inline-latin">@layer&nbsp;components</code>, not a preview mock.</p>
+      </div>
+
+      <div class="pv-card">
+        <div class="pv-pressgrid">
+          <div class="pv-presscell"><button class="btn" type="button">Begin, gently</button><span class="plab">.btn</span></div>
+          <div class="pv-presscell"><button class="opt" type="button">A settled belief</button><span class="plab">.opt</span></div>
+          <div class="pv-presscell"><div class="pv-tfrow"><button class="tf" type="button">True</button><button class="tf" type="button">False</button></div><span class="plab">.tf</span></div>
+          <div class="pv-presscell"><div class="tile">Tap tile</div><span class="plab">.tile</span></div>
+          <div class="pv-presscell"><span class="cite" id="pv-press-cite">al-Ḥujurāt 49:15</span><span class="plab">.cite · inline-light press</span></div>
+          <div class="pv-presscell"><button class="tab" id="pv-press-tab" type="button">Saved</button><span class="plab">.tab</span></div>
+          <div class="pv-presscell"><button class="hstat" id="pv-press-hstat" type="button">3</button><span class="plab">.hstat</span></div>
+          <div class="pv-presscell"><button class="sheet-row" type="button">Switch course &rarr;</button><span class="plab">.sheet-row · elevated-lite</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================================
+       Section 12 — Motion vocabulary + dual reduced-motion (MOT-01 / MOT-04 / D-39 / D-42)
+       ==================================================================================== -->
+  <section class="pv-section" id="s12">
+    <div class="pv-wrap">
+      <div class="pv-head">
+        <h2><span class="pv-num">12</span>Motion vocabulary &amp; reduced motion</h2>
+        <p>ONE vocabulary (MOT-01): every signature maps to a Phase-1 duration + easing token — no new curves are authored.
+        The celebration primitives (the burst + the PERFECT WAAPI exemplar) live HERE, spatially separated from the
+        scripture in §10. Then reduced motion is proven BOTH ways: the toggle below, and your OS &ldquo;Reduce
+        Motion&rdquo; setting — under either, the burst no-ops and the companion loop stops.</p>
+      </div>
+
+      <div class="pv-card">
+        <p class="pv-subhead">The one vocabulary — signature · token pair</p>
+        <div class="pv-motion">
+          <div class="pv-mcell">
+            <span class="mtitle">Press / tap collapse</span>
+            <button class="btn" type="button" style="max-width:200px">Press me</button>
+            <span class="easing">--dur-2 (120ms) · --ease-press</span>
+          </div>
+          <div class="pv-mcell">
+            <span class="mtitle">Hover / small state</span>
+            <span class="cite" id="pv-motion-cite">al-Ḥujurāt 49:15</span>
+            <span class="easing">--dur-3 (200ms) · --ease-standard · hover (fine pointer)</span>
+          </div>
+          <div class="pv-mcell">
+            <span class="mtitle">Pop-in (overshoot)</span>
+            <div class="pv-popin go" id="pv-popin"></div>
+            <button class="pv-tinybtn" id="pv-popin-replay" type="button">Replay pop-in</button>
+            <span class="easing">--dur-5 (350ms) · --ease-spring</span>
+          </div>
+          <div class="pv-mcell">
+            <span class="mtitle">Sheet / scrim in</span>
+            <button class="pv-tinybtn" id="pv-motion-sheet" type="button">Open real sheet</button>
+            <span class="easing">--dur-4 (280ms) · --ease-gentle in · --ease-in out</span>
+          </div>
+          <div class="pv-mcell">
+            <span class="mtitle">Fade / slide micro</span>
+            <div class="pv-fade" id="pv-fade"></div>
+            <button class="pv-tinybtn" id="pv-fade-replay" type="button">Replay fade</button>
+            <span class="easing">--dur-3 (200ms) · --ease-standard</span>
+          </div>
+          <div class="pv-mcell">
+            <span class="mtitle">Ambient (the only infinite motion)</span>
+            <div class="pv-ambient">
+              <span class="companion pv-companion" id="pv-companion" data-ambient></span>
+              <span class="breathing-ring pv-bring"></span>
+            </div>
+            <span class="easing">--dur-amb (4800ms) · --ease-gentle · loops — STOP under reduced motion</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pv-card" style="margin-top:var(--sp-5)">
+        <p class="pv-subhead">Celebration primitives — spatially separate from the scripture (mercy law)</p>
+        <div class="pv-motion">
+          <div class="pv-mcell">
+            <span class="mtitle">Burst primitive</span>
+            <button class="pv-tinybtn" id="pv-confetti" type="button">Fire the burst</button>
+            <span class="easing">AW.confetti(24) · brand palette · no-ops under reduced motion</span>
+          </div>
+          <div class="pv-mcell" style="grid-column:1 / -1">
+            <span class="mtitle">PERFECT overlay — the WAAPI orchestration exemplar Phase 4 copies</span>
+            <div class="pv-perfstage">
+              <div class="perfect" id="pv-perfect"><h1>PERFECT</h1><p>Three in a row. Keep walking.</p></div>
+            </div>
+            <button class="pv-tinybtn" id="pv-perfect-btn" type="button">Play PERFECT</button>
+            <span class="easing">AW.animate(el, keyframes, --dur-5, --ease-spring) · scale-pop</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pv-card" style="margin-top:var(--sp-5)">
+        <p class="pv-subhead">Reduced motion — both trigger paths (MOT-04)</p>
+        <div class="pv-motiontoggle">
+          <button id="pv-motion-toggle" type="button" aria-pressed="false" class="pv-tinybtn">Simulate reduce motion</button>
+          <span class="pv-motionstate" id="pv-motion-state" aria-live="polite">data-motion: system</span>
+        </div>
+        <p class="pv-head" style="margin-top:var(--sp-3)"><span class="pv-inline-latin" style="font-size:var(--fs-kicker);color:var(--ink3)">Path&nbsp;1 — this toggle stamps <code class="pv-inline-latin">data-motion="reduce"</code> on <code class="pv-inline-latin">&lt;html&gt;</code> (the in-app override the Phase-2 boot-stamp mirrors). Path&nbsp;2 — your OS &ldquo;Reduce Motion&rdquo; accessibility setting (<code class="pv-inline-latin">prefers-reduced-motion</code>). Under EITHER, the durations collapse to ~1ms, the burst button no-ops, and the companion bob / glow / breathing ring above stop outright.</span></p>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <script>
@@ -1034,6 +1172,88 @@ body{
       AW.cite('muslim-8', 'Ṣaḥīḥ Muslim 8') +
       ' The word for that settled belief is <span class="term" data-term="aqeedah">aqeedah</span>.</p>';
     AW.wire(sheetDemo, demoCfg);
+  }
+
+  /* ============================================================================================
+     Phase 3 (Task 2) — §11 press-inventory glyph slots + §12 motion vocabulary, the burst, the
+     PERFECT WAAPI exemplar, and the dual reduced-motion toggle. All real AW.* output.
+     ============================================================================================ */
+  if (window.AW && AW.icon) {
+    var pressCite = document.getElementById('pv-press-cite');
+    if (pressCite) pressCite.insertAdjacentHTML('afterbegin', AW.icon('cite'));
+    var pressTab = document.getElementById('pv-press-tab');
+    if (pressTab) pressTab.insertAdjacentHTML('afterbegin', AW.icon('remember'));
+    var pressHstat = document.getElementById('pv-press-hstat');
+    if (pressHstat) pressHstat.insertAdjacentHTML('afterbegin', AW.icon('flame'));
+    var motionCite = document.getElementById('pv-motion-cite');
+    if (motionCite) motionCite.insertAdjacentHTML('afterbegin', AW.icon('cite'));
+    var companion = document.getElementById('pv-companion');
+    if (companion) companion.innerHTML = AW.icon('lantern');
+  }
+
+  /* §12 — pop-in replay (force-reflow idiom, real engine popIn keyframe + tokens). */
+  var popin = document.getElementById('pv-popin');
+  var popinReplay = document.getElementById('pv-popin-replay');
+  if (popin && popinReplay) {
+    popinReplay.addEventListener('click', function () {
+      popin.classList.remove('go');
+      void popin.offsetWidth; /* force reflow so the animation restarts */
+      popin.classList.add('go');
+    });
+  }
+
+  /* §12 — fade replay. */
+  var fade = document.getElementById('pv-fade');
+  var fadeReplay = document.getElementById('pv-fade-replay');
+  if (fade && fadeReplay) {
+    fadeReplay.addEventListener('click', function () {
+      fade.classList.add('out');
+      setTimeout(function () { fade.classList.remove('out'); }, 220);
+    });
+  }
+
+  /* §12 — the REAL sheet primitive (singleton slide-in via the motion vocabulary). */
+  var motionSheet = document.getElementById('pv-motion-sheet');
+  if (motionSheet && window.AW && AW.sheet) {
+    motionSheet.addEventListener('click', function () {
+      AW.sheet('<div class="grip"></div>' +
+        '<div class="r-src">The motion vocabulary</div>' +
+        '<div class="r-mean">Gentle in, clean out — the one calm sheet motion the whole app inherits. ' +
+        'Scrim tap, the in-sheet ×, or Escape closes it.</div>');
+    });
+  }
+
+  /* §12 — the burst primitive; its own call-time guard no-ops under either reduced-motion trigger. */
+  var confettiBtn = document.getElementById('pv-confetti');
+  if (confettiBtn && window.AW && AW.confetti) {
+    confettiBtn.addEventListener('click', function () { AW.confetti(24); });
+  }
+
+  /* §12 — PERFECT overlay driven by the AW.animate WAAPI exemplar (scale-pop, --dur-5 / --ease-spring).
+     Lives here, spatially separated from the §10 scripture (mercy law). */
+  var perfectEl = document.getElementById('pv-perfect');
+  var perfectBtn = document.getElementById('pv-perfect-btn');
+  if (perfectEl && perfectBtn && window.AW && AW.animate) {
+    perfectBtn.addEventListener('click', function () {
+      perfectEl.classList.add('show');
+      var h1 = perfectEl.querySelector('h1');
+      if (h1) AW.animate(h1, [{ transform: 'scale(.8)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], '--dur-5', '--ease-spring');
+      setTimeout(function () { perfectEl.classList.remove('show'); }, 1500);
+    });
+  }
+
+  /* §12 — reduced-motion toggle: stamps data-motion="reduce" on <html> (the in-app override path).
+     The OS "Reduce Motion" setting is the second path; under either, the burst no-ops and every
+     ambient loop stops. */
+  var motionToggle = document.getElementById('pv-motion-toggle');
+  var motionState = document.getElementById('pv-motion-state');
+  if (motionToggle) {
+    motionToggle.addEventListener('click', function () {
+      var reduced = root.getAttribute('data-motion') === 'reduce';
+      root.setAttribute('data-motion', reduced ? 'system' : 'reduce');
+      motionToggle.setAttribute('aria-pressed', String(!reduced));
+      if (motionState) motionState.textContent = 'data-motion: ' + (reduced ? 'system' : 'reduce');
+    });
   }
 })();
 </script>
