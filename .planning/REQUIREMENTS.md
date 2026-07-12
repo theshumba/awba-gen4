@@ -8,8 +8,8 @@ Macro product scope is fixed by Josh's Gen-3 MVP (the owner-approved direction).
 
 ### Foundation (design system + state)
 
-- [ ] **FND-01**: A single design-token layer (CSS `@layer` in one engine stylesheet) defines all colors, type, radii, shadows, motion durations/easings — no literal hex/px invention in screen code; unit colors exist ONCE (CSS custom properties, consumed by JS from the same source)
-- [ ] **FND-02**: Unit theming fully recolors a lesson page (primary AND secondary accents — no half-themed pages on purple/teal units like Gen-3's fixed blue2/blue3)
+- [x] **FND-01**: A single design-token layer (CSS `@layer` in one engine stylesheet) defines all colors, type, radii, shadows, motion durations/easings — no literal hex/px invention in screen code; unit colors exist ONCE (CSS custom properties, consumed by JS from the same source)
+- [x] **FND-02**: Unit theming fully recolors a lesson page (primary AND secondary accents — no half-themed pages on purple/teal units like Gen-3's fixed blue2/blue3)
 - [x] **FND-03**: Fonts self-hosted as subset .woff2 (Poppins, Inter, Amiri, Amiri Quran for ayah text) with font-display strategy — no Google Fonts CDN dependency, no FOUC flash on navigation; ˹ ˺ brackets and transliteration diacritics render correctly (glyph test)
 - [ ] **FND-04**: One icon registry built from the 20 canonical branded SVGs (inline, aria-hidden, single source — no per-page duplicate icon constants); gold lantern is a properly authored variant, not a regex recolor
 - [ ] **FND-05**: All progress state lives in one versioned localStorage blob with a migration chain that imports existing Gen-3 `awba_*` keys losslessly, exposed behind the same `AW.S.get/set` call shape
@@ -66,7 +66,7 @@ Macro product scope is fixed by Josh's Gen-3 MVP (the owner-approved direction).
 
 ### Platform & delivery
 
-- [ ] **PLT-01**: True responsive layout: full-bleed app on phones (dvh-safe, overscroll handled, safe-area insets), gracious centered-column presentation on desktop — no fixed 380px card
+- [x] **PLT-01**: True responsive layout: full-bleed app on phones (dvh-safe, overscroll handled, safe-area insets), gracious centered-column presentation on desktop — no fixed 380px card
 - [ ] **PLT-02**: Installable PWA: manifest, lantern icon family (any+maskable+apple), root-scoped service worker (cache-first hashed/static assets, network-first navigations), offline works after first visit
 - [ ] **PLT-03**: A gentle "add to home screen" nudge exists (mitigates iOS 7-day localStorage eviction threat to the un-loseable promise) — mercy-toned, dismissible, never nagging
 - [ ] **PLT-04**: Site deploys as pure static files (GitHub Pages/Vercel compatible), zero build step; repo has a README covering structure, how Josh reviews (open files), and how to run the validator
@@ -98,10 +98,10 @@ Every v1 requirement maps to exactly one phase. Coverage: 42/42 (100%). See `.pl
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FND-01 | Phase 1 | Pending |
-| FND-02 | Phase 1 | Pending |
+| FND-01 | Phase 1 | Complete |
+| FND-02 | Phase 1 | Complete |
 | FND-03 | Phase 1 | Complete |
-| PLT-01 | Phase 1 | Pending |
+| PLT-01 | Phase 1 | Complete |
 | FND-05 | Phase 2 | Pending |
 | FND-06 | Phase 2 | Pending |
 | FND-07 | Phase 2 | Pending |

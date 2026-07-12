@@ -4,13 +4,13 @@ milestone: v1.5
 milestone_name: milestone
 status: executing
 stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-07-12T00:04:09.291Z"
+last_updated: "2026-07-12T00:18:03.328Z"
 last_activity: 2026-07-12
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-07-11)
 ## Current Position
 
 Phase: 01 (Foundation — Design Tokens, Responsive Shell & Fonts) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 Status: Ready to execute
 Last activity: 2026-07-12
 
-Progress: [███░░░░░░░] 25%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Progress: [███░░░░░░░] 25%
 
 *Updated after each plan completion*
 | Phase 01 P01 | 20 min | 2 tasks | 13 files |
+| Phase 01 P02 | 2 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,9 @@ Recent decisions affecting current work:
 - Roadmap: PWA/service worker last (Phase 7) — precache paths depend on stable assets from all prior phases.
 - [Phase 01]: Corrected check-glyph-coverage.py's poppins-600.woff2 REQUIRED codepoint list after direct TTF cmap inspection proved RESEARCH.md's Google Fonts API glyph-existence check was a false positive for U+02F9/U+02FA/U+1E25 — Poppins genuinely lacks these glyphs in every weight; Inter has full coverage and the CSS font-family fallback stack handles the rare cases
 - [Phase 01]: Static per-weight Inter files (4x) used instead of Inter Variable font — Keeps the subsetting command shape identical across all four font families since Poppins/Amiri/Amiri Quran are static-only regardless
+- [Phase ?]: [Phase 01-02] --font-disp lists Inter immediately after Poppins (Wave-1 verified Poppins glyph gap for U+02F9/02FA + h-class diacritics), so those glyphs fall through to Inter not a system face.
+- [Phase ?]: [Phase 01-02] Shell region rows namespaced .app-hud/.app-stage/.app-foot so Phase-3 HUD chrome component classes stay unambiguous; safe-area insets applied at the base layer.
+- [Phase ?]: [Phase 01-02] Night/legendary focus ring switches to --gold2 via a forward-looking [data-register=night] hook (Phase 3/4 sets the attribute) since the calm-field --accent ring loses contrast on the dark gradient.
 
 ### Pending Todos
 
@@ -95,6 +99,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-12T00:04:09.287Z
+Last session: 2026-07-12T00:15:52.570Z
 Stopped at: Completed 01-01-PLAN.md
 Resume file: None
