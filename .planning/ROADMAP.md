@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Fonts (Poppins, Inter, Amiri, Amiri Quran) load from self-hosted subset `.woff2` files with zero Google Fonts CDN requests and no FOUC on navigation; `˹ ˺` brackets and transliteration diacritics render as correct glyphs.
 **Plans**: 4 plans
   - [x] 01-01-PLAN.md — Repo scaffold + self-hosted font subset pipeline (glyph-coverage gate green)
-  - [ ] 01-02-PLAN.md — One-stylesheet token + base shell layers (@layer order, per-unit accent scales, responsive grid)
+  - [x] 01-02-PLAN.md — One-stylesheet token + base shell layers (@layer order, per-unit accent scales, responsive grid)
   - [ ] 01-03-PLAN.md — preview.html verification vehicle (token sheet, live unit-switch, glyph test, zero-CDN)
   - [ ] 01-04-PLAN.md — Reviewer D-12 checklist gate (human-verify)
 **UI hint**: yes
@@ -125,7 +125,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation — Tokens, Shell & Fonts | 1/4 | In Progress|  |
+| 1. Foundation — Tokens, Shell & Fonts | 2/4 | In Progress|  |
 | 2. State Layer & Engine-Contract Freeze | 0/TBD | Not started | - |
 | 3. Components, Icon Kit & Motion | 0/TBD | Not started | - |
 | 4. Lesson & Review Engine Port | 0/TBD | Not started | - |
