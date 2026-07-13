@@ -113,7 +113,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. The daily ayah rotates through the verified 7-verse pool by day-of-year (no monthly repeat) and is revealed reverently; streak / noor / course-switcher bottom sheets share one implementation (Fiqh/Seerah/Qur'an as coming-soon rows), and every tab (Practice/Returns/Profile/More) gives designed coming-soon feedback — never a dead tap.
   5. Navigating path↔lesson↔review cross-fades/morphs via Cross-Document View Transitions wired on every page, degrading gracefully to a normal navigation on browsers without support (e.g. Firefox).
 **Plans**: 6 plans
-  - [ ] 05-01-PLAN.md — Engine seams + Wave-0 tests + atom re-wire (65→61 denominator, D-57)
+  - [x] 05-01-PLAN.md — Engine seams + Wave-0 tests + atom re-wire (65→61 denominator, D-57) (completed 2026-07-13 — NODE_ATOMS/AW.atomsDone/AW.dailyIndex/mute exports added + tested (learn-state.test.js, RED→GREEN); 65→61 denominator swept atomically across engine + ring.test.js/sky.test.js/preview.html; render-smoke discovers root learn.html; suite 98→107 green)
   - [ ] 05-02-PLAN.md — learn.html Orbit shell: HUD + Ring hero (static) + continue card + streak/constellation + daily ayah (LRN-01/05)
   - [ ] 05-03-PLAN.md — Unit headers + winding path + live node grammar + earned gold thread + Ibrahim line (LRN-02/04, CNT-03)
   - [ ] 05-04-PLAN.md — Node popup + navigation wiring + cross-document View Transitions morph (LRN-03, MOT-02)
@@ -158,6 +158,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 2. State Layer & Engine-Contract Freeze | 2/2 | Complete   | 2026-07-12 |
 | 3. Components, Icon Kit & Motion | 10/12 | In Progress|  |
 | 4. Lesson & Review Engine Port | 6/7 | In Progress | - |
-| 5. Learn Page & View Transitions | 0/6 | Planned | - |
+| 5. Learn Page & View Transitions | 1/6 | In Progress | - |
 | 6. Accessibility, RTL & Typography | 0/TBD | Not started | - |
 | 7. PWA Shell, Offline & Delivery | 0/TBD | Not started | - |

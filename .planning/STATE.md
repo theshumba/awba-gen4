@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: "Phase 5 PLANNED (6 plans, 6 waves; checker blocker + 7 warnings fixed at 913d3f7) — executing wave 1 (05-01 engine seams + 65→61 atom re-wire)"
-last_updated: "2026-07-13T22:15:00.000Z"
+stopped_at: "Phase 5 wave 1 (05-01) COMPLETE 2026-07-13 — engine seams + atomic 65→61 re-wire landed, suite 98→107; resume at 05-02 (opus, learn.html Orbit shell)"
+last_updated: "2026-07-13T22:24:00.000Z"
 last_activity: 2026-07-13
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 31
-  completed_plans: 25
+  completed_plans: 26
   percent: 57
 ---
 
@@ -25,8 +25,9 @@ See: .planning/PROJECT.md (updated 2026-07-11)
 
 ## Current Position
 
-Phase: 05 (Learn Page & Cross-Page View Transitions) — PLANNED (6 plans / 6 sequential waves), wave 1 executing
+Phase: 05 (Learn Page & Cross-Page View Transitions) — PLANNED (6 plans / 6 sequential waves), wave 1 (05-01) COMPLETE, wave 2 (05-02) next
 - Wave routing: 05-01 sonnet (engine seams: NODE_ATOMS/atomsDone/dailyIndex/mute exports + atomic 65→61 re-wire + learn-state tests) · 05-02 opus (Orbit shell: HUD/Ring/continue/streak/daily ayah) · 05-03 opus (unit headers + winding path + node grammar + gold thread) · 05-04 opus (popup + nav wiring + View Transitions) · 05-05 opus (sheets + tabs + chest→circuit-plate Festival claim) · 05-06 sonnet prechecks + BLOCKING human gate (autonomous:false)
+- **05-01 (engine seams + Wave-0 tests + atomic 65→61 atom re-wire): COMPLETE 2026-07-13** — `scripts/tests/learn-state.test.js` (NEW, 9 tests, RED confirmed before GREEN) pins `NODE_ATOMS` (15 verbatim per-lesson counts from RESEARCH §Atom Map, Σ=61) + `AW.atomsDone(progress)` (D-57/R-1), `AW.dailyIndex(date, poolLen)` (day-of-year from local date parts, fixes the Gen-3 `getDate()%7` monthly-repeat bug, LRN-05), `AW.muteBtnHtml`/`AW.bindMuteBtn` exports (D-60/Pitfall 6, no new glyph), and the CNT-03 unlock-order contract walked over the SHIPPED `AW.deriveNodeState` (extended, never forked) plus chest-claim idempotency (RWD-04). The 65→61 atom-denominator sweep landed as ONE atomic commit (`800dfd7`): `DEF_STRUCT.atoms`/`SKY_ATOMS` 65→61, both reward-runner atom computations + the boot `--dawn` stamp now read `AW.atomsDone(AW.state())` (the `ATOMS_PER_NODE=3` proxy fully retired), paired with every `ring.test.js`/`sky.test.js`/`preview.html` assertion moving to 61 in the same commit — suite stayed green throughout, no red intermediate commit. `render-smoke.mjs findPages()` extended to discover root `learn.html` (existsSync-guarded, currently skipped since 05-02 hasn't created it yet). Commits `e59131c`, `800dfd7`, `bc545fc`. Suite **98→107/107** green; `localStorage` grep-count held at 13; no CSS/token/layer-order touched (plan scope excluded CSS); glyphCount held at 13. Zero deviations. **Note:** CNT-03/LRN-05 in REQUIREMENTS.md are deliberately left `[ ]` (Pending) — this plan proves their pure engine contract headlessly, but the requirement text demands live rendering ("verified by walking the storage-driven states", "rendered reverently") which only lands with the actual `learn.html` UI in 05-02/05-03.
 
 ### Phase 4 history (CLOSED 2026-07-13 — gate passed by owner directive, review-fixed, verified 5/5) — **7/7 plans complete**
 
@@ -63,9 +64,9 @@ Progress: [███░░░░░░░] 43%
 
 **Velocity:**
 
-- Total plans completed: 6 (this phase: 04-01, 04-02, 04-03, 04-04, 04-05, 04-06)
-- Average duration: ~27 min
-- Total execution time: ~161 min
+- Total plans completed: 1 (this phase: 05-01)
+- Average duration: ~20 min
+- Total execution time: ~20 min
 
 **By Phase:**
 
@@ -74,11 +75,12 @@ Progress: [███░░░░░░░] 43%
 | 02 | 2 | - | - |
 | 03 | 11 | - | ~20 min (03-09) |
 | 04 | 6 | - | ~27 min |
+| 05 | 1 | - | ~20 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 04-02, 04-03, 04-04, 04-05, 04-06
-- Trend: Phase 4's engine port is complete on both runner families (04-03/04-04 lesson, 04-05 review) and the full 19-file content port now landed in 04-06 — every one of Josh's 15 lessons + 4 reviews renders end-to-end, byte-verbatim, zero-CDN, with the sensitive holds verified intact. The byte-splice recipe proved out identically at 17x scale with zero deviations. Next: 04-07, the phase gate — automated prechecks then the BLOCKING human visual walk across all 19 pages.
+- Last 5 plans: 04-04, 04-05, 04-06, 04-07, 05-01
+- Trend: Phase 4 closed 7/7 (owner-approved §9 gate). Phase 5 wave 1 (05-01) is the test-foundation/engine-seam plan — no DOM rendered yet, but the four pure seams (`AW.dailyIndex`, `NODE_ATOMS`/`AW.atomsDone`, the mute exports) the actual `learn.html` build (05-02+) will consume are now live and headlessly proven, and the locked 61-atom Ring/Sky denominator (D-57/R-1) is wired everywhere in one atomic sweep so no later plan has to touch it again. Next: 05-02, the Orbit shell (HUD + static Ring hero + continue card + streak/constellation + daily ayah).
 
 *Updated after each plan completion*
 | Phase 01 P01 | 20 min | 2 tasks | 13 files |
@@ -98,6 +100,7 @@ Progress: [███░░░░░░░] 43%
 | Phase 04 P03 | ~50 min | 3 tasks | 3 files |
 | Phase 04 P04 | ~40 min | 2 tasks | 2 files |
 | Phase 04 P05 | ~15 min | 3 tasks | 4 files |
+| Phase 05 P01 | ~20 min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -168,6 +171,8 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-05: review progress arcs split un-inked vs lit via .rv-arc path:not(.thread) so the shipped .thread (components layer) keeps its gold + draw authority despite @layer screens outranking components — the :not() scoping pattern for any screens-layer rest style under a components-layer state class
 - [Phase 04]: 04-05: the review result persists noor through AW._noorClaimer() (not a bare AW.S.set) — same Gen-3 arithmetic, re-entry-proof, pinned by runner-review.test.js (T-04-05a); paintThread toggles .thread with classList.toggle(force) so a repaint never restarts the draw
 - [Phase 04]: 04-05: Gen-3's AW.CLOCK/AW.HEART foot icons dropped (the 13-glyph registry is frozen by components.test.js) — timeout verdict = ember-inked title, miss = law-8 text; no new glyph; goldsel → inline gold borderColor selection cue (the AwbaLesson precedent re-voiced for Orbit)
+- [Phase 05]: 05-01: NODE_ATOMS is a module-scope var (not AW.NODE_ATOMS) — matches the existing DEF_STRUCT/SKY_ATOMS precedent of keeping per-computation denominators off the public AW surface; only the pure AW.atomsDone(progress) function is exported, tests read NODE_ATOMS directly as a bare identifier inside the same vm context
+- [Phase 05]: 05-01: the 65→61 atom-denominator sweep (D-57/R-1) landed as ONE atomic commit — engine constants + every paired ring.test.js/sky.test.js/preview.html assertion together — so the suite never had a red intermediate state; the ATOMS_PER_NODE=3 proxy and the boot TOTAL_NODES coarse-count proxy are both fully retired, replaced everywhere by AW.atomsDone(AW.state())
 
 ### Pending Todos
 
@@ -196,6 +201,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-13T20:49:35.622Z
-Stopped at: Phase 5 context gathered (auto mode, D-53..D-61)
-Resume file: .planning/phases/05-learn-page-cross-page-view-transitions/05-CONTEXT.md
+Last session: 2026-07-13T22:24:00.000Z
+Stopped at: Phase 5 wave 1 (05-01) COMPLETE — engine seams + atomic 65→61 re-wire landed, suite 98→107
+Resume file: .planning/phases/05-learn-page-cross-page-view-transitions/05-02-PLAN.md
