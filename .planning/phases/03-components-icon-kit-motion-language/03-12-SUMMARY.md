@@ -28,6 +28,10 @@ Run verbatim from the plan's `<verify>` block, 2026-07-13:
 - Gold thread is deliberately clean-geometric against the inked dabs: approved; seeded thread-jitter remains a trivial follow-up if ever wanted.
 - Register MOMENTS that arrive with content (Warsha circuit plates, Ember crowd-arrival, Ink seed-rows/stamps) land in Phases 4–5 on the foundations proven here.
 
+## Post-approval fix-wave re-check (verifier escalation, resolved)
+
+The verifier flagged that WR-01/WR-02 fixes landed after the §9 approval and visibly changed preview §6 (no auto-replay; no stray head-dot on an empty ring — both toward the approved spec). The §6 re-glance was presented to Melusi 2026-07-13 with the two specific look-fors; he responded **"continue"** (proceed instruction). Recorded as owner authorization to close; not an item-by-item re-walk.
+
 ## Next
 
 Phase close-out: code-review gate on the re-cut (auto-fix Critical/Warning) → gsd-verifier → phase.complete → Phase 4 (engine port + detail layer, inherits Athar; sound-cue owner decision still open).

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: "CODE-REVIEW --fix WAVE COMPLETE 2026-07-13 — all 9 Warnings from 03-REVIEW-ATHAR.md fixed & committed atomically (WR-01 ring never re-draws via animateFrom; WR-02 head-dot gated on a real frontier; WR-03 structure validated field-by-field; WR-04 not-yet border --ink-40→--ink-62 for 3:1; WR-05 preview captions --paper-45→--paper-62 for 4.5:1; WR-06 skyDawn coverage; WR-07 ring edge cases pinned; WR-08 preview Sky labels →Dhuhr; WR-09 AW.S.isFallback() makes memFallback explicit — commits fb8b8bd..3ceb152). 7 Suggestions documented, not applied. Suite 53→64/64 green; validate-content --self-test OK; §12 grep gates re-verified (0 gated literals, single @layer line, braces balanced, no CDN). FIXES section appended to 03-REVIEW-ATHAR.md. Next in Phase 3 close-out: gsd-verifier → phase.complete → Phase 4 (engine port, inherits Athar)"
+stopped_at: "PHASE 3 COMPLETE 2026-07-13 — Athar re-cut shipped end-to-end: §9 human gate APPROVED; 9/9 review Warnings fixed (suite 64/64); VERIFICATION 5/5 (03-VERIFICATION-ATHAR.md); verifier's post-approval-fix escalation resolved (owner re-glance presented, responded 'continue'). NEXT: /gsd:discuss-phase 4 --auto (engine port + detail layer — 19 files VERBATIM from Josh's _MVP-BUILD, inherits Athar; sound-cue owner decision open)"
 last_updated: "2026-07-13T01:30:00.000Z"
 last_activity: 2026-07-13
 progress:
   total_phases: 7
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 18
-  completed_plans: 16
-  percent: 29
+  completed_plans: 17
+  percent: 43
 ---
 
 # Project State
@@ -21,7 +21,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-11)
 
 **Core value:** A learner opens the app, walks a beautiful winding path through the full Aqeedah course, and every screen feels world-class while every word of scripture stays verbatim, sourced, and scholar-gated.
-**Current focus:** Phase 03 — Components, Icon Kit & Motion Language
+**Current focus:** Phase 04 — Lesson & Review Engine Port + Detail Layer (Phase 03 CLOSED 2026-07-13 under Athar)
 
 ## Current Position
 

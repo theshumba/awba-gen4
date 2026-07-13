@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation — Design Tokens, Responsive Shell & Fonts** - True full-viewport shell, one token layer, self-hosted fonts; kills the fixed 380px card (completed 2026-07-12, VERIFICATION PASSED 4/4)
 - [x] **Phase 2: State Layer & Engine-Contract Freeze** - Versioned storage + migration, frozen `AW`/`AwbaLesson`/`AwbaReview` contract, standing validator (completed 2026-07-12)
-- [ ] **Phase 3: Components, Icon Kit & Motion Language** - Shared chrome, one 20-SVG icon registry, citation/gloss sheets, one `linear()` motion vocabulary
+- [x] **Phase 3: Components, Icon Kit & Motion Language** - Athar re-cut: register architecture, 20-icon currentColor registry, citation/gloss sheets, paper-press + one-easing motion vocabulary, Ring generator, prayer-clock sky (completed 2026-07-13 — §9 human gate APPROVED, 9/9 review warnings fixed, VERIFICATION 5/5)
 - [ ] **Phase 4: Lesson & Review Engine Port + Detail Layer** - All 19 data files render verbatim; reward choreography, sound, holds verified
 - [ ] **Phase 5: Learn Page & Cross-Page View Transitions** - Winding node path, live states, daily ayah, native page-to-page transitions
 - [ ] **Phase 6: Accessibility, RTL & Typography Hardening** - Keyboard, aria-live, contrast, bidi + glyph stress-test across every screen
