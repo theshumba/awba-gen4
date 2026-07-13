@@ -1127,8 +1127,18 @@ function mulberry32(a) {
    static. Returns an inline <svg> string. No Date, no Math.random in this path. */
 AW.ringSVG = function (cfg) {
   cfg = cfg || {};
-  var struct = cfg.structure || { circuits: 4, lessons: 15, atoms: 65 };
-  var CIRCUITS = struct.circuits, LESSONS = struct.lessons, ATOMS = struct.atoms;
+  /* WR-03: merge cfg.structure field-by-field against the canonical 4/15/65 shape and coerce each
+     field to a positive finite integer. A partial or malformed structure object (e.g. { circuits: 4 }
+     with lessons/atoms absent, or a non-numeric field) must never yield a NaN aria-label / data-atoms
+     nor a silently empty ring — each missing/invalid field independently falls back to its default. */
+  var DEF_STRUCT = { circuits: 4, lessons: 15, atoms: 65 };
+  var cfgStruct = cfg.structure || {};
+  var posInt = function (v, dflt) {
+    return (typeof v === 'number' && isFinite(v) && v > 0) ? (v | 0) : dflt;
+  };
+  var CIRCUITS = posInt(cfgStruct.circuits, DEF_STRUCT.circuits);
+  var LESSONS = posInt(cfgStruct.lessons, DEF_STRUCT.lessons);
+  var ATOMS = posInt(cfgStruct.atoms, DEF_STRUCT.atoms);
   var seed = (typeof cfg.seed === 'number') ? (cfg.seed >>> 0) : AW.ringSeed();
   var atomsDone = Math.max(0, Math.min(ATOMS, cfg.atomsDone | 0));
   var size = cfg.size || 300;

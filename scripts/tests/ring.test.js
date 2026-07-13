@@ -128,6 +128,28 @@ test('ringSVG: with no explicit seed, repeated calls are stable via the stored r
   assert.ok(out.a.indexOf('data-seed="' + out.seed + '"') !== -1, 'the maker\'s mark seed is stamped into the markup');
 });
 
+/* ---------- (WR-03) a partial/malformed structure never emits NaN or a silently empty ring ---------- */
+
+test('ringSVG: a partial structure object falls back field-by-field to 4/15/65 — no NaN label, no empty ring (WR-03)', () => {
+  const sandbox = loadEngine(
+    makeLS({}),
+    `globalThis.__out = {
+       partial: AW.ringSVG({ seed: 1, atomsDone: 5, structure: { circuits: 4 } }),
+       bad:     AW.ringSVG({ seed: 1, atomsDone: 5, structure: { circuits: 'x', lessons: NaN, atoms: -3 } })
+     };`
+  );
+  const { partial, bad } = sandbox.__out;
+  // Missing lessons/atoms fall back to 15/65 → a well-formed label and a populated ring.
+  assert.ok(partial.indexOf('aria-label="Tawaf ring — 5 of 65 inked"') !== -1, 'partial structure must use the 65-atom default in the label');
+  assert.equal(partial.indexOf('NaN'), -1, 'no NaN may leak into the markup');
+  assert.ok(partial.indexOf('data-atoms="5"') !== -1, 'atomsDone renders against the defaulted atom total');
+  assert.ok((partial.match(/<path/g) || []).length > 0, 'the ring must not be silently empty');
+  // Every field invalid → the whole canonical shape is restored (still no NaN, still populated).
+  assert.equal(bad.indexOf('NaN'), -1, 'an all-invalid structure must still never emit NaN');
+  assert.ok(bad.indexOf('of 65 inked') !== -1, 'an all-invalid structure falls back to 65 atoms');
+  assert.ok((bad.match(/<path/g) || []).length > 0, 'an all-invalid structure still renders dabs');
+});
+
 /* ---------- (W1) the ringSeed lazy write must NOT clobber an unrecognized-future-schema blob ----------
    AW.ringSeed()'s first call is a new AW.S.set() site. load() deliberately refuses to persist over
    a from-the-future blob (CR-01), so set() must not either — the memFallback guard skips persist
