@@ -1416,3 +1416,305 @@ AW.sound = function (cue) {
     /* no-op — missing Audio support / blocked playback never surfaces to the learner */
   }
 };
+
+/* ---------- AW.MLAB — marker display labels (ported from Gen-3 _MVP-BUILD/shared/awba-engine.js).
+   The four validator marker types map to their manuscript labels; gen-4 ships only the four marker
+   GLYPHS (fact/remember/fard/angle), not this label map, so it is ported here. */
+AW.MLAB = {
+  fact: 'Worth knowing',
+  remember: 'Worth remembering',
+  fard: 'The first duty',
+  angle: 'Another angle',
+};
+
+/* ---------- pure beat-view helpers (DOM-free) — the Athar expression of Josh's Gen-3 beat markup.
+   Every renderer emits ONLY the shipped @layer screens class names (04-02) + shipped AW.* icons,
+   re-voiced per D-45 (scripture under law 3, the icon re-map at the renderer, cfg names unchanged).
+   These build strings only — no DOM, no storage — so AW._beatHtml is unit-testable headlessly and
+   the DOM driver (AwbaLesson) only inserts + wires the result. */
+
+/* markerChip — a marginalia chip: the marker glyph (--icon-accent) + its AW.MLAB label, then the
+   marker body as a plain note beneath (never uppercased). */
+function markerChip(m) {
+  if (!m) return '';
+  var label = AW.MLAB[m.type] || '';
+  return (
+    '<div class="marker">' + AW.icon(m.type) + '<span>' + label + '</span></div>' +
+    (m.body ? '<p>' + m.body + '</p>' : '')
+  );
+}
+
+/* sceneIco — a centred scene icon above a beat (the Gen-3 "illustration" slot), Page crimson
+   detail via --icon-accent. Token-only inline style (no new token). */
+function sceneIco(name) {
+  return '<div class="beat-ico" style="text-align:center;line-height:0;color:var(--icon-accent)">' +
+    AW.icon(name, { size: '52px' }) + '</div>';
+}
+
+/* the six content-beat builders (read/frame/verse/panel/depth/reflect) */
+function readHtml(it) {
+  return (
+    '<div class="read">' +
+    (it.kicker ? '<div class="kicker">' + it.kicker + '</div>' : '') +
+    (it.title ? '<h2 class="pintro">' + it.title + '</h2>' : '') +
+    (it.html || '') +
+    markerChip(it.marker) +
+    '</div>'
+  );
+}
+function frameHtml(it) {
+  return (
+    '<div class="frame">' +
+    '<div class="kicker">' + (it.kicker || 'The idea to hold onto') + '</div>' +
+    '<p class="fstmt">' + (it.lead || '') + '</p>' +
+    '</div>'
+  );
+}
+/* verse — scripture law (law 3): .scard on clean ground (--go:0, emitted inline to reinforce the
+   law), the ayah in Amiri Quran with lang/dir, the translation carrying the ˹ ˺ brackets, the fixed
+   source line. NOTHING celebratory is authored in this panel. */
+function verseHtml(it) {
+  return (
+    sceneIco('quran-stand') +
+    '<div class="scard" style="--go:0">' +
+    (it.label ? '<div class="slabel">' + it.label + '</div>' : '') +
+    '<p class="ayah" lang="ar" dir="rtl">' + (it.ar || '') + '</p>' +
+    '<p class="trans">' + (it.tr || '') + '</p>' +
+    '<p class="tsrc">Translation of the meaning: The Clear Quran, Dr. Mustafa Khattab · pending review</p>' +
+    '</div>' +
+    (it.after || '')
+  );
+}
+function panelHtml(it) {
+  var variant = it.variant || 'pull';
+  var rows = (it.items || []).map(function (x, i) {
+    var n = x.n || i + 1;
+    var name = x.name ? '<strong>' + x.name + '.</strong> ' : '';
+    return '<div class="pnl-i"><span class="pn">' + n + '</span><span>' + name + (x.body || '') + '</span></div>';
+  }).join('');
+  var tell = variant === 'tell' && it.intro ? '<div class="tkick">' + it.intro + '</div>' : '';
+  var intro = it.intro && variant !== 'tell' ? '<p>' + it.intro + '</p>' : '';
+  return (
+    '<div class="pnl v-' + variant + '">' +
+    (it.title ? '<h2 class="pintro">' + it.title + '</h2>' : '') +
+    tell + intro + rows +
+    '</div>' +
+    markerChip(it.marker)
+  );
+}
+/* depth — the 3-lens accordion (§S2). Fixed order reality → revelation → ruling; each lens is
+   SHAPE-cued (a distinct header glyph + the CSS left-rule style) AND label-cued, never colour-only.
+   The lenses are closed at build; the driver toggles the shipped `.lens.open > .lb` reveal. */
+var DEPTH_LENSES = [
+  { k: 'reality', cls: 'l-reality', label: 'Reality', glyph: 'angle' },
+  { k: 'revelation', cls: 'l-revelation', label: 'Revelation', glyph: 'cite' },
+  { k: 'ruling', cls: 'l-ruling', label: 'Ruling', glyph: 'fard' },
+];
+function depthHtml(it) {
+  var lenses = (it.lenses || {});
+  var accs = DEPTH_LENSES.map(function (l) {
+    return (
+      '<div class="lens ' + l.cls + '">' +
+      '<button class="lh" type="button" aria-expanded="false">' + AW.icon(l.glyph) + '<span>' + l.label + '</span></button>' +
+      '<div class="lb"><p>' + (lenses[l.k] || '') + '</p></div>' +
+      '</div>'
+    );
+  }).join('');
+  return (
+    sceneIco('beads') +
+    '<div class="kicker">Go deeper</div>' +
+    (it.point ? '<h2 class="pintro">' + it.point + '</h2>' : '') +
+    '<div class="lacc">' + accs + '</div>'
+  );
+}
+/* reflect — a private textarea (never persisted, never re-rendered — T-04-03a) + the model slot. */
+function reflectHtml(it) {
+  return (
+    sceneIco('dua') +
+    '<div class="kicker">Take a moment</div>' +
+    '<div class="reflect">' +
+    '<label for="lsrt">' + (it.prompt || '') + '</label>' +
+    '<textarea id="lsrt" placeholder="Write a line, only if you feel like it."></textarea>' +
+    '<div class="tsrc">This stays private, and you can skip it.</div>' +
+    '<div id="lsmodel"></div>' +
+    '</div>'
+  );
+}
+
+/* AW._beatHtml(it, cfg) — the pure view dispatcher (test seam). Content beats only in this pass;
+   the quiz beats (mc/tf/tile) join in Task 2. Returns the beat's inner HTML string; the driver
+   wraps it in `.stage`, inserts, and wires. */
+AW._beatHtml = function (it, cfg) {
+  if (!it) return '';
+  if (it.t === 'read') return readHtml(it);
+  if (it.t === 'frame') return frameHtml(it);
+  if (it.t === 'verse') return verseHtml(it);
+  if (it.t === 'panel') return panelHtml(it);
+  if (it.t === 'depth') return depthHtml(it);
+  if (it.t === 'reflect') return reflectHtml(it);
+  return '';
+};
+
+/* ============================================================================================
+   AwbaLesson(cfg) — the lesson runner (ENG-01/03/05, CNT-01/04, MOT-05). Josh's Gen-3 cfg shape is
+   consumed byte-unchanged; the mechanics are byte-preserved (the numbers come from the 04-01 pure
+   helpers) and the expression is re-voiced to the Athar Page register (D-45/D-47). This pass ships
+   the shell + flow + opener + the six content beats; quiz resolution + the reward terminus + the
+   mute toggle land next. DOM access is confined here — the beat markup is the pure AW._beatHtml.
+   ============================================================================================ */
+function AwbaLesson(cfg) {
+  if (typeof document === 'undefined') return; // headless load (tests) — the runner is DOM-driven
+  cfg = cfg || {};
+  var beats = cfg.beats || [];
+  var steps = beats.length;
+
+  /* Gen-3 setup vars, byte-preserved (115-128) EXCEPT the retired skeleton builder + the retired
+     unitColor→--blue line (unitColor stays an inert cfg field). */
+  var pos = -1, stepIndex = 0, answered = false, combo = 0, comboBest = 0, correct = 0, mistakes = 0,
+    quizN = 0, noorEarned = 0, noorClaimed = false;
+  beats.forEach(function (b) { if (['mc', 'tf', 'tile'].indexOf(b.t) >= 0) quizN++; });
+
+  /* Athar skeleton — a Page-register manuscript shell (never the retired Gen-3 body builder). */
+  document.body.innerHTML =
+    '<main class="reg-page ls-shell">' +
+    '<div class="ls-hud" id="lshud"></div>' +
+    '<div class="ls-prog" id="lsprog"></div>' +
+    '<div id="root"></div>' +
+    '</main>';
+  var root = document.getElementById('root');
+  var hudEl = document.getElementById('lshud');
+  var progEl = document.getElementById('lsprog');
+
+  function setHUD(showStats) {
+    var stats = showStats
+      ? '<span class="ls-stats">' +
+        '<span class="hstat">' + AW.icon('spark') + '<span>' + (AW.S.get('noor', 0) + noorEarned) + '</span></span>' +
+        '<span class="hstat">' + AW.icon('flame') + '<span>' + AW.S.get('returns', 0) + '</span></span>' +
+        '</span>'
+      : '<span class="ls-stats"></span>';
+    hudEl.innerHTML = stats;
+  }
+  function bumpNoor() { setHUD(true); }
+
+  function paintProg() {
+    if (pos < 0) { progEl.innerHTML = ''; return; }
+    var dabs = '';
+    for (var i = 0; i < steps; i++) {
+      var state = i < stepIndex ? 'mastered' : (i === pos ? 'progress' : 'not-yet');
+      dabs += '<span class="ls-dab" data-state="' + state + '">' + (state === 'mastered' ? AW.icon('check') : '') + '</span>';
+    }
+    progEl.innerHTML = dabs + '<span class="ls-count">' + Math.min(pos + 1, steps) + ' / ' + steps + '</span>';
+  }
+
+  function foot(inner) { return '<div class="foot">' + inner + '</div>'; }
+  function btn(label, cls, id) { return '<button class="btn ' + (cls || '') + '" id="' + (id || 'cont') + '" type="button">' + label + '</button>'; }
+  function backCtl() { return '<button class="ls-back" id="lsback" type="button"' + (pos < 0 ? ' hidden' : '') + '>Back a step</button>'; }
+  function next() { pos++; render(); }
+  function bindBack() {
+    var b = document.getElementById('lsback');
+    if (b) b.addEventListener('click', function () { if (pos >= 0) { pos--; stepIndex = Math.max(pos, 0); render(); } });
+  }
+  function bindCont(advance) {
+    var c = document.getElementById('cont');
+    if (c) c.addEventListener('click', function () { if (advance) stepIndex++; next(); });
+  }
+
+  function opener() {
+    setHUD(false);
+    paintProg();
+    var mode = AW.greetMode(), ret = AW.S.get('returns', 0);
+    var chip = '', greet = cfg.opener && cfg.opener.h2 ? cfg.opener.h2 : 'In the name of God';
+    var p = (cfg.opener && cfg.opener.p) || '';
+    if (mode === 'streak' && ret > 1) {
+      chip = '<div class="kicker">' + ret + ' returns</div>';
+    } else if (mode === 'returning') {
+      chip = '<div class="kicker">welcome back</div>';
+      greet = 'It’s good to see you again';
+      p = 'However long it has been, nothing is lost. A clean page. ' + ((cfg.opener && cfg.opener.p) || '');
+    }
+    var uicon = AW.UNIT_ICON[(cfg.id || '').slice(0, 2)] || 'lantern';
+    var journey = cfg.journey ? '<div class="kicker">' + cfg.journey + '</div>' : '';
+    var thought = cfg.opener && cfg.opener.thought ? '<p class="thought">' + cfg.opener.thought + '</p>' : '';
+    root.innerHTML =
+      '<div class="hero">' +
+      journey + chip +
+      '<div class="hero-ico">' + AW.icon(uicon, { size: '96px' }) + '</div>' +
+      '<h1 class="greet">' + greet + '</h1>' +
+      (p ? '<p>' + p + '</p>' : '') +
+      thought +
+      '</div>' +
+      foot(btn('Begin, gently'));
+    document.getElementById('cont').addEventListener('click', function () {
+      AW.touchDay();
+      stepIndex = 0;
+      next();
+    });
+  }
+
+  function render() {
+    if (pos < 0) { opener(); return; }
+    if (pos >= steps) { terminus(); return; }
+    var it = beats[pos];
+    answered = false;
+    setHUD(true);
+    paintProg();
+
+    // quiz beats — a walkable temporary handler this pass; the law-8 resolution + reward land next.
+    if (it.t === 'mc' || it.t === 'tf' || it.t === 'tile') { quizTemp(it); return; }
+
+    root.innerHTML = '<div class="stage">' + AW._beatHtml(it, cfg) + '</div>' + foot(btn('Continue') + backCtl());
+    AW.wire(root, cfg);
+
+    if (it.t === 'depth') {
+      root.querySelectorAll('.lens').forEach(function (lens) {
+        var head = lens.querySelector('.lh'), body = lens.querySelector('.lb');
+        head.addEventListener('click', function () {
+          var open = lens.classList.toggle('open');
+          head.setAttribute('aria-expanded', open ? 'true' : 'false');
+          if (open) AW.wire(body, cfg);
+        });
+      });
+    }
+
+    if (it.t === 'reflect') {
+      var c = document.getElementById('cont'); c.textContent = 'Show a reflection'; c.classList.add('ghost');
+      var shown = false;
+      c.addEventListener('click', function (e) {
+        if (!shown) {
+          e.stopImmediatePropagation();
+          shown = true;
+          noorEarned += AW.REFLECT;
+          bumpNoor();
+          document.getElementById('lsmodel').innerHTML =
+            '<div class="model"><div class="kicker">A reflection · +' + AW.REFLECT + ' noor</div><p>' + (it.model || '') + '</p></div>';
+          c.textContent = 'Continue';
+          c.classList.remove('ghost');
+        }
+      });
+    }
+
+    bindCont(true);
+    bindBack();
+  }
+
+  // temporary quiz walk-through — replaced by the real resolution next pass.
+  function quizTemp(it) {
+    root.innerHTML = '<div class="stage"><h2 class="pintro">' + (it.q || it.prompt || '') + '</h2></div>' +
+      foot(btn('Continue') + backCtl());
+    bindCont(true);
+    bindBack();
+  }
+
+  // temporary terminus — replaced by the real verdict → noor → returns → done reward next pass.
+  function terminus() {
+    setHUD(false);
+    paintProg();
+    root.innerHTML =
+      '<div class="rw-done">' + sceneIco('crescent') +
+      '<h1 class="rw-word">' + (cfg.doneTitle || 'Carried a little further') + '</h1>' +
+      '<a class="ls-back" href="../learn.html">Back to the path</a>' +
+      '</div>';
+  }
+
+  render(); // pos = -1 → opener
+}
