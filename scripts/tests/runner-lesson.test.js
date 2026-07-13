@@ -232,6 +232,29 @@ test('noor persistence: rewardNoor adds noorEarned to the stored noor exactly on
   assert.equal(sandbox.__out, 136); // 100 + 36, once — not 172
 });
 
+/* ---------- the persist-once seam behind the choreography's noor moment (RWD-01 / T-04-04a) ----
+   AwbaLesson's reward terminus persists noor EXACTLY once at the noor moment. That once-only
+   guarantee is the 04-03 `noorClaimed` closure guard, extracted to AW._noorClaimer() so it is
+   unit-testable without a DOM (jsdom is out, D-25): the factory returns a claim(amount) that adds
+   `amount` to stored noor via AW.S a single time — a re-entry, a double-tap, or a back-then-forward
+   through the six-moment terminus must never double-credit (T-04-04a). This drives the flagship
+   choreography's persistence discipline; the full DOM flow is proven by render-smoke in Chrome. */
+test('noor persist-once (T-04-04a): AW._noorClaimer() credits noorEarned EXACTLY once — a re-entry / double-tap never doubles it', () => {
+  const sandbox = loadEngine(
+    makeLS({ awba_state: JSON.stringify({ schemaVersion: 1, noor: 100, returns: 2, lastDay: null, days: [], stars: {}, chests: {} }) }),
+    `var claim = AW._noorClaimer();
+     var first = claim(36);    // the noor moment fires — persists once
+     var second = claim(36);   // a re-entry / double-tap through the terminus — must be a no-op
+     var third = claim(36);
+     globalThis.__out = { noor: AW.S.get('noor', 0), first: first, second: second, third: third };`
+  );
+  const out = readOut(sandbox);
+  assert.equal(out.noor, 136);      // 100 + 36, once — never 172 (doubled), never left at 100 (omitted)
+  assert.equal(out.first, true);    // the first claim persisted
+  assert.equal(out.second, false);  // every later claim is an idempotent no-op
+  assert.equal(out.third, false);
+});
+
 test('best-of stars: a lower new score never downgrades a stored higher one (done() upgrade-only)', () => {
   const sandbox = loadEngine(
     makeLS({ awba_state: JSON.stringify({ schemaVersion: 1, noor: 0, returns: 0, lastDay: null, days: [], stars: { u1m1: 3 }, chests: {} }) }),
