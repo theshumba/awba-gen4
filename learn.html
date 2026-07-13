@@ -99,9 +99,53 @@
         '</span>' +
       '</div>';
 
+    /* Ring hero (THE macro map, STATIC on load — law 9): omit animateFrom so the established ring
+       renders fully static (the draw belongs to lesson-complete only, never a home-visit replay).
+       It is the only element at this scale; nothing below competes (no second ring, no progress bar). */
+    var ring =
+      '<div class="ob-ring"><div class="ob-ringcap">' +
+        AW.ringSVG({ atomsDone: AW.atomsDone(AW.state()), size: 300 }) +
+      '</div></div>';
+
+    /* Streak strip + constellation (re-voiced from the Gen-3 band, D-60) — a quiet Courier line
+       directly under the Ring + a row of return-day dots from AW.weekCal(): on = lit gold, off =
+       un-lit powder-family ink. Never a gap / red / miss (RWD-02 mercy). */
+    var wk = AW.weekCal();
+    var dots = '';
+    wk.forEach(function (d) { dots += '<span class="day' + (d.on ? ' here' : '') + '"></span>'; });
+    var streak =
+      '<div class="ob-streak">' +
+        '<div class="ss-line">' + st.returns + ' returns · your streak never breaks</div>' +
+        '<div class="weekcal ss-const">' + dots + '</div>' +
+      '</div>';
+
+    /* Continue card (one navy panel pointing at the next available node, D-53) — cream text on navy
+       (≥13:1), light-edge depth (never a drop shadow on dark). Courier kicker "Continue";
+       "Circuit {n} · {chapter-term}" where the chapter-term is the English unit title in a cream
+       Farag square (R-6 — Arabic terms are owner-sourced, never invented); the next node's label;
+       a gold-ghost .btn "Continue the path" navigating to the active node's href. Course complete
+       (no active lesson) → a quiet Courier line, no celebration primitive here (that is Festival's). */
+    var cont;
+    if (activeIdx >= 0) {
+      var an = flat[activeIdx], am = meta[activeIdx];
+      cont =
+        '<div class="cc">' +
+          '<div class="cc-kick">Continue</div>' +
+          '<div class="cc-circuit">Circuit ' + am.un + ' · <span class="cc-term">' + am.ut + '</span></div>' +
+          '<div class="cc-next">' + an.label + '</div>' +
+          '<a class="btn ghost cc-go" href="' + an.href + '">Continue the path</a>' +
+        '</div>';
+    } else {
+      cont =
+        '<div class="cc">' +
+          '<div class="cc-kick">Continue</div>' +
+          '<div class="cc-done">You\'ve walked the whole path</div>' +
+        '</div>';
+    }
+
     /* Composition body (top→bottom): Ring hero → streak strip + constellation → continue card →
-       daily ayah. Ring/streak/continue land in Task 2; the daily ayah lands in Task 3. */
-    var body = '';
+       daily ayah. The daily ayah lands in Task 3. */
+    var body = '<div class="ob-hero">' + ring + streak + '</div>' + cont;
 
     app.innerHTML = '<div class="ob-shell">' + hud + '<div class="ob-wrap">' + body + '</div></div>';
 

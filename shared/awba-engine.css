@@ -1767,6 +1767,53 @@
     border-radius: var(--r-square);   /* hard manuscript corners — a Farag square */
   }
   .oh-chip-sq svg { width: 22px; height: auto; }
+
+  /* Ring hero + streak strip (§S1) — the Ring is static (law 9, no animateFrom at the caller). The
+     shipped @layer motion `.ring { width:100% }` outranks @layer screens, so the width cap lives on
+     the wrapper, mirroring the reward frame's width cap. */
+  .ob-hero { display: flex; flex-direction: column; align-items: center; gap: var(--sp-4); padding-top: var(--sp-4); }
+  .ob-ring { display: flex; justify-content: center; padding: var(--sp-8) 0 var(--sp-4); }
+  .ob-ringcap { width: min(300px, 74vw); }
+  .ob-streak { display: flex; flex-direction: column; align-items: center; gap: var(--sp-3);
+    animation: settle var(--dur-settle) var(--ease) both; }
+  .ss-line {                          /* the re-voiced streak line — Courier marginalia */
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    color: var(--paper-62);           /* §2.1 --paper-62 on Kiswah */
+  }
+  .ob-streak .weekcal .day { background: var(--paper-45); }        /* un-lit day — never a gap/red/miss */
+  .ob-streak .weekcal .day.here { background: var(--gold); box-shadow: none; }   /* a return — lit gold 8.40:1 */
+
+  /* Continue card (§S1) — one navy panel; cream text ≥13:1; light-edge depth, never a drop shadow. */
+  .cc {
+    display: flex; flex-direction: column; gap: var(--sp-3);
+    padding: var(--sp-4);
+    background: var(--navy);          /* §2.1 Layl Navy structural panel */
+    color: var(--cream);              /* cream on navy, ≥13:1 */
+    border-radius: var(--r-3);
+    box-shadow: var(--edge-top);      /* light catching the top edge — the dark-ground depth cue */
+    animation: settle var(--dur-settle) var(--ease) both;
+  }
+  .cc-kick {                          /* Courier kicker "Continue" */
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--paper-62);
+  }
+  .cc-circuit { display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-2s);
+    font-size: var(--fs-ui); color: var(--cream); }
+  .cc-term {                          /* cream Farag-square island holding the English unit title (R-6) */
+    background: var(--cream);
+    color: var(--ink);                /* kiswah on cream, 16.22:1 — the English fallback title */
+    border: var(--sp-2) solid var(--rule);
+    border-radius: var(--r-square);
+    padding: var(--sp-1) var(--sp-3);
+    font-family: var(--font-work);
+    font-weight: 600;
+  }
+  .cc-next { font-size: var(--fs-ui); color: var(--paper-85); }
+  .cc-done { font-family: var(--font-marg); font-size: var(--fs-marg); color: var(--paper-62); }
+  .cc-go { margin-top: var(--sp-1); }   /* the gold-ghost .btn — shipped .reg-orbit .btn.ghost on dark */
 }
 
 @layer motion {
