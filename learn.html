@@ -171,9 +171,30 @@
         '<div class="oa-pill">unverified · pending review</div>' +
       '</section>';
 
+    /* Unit headers + the winding-journey scaffold (S3 / D-53) — one cream-Farag-square-fronted card
+       per unit: the scene icon (AW.UNIT_ICON, gold --icon-accent on the dark card) + the chapter-term
+       in a cream Farag square (the English unit title — R-6: Arabic terms are owner-sourced, never
+       invented; the mechanism is Aref-Ruqaa, the string is the English fallback in Readex) + the desc
+       (--paper-62). NO unit colour-coding, NO "SECTION n" eyebrow (both retired at Gate 2). Each header
+       precedes its unit's .opath node section (the nodes + SVG thread are laid in later passes). */
+    var journey = '';
+    UNITS.forEach(function (u) {
+      var uicon = AW.UNIT_ICON['u' + u.n] || 'compass';
+      journey +=
+        '<section class="ounit">' +
+          '<div class="ounit-head">' +
+            '<span class="ounit-ic">' + AW.icon(uicon, { size: '34px' }) + '</span>' +
+            '<span class="ounit-term">' + u.title + '</span>' +
+            '<p class="ounit-desc">' + u.desc + '</p>' +
+          '</div>' +
+          '<div class="opath"></div>' +
+        '</section>';
+    });
+    var journeyWrap = '<div class="ojourney">' + journey + '</div>';
+
     /* Composition body (top→bottom): Ring hero → streak strip + constellation → continue card →
-       daily ayah. */
-    var body = '<div class="ob-hero">' + ring + streak + '</div>' + cont + ayah;
+       daily ayah → the winding journey (4 unit sections). */
+    var body = '<div class="ob-hero">' + ring + streak + '</div>' + cont + ayah + journeyWrap;
 
     app.innerHTML = '<div class="ob-shell">' + hud + '<div class="ob-wrap">' + body + '</div></div>';
 

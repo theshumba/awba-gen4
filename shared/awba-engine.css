@@ -1862,6 +1862,50 @@
     border-radius: var(--r-pill);     /* rationed to the marginalia counter capsule — valid here */
     padding: var(--sp-1) var(--sp-3);
   }
+
+  /* Unit headers + winding journey (§S3 · D-53/D-54/LRN-04) — the navigable index below the Ring.
+     ONE register (Orbit); identity is chapter-term + scene icon, NEVER unit colour-coding. The
+     journey is a hand-inked walk: real <button> nodes on a serpentine, threaded by one continuous
+     SVG ink line (the earned portion gold + STATIC on load — law 9). Every coloured/shape chrome is
+     the SHIPPED [data-state]/.rosette/.plate/.thread grammar; these classes are only composition. */
+  .ojourney { display: flex; flex-direction: column; gap: var(--sp-6); }   /* unit-section separation */
+  .ounit    { display: flex; flex-direction: column; gap: var(--sp-5); }
+
+  /* Unit header — a cream-Farag-square-fronted card (--r-3 + --edge-top light-edge depth; it rides
+     the Orbit ground, never a second navy panel competing with the continue card). Icon gold on dark
+     (8.40:1); the chapter-term square carries the English unit title (kiswah-on-cream 16.22:1, R-6);
+     the desc is quiet --paper-62. No u.color gradient, no "SECTION n" eyebrow. */
+  .ounit-head {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3);
+    padding: var(--sp-4);
+    border-radius: var(--r-3);
+    box-shadow: var(--edge-top);      /* light catching the top edge — the dark-ground depth cue */
+  }
+  .ounit-ic {                         /* the unit scene icon — gold accent on the dark card */
+    display: inline-flex;
+    color: var(--paper-85);           /* §2.1 --paper-85 structure on Kiswah */
+    --icon-accent: var(--gold);       /* §2.1 gold 8.40:1 detail on Kiswah */
+  }
+  .ounit-ic svg { width: 34px; height: auto; }
+  .ounit-term {                       /* cream Farag square holding the English chapter-term (R-6) */
+    background: var(--cream);
+    color: var(--ink);                /* kiswah on cream, 16.22:1 */
+    border: var(--sp-2) solid var(--rule);
+    border-radius: var(--r-square);   /* hard manuscript corners — a Farag square */
+    padding: var(--sp-1) var(--sp-3);
+    font-family: var(--font-work);
+    font-weight: 600;
+    font-size: var(--fs-h2);
+    line-height: 1.3;
+  }
+  .ounit-desc {                       /* the unit description — quiet reading prose */
+    flex-basis: 100%; margin: 0;
+    font-size: var(--fs-body);
+    color: var(--paper-62);           /* §2.1 --paper-62 on Kiswah */
+  }
+
+  /* the path container — relative so the absolutely-positioned SVG thread overlay can anchor to it */
+  .opath { position: relative; padding: var(--sp-2s) 0 var(--sp-4); }
 }
 
 @layer motion {
