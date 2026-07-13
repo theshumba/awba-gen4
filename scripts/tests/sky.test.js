@@ -87,6 +87,33 @@ test('engine references no device-location or network lookup for the Sky', () =>
   assert.ok(!/\bfetch\s*\(|XMLHttpRequest/.test(src), 'no network call may appear');
 });
 
+/* ---------- 4b · the --dawn progress degree: scaling + the 0.6 ambient cap (§7.3/§7.5 acc. 6) ----------
+   skyDawn(atomsDone) = min(0.6, atomsDone/65). WR-06: the whole --dawn contract had zero coverage.
+   These pin BOTH the linear scaling below the cap AND the cap itself, so a future edit that removes/
+   raises SKY_DAWN_CAP, breaks the /65 scaling, or reintroduces a Math.random()/Date dependency fails
+   loudly instead of passing node --test silently. */
+
+/* skyDawnAt — evaluate AW.skyDawn(atomsDone) against the real engine, one fresh load per call. */
+function skyDawnAt(atomsDone) {
+  return loadEngine(makeLS({}), 'globalThis.__out = AW.skyDawn(' + atomsDone + ');').__out;
+}
+
+test('skyDawn: 0 progress → 0 warmth; the /65 scaling below the cap is exact (WR-06)', () => {
+  assert.equal(skyDawnAt(0), 0, 'no progress → no dawn warmth');
+  assert.equal(skyDawnAt(26), 26 / 65, 'below the cap, warmth scales linearly as atomsDone/65');
+  assert.ok(skyDawnAt(26) < 0.6, 'the mid value sits below the ambient cap (the scaling, not the cap, is pinned here)');
+});
+
+test('skyDawn: caps at 0.6 so it stays ambient and never competes with the prayer clock / Ring (WR-06)', () => {
+  assert.equal(skyDawnAt(65), 0.6, 'full progress caps at 0.6 — NOT 1.0 (§7.5 acceptance 6)');
+  assert.equal(skyDawnAt(45), 0.6, 'any progress past the 0.6 crossing is clamped to the cap');
+});
+
+test('skyDawn: negative / NaN atomsDone are defensively floored to 0 (WR-06)', () => {
+  assert.equal(skyDawnAt(-5), 0, 'a negative atom count floors to 0');
+  assert.equal(skyDawnAt(NaN), 0, 'NaN floors to 0 (never NaN warmth)');
+});
+
 /* ---------- 5 · manual prayerTimes/skyMode defaults, NO schema bump (§7.2 / D-A13) ---------- */
 
 test('prefs: fresh install seeds the default prayerTimes schedule + skyMode "manual"', () => {
