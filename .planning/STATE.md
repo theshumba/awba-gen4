@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: "Phase 4 Plan 07 GATE PASSED 2026-07-13 (prechecks all green inline; human checkpoint resolved by owner directive 'finish executing everything' — detailed visual walk carried forward as owner follow-up, see 04-07-SUMMARY). 12 Phase-4 requirements marked Complete (MOT-05 per D-52). Now: code-review gate → verifier → close Phase 4 → Phase 5"
-last_updated: "2026-07-13T18:32:00.000Z"
+stopped_at: "PHASE 4 CLOSED 2026-07-13: gate passed (owner directive), code review 0 Critical/5 Warning → all 5 FIXED (WR-01 Orbit press gold, WR-02 flourish timer cleared, WR-03 redundant lens re-wire dropped, WR-04 weekcal --ink-62, WR-05 honest coverage + runner-interaction.test.js) at c7a1396, suite 98/98; VERIFICATION 5/5 PASS (independent byte-diff of all 19 cfgs, holds re-proven, D-45/D-52 reads applied); 3 Suggestions documented-not-applied. Next: Phase 5 discuss → plan → execute (Learn page + View Transitions)"
+last_updated: "2026-07-13T19:30:00.000Z"
 last_activity: 2026-07-13
 progress:
   total_phases: 7
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 25
-  completed_plans: 23
-  percent: 43
+  completed_plans: 25
+  percent: 57
 ---
 
 # Project State
@@ -21,11 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-11)
 
 **Core value:** A learner opens the app, walks a beautiful winding path through the full Aqeedah course, and every screen feels world-class while every word of scripture stays verbatim, sourced, and scholar-gated.
-**Current focus:** Phase 04 — Lesson & Review Engine Port + Detail Layer (Phase 03 CLOSED 2026-07-13 under Athar; the full 19-file content port is now complete — all 15 lessons + 4 reviews render end-to-end; next is the 04-07 human gate)
+**Current focus:** Phase 05 — Learn Page & Cross-Page View Transitions (Phase 04 CLOSED 2026-07-13: all 19 files render end-to-end verbatim, review-fixed at c7a1396, verified 5/5)
 
 ## Current Position
 
-Phase: 04 (Lesson & Review Engine Port + Detail Layer) — **6/7 plans complete**
+Phase: 05 (Learn Page & Cross-Page View Transitions) — discuss/plan next
+
+### Phase 4 history (CLOSED 2026-07-13 — gate passed by owner directive, review-fixed, verified 5/5) — **7/7 plans complete**
 
 - **04-01 (test foundation: runner-math + AW.sound + Wave-0 harnesses): COMPLETE 2026-07-13** — `AW.lessonStars/comboShow/comboPerfect/reviewScore/reviewStars` + the `PER_LESSON/REFLECT/PER_REVIEW/SWIFT/QTIME` constants added as pure, DOM-free `AW.*` contracts in the RUNNERS banner, byte-copied from Gen-3's `resolve()/starsFor()/bind()/result()` (D-47/ENG-03/ENG-04) and pinned by a new headless `runner-math.test.js` (RED confirmed before GREEN). `AW.sound(cue)` ships full plumbing, silent v1 (D-52/MOT-05): reads `awba_prefs.soundMuted`, loads `../shared/sfx/{cue}.mp3` page-relative, clean no-op on a missing asset/blocked autoplay; `shared/sfx/.gitkeep` tracks the empty cue directory. Two zero-dep Wave-0 harnesses built and already exit 0 against today's empty content dirs: `scripts/tests/render-smoke.mjs` (headless system-Chrome loader asserting no console errors + a `reg-page`/`reg-orbit` register root) and `scripts/port-audit.mjs` (SHA-256 byte-fidelity of each ported page's cfg region vs the Gen-3 source, plus CDN/retired-element/U4-03-hold grep gates). Commits `8b5d02d`, `88a1e37`, `01aedde`. Suite 64→**70/70** green; `localStorage` grep-count held at 13; `validate-content.js --self-test` OK. Two self-caught wording deviations (both Rule 1, fixed pre-commit): a `localStorage` literal in a doc-comment bumped the grep-gate count, and a Gen-3 `firePerfect` citation incidentally echoed a gated literal in `shared/` — both reworded, no behavior change (see 04-01-SUMMARY.md).
 - **04-02 (lesson + reward `@layer screens` CSS surfaces, S1–S4): COMPLETE 2026-07-13** — the reserved empty `@layer screens` block (was a one-line placeholder at `shared/awba-engine.css:923`) filled with ~610 lines of per-screen Athar surface CSS, token-only, every colour cited to `03-UI-SPEC-ATHAR §2.1`; the `:16` order line stays declared exactly once. **Task 1** `14bdb7b`: the lesson shell on `.reg-page` — `.stage` (settle mount), `.ls-hud` transparent marginalia row (consumes shipped `.hstat`) + 44px `.ls-mute`, `.ls-prog` thermal shape-first progress dabs (`.ls-dab` sizing shell over shipped `[data-state]`) + Courier `.ls-count`, opener `.hero` with a `.journey` chapter-term in a Farag square (Aref Ruqaa, crimson), `.foot` keyline-separated + quiet `.ls-back`. **Task 2** `69d919b`: all 9 beat surfaces distinct — `.read`/`.frame`/`.scard`(law-3 `--go:0`, `.ayah` strongest `--kiswah` ink, `.slabel/.trans/.tsrc`)/`.pnl` with four visually-distinct variants (`.v-check` ruled / `.v-guard` ink jadwal-rule / `.v-pull` crimson pull-quote / `.v-tell` madder reveal)/`.lacc` 3-lens accordion (Reality `--madder` / Revelation `--crimson` with nested `.scard` scripture / Ruling `--olive`, cued by left-rule STYLE + label + glyph, never colour-only, never blocks Continue)/`.reflect`; `.opts/.tfrow/.tilebox/.bank` wrappers over shipped `.opt/.tf/.tile`; a quiet `.meta` accrual zone consuming the shipped gold `.dab` + `.ls-count` (no `.combo`/floating pill). **Task 3** `4d058c6`: the reward sequence one register per screen — `.rw-verdict` (shape-first gold `.dab/.rosette` stars + `.rw-word` + 3-tile `.rw-stats` Marcellus numerals), `.noorbig` Marcellus `--fs-display` count-up + `.grew`, `.rw-returns` with a decorative `--apricot` horizon glow via `color-mix` (never apricot text; returns count Marcellus `--kiswah`) + `.weekcal` presence dots (never gap/red/miss, RWD-02), `.rw-done` recap `.recl`, `.rw-ring` on `.reg-orbit` hosting the shipped `.ring` (gold/ember only, crimson banned), `.rw-dua` on `.reg-sky-night` under scripture law (base-layer glow) + moonmilk close. Every task's `<verify>` passed verbatim; suite held **70/70** across all three; brace balance 249/249; all retired-literal gates (`poppins|confetti|amber|lantern-gold|PERFECT|.combo|rgba(37,54,|--accent`) clean file-wide; no celebration primitive on any `.ayah`/`.scard`/`.rw-dua` line. **Zero deviations** (one hard-rule naming compliance: the streak META surface is `.meta` + `.ls-count`, never the banned `.combo` literal). Doubts for the 04-07 gate logged in 04-02-SUMMARY (accordion open/collapse toggle contract with the runner; `.rw-noor` container name; stat-tile Marcellus sizing in a 1/3 tile; apricot glow strength).

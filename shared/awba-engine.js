@@ -15,10 +15,12 @@
      STATE       — Phase 2 (this phase). awba_state + awba_prefs versioned localStorage blobs,
                    the lossless Gen-3 migration chain, and the pure state-derivation helpers
                    (FND-05, FND-06, FND-07). DOM-independent by design.
-     KIT         — Phase 3/4 placeholder. Icon kit (AW.KIT), companion lantern art, glyphs.
-     COMPONENTS  — Phase 3/4 placeholder. Shared UI builders (icon accessor, cite/term chips,
+     KIT         — Phase 3 (built). Icon kit (AW.KIT, 20 scenes) + glyph marks (AW.GLYPHS, 13).
+     COMPONENTS  — Phase 3 (built). Shared UI builders (icon accessor, cite/term chips,
                    the singleton sheet, the reduced-motion self-guard, the WAAPI exemplar).
-     RUNNERS     — Phase 4 placeholder. AwbaLesson(cfg) / AwbaReview(cfg) engine runners.
+     RUNNERS     — Phase 4 (built). AwbaLesson(cfg) / AwbaReview(cfg) engine runners: pure
+                   quiz/review math helpers, the 9 beat renderers, the WAAPI reward
+                   choreography + Ring moment, and the timed review state-machine.
 
    `AW.S`/`AW.prefs` (below) are the ONLY code in this codebase allowed to touch `localStorage`
    (D-24, enforced by a grep gate in every plan's verification). Every other page/section reads
