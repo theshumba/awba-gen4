@@ -1630,6 +1630,30 @@ AW._noorClaimer = function () {
   };
 };
 
+/* ---------- the shared 44px HUD mute toggle (§S6 / MOT-05) — ONE pattern for BOTH runners.
+   The speaker glyph is an inline control affordance (currentColor, inherits --icon-accent via
+   .ls-mute svg — crimson on Page, gold on Orbit), NOT a KIT/GLYPHS entry: the registry has no
+   sound mark and its two counts are frozen by the components suite. aria-pressed + the accessible
+   name swap ("Mute sounds"/"Unmute sounds") ride awba_prefs.soundMuted via AW.prefs only. */
+var SPEAKER_ON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9 h4 l5 -4 v14 l-5 -4 H4 Z" fill="currentColor"/><path d="M16 8 a5 5 0 0 1 0 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+var SPEAKER_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9 h4 l5 -4 v14 l-5 -4 H4 Z" fill="currentColor"/><line x1="16" y1="9" x2="21" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+function muteBtnHtml() {
+  var muted = AW.prefs.get('soundMuted', false);
+  var label = muted ? 'Unmute sounds' : 'Mute sounds';
+  return '<button class="ls-mute" id="lsmute" type="button" aria-pressed="' + (muted ? 'true' : 'false') +
+    '" aria-label="' + label + '">' + (muted ? SPEAKER_OFF : SPEAKER_ON) + '</button>';
+}
+function bindMuteBtn(refresh) {
+  var m = document.getElementById('lsmute');
+  if (!m) return;
+  m.addEventListener('click', function () {
+    var now = !AW.prefs.get('soundMuted', false);
+    AW.prefs.set('soundMuted', now);
+    document.documentElement.setAttribute('data-sound', now ? 'muted' : '');
+    if (refresh) refresh();
+  });
+}
+
 /* ============================================================================================
    AwbaLesson(cfg) — the lesson runner (ENG-01/03/05, CNT-01/04, MOT-05). Josh's Gen-3 cfg shape is
    consumed byte-unchanged; the mechanics are byte-preserved (the numbers come from the 04-01 pure
@@ -1672,28 +1696,8 @@ function AwbaLesson(cfg) {
   var progEl = document.getElementById('lsprog');
   var shellEl = document.querySelector('.ls-shell');   // the register carrier — swapped Page→Orbit→Sky at the terminus
 
-  /* the mute control — a 44px HUD button (§S6 / MOT-05). Its speaker glyph is an inline control
-     affordance (currentColor, inherits --icon-accent via .ls-mute svg), NOT a KIT/GLYPHS entry:
-     the registry has no sound mark and its two counts are frozen by the components suite. */
-  var SPEAKER_ON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9 h4 l5 -4 v14 l-5 -4 H4 Z" fill="currentColor"/><path d="M16 8 a5 5 0 0 1 0 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
-  var SPEAKER_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9 h4 l5 -4 v14 l-5 -4 H4 Z" fill="currentColor"/><line x1="16" y1="9" x2="21" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  /* the mute control — the shared 44px HUD toggle (§S6 / MOT-05), one pattern for both runners. */
   var hudStats = false;
-  function muteBtn() {
-    var muted = AW.prefs.get('soundMuted', false);
-    var label = muted ? 'Unmute sounds' : 'Mute sounds';
-    return '<button class="ls-mute" id="lsmute" type="button" aria-pressed="' + (muted ? 'true' : 'false') +
-      '" aria-label="' + label + '">' + (muted ? SPEAKER_OFF : SPEAKER_ON) + '</button>';
-  }
-  function bindMute() {
-    var m = document.getElementById('lsmute');
-    if (!m) return;
-    m.addEventListener('click', function () {
-      var now = !AW.prefs.get('soundMuted', false);
-      AW.prefs.set('soundMuted', now);
-      document.documentElement.setAttribute('data-sound', now ? 'muted' : '');
-      setHUD(hudStats);
-    });
-  }
   function setHUD(showStats) {
     hudStats = showStats;
     var stats = showStats
@@ -1702,8 +1706,8 @@ function AwbaLesson(cfg) {
         '<span class="hstat">' + AW.icon('flame') + '<span>' + AW.S.get('returns', 0) + '</span></span>' +
         '</span>'
       : '<span class="ls-stats"></span>';
-    hudEl.innerHTML = stats + muteBtn();
-    bindMute();
+    hudEl.innerHTML = stats + muteBtnHtml();
+    bindMuteBtn(function () { setHUD(hudStats); });
   }
   function bumpNoor() { setHUD(true); }
 
@@ -2109,4 +2113,274 @@ function AwbaLesson(cfg) {
   }
 
   render(); // pos = -1 → opener
+}
+
+/* ============================================================================================
+   AwbaReview(cfg) — the legendary review runner (ENG-02/ENG-04, CNT-01, RWD-03, MOT-05).
+   cfg = { id, title, sub, mastery, items:[{q,quote?,o,c,t} | {tf:true,q,c,t}], next:{href,label} }
+   — Josh's Gen-3 cfg shape consumed byte-unchanged (item `t` is the explanation text; a naming
+   collision with the lesson beat `t` in a different context, no code conflict).
+
+   MECHANICS BYTE-PRESERVED from Gen-3 AwbaReview (startTimer/timeUp/advance/circleBackOffer/
+   renderQ/bind/result): the 14s soft timer (tleft = AW.QTIME*10 deciseconds, 100ms tick, .low
+   under 28%), a single timeout permanently kills allInTime and parks the question in `skipped`
+   (options disabled, 1500ms auto-skip, no penalty), queue-exhausted-with-skipped in the main
+   phase offers the circle-back (phase='back', queue=skipped.slice(), untimed, NO noor — but a
+   named answer still lights its thread), and the numbers come ONLY from the 04-01 pure helpers:
+   AW.reviewScore(thisInTime) = 15+swift5 per main-phase correct, AW.reviewStars(correct, total,
+   allInTime) = 3 all-in-time / 2 any-timeout / 1 partial (never 0). Noor persists ONCE at result
+   (AW._noorClaimer, T-04-05a); best-of stars never downgrade; AW.touchDay() fires on "Begin the
+   review". NO back button anywhere (awback hidden).
+
+   EXPRESSION RE-VOICED per D-45/§S5: the WHOLE session lives on the Orbit register (.reg-orbit,
+   Kiswah Black + Hajar Gold — the retired Gen-3 gold ground class and big intro art are gone);
+   the intro is "the circle gathers" (.dab drift-in ring + a gold trophy glyph); the lamp row is
+   re-voiced to gold .thread arcs lit i<correct; the .low timer state is a QUIET ember deepen
+   (never red, never a buzzer, no shake); mastery is sealed by the shipped gold .rosette, stamped
+   via AW.animate('--dur-stamp'). AW.sound cues land on meta moments only (§S6); the shared 44px
+   mute toggle sits in the review HUD. Crimson never appears on this register.
+   ============================================================================================ */
+function AwbaReview(cfg) {
+  if (typeof document === 'undefined') return; // headless load (tests) — the runner is DOM-driven
+  cfg = cfg || {};
+  var CH = cfg.items || [];
+
+  /* Gen-3 state vars, byte-preserved (339-354). */
+  var qi = 0, noorEarned = 0, correct = 0, allInTime = true, answered = false, timer = null,
+    tleft = 0, thisInTime = true;
+  var queue = CH.map(function (_, i) { return i; }), skipped = [], phase = 'main';
+  var claimNoor = AW._noorClaimer();   // noor persists exactly once at result (T-04-05a)
+
+  /* No back button, ever (Gen-3 348) — the review has no back affordance on any screen. */
+  var rb = document.getElementById('awback'); if (rb) rb.style.display = 'none';
+
+  /* Athar skeleton — the whole session on the Orbit ground (never the retired Gen-3 shell). */
+  document.body.innerHTML =
+    '<main class="reg-orbit rv-shell">' +
+    '<div class="ls-hud" id="rvhud"></div>' +
+    '<div class="rv-timerwrap" id="rvtimerwrap">' +
+    '<div class="rv-timer" id="rvtbar"><div class="rv-timer-fill" id="rvtfill"></div></div>' +
+    '<div class="rv-tnote" id="rvtnote"></div>' +
+    '</div>' +
+    '<div class="rv-thread" id="rvthread"></div>' +
+    '<div id="root"></div>' +
+    '</main>';
+  var root = document.getElementById('root');
+  var hudEl = document.getElementById('rvhud');
+  var shellEl = document.querySelector('.rv-shell');
+  var timerwrap = document.getElementById('rvtimerwrap');
+  var tbar = document.getElementById('rvtbar');
+  var tfill = document.getElementById('rvtfill');
+  var tnote = document.getElementById('rvtnote');
+  var threadEl = document.getElementById('rvthread');
+
+  /* the thread progress row — one arc per question (the retired lamp row, re-voiced): lit arcs
+     get the SHIPPED .thread (gold, Orbit draw verb); unlit rest navy-faint (@layer screens). */
+  threadEl.innerHTML = CH.map(function () {
+    return '<svg class="rv-arc" viewBox="0 0 28 12" aria-hidden="true" focusable="false"><path d="M2 10 Q14 -2 26 10"/></svg>';
+  }).join('');
+  function paintThread() {
+    Array.prototype.forEach.call(threadEl.children, function (arcEl, i) {
+      var p = arcEl.firstChild;
+      if (p) p.classList.toggle('thread', i < correct);   // toggle(force) never re-adds — no draw replay
+    });
+  }
+
+  function setHUD(showStats) {
+    hudEl.innerHTML = (showStats
+      ? '<span class="ls-stats">' +
+        '<span class="hstat">' + AW.icon('spark') + '<span>' + (AW.S.get('noor', 0) + noorEarned) + '</span></span>' +
+        '<span class="hstat">' + AW.icon('flame') + '<span>' + AW.S.get('returns', 0) + '</span></span>' +
+        '</span>'
+      : '<span class="ls-stats"></span>') + muteBtnHtml();
+    bindMuteBtn(function () { setHUD(showStats); });
+  }
+
+  function foot(inner, cls) { return '<div class="foot ' + (cls || '') + '" id="footwrap">' + inner + '</div>'; }
+  function btn(label, cls, id) { return '<button class="btn ' + (cls || '') + '" id="' + (id || 'cont') + '" type="button">' + label + '</button>'; }
+
+  /* startTimer — Gen-3 364, byte-preserved via AW.QTIME: 140 deciseconds, a 100ms tick, the bar
+     width in %, .low under 28% (the quiet ember deepen — expression only, the numbers untouched);
+     tleft<=0 permanently kills allInTime and hands over to timeUp. */
+  function startTimer() {
+    tleft = AW.QTIME * 10; thisInTime = true; tbar.classList.remove('low'); tnote.textContent = ''; tfill.style.width = '100%';
+    clearInterval(timer);
+    timer = setInterval(function () {
+      tleft--; var pct = Math.max(0, tleft / (AW.QTIME * 10)) * 100; tfill.style.width = pct + '%';
+      if (pct < 28) tbar.classList.add('low');
+      if (tleft <= 0) { clearInterval(timer); thisInTime = false; allInTime = false; timeUp(); }
+    }, 100);
+  }
+
+  /* timeUp — Gen-3 371: park the question for the end, disable the options, note the mercy,
+     auto-skip after 1500ms. No penalty — nothing is ever failed or lost. */
+  function timeUp() {
+    if (answered) return; answered = true;
+    skipped.push(queue[qi]);
+    tnote.textContent = 'time — it will wait at the end';
+    root.querySelectorAll('.opt,.tf').forEach(function (x) { x.style.pointerEvents = 'none'; });
+    var fw = document.getElementById('footwrap');
+    fw.className = 'foot rv-timeout';
+    fw.innerHTML = '<h2 class="pintro">Time — this one will wait at the end</h2>' +
+      '<p class="opt-why">Nothing lost. It comes back after the run, untimed.</p>';
+    setTimeout(advance, 1500);
+  }
+
+  /* advance — Gen-3 382: queue exhausted in the main phase with skipped questions → the
+     circle-back offer; otherwise the result. */
+  function advance() {
+    qi++;
+    if (qi < queue.length) { renderQ(); return; }
+    if (phase === 'main' && skipped.length) { circleBackOffer(); return; }
+    result();
+  }
+
+  /* circleBackOffer — Gen-3 388: an untimed replay of what the timer took ("no noor this time,
+     but a named answer still lights its thread") or straight to the result. */
+  function circleBackOffer() {
+    clearInterval(timer); timerwrap.classList.remove('on'); threadEl.style.display = 'none';
+    var old = document.getElementById('footwrap'); if (old) old.remove();
+    var n = skipped.length;
+    root.innerHTML = '<div class="rv-intro">' +
+      '<div class="kicker">Almost there</div>' +
+      '<div class="rv-glyph" style="position:static">' + AW.icon('lamp', { size: '44px' }) + '</div>' +
+      '<h2 class="rv-title">' + n + (n === 1 ? ' question' : ' questions') + ' waited for you</h2>' +
+      '<p>The timer beat you to ' + (n === 1 ? 'this one' : 'these') + '. Answer ' + (n === 1 ? 'it' : 'them') + ' untimed if you like — no noor this time, but a named answer still lights its thread.</p>' +
+      '</div>' +
+      foot(btn('Circle back', '', 'goback') + btn('See your result', 'ghost', 'skipres'));
+    document.getElementById('goback').addEventListener('click', function () {
+      phase = 'back'; queue = skipped.slice(); skipped = []; qi = 0; threadEl.style.display = ''; renderQ();
+    });
+    document.getElementById('skipres').addEventListener('click', result);
+  }
+
+  /* intro — "the circle gathers" (§S5): ink dabs drift in around the ring (Circle drift verb,
+     staggered delays), the trophy glyph holds the centre in gold, and "Begin the review" fires
+     AW.touchDay() (Gen-3 407). */
+  function intro() {
+    setHUD(false); timerwrap.classList.remove('on'); threadEl.style.display = 'none';
+    var old = document.getElementById('footwrap'); if (old) old.remove();
+    var dabs = '';
+    for (var i = 0; i < 6; i++) {
+      dabs += '<span class="dab" style="--dx:' + (i % 2 ? 9 : -9) + 'px;--dy:' + (i % 3 ? -7 : 6) + 'px;animation-delay:' + (i * 60) + 'ms"></span>';
+    }
+    root.innerHTML = '<div class="rv-intro">' +
+      '<div class="kicker">The circle gathers</div>' +
+      '<div class="rv-ringdabs" aria-hidden="true">' + dabs + '<span class="rv-glyph">' + AW.icon('trophy', { size: '44px' }) + '</span></div>' +
+      '<h1 class="rv-title">' + (cfg.title || '') + '</h1>' +
+      '<p>' + (cfg.sub || '') + '</p>' +
+      '<p class="rv-soft">The timer is real here: run out and the question skips past you, waiting at the end — answerable untimed, but for no noor. Nothing is ever failed or lost.</p>' +
+      '</div>' +
+      foot(btn('Begin the review', '', 'start') + '<a class="btn ghost" href="../learn.html">Maybe later</a>');
+    document.getElementById('start').addEventListener('click', function () {
+      AW.touchDay();
+      setHUD(true); threadEl.style.display = '';
+      qi = 0; renderQ();
+    });
+  }
+
+  /* renderQ — Gen-3 410: the question surface; the main phase re-arms the timer, the circle-back
+     phase runs untimed (thisInTime=false so a swift bonus can never leak in). */
+  function renderQ() {
+    var it = CH[queue[qi]]; answered = false; paintThread();
+    var old = document.getElementById('footwrap'); if (old) old.remove();
+    var kickTail = ' · ' + (qi + 1) + ' of ' + queue.length;
+    var body;
+    if (it.tf) {
+      body = '<div class="kicker">' + (phase === 'back' ? 'Circling back' : 'True or false') + kickTail + '</div>' +
+        '<h2 class="rv-q">' + it.q + '</h2>' +
+        '<div class="tfrow"><button class="tf" type="button" data-v="true">True</button><button class="tf" type="button" data-v="false">False</button></div>';
+    } else {
+      var opts = it.o.map(function (o, i) { return '<button class="opt" type="button" data-i="' + i + '">' + o + '</button>'; }).join('');
+      body = '<div class="kicker">' + (phase === 'back' ? 'Circling back' : (it.quote ? 'Name it' : 'Mastery')) + kickTail + '</div>' +
+        '<h2 class="rv-q">' + it.q + '</h2>' +
+        (it.quote ? '<p class="rv-quote">“' + it.quote + '”</p>' : '') +
+        '<div class="opts">' + opts + '</div>';
+    }
+    root.innerHTML = '<div class="rv-stage">' + body + '</div>';
+    shellEl.insertAdjacentHTML('beforeend', '<div class="foot" id="footwrap">' + btn('Check', 'disabled', 'check') + '</div>');
+    bind(it);
+    if (phase === 'main') { timerwrap.classList.add('on'); startTimer(); }
+    else { clearInterval(timer); timerwrap.classList.remove('on'); thisInTime = false; }
+  }
+
+  /* bind — Gen-3 426: selection (gold cue on this register), then Check resolves. A main-phase
+     correct earns AW.reviewScore(thisInTime) — 20 in time ("swift") / 15 not; the circle-back
+     phase lights the thread only, no noor. Wrongness stays law 8: "Nothing lost". */
+  function bind(it) {
+    var sel = it.tf ? '.tf' : '.opt';
+    var nodes = root.querySelectorAll(sel), chosen = null;
+    var check = document.getElementById('check');
+    nodes.forEach(function (n) {
+      n.addEventListener('click', function () {
+        if (answered) return;
+        nodes.forEach(function (x) { x.style.borderColor = ''; });
+        n.style.borderColor = 'var(--gold)';           // selection cue — gold on Orbit, never crimson
+        chosen = it.tf ? (n.dataset.v === 'true') : +n.dataset.i;
+        check.classList.remove('disabled');
+      });
+    });
+    check.addEventListener('click', function () {
+      if (answered) return; if (chosen === null) return; answered = true; clearInterval(timer);
+      var ok = chosen === it.c;
+      nodes.forEach(function (x) { x.style.pointerEvents = 'none'; x.style.borderColor = ''; });
+      if (it.tf) {
+        nodes.forEach(function (x) { if ((x.dataset.v === 'true') === it.c) x.classList.add('correct'); });
+        if (!ok) nodes.forEach(function (x) { if (x.dataset.v === String(chosen)) x.classList.add('wrong'); });
+      } else {
+        nodes[it.c].classList.add('correct');          // the gold dot draws on the named answer
+        if (!ok) nodes[chosen].classList.add('wrong'); // law-8 grey ink-blot on the miss
+      }
+      if (ok) { correct++; if (phase === 'main') noorEarned += AW.reviewScore(thisInTime); paintThread(); }
+      setHUD(true);
+      if (ok) AW.sound('correct'); else AW.sound('incorrect');   // meta moment, never scripture
+      var swift = ok && phase === 'main'
+        ? '<div class="meta"><span class="ls-count">' + AW.icon('spark', { size: '16px' }) + ' +' + AW.reviewScore(thisInTime) + (thisInTime ? ' swift' : '') + '</span></div>'
+        : '';
+      var fw = document.getElementById('footwrap');
+      fw.className = 'foot ' + (ok ? 'rv-good' : '');
+      fw.innerHTML =
+        '<h2 class="pintro">' + (ok ? (phase === 'back' ? 'Named — thread lit' : (thisInTime ? 'Swift and sound' : 'That’s it')) : 'Nothing lost') + '</h2>' +
+        swift +
+        '<p class="opt-why">' + it.t + '</p>' +
+        btn(qi < queue.length - 1 || (phase === 'main' && skipped.length) ? 'Next' : 'See your result', '', 'next');
+      document.getElementById('next').addEventListener('click', advance);
+    });
+  }
+
+  /* result — Gen-3 447: stars via AW.reviewStars (a single timeout permanently caps at 2), the
+     verdict word, noor persisted ONCE (claimNoor), best-of star persist, and the mastery sealed
+     by the SHIPPED gold .rosette stamped via AW.animate('--dur-stamp','--ease'). */
+  function result() {
+    clearInterval(timer); timerwrap.classList.remove('on'); threadEl.style.display = 'none'; setHUD(false);
+    var old = document.getElementById('footwrap'); if (old) old.remove();
+    claimNoor(noorEarned);                             // the ONE persistence point (T-04-05a)
+    AW.sound('complete');                              // the meta peak — never on scripture
+    var stars = AW.reviewStars(correct, CH.length, allInTime);
+    var st = AW.S.get('stars', {});
+    if (stars > (st[cfg.id] || 0)) { st[cfg.id] = stars; AW.S.set('stars', st); }   // best-of only
+    var sH = '';
+    for (var i = 0; i < 3; i++) {
+      var on = i < stars;
+      sH += '<span class="dab" data-state="' + (on ? 'mastered' : 'not-yet') + '" style="--dx:' + (i % 2 ? 7 : -7) + 'px;--dy:-6px">' + (on ? AW.icon('check') : '') + '</span>';
+    }
+    var verdict = stars === 3 ? 'Legendary' : (stars === 2 ? 'Mastered' : 'Reviewed');
+    var nextBtn = cfg.next ? ('<a class="btn" href="' + cfg.next.href + '">' + cfg.next.label + '</a>') : '';
+    root.innerHTML = '<div class="rv-result">' +
+      '<div class="kicker">Review complete</div>' +
+      '<div class="rv-seal"><span class="rosette">' + AW.icon('check') + '</span></div>' +
+      '<div class="rw-stars">' + sH + '</div>' +
+      '<h1 class="rv-title">' + verdict + '</h1>' +
+      '<p>' + correct + ' of ' + CH.length + ' named' + (allInTime && correct === CH.length ? ', every one in time' : '') + '.</p>' +
+      '<div class="rv-mastery"><div class="kicker">What you can do now</div><p>' + (cfg.mastery || '') + '</p></div>' +
+      '<div class="rv-noorline">' + AW.icon('spark') + ' <span>+' + noorEarned + ' noor gathered</span></div>' +
+      '</div>' +
+      foot(nextBtn + '<a class="btn ghost" href="../learn.html">Back to the path</a>');
+    var seal = root.querySelector('.rv-seal');
+    if (seal) AW.animate(seal,
+      [{ transform: 'scale(1.03)', opacity: 0 }, { opacity: 1, offset: 0.6 }, { transform: 'scale(1)', opacity: 1 }],
+      '--dur-stamp', '--ease');
+  }
+
+  intro();
 }
