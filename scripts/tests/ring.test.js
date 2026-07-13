@@ -188,6 +188,52 @@ test('ringSVG: a partial structure object falls back field-by-field to 4/15/65 �
   assert.ok((bad.match(/<path/g) || []).length > 0, 'an all-invalid structure still renders dabs');
 });
 
+/* ---------- (WR-07) numeric edge cases: negative/NaN atomsDone, seed 0/NaN/negative, overflow ----------
+   The implementation already handles all of these defensively (atomsDone via
+   Math.max(0, Math.min(ATOMS, cfg.atomsDone | 0)); seed via `cfg.seed >>> 0`). These tests PIN that
+   verified-correct behaviour so a future "simplification" of the clamps can't silently reintroduce a
+   crash or an out-of-range render with zero test failure. */
+
+test('ringSVG: negative / NaN atomsDone clamp to 0 (all-faint) without throwing (WR-07)', () => {
+  const sandbox = loadEngine(
+    makeLS({}),
+    `function pick(svg){ return { atoms:(svg.match(/data-atoms="([^"]*)"/)||[])[1], head: svg.indexOf('ring-head')!==-1, paths:(svg.match(/<path/g)||[]).length }; }
+     globalThis.__out = { neg: pick(AW.ringSVG({ seed: 1, atomsDone: -5 })), nan: pick(AW.ringSVG({ seed: 1, atomsDone: NaN })) };`
+  );
+  const { neg, nan } = sandbox.__out;
+  assert.equal(neg.atoms, '0', 'negative atomsDone clamps to 0');
+  assert.equal(nan.atoms, '0', 'NaN atomsDone coerces to 0');
+  assert.equal(neg.head, false, 'clamped-to-0 progress is all-faint (no head-dot)');
+  assert.equal(nan.head, false, 'NaN progress is all-faint (no head-dot)');
+  assert.ok(neg.paths > 0 && nan.paths > 0, 'the ring still renders its faint dabs (no empty/throw)');
+});
+
+test('ringSVG: atomsDone beyond the atom total clamps to 65 (WR-07)', () => {
+  const sandbox = loadEngine(
+    makeLS({}),
+    `globalThis.__out = AW.ringSVG({ seed: 1, atomsDone: 999 });`
+  );
+  const svg = sandbox.__out;
+  assert.ok(svg.indexOf('data-atoms="65"') !== -1, 'atomsDone 999 clamps to the 65-atom ceiling');
+  assert.ok(svg.indexOf('aria-label="Tawaf ring — 65 of 65 inked"') !== -1, 'the label reflects the clamped count');
+});
+
+test('ringSVG: seed 0 / NaN / negative are accepted deterministically without throwing (WR-07)', () => {
+  const sandbox = loadEngine(
+    makeLS({}),
+    `function seedOf(svg){ return (svg.match(/data-seed="([^"]*)"/)||[])[1]; }
+     globalThis.__out = {
+       zero: seedOf(AW.ringSVG({ seed: 0, atomsDone: 10 })),
+       nan:  seedOf(AW.ringSVG({ seed: NaN, atomsDone: 10 })),
+       neg:  seedOf(AW.ringSVG({ seed: -5, atomsDone: 10 }))
+     };`
+  );
+  const out = sandbox.__out;
+  assert.equal(out.zero, '0', 'seed 0 is a valid distinct seed, stamped as data-seed="0"');
+  assert.equal(out.nan, '0', 'NaN seed becomes 0 via `NaN >>> 0` (no throw)');
+  assert.equal(out.neg, '4294967291', 'a negative seed wraps through `>>> 0` to its uint32 (no throw)');
+});
+
 /* ---------- (W1) the ringSeed lazy write must NOT clobber an unrecognized-future-schema blob ----------
    AW.ringSeed()'s first call is a new AW.S.set() site. load() deliberately refuses to persist over
    a from-the-future blob (CR-01), so set() must not either — the memFallback guard skips persist
