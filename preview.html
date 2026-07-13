@@ -621,16 +621,19 @@ body{ background: var(--cream); }
   mountRing('pv-ring-empty', { seed: 4711, atomsDone: 0, size: 300 });
   mountRing('pv-ring-mid', { seed: 4711, atomsDone: 28, size: 300 });
   mountRing('pv-ring-full', { seed: 4711, atomsDone: 65, circuitsDone: 4, size: 300 });
-  mountRing('pv-ring-anim', { seed: 4711, atomsDone: 28, size: 300 });
+  mountRing('pv-ring-anim', { seed: 4711, atomsDone: 28, animateFrom: 25, size: 300 });
   mountRingStatic('pv-ring-static', { seed: 4711, atomsDone: 28, size: 300 });
   mountRing('pv-ring-seedA', { seed: 4711, atomsDone: 65, circuitsDone: 4, size: 300 });
   mountRing('pv-ring-seedB', { seed: 9973, atomsDone: 65, circuitsDone: 4, size: 300 });
 
-  /* §6 replay — re-render the animated ring so the ember frontier draws again (only the frontier). */
+  /* §6 replay — re-render the animated ring with an explicit animateFrom so ONLY the ember frontier
+     (the atoms newly inked in the in-progress lesson, index 25→28) draws again. Every OTHER ring on
+     this page omits animateFrom and so stays static on reload — the WR-01 "the established Ring never
+     re-draws" contract; the draw only ever replays on this explicit, on-demand trigger. */
   var replay = document.getElementById('pv-ring-replay');
   if (replay) replay.addEventListener('click', function () {
     var el = document.getElementById('pv-ring-anim');
-    if (el && AW.ringSVG) el.innerHTML = AW.ringSVG({ seed: 4711, atomsDone: 28, size: 300 });
+    if (el && AW.ringSVG) el.innerHTML = AW.ringSVG({ seed: 4711, atomsDone: 28, animateFrom: 25, size: 300 });
   });
 
   /* §8 — the motion demo ring (follows the toggle) + the reduced-motion toggle. */

@@ -1141,6 +1141,15 @@ AW.ringSVG = function (cfg) {
   var ATOMS = posInt(cfgStruct.atoms, DEF_STRUCT.atoms);
   var seed = (typeof cfg.seed === 'number') ? (cfg.seed >>> 0) : AW.ringSeed();
   var atomsDone = Math.max(0, Math.min(ATOMS, cfg.atomsDone | 0));
+  /* WR-01: animateFrom = the caller's PREVIOUS atom count. The ink-draw animation attaches ONLY to
+     dabs whose atom index is in [animateFrom, atomsDone) — the span newly inked since the last render
+     — so the established Ring never re-draws (§6.4, law 9). DEFAULT animateFrom = atomsDone ⇒ an empty
+     span ⇒ a fully static render: a plain reload/regeneration at unchanged progress replays nothing.
+     A caller returning from a completed lesson passes its pre-completion atom count to draw only the
+     new dabs. Reduced motion still overrides to fully static regardless of animateFrom (§6.5). */
+  var animateFrom = (typeof cfg.animateFrom === 'number' && isFinite(cfg.animateFrom))
+    ? Math.max(0, Math.min(ATOMS, cfg.animateFrom | 0))
+    : atomsDone;
   var size = cfg.size || 300;
   var reduce = AW.reducedMotion();
   var rnd = mulberry32(seed);
@@ -1219,11 +1228,15 @@ AW.ringSVG = function (cfg) {
     var inked = db.atom < atomsDone;
     var lessonDone = atomsDone >= (lessonStart[db.lesson] + lessonAtoms[db.lesson]);
     var sealed = lessonCircuit[db.lesson] < circuitsDone;
-    var col, animate = false;
+    var col;
     if (!inked) col = C_UNINK;
     else if (sealed) col = C_GOLD;
     else if (lessonDone) col = C_CREAM;
-    else { col = C_EMBER; animate = !reduce; }     // freshly-inked → the only dabs that draw
+    else col = C_EMBER;
+    // WR-01: draw ONLY the span newly inked since the last render — [animateFrom, atomsDone). At the
+    // default (animateFrom === atomsDone) this range is empty, so an unchanged-progress re-render is
+    // fully static and the established ring never re-draws. Reduced motion suppresses it entirely.
+    var animate = !reduce && db.atom >= animateFrom && db.atom < atomsDone;
     var a = 'd="' + db.d + '" stroke="' + col + '" stroke-width="' + f(db.sw) +
       '" stroke-opacity="' + f(db.op) + '" stroke-linecap="round" fill="none"';
     if (animate) {

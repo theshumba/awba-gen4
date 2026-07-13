@@ -75,10 +75,11 @@ test('ringSVG: atomsDone 0 differs from 65+4, and full progress carries thread +
 test('ringSVG: reduced motion returns the final state statically — no draw animation (§6.5)', () => {
   const sandbox = loadEngine(
     makeLS({}),
-    // Stub the call-time gate ON, then generate a mid-progress ring (which under normal motion
-    // would carry the ink-draw animation on its in-progress frontier dabs).
+    // Stub the call-time gate ON, then generate a mid-progress ring with an explicit animateFrom:0
+    // (which under NORMAL motion would carry the ink-draw animation across the whole inked span) —
+    // so the ONLY reason no animation appears is the reduced-motion gate, not the static default.
     `AW.reducedMotion = function () { return true; };
-     globalThis.__out = { reduced: AW.ringSVG({ seed: 5, atomsDone: 30, circuitsDone: 1 }) };`
+     globalThis.__out = { reduced: AW.ringSVG({ seed: 5, atomsDone: 30, circuitsDone: 1, animateFrom: 0 }) };`
   );
   const reduced = sandbox.__out.reduced;
   assert.equal(reduced.indexOf('ink-draw'), -1, 'reduced motion must omit the ink-draw animation');
@@ -88,15 +89,51 @@ test('ringSVG: reduced motion returns the final state statically — no draw ani
 
 test('ringSVG: under normal motion the same mid-progress ring DOES draw its frontier (branch proof)', () => {
   // Headless has no window/document, so AW.reducedMotion() is false by default — the animation
-  // branch is exercised. This proves the reduced-motion test above is a real difference, not a
+  // branch is exercised. Since WR-01 made the DEFAULT static, animateFrom:0 is passed so the newly-
+  // inked span animates; this proves the reduced-motion test above is a real difference, not a
   // state that never animates in the first place.
   const sandbox = loadEngine(
     makeLS({}),
-    `globalThis.__out = { normal: AW.ringSVG({ seed: 5, atomsDone: 30, circuitsDone: 1 }) };`
+    `globalThis.__out = { normal: AW.ringSVG({ seed: 5, atomsDone: 30, circuitsDone: 1, animateFrom: 0 }) };`
   );
   const normal = sandbox.__out.normal;
   assert.ok(normal.indexOf('ink-draw') !== -1, 'a mid-progress ring must draw its newly-inked dabs');
   assert.ok(normal.indexOf('stroke-dasharray') !== -1, 'draw animation is wired via stroke-dasharray + --len');
+});
+
+/* ---------- (WR-01) the established Ring never re-draws on an unchanged-progress re-render ---------- */
+
+test('ringSVG: default (no animateFrom) at unchanged progress emits ZERO ink-draw — no replay on reload (WR-01)', () => {
+  const sandbox = loadEngine(
+    makeLS({}),
+    `globalThis.__out = {
+       a: AW.ringSVG({ seed: 5, atomsDone: 30, circuitsDone: 1 }),
+       b: AW.ringSVG({ seed: 5, atomsDone: 30, circuitsDone: 1 })
+     };`
+  );
+  const { a, b } = sandbox.__out;
+  assert.equal((a.match(/ink-draw/g) || []).length, 0, 'a plain regeneration must not replay the draw on any dab');
+  assert.equal(a.indexOf('stroke-dasharray'), -1, 'no dab carries a draw dash-array at the static default');
+  assert.equal(a, b, 'two unchanged-progress renders stay byte-identical (determinism holds)');
+});
+
+test('ringSVG: animateFrom < atomsDone animates exactly the newly-inked frontier span (WR-01)', () => {
+  const sandbox = loadEngine(
+    makeLS({}),
+    `function n(s){ return (s.match(/ink-draw/g) || []).length; }
+     globalThis.__out = {
+       none: n(AW.ringSVG({ seed: 5, atomsDone: 30, circuitsDone: 1 })),
+       all:  n(AW.ringSVG({ seed: 5, atomsDone: 30, circuitsDone: 1, animateFrom: 0 })),
+       span: n(AW.ringSVG({ seed: 5, atomsDone: 30, circuitsDone: 1, animateFrom: 25 })),
+       det1: AW.ringSVG({ seed: 5, atomsDone: 30, circuitsDone: 1, animateFrom: 25 }),
+       det2: AW.ringSVG({ seed: 5, atomsDone: 30, circuitsDone: 1, animateFrom: 25 })
+     };`
+  );
+  const out = sandbox.__out;
+  assert.equal(out.none, 0, 'default animateFrom (= atomsDone) animates nothing');
+  assert.ok(out.all > 0, 'animateFrom 0 animates the whole inked span');
+  assert.ok(out.span > 0 && out.span < out.all, 'a mid animateFrom animates only the frontier span (a strict subset)');
+  assert.equal(out.det1, out.det2, 'same (seed, atomsDone, animateFrom) → byte-identical output (determinism)');
 });
 
 /* ---------- (5) perf budget — ≤600 path nodes, zero <filter> ---------- */
