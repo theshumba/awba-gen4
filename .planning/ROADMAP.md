@@ -115,7 +115,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 6 plans
   - [x] 05-01-PLAN.md — Engine seams + Wave-0 tests + atom re-wire (65→61 denominator, D-57) (completed 2026-07-13 — NODE_ATOMS/AW.atomsDone/AW.dailyIndex/mute exports added + tested (learn-state.test.js, RED→GREEN); 65→61 denominator swept atomically across engine + ring.test.js/sky.test.js/preview.html; render-smoke discovers root learn.html; suite 98→107 green)
   - [x] 05-02-PLAN.md — learn.html Orbit shell: HUD + Ring hero (static) + continue card + streak/constellation + daily ayah (LRN-01/05) (completed 2026-07-13 — learn.html at repo root, root-relative head; static Ring hero (no animateFrom, law 9); AW.weekCal() constellation; navy continue card → live active node; DAILY spliced byte-verbatim (SHA e23fd7cf…) + day-of-year rotation + port-audit DAILY BYTES OK; @layer-screens-only CSS, order line count 1; render-smoke clean; suite 107/107)
-  - [ ] 05-03-PLAN.md — Unit headers + winding path + live node grammar + earned gold thread + Ibrahim line (LRN-02/04, CNT-03)
+  - [x] 05-03-PLAN.md — Unit headers + winding path + live node grammar + earned gold thread + Ibrahim line (LRN-02/04, CNT-03) (completed 2026-07-14 — 4 cream-Farag-square unit headers (chapter-term + gold scene icon, no colour-coding); real <button> node stations on a serpentine (not Duolingo circles) with live data-state from AW.deriveNodeState mapped to the shipped thermal/rosette/plate grammar; one SVG ink thread per section through node centres, earned portion gold + STATIC on load (law 9/W8, no ink-draw replay), recomputed on load+resize+ResizeObserver; Ibrahim 14:24 Courier epigraph (R-7 fallback — verse absent from corpus, no scripture generated); D-61 auto-scroll (next node / hash validated vs UNITS id set); node-state walk verified fresh + seeded; suite 107/107, render-smoke 20/20)
   - [ ] 05-04-PLAN.md — Node popup + navigation wiring + cross-document View Transitions morph (LRN-03, MOT-02)
   - [ ] 05-05-PLAN.md — Shared sheet family + tab bar coming-soon + chest claim + Festival interstitial (LRN-06/07, RWD-04)
   - [ ] 05-06-PLAN.md — Phase gate: automated prechecks + BLOCKING human visual walk (autonomous:false)
@@ -158,6 +158,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 2. State Layer & Engine-Contract Freeze | 2/2 | Complete   | 2026-07-12 |
 | 3. Components, Icon Kit & Motion | 10/12 | In Progress|  |
 | 4. Lesson & Review Engine Port | 6/7 | In Progress | - |
-| 5. Learn Page & View Transitions | 2/6 | In Progress | - |
+| 5. Learn Page & View Transitions | 3/6 | In Progress | - |
 | 6. Accessibility, RTL & Typography | 0/TBD | Not started | - |
 | 7. PWA Shell, Offline & Delivery | 0/TBD | Not started | - |
