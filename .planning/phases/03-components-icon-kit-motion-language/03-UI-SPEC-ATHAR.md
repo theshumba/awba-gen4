@@ -194,7 +194,9 @@ budget honest; a screen using `--ink-62` is still "one colour"):
 - **Gold never texts or lone-indicates on cream** (1.93:1). On Page, "mastered" is a gold **rosette
   filled shape with a `--rule` ink keyline** + the check glyph — shape carries it, gold is fill.
 - **Powder never lone-indicates on cream** (1.58:1) — "not yet" on Page is a **hollow ink ring**
-  (stroke `--ink-40`); powder is its home only on dark grounds (Orbit/Circle/Sky).
+  (stroke `--ink-62` = 5.02:1 on cream — this border IS the shape-first signal, so it must clear
+  WCAG 1.4.11's 3:1 non-text/UI-component threshold; the earlier `--ink-40` computed to only 2.56:1
+  and failed it, WR-04); powder is its home only on dark grounds (Orbit/Circle/Sky).
 - **Rose retry frame on cream is 1.73:1 — decorative, never the signal.** The WCAG-load-bearing
   signals of a wrong answer are the **grey ink-blot + the one-line explanation text** (`--ink-85`)
   + the shape change. Rose only tints the frame; reinforce it with a 2px border **and** the text.

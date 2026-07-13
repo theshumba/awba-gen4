@@ -856,7 +856,7 @@
      not-yet = a hollow ring · progress = a half-inked dab · mastered = a filled dab + check.
      (@layer base maps --st per data-state; these are the shapes that consume it.) */
   [data-state="not-yet"] {
-    border: 2px solid var(--ink-40);      /* powder fails on cream (1.58:1) — ink outline on Page */
+    border: 2px solid var(--ink-62);      /* WR-04: this border IS the shape-first "not-yet" signal, so it needs WCAG 1.4.11's 3:1 non-text contrast. --ink-62 = 5.02:1 on cream (clears it); --ink-40 was 2.56:1 and failed. powder fails harder on cream (1.58:1). */
     background: transparent;
   }
   .reg-orbit [data-state="not-yet"],
