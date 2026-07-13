@@ -1782,11 +1782,13 @@ function AwbaLesson(cfg) {
 
     if (it.t === 'depth') {
       root.querySelectorAll('.lens').forEach(function (lens) {
-        var head = lens.querySelector('.lh'), body = lens.querySelector('.lb');
+        var head = lens.querySelector('.lh');
         head.addEventListener('click', function () {
           var open = lens.classList.toggle('open');
           head.setAttribute('aria-expanded', open ? 'true' : 'false');
-          if (open) AW.wire(body, cfg);
+          // WR-03 — no re-wire on open. AW.wire(root, cfg) above already bound every .cite/.term
+          // inside the still-hidden (display:none) lens bodies (querySelectorAll ignores visibility),
+          // so re-wiring the lens body on each toggle only stacked duplicate listeners.
         });
       });
     }
