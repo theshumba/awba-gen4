@@ -94,7 +94,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 7 plans
   - [x] 04-01-PLAN.md — Test foundation: pure runner-math helpers (ENG-03/04) + AW.sound plumbing (MOT-05) + render-smoke & port-audit harnesses (completed 2026-07-13 — suite 64→70 green)
   - [x] 04-02-PLAN.md — Lesson @layer screens CSS (Page register): shell, 9 beat surfaces, scripture-law scard, 3-lens accordion, reward screens (completed 2026-07-13 — token-only S1–S4 surfaces filled; suite held 70/70; runtime verification of ENG-01/ENG-05/CNT-04 pends the 04-03 runner)
-  - [ ] 04-03-PLAN.md — AwbaLesson(cfg) runner: all 9 beats + quiz (exact numbers) + port u1-m1 — the walking slice (one lesson renders end-to-end)
+  - [x] 04-03-PLAN.md — AwbaLesson(cfg) runner: all 9 beats + quiz (exact numbers) + port u1-m1 — the walking slice (one lesson renders end-to-end) (completed 2026-07-13 — suite 70→87 green; u1-m1 cfg SHA-identical, validate/port-audit/render-smoke all exit 0; plain terminus, choreography is 04-04)
   - [ ] 04-04-PLAN.md — Reward choreography flagship: WAAPI verdict→noor→returns→done→Ring→du’a (RWD-01/02/03), celebration never over scripture
   - [ ] 04-05-PLAN.md — AwbaReview(cfg) runner + review CSS (Orbit+gold) + port u1-review: 14s timer state-machine, circle-back, rosette mastery (ENG-02/04)
   - [ ] 04-06-PLAN.md — Full content port: 14 lessons + 3 reviews byte-verbatim, holds verified (U4-03 absent, U3-13/U3-16), all 19 exit 0 (CNT-01/02/04)
