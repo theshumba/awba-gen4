@@ -1650,6 +1650,16 @@ function AwbaLesson(cfg) {
   var claimNoor = AW._noorClaimer();   // the noor moment persists exactly once (RWD-01 / T-04-04a)
   beats.forEach(function (b) { if (['mc', 'tf', 'tile'].indexOf(b.t) >= 0) quizN++; });
 
+  /* Pitfall 7 / WR-01 — the Ring's animateFrom is captured HERE, at INIT: BEFORE the opener, BEFORE
+     AW.touchDay, BEFORE this lesson's best-of star persists at done(). ATOMS_PER_NODE = 3 is a
+     documented Phase-4 proxy (Phase-5 CNT-03 wires the exact per-node atoms); pre-lesson atoms =
+     (# nodes that already carry a star) * 3. On a genuine first completion done() adds THIS node's
+     star key, so postAtoms > preLessonAtoms and the Ring inks ONLY the new frontier [preLessonAtoms,
+     postAtoms). On a replay the key already exists at init, so postAtoms === preLessonAtoms, the span
+     is empty, and the established Ring never re-draws (law 9) — no phantom celebration. */
+  var ATOMS_PER_NODE = 3;
+  var preLessonAtoms = (Object.keys((AW.state().stars) || {}).length) * ATOMS_PER_NODE;
+
   /* Athar skeleton — a Page-register manuscript shell (never the retired Gen-3 body builder). */
   document.body.innerHTML =
     '<main class="reg-page ls-shell">' +
@@ -1660,6 +1670,7 @@ function AwbaLesson(cfg) {
   var root = document.getElementById('root');
   var hudEl = document.getElementById('lshud');
   var progEl = document.getElementById('lsprog');
+  var shellEl = document.querySelector('.ls-shell');   // the register carrier — swapped Page→Orbit→Sky at the terminus
 
   /* the mute control — a 44px HUD button (§S6 / MOT-05). Its speaker glyph is an inline control
      affordance (currentColor, inherits --icon-accent via .ls-mute svg), NOT a KIT/GLYPHS entry:
@@ -1905,13 +1916,15 @@ function AwbaLesson(cfg) {
   }
 
   /* ---------- the reward choreography (RWD-01/02/03 · D-51) — the flagship post-lesson sequence.
-     The four Page moments (verdict → noor → returns → done) as WAAPI-chained reveals; the Ring
-     moment (Orbit) and the du'a close (Sky) layer on in Task 2. Every staggered reveal chains
-     through AW.animate(el, kf, '--dur-*', '--ease').finished with a 60ms gap (each anim self-guards
-     reduced motion → 1ms). Celebration is INK (drifting .dab stars), never on scripture. Noor
-     persists once at the noor moment (claimNoor); best-of stars persist at done() and never
-     downgrade. ------------------------------------------------------------------------------------ */
+     SIX moments, ONE register per screen (law 1): verdict → noor → returns → done on Page cream,
+     the Ring moment on Orbit, the du'a close on Sky. Every staggered reveal chains through
+     AW.animate(el, kf, '--dur-*', '--ease').finished with a 60ms gap (each anim self-guards reduced
+     motion → 1ms, so the centre never animates). Celebration is INK (drifting .dab stars + the Ring
+     drawing your new frontier), and it NEVER touches scripture — the du'a block authors no
+     celebration primitive. Noor persists once at the noor moment (claimNoor); best-of stars persist
+     at done() and never downgrade. ---------------------------------------------------------------- */
 
+  function setGround(reg) { if (shellEl) shellEl.className = reg + ' ls-shell'; }   // Page → Orbit → Sky
   function delay(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }   // the 60ms stagger gap
 
   /* verdict stars — shape-first gold INK: a filled .dab (gold + check) per earned star, a hollow
@@ -1949,6 +1962,7 @@ function AwbaLesson(cfg) {
   /* 1 · Verdict (Page) — shape-first stars drift in, the verdict word, then three stat tiles settle
      in staggered on the Page verb (settle, 60ms gaps). Marks from shipped GLYPHS (spark/check/star). */
   async function verdict() {
+    setGround('reg-page');
     setHUD(false);
     paintProg();
     var acc = quizN ? Math.round((correct / quizN) * 100) : 100;
@@ -1981,6 +1995,7 @@ function AwbaLesson(cfg) {
   /* 2 · Noor claim (Page) — persist EXACTLY once at the noor moment (claimNoor, interruption-safe),
      then the Marcellus count-up rides the settle reveal. AW.sound('complete') peaks here. */
   async function rewardNoor() {
+    setGround('reg-page');
     claimNoor(noorEarned);                                // the noor moment — persists once (T-04-04a)
     AW.sound('complete');
     root.innerHTML =
@@ -2005,6 +2020,7 @@ function AwbaLesson(cfg) {
      behind a big Marcellus --kiswah returns count; AW.weekCal() days are lighter-ink presence dots
      that NEVER show a gap/red/miss (RWD-02). The count then the week settle in, staggered. */
   async function rewardReturns() {
+    setGround('reg-page');
     var ret = AW.S.get('returns', 0);
     var days = AW.weekCal().map(function (d) {
       return '<span class="day' + (d.on ? ' here' : '') + '" aria-hidden="true"></span>';
@@ -2025,20 +2041,69 @@ function AwbaLesson(cfg) {
       [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], '--dur-settle', '--ease').finished;
   }
 
-  /* 4 · Done (Page) — best-of star persist (never downgrade); recap + the onward handoff. In Task 2
-     this becomes a "Continue" into the Ring moment; here (Task 1) it is the terminal Page screen. */
+  /* 4 · Done (Page) — best-of star persist (never downgrade); recap + the onward "Continue" into the
+     Ring. The path handoff itself moves to the du'a terminal (steps 5–6 must render before nav). */
   function done() {
+    setGround('reg-page');
     var st = AW.S.get('stars', {}), prev = st[cfg.id] || 0, now = AW.lessonStars(mistakes);
     if (now > prev) { st[cfg.id] = now; AW.S.set('stars', st); }   // best-of only — never downgrade
     var rec = (cfg.recap || []).map(function (r) {
       return '<li>' + AW.icon('check') + '<span>' + r + '</span></li>';
     }).join('');
-    var nextBtn = cfg.next ? '<a class="btn" href="' + cfg.next.href + '">Next: ' + cfg.next.label + '</a>' : '';
     root.innerHTML =
       '<div class="rw-done">' + sceneIco('crescent') +
       '<h1 class="rw-word">' + (cfg.doneTitle || 'Carried a little further') + '</h1>' +
       (cfg.doneLine ? '<p>' + cfg.doneLine + '</p>' : '') +
       (rec ? '<ul class="recl">' + rec + '</ul>' : '') +
+      '</div>' +
+      foot(btn('Continue'));
+    document.getElementById('cont').addEventListener('click', ringMoment);
+  }
+
+  /* 5 · The Ring moment (Orbit) — the terminal tawaf-fingerprint. postAtoms is recomputed HERE,
+     AFTER done() persisted this lesson's best-of star (Pitfall 7 / WR-01): on a genuine first
+     completion the star KEY was newly added, so postAtoms > preLessonAtoms and AW.ringSVG inks ONLY
+     the new frontier [preLessonAtoms, postAtoms); on a replay the key already existed at init, so
+     postAtoms === preLessonAtoms, the span is empty, and the established Ring renders static — no
+     phantom celebration. Reduced motion → final inked state, static (handled inside AW.ringSVG).
+     Crimson is banned on Orbit — the ring's accents are gold/ember only. */
+  function ringMoment() {
+    setGround('reg-orbit');
+    setHUD(false);
+    progEl.innerHTML = '';
+    var postAtoms = (Object.keys((AW.state().stars) || {}).length) * ATOMS_PER_NODE;
+    var grew = postAtoms > preLessonAtoms;
+    root.innerHTML = '<div class="rw-ring"></div>' + foot(btn('Continue'));
+    root.querySelector('.rw-ring').innerHTML =
+      AW.ringSVG({ atomsDone: postAtoms, animateFrom: preLessonAtoms }) +
+      '<p class="rcap">' + (grew ? 'A new mark, inked into your ring.' : 'Your ring, as it stands.') + '</p>';
+    document.getElementById('cont').addEventListener('click', duaClose);
+  }
+
+  /* 6 · The du'a close (Sky) — the terminal moment on the Last-Third night ground. The du'a renders
+     in Amiri under scripture law (lang="ar" dir="rtl"; the permitted glow lives on this dark ground)
+     ONLY when the cfg carries one — a du'a is religious content: it is Josh's asset, never generated
+     or retyped here (splice-not-retype law; CLAUDE.md content integrity). The reverent close line
+     "Alhamdulillah — continue." always renders, with the onward path handoff. NO celebration
+     primitive (.dab/.thread/.plate/.rosette) is authored in this block (grep-gated, D-51). */
+  function duaClose() {
+    setGround('reg-sky-night');
+    setHUD(false);
+    progEl.innerHTML = '';
+    var duaBlock = '';
+    if (cfg.dua) {
+      var ar = typeof cfg.dua === 'string' ? cfg.dua : (cfg.dua.ar || '');
+      var source = (cfg.dua && cfg.dua.source) ? cfg.dua.source : '';
+      if (ar) {
+        duaBlock = '<p class="scripture" lang="ar" dir="rtl">' + ar + '</p>' +
+          (source ? '<p class="close">' + source + ' · pending review</p>' : '');
+      }
+    }
+    var nextBtn = cfg.next ? '<a class="btn" href="' + cfg.next.href + '">Next: ' + cfg.next.label + '</a>' : '';
+    root.innerHTML =
+      '<div class="rw-dua">' +
+      duaBlock +
+      '<p class="close">Alhamdulillah — continue.</p>' +
       '</div>' +
       foot(nextBtn + '<a class="ls-back" href="../learn.html">Back to the path</a>');
   }
