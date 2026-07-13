@@ -93,7 +93,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. Calm, dignified sound cues play on correct/incorrect/complete with a visible mute toggle; 3-Lens depth renders as an individually-expanding accordion (three visually distinct lenses per the Athar contract, fixed order) that never blocks Continue; every Arabic span carries `lang="ar" dir="rtl"`, ayah text uses the Quran face, and ﷺ / honorifics / brackets render intact.
 **Plans**: 7 plans
   - [x] 04-01-PLAN.md — Test foundation: pure runner-math helpers (ENG-03/04) + AW.sound plumbing (MOT-05) + render-smoke & port-audit harnesses (completed 2026-07-13 — suite 64→70 green)
-  - [ ] 04-02-PLAN.md — Lesson @layer screens CSS (Page register): shell, 9 beat surfaces, scripture-law scard, 3-lens accordion, reward screens
+  - [x] 04-02-PLAN.md — Lesson @layer screens CSS (Page register): shell, 9 beat surfaces, scripture-law scard, 3-lens accordion, reward screens (completed 2026-07-13 — token-only S1–S4 surfaces filled; suite held 70/70; runtime verification of ENG-01/ENG-05/CNT-04 pends the 04-03 runner)
   - [ ] 04-03-PLAN.md — AwbaLesson(cfg) runner: all 9 beats + quiz (exact numbers) + port u1-m1 — the walking slice (one lesson renders end-to-end)
   - [ ] 04-04-PLAN.md — Reward choreography flagship: WAAPI verdict→noor→returns→done→Ring→du’a (RWD-01/02/03), celebration never over scripture
   - [ ] 04-05-PLAN.md — AwbaReview(cfg) runner + review CSS (Orbit+gold) + port u1-review: 14s timer state-machine, circle-back, rosette mastery (ENG-02/04)
@@ -151,7 +151,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. Foundation — Tokens, Shell & Fonts | 4/4 | Complete | 2026-07-12 |
 | 2. State Layer & Engine-Contract Freeze | 2/2 | Complete   | 2026-07-12 |
 | 3. Components, Icon Kit & Motion | 10/12 | In Progress|  |
-| 4. Lesson & Review Engine Port | 0/7 | Planned | - |
+| 4. Lesson & Review Engine Port | 2/7 | In Progress | - |
 | 5. Learn Page & View Transitions | 0/TBD | Not started | - |
 | 6. Accessibility, RTL & Typography | 0/TBD | Not started | - |
 | 7. PWA Shell, Offline & Delivery | 0/TBD | Not started | - |

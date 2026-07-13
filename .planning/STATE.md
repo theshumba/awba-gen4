@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: "Phase 4 Plan 01 complete: runner-math + AW.sound + render-smoke/port-audit harnesses (suite 64->70/70 green)"
-last_updated: "2026-07-13T15:03:00.000Z"
+stopped_at: "Phase 4 Plan 02 complete: lesson + reward @layer screens CSS surfaces (S1–S4), suite held 70/70 green"
+last_updated: "2026-07-13T14:40:00.000Z"
 last_activity: 2026-07-13
 progress:
   total_phases: 7
   completed_phases: 3
   total_plans: 25
-  completed_plans: 18
+  completed_plans: 19
   percent: 43
 ---
 
@@ -21,14 +21,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-11)
 
 **Core value:** A learner opens the app, walks a beautiful winding path through the full Aqeedah course, and every screen feels world-class while every word of scripture stays verbatim, sourced, and scholar-gated.
-**Current focus:** Phase 04 — Lesson & Review Engine Port + Detail Layer (Phase 03 CLOSED 2026-07-13 under Athar; 04-01 test foundation COMPLETE)
+**Current focus:** Phase 04 — Lesson & Review Engine Port + Detail Layer (Phase 03 CLOSED 2026-07-13 under Athar; 04-01 test foundation + 04-02 lesson/reward CSS surfaces COMPLETE)
 
 ## Current Position
 
-Phase: 04 (Lesson & Review Engine Port + Detail Layer) — **1/7 plans complete**
+Phase: 04 (Lesson & Review Engine Port + Detail Layer) — **2/7 plans complete**
 
 - **04-01 (test foundation: runner-math + AW.sound + Wave-0 harnesses): COMPLETE 2026-07-13** — `AW.lessonStars/comboShow/comboPerfect/reviewScore/reviewStars` + the `PER_LESSON/REFLECT/PER_REVIEW/SWIFT/QTIME` constants added as pure, DOM-free `AW.*` contracts in the RUNNERS banner, byte-copied from Gen-3's `resolve()/starsFor()/bind()/result()` (D-47/ENG-03/ENG-04) and pinned by a new headless `runner-math.test.js` (RED confirmed before GREEN). `AW.sound(cue)` ships full plumbing, silent v1 (D-52/MOT-05): reads `awba_prefs.soundMuted`, loads `../shared/sfx/{cue}.mp3` page-relative, clean no-op on a missing asset/blocked autoplay; `shared/sfx/.gitkeep` tracks the empty cue directory. Two zero-dep Wave-0 harnesses built and already exit 0 against today's empty content dirs: `scripts/tests/render-smoke.mjs` (headless system-Chrome loader asserting no console errors + a `reg-page`/`reg-orbit` register root) and `scripts/port-audit.mjs` (SHA-256 byte-fidelity of each ported page's cfg region vs the Gen-3 source, plus CDN/retired-element/U4-03-hold grep gates). Commits `8b5d02d`, `88a1e37`, `01aedde`. Suite 64→**70/70** green; `localStorage` grep-count held at 13; `validate-content.js --self-test` OK. Two self-caught wording deviations (both Rule 1, fixed pre-commit): a `localStorage` literal in a doc-comment bumped the grep-gate count, and a Gen-3 `firePerfect` citation incidentally echoed a gated literal in `shared/` — both reworded, no behavior change (see 04-01-SUMMARY.md).
-- NEXT: **04-02** — Lesson `@layer screens` CSS (Page register): shell, 9 beat surfaces, scripture-law scard, 3-lens accordion, reward screens.
+- **04-02 (lesson + reward `@layer screens` CSS surfaces, S1–S4): COMPLETE 2026-07-13** — the reserved empty `@layer screens` block (was a one-line placeholder at `shared/awba-engine.css:923`) filled with ~610 lines of per-screen Athar surface CSS, token-only, every colour cited to `03-UI-SPEC-ATHAR §2.1`; the `:16` order line stays declared exactly once. **Task 1** `14bdb7b`: the lesson shell on `.reg-page` — `.stage` (settle mount), `.ls-hud` transparent marginalia row (consumes shipped `.hstat`) + 44px `.ls-mute`, `.ls-prog` thermal shape-first progress dabs (`.ls-dab` sizing shell over shipped `[data-state]`) + Courier `.ls-count`, opener `.hero` with a `.journey` chapter-term in a Farag square (Aref Ruqaa, crimson), `.foot` keyline-separated + quiet `.ls-back`. **Task 2** `69d919b`: all 9 beat surfaces distinct — `.read`/`.frame`/`.scard`(law-3 `--go:0`, `.ayah` strongest `--kiswah` ink, `.slabel/.trans/.tsrc`)/`.pnl` with four visually-distinct variants (`.v-check` ruled / `.v-guard` ink jadwal-rule / `.v-pull` crimson pull-quote / `.v-tell` madder reveal)/`.lacc` 3-lens accordion (Reality `--madder` / Revelation `--crimson` with nested `.scard` scripture / Ruling `--olive`, cued by left-rule STYLE + label + glyph, never colour-only, never blocks Continue)/`.reflect`; `.opts/.tfrow/.tilebox/.bank` wrappers over shipped `.opt/.tf/.tile`; a quiet `.meta` accrual zone consuming the shipped gold `.dab` + `.ls-count` (no `.combo`/floating pill). **Task 3** `4d058c6`: the reward sequence one register per screen — `.rw-verdict` (shape-first gold `.dab/.rosette` stars + `.rw-word` + 3-tile `.rw-stats` Marcellus numerals), `.noorbig` Marcellus `--fs-display` count-up + `.grew`, `.rw-returns` with a decorative `--apricot` horizon glow via `color-mix` (never apricot text; returns count Marcellus `--kiswah`) + `.weekcal` presence dots (never gap/red/miss, RWD-02), `.rw-done` recap `.recl`, `.rw-ring` on `.reg-orbit` hosting the shipped `.ring` (gold/ember only, crimson banned), `.rw-dua` on `.reg-sky-night` under scripture law (base-layer glow) + moonmilk close. Every task's `<verify>` passed verbatim; suite held **70/70** across all three; brace balance 249/249; all retired-literal gates (`poppins|confetti|amber|lantern-gold|PERFECT|.combo|rgba(37,54,|--accent`) clean file-wide; no celebration primitive on any `.ayah`/`.scard`/`.rw-dua` line. **Zero deviations** (one hard-rule naming compliance: the streak META surface is `.meta` + `.ls-count`, never the banned `.combo` literal). Doubts for the 04-07 gate logged in 04-02-SUMMARY (accordion open/collapse toggle contract with the runner; `.rw-noor` container name; stat-tile Marcellus sizing in a 1/3 tile; apricot glow strength).
+- NEXT: **04-03** — the lesson runner (`AwbaLesson(cfg)`) that emits these `@layer screens` class names on the real u1-m1 page (RUNNERS banner, `shared/awba-engine.js:1358`); confirm the accordion toggle + reward-container class contract with this plan's CSS.
 
 ### Phase 3 history (CLOSED 2026-07-13 — §9 human gate APPROVED)
 
@@ -46,7 +47,7 @@ Phase: 03 (Components, Icon Kit & Motion Language) — **RE-CUT UNDER ATHAR (Gat
 - **Plan 03-11 (new Athar preview — the living reference / FLAGSHIP VISUAL): COMPLETE 2026-07-12** — `preview.html` rebuilt from scratch as the Athar living reference: the old §1-12 indigo/gummy/confetti sections + the `pv-unit` switch + `.pv-poppins` REMOVED wholesale, replaced by §8's eight sections of REAL `AW.*` output on the real register grounds — (1) register worlds (the four grounds side by side, each with grain + `--icon-accent` + a real `AW.icon` scene + its verb), (2) type specimens under scripture law (six rationed faces; ayah/hadith/term inject byte-verbatim Arabic from demoCfg via `textContent`), (3) the thermal ramp + three `data-state` shapes on cream AND dark, (4) the component inventory (real `.btn`/`.opt`/`.tf`/`.tile`/`.tab`/`.hstat`/`.cite`/`.term`, the law-8 wrong answer, one paper-press), (5) scripture on clean cream (the hujurat ayah, no grade + the muslim-8 hadith + olive grade pill, always-on pending pill, nothing celebratory), (6) the `AW.ringSVG` tawaf ring at three states + an animated/static pair with replay + two seeds proving uniqueness, (7) the five `data-sky` sky temperatures + the `--dawn` degree, (8) a `data-motion="reduce"` toggle proving the breathe stops / dabs rest / ring shows finished. Head is zero-CDN, classic engine include, page-relative `readex-pro-400` + `amiri-quran-400` preloads only. **The four `shared/fonts/poppins-*.woff2` DELETED — Poppins fully retired from the repo** (Inter kept only as the ˹ ˺ fallback). demoCfg spliced **byte-identical** from the prior preview (SHA `f7ec7f07`, verified vs HEAD). Commits `ed3d55c`, `eb8e17d`. No engine files touched → suite unchanged **53/53**. Watched live in headless Chrome (masthead + all 8 sections + a reduced-motion load): only the ember frontier draws (12/12 animated paths ember), the gold thread sits well against the inked dabs, the ember reads as warmth, two seeds visibly differ, all rings static under `data-motion=reduce` — **reads like the locked Athar gallery, not a test harness**. Doubts flagged for the §9 gate in 03-11-SUMMARY.
 - 03-12 closure / human §9 gate — the owner walked `preview.html` against the ten plain-language gate items: **APPROVED 2026-07-13** (9/9 review warnings fixed, VERIFICATION 5/5). Phase 3 CLOSED.
 
-Status: Executing Phase 4 — 04-01 (test foundation) done, next 04-02 (lesson `@layer screens` CSS)
+Status: Executing Phase 4 — 04-01 (test foundation) + 04-02 (lesson/reward `@layer screens` CSS) done, next 04-03 (lesson runner)
 Last activity: 2026-07-13
 
 Progress: [███░░░░░░░] 43%
@@ -55,9 +56,9 @@ Progress: [███░░░░░░░] 43%
 
 **Velocity:**
 
-- Total plans completed: 1 (this phase: 04-01)
-- Average duration: ~11 min
-- Total execution time: ~11 min
+- Total plans completed: 2 (this phase: 04-01, 04-02)
+- Average duration: ~20 min
+- Total execution time: ~41 min
 
 **By Phase:**
 
@@ -65,12 +66,12 @@ Progress: [███░░░░░░░] 43%
 |-------|-------|-------|----------|
 | 02 | 2 | - | - |
 | 03 | 11 | - | ~20 min (03-09) |
-| 04 | 1 | - | ~11 min (04-01) |
+| 04 | 2 | - | ~20 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 03-08, 03-09, 03-10, 03-11, 04-01
-- Trend: Phase 3 closed (§9 human gate approved 2026-07-13); Phase 4 opened with 04-01 (test foundation) — suite 64→70/70 green, both Wave-0 harnesses (render-smoke/port-audit) already runnable against empty content dirs, ready to become real gates once 04-03/04-06 land
+- Last 5 plans: 03-09, 03-10, 03-11, 04-01, 04-02
+- Trend: Phase 3 closed (§9 human gate approved 2026-07-13); Phase 4 opened with 04-01 (test foundation) then 04-02 (the lesson/reward `@layer screens` CSS — flagship visual, CSS-only so suite held 70/70). The manuscript surface vocabulary now exists for 04-03 (runner) to emit and 04-04 (choreography) to animate.
 
 *Updated after each plan completion*
 | Phase 01 P01 | 20 min | 2 tasks | 13 files |
@@ -86,6 +87,7 @@ Progress: [███░░░░░░░] 43%
 | Phase 03 P10 | ~22 min | 2 tasks | 3 files |
 | Phase 03 P11 | ~50 min | 2 tasks | 5 files |
 | Phase 04 P01 | ~11 min | 3 tasks | 5 files |
+| Phase 04 P02 | ~30 min | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -139,6 +141,12 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-01: AW.sound hardcodes the `../shared/sfx/` relative path (not a computed depth) because it is only ever called from lessons/reviews/ runners, both one level below shared/ — future runner code should not re-derive this path
 - [Phase 04]: 04-01: render-smoke's register-root check is a substring/regex (class="[^"]*reg-(page|orbit)[^"]*"), never a literal class="reg-page" equality, since a rendered root may carry additional classes alongside the register class
 - [Phase 04]: 04-01: render-smoke.mjs and port-audit.mjs are Node-core-only *.mjs tools (not *.test.js) that print OK/FAIL/DRIFT lines and exit 0 with "no pages yet" against today's empty lessons/reviews dirs — they become real gates the moment 04-03/04-06 populate those directories
+- [Phase 04]: 04-02: ALL per-screen CSS lives inside the reserved @layer screens block (filled at :923); the :16 order line is never re-declared; screen classes only add layout/surface and CONSUME shipped primitives (.opt/.tf/.tile/.dab/.thread/.ring/.ayah/[data-state]/paper-press) — never re-author them
+- [Phase 04]: 04-02: the Revelation lens's scripture obeys law 3 via a NESTED .scard (--go:0, strongest ink), so the one scripture-card surface stays the single source of scripture styling — no lens-specific ayah rule authored
+- [Phase 04]: 04-02: the 3 depth lenses are shape-cued at the CSS layer by distinct left-rule STYLES (Reality solid / Revelation double / Ruling dashed) on top of per-lens ink + the runner's per-lens glyph + label, so "shape+label, never colour-only" holds even in greyscale
+- [Phase 04]: 04-02: the returns horizon-warmth glow is color-mix(in srgb, var(--apricot) 34%…) (the --dawn / .reg-sky-night::before recipe), never a raw rgba(240,165,131,…) — keeps the surface token-pure with zero new hex while satisfying D-45's "warmth behind the hero, never apricot text"
+- [Phase 04]: 04-02: the four Page reward screens share one grouped settle+centering rule; the Orbit Ring (.rw-ring) + Sky du'a (.rw-dua) are authored WITHOUT the Page settle so each register keeps its own verb (law 9) — the Ring's draw is the shipped .ring, the du'a's glow is @layer base
+- [Phase 04]: 04-02: the streak accrual META surface is named .meta (+ shipped gold .dab + Courier .ls-count "N in a row"), NEVER the retired .combo literal (banned in shared/) — no floating pill, never mid-scripture; weekcal absent days are a lighter --ink-40 presence dot (never a gap/red/miss, RWD-02)
 
 ### Pending Todos
 
@@ -167,6 +175,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-13T15:03:00.000Z
-Stopped at: Phase 4 Plan 01 complete (runner-math + AW.sound + render-smoke/port-audit harnesses; suite 64→70/70 green)
-Resume file: .planning/phases/04-lesson-review-engine-port-detail-layer/04-02-PLAN.md
+Last session: 2026-07-13T14:40:00.000Z
+Stopped at: Phase 4 Plan 02 complete (lesson + reward @layer screens CSS surfaces S1–S4; suite held 70/70 green; tree clean)
+Resume file: .planning/phases/04-lesson-review-engine-port-detail-layer/04-03-PLAN.md
