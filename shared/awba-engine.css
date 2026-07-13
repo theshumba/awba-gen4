@@ -1678,6 +1678,14 @@
     font-style: italic;
     color: var(--paper-85);
   }
+  /* WR-01 — the shared paper-press inks .opt/.tf/.tile borders one step to --crimson (§4.1), but
+     crimson is BANNED on Orbit (§2.1 · 2.65:1). AwbaReview is the first caller to place these
+     primitives on the review register, so the press cue must re-ink to --gold here (matching the
+     gold selection cue bind() already applies on click). Register-scoped override of the one
+     unscoped :active rule — no re-declaration of the @layer order. */
+  .rv-shell .opt:active,
+  .rv-shell .tf:active,
+  .rv-shell .tile:active { border-color: var(--gold); }   /* §2.1 gold on Kiswah, 8.40:1 — the Orbit press ink */
 
   /* Verdict foots — correct titles in gold; the timeout note is ember working-warmth. Wrongness
      stays law 8 (cream "Nothing lost" + the explanation) — never red, nothing shakes. */
