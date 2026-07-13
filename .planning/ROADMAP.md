@@ -98,7 +98,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   - [x] 04-04-PLAN.md — Reward choreography flagship: WAAPI verdict→noor→returns→done→Ring→du’a (RWD-01/02/03), celebration never over scripture (completed 2026-07-13 — six-moment WAAPI choreography, one register per screen; Ring draws only the new frontier via animateFrom=preLessonAtoms captured at init [no replay, law 9]; noor persists once via AW._noorClaimer seam; du'a close cfg-gated for content integrity; suite 87→88 green, render-smoke SMOKE OK)
   - [x] 04-05-PLAN.md — AwbaReview(cfg) runner + review CSS (Orbit+gold) + port u1-review: 14s timer state-machine, circle-back, rosette mastery (ENG-02/04) (completed 2026-07-13 — mechanics byte-preserved via the 04-01 helpers; whole session on .reg-orbit + Hajar Gold, gold thread progress + rosette seal, quiet ember .low; u1-review cfg SHA-identical, validate/port-audit/render-smoke all exit 0; suite 88→94 green)
   - [x] 04-06-PLAN.md — Full content port: 14 lessons + 3 reviews byte-verbatim, holds verified (U4-03 absent, U3-13/U3-16), all 19 exit 0 (CNT-01/02/04) (completed 2026-07-13 — all 19 files now exist and render; port-audit BYTES OK ×19 zero DRIFT; validator exit 0 with exactly the 3 accepted notes; render-smoke 19/19 SMOKE OK; suite held 94/94)
-  - [ ] 04-07-PLAN.md — Phase gate: automated prechecks (suite + validator×19 + grep gates + render-smoke) then BLOCKING human visual walk (autonomous:false)
+  - [x] 04-07-PLAN.md — Phase gate: automated prechecks (suite + validator×19 + grep gates + render-smoke) then BLOCKING human visual walk (autonomous:false)
 **UI hint**: yes
 
 ### Phase 5: Learn Page & Cross-Page View Transitions
