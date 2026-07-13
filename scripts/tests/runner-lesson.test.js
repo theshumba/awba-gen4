@@ -6,13 +6,16 @@
    concatenation idiom (const AW is a lexical binding, so engine+probe MUST run as ONE
    runInContext call — ls-stub.js handles that).
 
-   The runner is DOM-driven; jsdom is out (zero-dep, D-25), so full-flow DOM behaviour is proven
-   by the real-Chrome render-smoke harness on lessons/u1-m1.html (04-03 Task 3), NOT here. What is
-   unit-testable WITHOUT a DOM — and asserted below — is the pure view seam (AW._beatHtml builds a
-   beat's inner HTML from cfg with no DOM access) and the pure scoring reducer (AW._resolveScore),
-   plus the marker-label map (AW.MLAB). These carry the mechanics-preserved + scripture-law
-   contracts. Test cfg content is neutral placeholder copy ONLY — never real scripture (RESEARCH
-   Fixtures rule).
+   The runner is DOM-driven; jsdom is out (zero-dep, D-25). NOTE (WR-05): render-smoke.mjs loads
+   each page ONCE in real Chrome and inspects only the initial (opener) paint — it never clicks a
+   button, advances a beat, resolves a quiz, or opens a lens, so it does NOT prove interactive
+   flows (the earlier "full-flow DOM behaviour is proven by render-smoke" claim here was false).
+   What IS unit-testable WITHOUT a DOM — and asserted below — is the pure view seam (AW._beatHtml
+   builds a beat's inner HTML from cfg with no DOM access) and the pure scoring reducer
+   (AW._resolveScore), plus the marker-label map (AW.MLAB). These carry the mechanics-preserved +
+   scripture-law contracts. The interaction-level invariants of the two Phase-4 runner fixes
+   (WR-02 flourish-timer, WR-03 lens re-wire) are pinned separately in runner-interaction.test.js.
+   Test cfg content is neutral placeholder copy ONLY — never real scripture (RESEARCH Fixtures rule).
    ============================================================================================ */
 'use strict';
 
