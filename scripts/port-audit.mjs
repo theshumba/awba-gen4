@@ -57,6 +57,45 @@ function listPages(dir) {
     .map((f) => ({ name: f, dir, abs: path.join(abs, f) }));
 }
 
+/* Matches the whole `const DAILY=[ … ];` daily-ayah pool region, delimiters included — byte for
+   byte. The verses carry no `];` of their own, so the first `];` is the real terminator. */
+const DAILY_RE = /const DAILY=\[[\s\S]*?\];/;
+
+function dailyRegion(src) {
+  const m = src.match(DAILY_RE);
+  return m ? m[0] : null;
+}
+
+/* checkDailyFidelity — the DAILY-pool byte-fidelity gate (D-59 / LRN-05 / T-05-02a). A SEPARATE
+   root-file compare (NOT via listPages): SHA-256 the spliced `const DAILY=[ … ];` region in root
+   learn.html against the byte-identical region in the Gen-3 source, and prove they match. ANY drift
+   — including a changed ˹ ˺ bracket — fails the gate, because scripture is spliced, never retyped.
+   Prints `DAILY BYTES OK` / `DAILY BYTES DRIFT`. */
+function checkDailyFidelity() {
+  const learnPath = path.join(ROOT, 'learn.html');
+  const sourcePath = path.join(SOURCE_ROOT, 'learn.html');
+  if (!existsSync(learnPath)) {
+    console.log('DAILY BYTES OK — no root learn.html yet');
+    return true;
+  }
+  if (!existsSync(sourcePath)) {
+    console.log('DAILY BYTES DRIFT — no Gen-3 learn.html source found');
+    return false;
+  }
+  const ported = dailyRegion(readFileSync(learnPath, 'utf8'));
+  const source = dailyRegion(readFileSync(sourcePath, 'utf8'));
+  if (ported === null || source === null) {
+    console.log('DAILY BYTES DRIFT — could not locate a DAILY region to compare');
+    return false;
+  }
+  if (sha256(ported) !== sha256(source)) {
+    console.log('DAILY BYTES DRIFT learn.html');
+    return false;
+  }
+  console.log('DAILY BYTES OK');
+  return true;
+}
+
 function checkByteFidelity(pages) {
   let ok = true;
   for (const page of pages) {
@@ -101,13 +140,17 @@ function grepFindsMatch(pattern, dirs) {
 }
 
 function main() {
+  /* The DAILY-pool gate is a root-file compare, independent of the lessons/reviews page set, so it
+     runs first and always — even before any lesson has been ported. */
+  const dailyOk = checkDailyFidelity();
+
   const pages = [...listPages('lessons'), ...listPages('reviews')];
   if (pages.length === 0) {
     console.log('no pages yet');
-    process.exit(0);
+    process.exit(dailyOk ? 0 : 1);
   }
 
-  let allOk = true;
+  let allOk = dailyOk;
 
   if (!checkByteFidelity(pages)) allOk = false;
 

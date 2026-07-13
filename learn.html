@@ -64,6 +64,19 @@
         { id: 'u4c', chest: true, label: 'The course gift' }] }
   ];
 
+  /* Daily-ayah pool — spliced BYTE-VERBATIM from Gen-3 _MVP-BUILD/learn.html (scripture law: splice,
+     never retype; the ˹ ˺ brackets intact). Rotation is AW.dailyIndex (day-of-year), never getDate().
+     Byte-fidelity is SHA-gated by scripts/port-audit.mjs (must print DAILY BYTES OK). */
+  const DAILY=[
+ {ref:'ar-Rūm 30:30',ar:'فَأَقِمْ وَجْهَكَ لِلدِّينِ حَنِيفًا ۚ فِطْرَتَ ٱللَّهِ ٱلَّتِى فَطَرَ ٱلنَّاسَ عَلَيْهَا',tr:'So be steadfast in faith in all uprightness ˹O Prophet˺—the natural Way of Allah which He has instilled in ˹all˺ people.'},
+ {ref:'al-Ḥijr 15:9',ar:'إِنَّا نَحْنُ نَزَّلْنَا ٱلذِّكْرَ وَإِنَّا لَهُۥ لَحَـٰفِظُونَ',tr:'It is certainly We Who have revealed the Reminder, and it is certainly We Who will preserve it.'},
+ {ref:'al-Anʿām 6:82',ar:'ٱلَّذِينَ ءَامَنُوا۟ وَلَمْ يَلْبِسُوٓا۟ إِيمَـٰنَهُم بِظُلْمٍ أُو۟لَـٰٓئِكَ لَهُمُ ٱلْأَمْنُ وَهُم مُّهْتَدُونَ',tr:'It is ˹only˺ those who are faithful and do not tarnish their faith with falsehood who are guaranteed security and are ˹rightly˺ guided.'},
+ {ref:'al-Baqarah 2:163',ar:'وَإِلَـٰهُكُمْ إِلَـٰهٌ وَٰحِدٌ ۖ لَّآ إِلَـٰهَ إِلَّا هُوَ ٱلرَّحْمَـٰنُ ٱلرَّحِيمُ',tr:'Your God is ˹only˺ One God. There is no god ˹worthy of worship˺ except Him—the Most Compassionate, Most Merciful.'},
+ {ref:'an-Naḥl 16:97',ar:'مَنْ عَمِلَ صَـٰلِحًا مِّن ذَكَرٍ أَوْ أُنثَىٰ وَهُوَ مُؤْمِنٌ فَلَنُحْيِيَنَّهُۥ حَيَوٰةً طَيِّبَةً',tr:'Whoever does good, whether male or female, and is a believer, We will surely bless them with a good life.'},
+ {ref:'an-Naml 27:62',ar:'أَمَّن يُجِيبُ ٱلْمُضْطَرَّ إِذَا دَعَاهُ وَيَكْشِفُ ٱلسُّوٓءَ',tr:'Who responds to the distressed when they cry to Him, relieving ˹their˺ affliction?'},
+ {ref:'aḏ-Ḏāriyāt 51:56',ar:'وَمَا خَلَقْتُ ٱلْجِنَّ وَٱلْإِنسَ إِلَّا لِيَعْبُدُونِ',tr:'I did not create jinn and humans except to worship Me.'}
+];
+
   /* Flatten into the CNT-03 unlock sequence + a parallel per-node unit meta (number + English
      title) for the continue card + course chip. Never mutate the node objects. */
   var flat = [], meta = [];
@@ -143,14 +156,40 @@
         '</div>';
     }
 
+    /* Daily ayah (S2 / D-59) — the ONLY scripture on the screen; it takes the reverence budget while
+       everything else stays marginalia-quiet. Rotation is day-of-year via AW.dailyIndex (the Gen-3
+       getDate() monthly-repeat bug is retired). Rendered under scripture law: Amiri Quran (.ayah),
+       lang=ar dir=rtl, strongest cream ink + the one permitted glow, translation + source + the calm
+       pending pill; nothing celebratory in or beside it; it never morphs across pages (D-58). */
+    var ayahV = DAILY[AW.dailyIndex(new Date(), DAILY.length)];
+    var ayah =
+      '<section class="oayah" id="ayahHost" tabindex="0" role="button" aria-label="Open the full citation for this verse">' +
+        '<div class="oa-kick">' + AW.icon('spark') + '<span>A little light for today · ' + ayahV.ref + '</span></div>' +
+        '<div class="ayah" lang="ar" dir="rtl">' + ayahV.ar + '</div>' +
+        '<div class="oa-trans">' + ayahV.tr + '</div>' +
+        '<div class="oa-src">The Clear Quran · Dr. Mustafa Khattab · pending review</div>' +
+        '<div class="oa-pill">unverified · pending review</div>' +
+      '</section>';
+
     /* Composition body (top→bottom): Ring hero → streak strip + constellation → continue card →
-       daily ayah. The daily ayah lands in Task 3. */
-    var body = '<div class="ob-hero">' + ring + streak + '</div>' + cont;
+       daily ayah. */
+    var body = '<div class="ob-hero">' + ring + streak + '</div>' + cont + ayah;
 
     app.innerHTML = '<div class="ob-shell">' + hud + '<div class="ob-wrap">' + body + '</div></div>';
 
     /* the one shared mute pattern (D-60) — re-render on toggle so the glyph + aria swap */
     AW.bindMuteBtn(render);
+
+    /* the daily ayah taps open the shipped citation sheet (a Page cream object over the world). The
+       DAILY verses are Qur'an → no grade → AW.sheetRef renders the .r-ar.ayah Amiri Quran face split
+       and only the pending pill (no grade pill). */
+    var ah = document.getElementById('ayahHost');
+    if (ah) {
+      var refs = {};
+      refs[ayahV.ref] = { kind: 'The verse', ref: ayahV.ref, ar: ayahV.ar, mean: ayahV.tr,
+        src: 'The Clear Quran · Dr. Mustafa Khattab · pending review' };
+      ah.addEventListener('click', function () { AW.sheetRef(refs, ayahV.ref); });
+    }
   }
 
   render();

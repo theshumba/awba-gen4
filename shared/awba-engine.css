@@ -1814,6 +1814,54 @@
   .cc-next { font-size: var(--fs-ui); color: var(--paper-85); }
   .cc-done { font-family: var(--font-marg); font-size: var(--fs-marg); color: var(--paper-62); }
   .cc-go { margin-top: var(--sp-1); }   /* the gold-ghost .btn — shipped .reg-orbit .btn.ghost on dark */
+
+  /* Daily ayah (§S2 / D-59) — the only scripture on the screen, under scripture law on the Orbit
+     dark ground: --go:0 + an opaque clean Kiswah panel (no grain over scripture, law 3); strongest
+     cream ink + the one permitted glow (dark grounds only, the exact shipped value); Amiri Quran via
+     the shipped .ayah. Nothing celebratory in or beside it; it never carries a view-transition-name. */
+  .oayah {
+    --go: 0;                          /* scripture always sits on clean ground (law 3) */
+    display: flex; flex-direction: column; gap: var(--sp-4);
+    padding: var(--sp-5);
+    background: var(--kiswah);        /* opaque clean Kiswah masks the page grain behind scripture */
+    border-radius: var(--r-4);        /* paper laid down — the settle object */
+    box-shadow: var(--edge-line);     /* a hairline on dark, never a drop shadow */
+    cursor: pointer;
+    animation: settle var(--dur-settle) var(--ease) both;   /* a quiet reverent reveal, one pass */
+  }
+  .oa-kick {                          /* Courier kicker + spark glyph */
+    display: inline-flex; align-items: center; gap: var(--sp-2);
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    letter-spacing: .09em;
+    color: var(--paper-62);           /* §2.1 --paper-62 on Kiswah */
+  }
+  .oa-kick svg { width: 15px; height: 15px; }
+  .oayah .ayah {                      /* strongest ink + the one permitted glow (dark grounds only) */
+    color: var(--cream);              /* §2.1 cream 16.22:1 on Kiswah, full opacity, no ramp (law 3) */
+    text-shadow: 0 0 24px rgba(244,240,247,.30);   /* the ONE permitted glow — the exact shipped value */
+    margin: 0;
+  }
+  .oa-trans {                         /* translation of the meaning — carries the ˹ ˺ brackets */
+    font-family: var(--font-work);
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--paper-85);           /* §2.1 --paper-85 on Kiswah */
+  }
+  .oa-src {                           /* provenance — Courier marginalia */
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    color: var(--paper-62);
+  }
+  .oa-pill {                          /* the calm pending pill — neutral, never rose/alarm */
+    align-self: flex-start;
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    color: var(--paper-62);
+    border: 1px solid var(--edge);    /* a hairline capsule on dark */
+    border-radius: var(--r-pill);     /* rationed to the marginalia counter capsule — valid here */
+    padding: var(--sp-1) var(--sp-3);
+  }
 }
 
 @layer motion {
