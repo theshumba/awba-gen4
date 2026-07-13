@@ -58,7 +58,7 @@ body{ background: var(--cream); }
 .pv-hero-sub{ margin: 0; font-size: var(--fs-body); color: var(--paper-85); max-width: 58ch; }
 .pv-hero-mark{
   margin: 0; font-family: var(--font-marg); font-size: var(--fs-marg);
-  letter-spacing: .08em; color: var(--paper-45);
+  letter-spacing: .08em; color: var(--paper-62);   /* WR-05: 12px caption — paper-62 (6.69:1) clears AA 4.5:1; paper-45 was 4.05:1 */
 }
 
 /* -- Section rhythm — manuscript keyline between folios; a Courier folio-mark eyebrow (the eight
@@ -485,7 +485,7 @@ body{ background: var(--cream); }
         </div>
         <button class="btn ghost" id="pv-motion-toggle" aria-pressed="false" style="width:auto;align-self:flex-start;padding-inline:var(--sp-6)">Turn on reduce motion</button>
         <p class="pv-note" id="pv-motion-state" style="color:var(--paper-62)">motion: system — following your OS “Reduce Motion” setting</p>
-        <p class="pv-ring-cap" style="text-align:left;color:var(--paper-45)">The in-app override stamps <code>data-motion="reduce"</code> on the page root; your device's setting is the second, independent path.</p>
+        <p class="pv-ring-cap" style="text-align:left;color:var(--paper-62)">The in-app override stamps <code>data-motion="reduce"</code> on the page root; your device's setting is the second, independent path.</p>
       </div>
     </div>
   </div>
