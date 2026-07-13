@@ -34,6 +34,10 @@ const REGISTER_ROOT_RE = /class="[^"]*\breg-(page|orbit)\b[^"]*"/;
 
 function findPages() {
   const pages = [];
+  const rootLearn = path.join(ROOT, 'learn.html');
+  if (existsSync(rootLearn)) pages.push(rootLearn); // Pitfall 7 — the root front door joins the
+  // smoke set the moment 05-02 creates it; skipped (not yet present) until then. Register-root
+  // regex already matches reg-orbit — no regex change needed.
   for (const dir of ['lessons', 'reviews']) {
     const abs = path.join(ROOT, dir);
     if (!existsSync(abs)) continue;
