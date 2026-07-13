@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: "§9 HUMAN GATE PASSED 2026-07-13 (Melusi: approved, all ten YES, five-register map confirmed); 03-12 complete — Phase 3 close-out running: code-review gate (+--fix) → gsd-verifier → phase.complete → Phase 4 (engine port, inherits Athar)"
-last_updated: "2026-07-12T23:59:00.000Z"
-last_activity: 2026-07-12
+stopped_at: "CODE-REVIEW --fix WAVE COMPLETE 2026-07-13 — all 9 Warnings from 03-REVIEW-ATHAR.md fixed & committed atomically (WR-01 ring never re-draws via animateFrom; WR-02 head-dot gated on a real frontier; WR-03 structure validated field-by-field; WR-04 not-yet border --ink-40→--ink-62 for 3:1; WR-05 preview captions --paper-45→--paper-62 for 4.5:1; WR-06 skyDawn coverage; WR-07 ring edge cases pinned; WR-08 preview Sky labels →Dhuhr; WR-09 AW.S.isFallback() makes memFallback explicit — commits fb8b8bd..3ceb152). 7 Suggestions documented, not applied. Suite 53→64/64 green; validate-content --self-test OK; §12 grep gates re-verified (0 gated literals, single @layer line, braces balanced, no CDN). FIXES section appended to 03-REVIEW-ATHAR.md. Next in Phase 3 close-out: gsd-verifier → phase.complete → Phase 4 (engine port, inherits Athar)"
+last_updated: "2026-07-13T01:30:00.000Z"
+last_activity: 2026-07-13
 progress:
   total_phases: 7
   completed_phases: 2
@@ -154,6 +154,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-12T23:59:00Z
-Stopped at: Completed 03-11-PLAN.md (new Athar preview.html — the flagship living reference: 8 sections of real AW.* output, demoCfg spliced byte-identical SHA f7ec7f07, the four poppins-*.woff2 deleted; suite 53/53; watched live in headless Chrome — reads like the locked Athar gallery, doubts flagged for the gate in 03-11-SUMMARY); next 03-12 (closure / human §9 gate)
+Last session: 2026-07-13T01:30:00Z
+Stopped at: Code-review --fix wave on 03-REVIEW-ATHAR.md — all 9 Warnings fixed & committed atomically (WR-01..WR-09, commits fb8b8bd..3ceb152); 7 Suggestions documented not applied; suite 53→64/64 green, validate-content --self-test OK, §12 grep gates re-verified; FIXES section appended to the review. NOTE: WR-01 supersedes the 03-07 decision "ink-draw attaches only to the in-progress ember row as the newly-inked proxy" — the generator now takes an explicit animateFrom (previous atom count) and DEFAULTS to static (animateFrom=atomsDone), so a repeat render never re-draws; the ember-row heuristic is no longer the animation trigger. Next: gsd-verifier → phase.complete → Phase 4.
 Resume file: None
