@@ -1336,6 +1336,199 @@
     margin-top: var(--sp-2s);
     line-height: 0;
   }
+
+  /* -- S4 · Reward-screen surfaces — one register per screen (law 1): verdict/noor/returns/done on
+     Page, the Ring moment on Orbit, the du'a close on Sky. Celebration lives ONLY on these
+     meta-progress screens, never on or beside a verse beat (law 3 / D-51). The WAAPI choreography
+     is 04-04; this layer only paints the surfaces. */
+
+  /* the four Page reward screens share the settle mount + a centered manuscript layout. */
+  .rw-verdict, .rw-noor, .rw-returns, .rw-done {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--sp-6);
+    padding: var(--sp-12) var(--sp-6) var(--sp-16);
+    animation: settle var(--dur-settle) var(--ease) both;   /* Page verb */
+  }
+
+  /* Verdict (Page) — shape-first stars (shipped gold dabs/rosettes in the hollow/half/filled
+     grammar) + the verdict word + three stat tiles (Noor / Accuracy / Best run). */
+  .rw-stars {                       /* the star row — the shipped shapes carry the grade, gold is fill */
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+  .rw-word {                        /* "Flawless" / "Beautifully done" / "You made it through" */
+    margin: 0;
+    font-family: var(--font-work);
+    font-weight: 600;
+    font-size: var(--fs-h1);
+    line-height: 1.18;
+    color: var(--ink);              /* §2.1 --kiswah on cream, 16.22:1 */
+  }
+  .rw-stats {                       /* the 3-tile stat row */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-3);
+    width: 100%;
+    max-width: 360px;
+  }
+  .rw-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-4) var(--sp-2s);
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-2);
+    box-shadow: var(--keyline);
+  }
+  .rw-stat svg { width: 20px; height: 20px; color: var(--icon-accent); }   /* spark/star mark — Page crimson detail */
+  .rw-stat .num {                   /* the numeral — Marcellus display numerals (law 5, ≥28px floor) */
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    line-height: 1.08;
+    color: var(--ink);              /* §2.1 --kiswah on cream */
+  }
+  .rw-stat .lab {                   /* the stat label — UI meta */
+    font-family: var(--font-work);
+    font-size: var(--fs-ui);
+    color: var(--ink-62);           /* §2.1 --ink-62 on cream */
+  }
+
+  /* Noor claim (Page) — the count-up headline in Marcellus display numerals (law 5, ≥28px). */
+  .noorbig {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    line-height: 1.08;
+    color: var(--ink);              /* §2.1 --kiswah on cream, 16.22:1 */
+  }
+  .grew {                           /* optional "What changed" box — a quiet margin note */
+    width: 100%;
+    max-width: 420px;
+    padding: var(--sp-4);
+    text-align: left;
+    background: var(--cream);
+    border-left: var(--sp-1) solid var(--madder);   /* §2.1 --madder margin rule */
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--ink-85);           /* §2.1 strong body ink on cream */
+  }
+
+  /* Returns (Page) — a DECORATIVE --apricot horizon-warmth glow behind the hero (the --dawn /
+     .reg-sky-night::before recipe), NEVER apricot text (apricot is not AA on cream); the big
+     returns count is Marcellus in --kiswah ink; .weekcal days are lighter-ink presence dots —
+     never a gap, never red, never a "miss" (RWD-02 / D-45). */
+  .rw-returns { position: relative; overflow: hidden; }
+  .rw-returns::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 140px;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(130% 130% at 50% 128%,
+                color-mix(in srgb, var(--apricot) 34%, transparent),
+                color-mix(in srgb, var(--apricot) 8%, transparent) 55%,
+                transparent 78%);
+  }
+  .rw-returns > * { position: relative; z-index: 1; }
+  .rw-returns .num {                /* the big returns count — Marcellus, strongest --kiswah ink */
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    line-height: 1.08;
+    color: var(--kiswah);           /* §2.1 --kiswah on cream — apricot stays a glow, never text */
+  }
+  .rw-returns .rlabel {             /* "day" / "days" */
+    font-family: var(--font-work);
+    font-size: var(--fs-body);
+    color: var(--ink-62);           /* §2.1 --ink-62 on cream */
+  }
+  .weekcal {                        /* the week — presence dots, never a gap/red/miss (RWD-02) */
+    display: inline-flex;
+    gap: var(--sp-2s);
+  }
+  .weekcal .day {                   /* a quiet day — a lighter-ink presence dot; no day is ever "missed" */
+    width: 12px; height: 12px;
+    border-radius: var(--r-round);
+    background: var(--ink-40);       /* §2.1 quiet ink presence on cream */
+  }
+  .weekcal .day.here {              /* a day the learner returned — a warmer, deeper presence */
+    background: var(--gold);         /* §2.1 gold fill (shape); the keyline reads its edge */
+    box-shadow: var(--keyline);
+  }
+
+  /* Done (Page) — a recap list, the "what grew" box, and the handoff (.btn "Next" + quiet Back). */
+  .rw-done { align-items: stretch; }
+  .recl {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2s);
+    width: 100%;
+    max-width: 420px;
+    text-align: left;
+  }
+  .recl li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--sp-3);
+    align-items: baseline;
+    padding: var(--sp-2s) 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: var(--fs-body);
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .recl li svg { width: 16px; height: 16px; color: var(--icon-accent); }   /* Page crimson detail */
+
+  /* The Ring moment (Orbit) — the black-ground frame that hosts the shipped .ring SVG. Crimson is
+     BANNED on Orbit (§2.1 2.65:1); the accents here are --gold / --ember only. */
+  .rw-ring {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sp-6);
+    padding: var(--sp-16) var(--sp-6);
+  }
+  .rw-ring .ring { width: min(320px, 74vw); }
+  .rw-ring .rcap {                  /* the frontier caption — Courier marginalia on the dark ground */
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    letter-spacing: .08em;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--paper-62);          /* §2.1 --paper-62 on Kiswah */
+  }
+
+  /* The du'a close (Sky) — the du'a in Amiri under scripture law (the permitted glow lives on this
+     dark ground, already applied by @layer base) + "Alhamdulillah — continue." in --moonmilk.
+     Nothing festive is authored here. */
+  .rw-dua {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--sp-6);
+    padding: var(--sp-16) var(--sp-6);
+  }
+  .rw-dua .scripture,
+  .rw-dua .ayah {                   /* the du'a — Amiri; strongest scripture-law ink on the night ground */
+    color: var(--cream);             /* §2.1 --cream on Last Third, 13.42:1 */
+    margin: 0;
+  }
+  .rw-dua .close {                  /* "Alhamdulillah — continue." — Readex on moonmilk */
+    font-family: var(--font-work);
+    font-size: var(--fs-body);
+    letter-spacing: .02em;
+    color: var(--moonmilk);          /* §2.1 --moonmilk on Sky, 13.89:1 */
+  }
 }
 
 @layer motion {
