@@ -97,6 +97,105 @@
 
   var app = document.getElementById('app');
 
+  /* The known node-id set (D-61 security V5) — a #<node-id> hash is honoured ONLY after matching it
+     against THIS set; the raw hash is never written into markup, only used to find a scroll target. */
+  var idSet = {};
+  flat.forEach(function (nd) { idSet[nd.id] = true; });
+
+  var booted = false, observing = false, curActiveId = null;
+
+  /* smoothPath — a Catmull-Rom spline (as cubic béziers) that passes THROUGH every node centre, so
+     the ink thread reads as one flowing hand-drawn line rather than straight segments. */
+  function smoothPath(pts) {
+    if (pts.length < 2) return pts.length ? ('M' + pts[0].x + ' ' + pts[0].y) : '';
+    var d = 'M' + pts[0].x.toFixed(2) + ' ' + pts[0].y.toFixed(2);
+    for (var i = 0; i < pts.length - 1; i++) {
+      var p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || pts[i + 1];
+      var c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6;
+      var c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
+      d += ' C' + c1x.toFixed(2) + ' ' + c1y.toFixed(2) + ' ' + c2x.toFixed(2) + ' ' + c2y.toFixed(2) +
+        ' ' + p2.x.toFixed(2) + ' ' + p2.y.toFixed(2);
+    }
+    return d;
+  }
+
+  /* arcLenAtPoint — the arc length along the path nearest a given point (smoothing-agnostic), so the
+     earned gold sub-path ends exactly at the last done node's centre. */
+  function arcLenAtPoint(pathEl, total, pt) {
+    var best = 0, bestD = Infinity, N = Math.max(48, Math.min(600, Math.floor(total / 4)));
+    for (var i = 0; i <= N; i++) {
+      var l = total * i / N, p = pathEl.getPointAtLength(l);
+      var dx = p.x - pt.x, dy = p.y - pt.y, dd = dx * dx + dy * dy;
+      if (dd < bestD) { bestD = dd; best = l; }
+    }
+    return best;
+  }
+
+  /* drawThreads — recompute each section's thread from node-mark centres AFTER layout. The base is a
+     faint navy line through all centres; the earned portion (through the last `done` node) re-inks
+     gold via the shipped .thread, drawn to its final extent and STATIC (law 9 — no ink-draw replay;
+     the draw verb belongs to lesson-complete on the reward page, never a home visit). */
+  function drawThreads() {
+    if (!app) return;
+    app.querySelectorAll('.opath').forEach(function (sec) {
+      var svg = sec.querySelector('.op-thread-svg');
+      if (!svg) return;
+      var base = svg.querySelector('.op-thread-base'), gold = svg.querySelector('.op-thread');
+      var marks = sec.querySelectorAll('.onode-mark');
+      var pr = sec.getBoundingClientRect();
+      svg.setAttribute('viewBox', '0 0 ' + (pr.width || 1) + ' ' + (pr.height || 1));
+      if (!pr.width || marks.length < 2) {
+        if (base) base.removeAttribute('d');
+        if (gold) { gold.removeAttribute('d'); gold.style.display = 'none'; }
+        return;
+      }
+      var pts = [], lastEarned = -1;
+      marks.forEach(function (m, i) {
+        var r = m.getBoundingClientRect();
+        pts.push({ x: r.left + r.width / 2 - pr.left, y: r.top + r.height / 2 - pr.top });
+        var btn = m.closest('.onode');
+        if (btn && btn.getAttribute('data-nstate') === 'done') lastEarned = i;
+      });
+      var d = smoothPath(pts);
+      base.setAttribute('d', d);
+      gold.setAttribute('d', d);
+      if (lastEarned < 1) { gold.style.display = 'none'; return; }   // nothing earned within this section yet
+      gold.style.display = '';
+      var total = gold.getTotalLength();
+      var earnedLen = arcLenAtPoint(gold, total, pts[lastEarned]);
+      gold.style.setProperty('--len', earnedLen);                    // parity with the shipped .thread contract
+      gold.style.strokeDasharray = earnedLen + ' ' + (total + 1);    // reveal only the earned road
+      gold.style.strokeDashoffset = '0';                             // STATIC to its final extent (no replay)
+    });
+  }
+
+  function scheduleDraw() {
+    if (scheduleDraw._q) return;
+    var raf = window.requestAnimationFrame || function (f) { return setTimeout(f, 16); };
+    scheduleDraw._q = raf(function () { scheduleDraw._q = 0; drawThreads(); });
+  }
+
+  /* recompute on load + resize + a ResizeObserver so the winding line follows the nodes 320→desktop
+     and after fonts settle. Attached once; the observed #app persists across re-renders. */
+  function setupObservers() {
+    if (observing) return; observing = true;
+    window.addEventListener('resize', scheduleDraw);
+    window.addEventListener('load', scheduleDraw);
+    if (typeof ResizeObserver !== 'undefined') { new ResizeObserver(scheduleDraw).observe(app); }
+  }
+
+  /* D-61 auto-scroll — land on a validated #<node-id> if present, else the next available node. The
+     hash is matched against idSet FIRST; only a known id reaches querySelector (never markup). */
+  function autoScroll() {
+    var target = null;
+    var raw = (location.hash || '').replace(/^#/, '');
+    if (raw && Object.prototype.hasOwnProperty.call(idSet, raw)) {
+      target = app.querySelector('.onode[data-id="' + raw + '"]');   // raw ∈ known id set (validated)
+    }
+    if (!target && curActiveId) target = app.querySelector('.onode[data-id="' + curActiveId + '"]');
+    if (target && target.scrollIntoView) target.scrollIntoView({ block: 'center' });
+  }
+
   function render() {
     var st = AW.state();
     var states = AW.deriveNodeState(flat, st);   // [{id,state}] — the shipped Gen-3 unlock rules (extend, don't fork)
@@ -107,6 +206,7 @@
       if (states[i].state === 'active') { activeIdx = i; break; }
     }
     var activeUnit = activeIdx >= 0 ? meta[activeIdx].un : (meta.length ? meta[meta.length - 1].un : 1);
+    curActiveId = activeIdx >= 0 ? flat[activeIdx].id : (flat.length ? flat[flat.length - 1].id : null);
 
     /* HUD marginalia (D-60) — a transparent .ls-hud row: LEFT a course chip (mini cream Farag-square
        island holding the active-course scene icon); RIGHT cluster the returns .hstat (flame + count),
@@ -254,14 +354,36 @@
             '<span class="ounit-term">' + u.title + '</span>' +
             '<p class="ounit-desc">' + u.desc + '</p>' +
           '</div>' +
-          '<div class="opath">' + rows + '</div>' +
+          '<div class="opath">' +
+            /* one continuous ink thread per section: a faint navy base through every node centre +
+               the earned gold sub-path (the shipped .thread, made STATIC on load — law 9). The `d`
+               is computed from node-mark centres after layout (drawThreads on load + resize). */
+            '<svg class="op-thread-svg" aria-hidden="true" focusable="false" preserveAspectRatio="none">' +
+              '<path class="op-thread-base"></path>' +
+              '<path class="thread op-thread"></path>' +
+            '</svg>' +
+            rows +
+          '</div>' +
         '</section>';
     });
     var journeyWrap = '<div class="ojourney">' + journey + '</div>';
 
+    /* Ibrahim 14:24 epigraph (S3 / R-7) — a quiet Courier marginalia line beneath the path (the
+       orchard's reason for existing), NOT a second Amiri scripture panel. Content integrity: the
+       verbatim Clear-Quran Ibrahim 14:24 ("good word / good tree") line is NOT in Josh's corpus, so
+       per R-7 the verse text is NEVER generated here — this renders the owner-ledger fallback: an
+       authorial framing line (the app's own voice about the path, carrying no scripture) + the
+       reference + an honest "translation pending review" marker. When the owner supplies the verified
+       14:24 splice, it replaces the framing line. Nothing celebratory adjacent; never a VT name. */
+    var ibrahim =
+      '<div class="oibrahim">' +
+        '<p class="oib-line">A place to learn the one word, and let it settle in.</p>' +
+        '<p class="oib-ref">Ibrāhīm 14:24 · translation pending review</p>' +
+      '</div>';
+
     /* Composition body (top→bottom): Ring hero → streak strip + constellation → continue card →
-       daily ayah → the winding journey (4 unit sections). */
-    var body = '<div class="ob-hero">' + ring + streak + '</div>' + cont + ayah + journeyWrap;
+       daily ayah → the winding journey (4 unit sections) → the Ibrahim 14:24 epigraph. */
+    var body = '<div class="ob-hero">' + ring + streak + '</div>' + cont + ayah + journeyWrap + ibrahim;
 
     app.innerHTML = '<div class="ob-shell">' + hud + '<div class="ob-wrap">' + body + '</div></div>';
 
@@ -289,6 +411,12 @@
         });
       });
     }
+
+    /* Lay the ink threads from the freshly-rendered node centres, keep them following on resize, and
+       (first load only) scroll the next available / validated-hash node into view (D-61). */
+    drawThreads();
+    setupObservers();
+    if (!booted) { booted = true; autoScroll(); }
   }
 
   render();

@@ -1975,6 +1975,48 @@
   .op-plate svg { width: 22px; height: 22px; }
   .op-plate-available,
   .op-plate-done { border-color: var(--gold); color: var(--cream); }   /* the gift is lit gold (8.40:1) */
+
+  /* -- The winding ink thread (LRN-04 / D-54) — one continuous line per section, drawn through node
+     centres and recomputed after layout. It rides BEHIND the stations (z-index:0, pointer-events
+     none so nodes stay tappable). The base is faint navy (the un-inked road, mirroring the shipped
+     .rv-arc precedent); the earned sub-path re-inks gold via the SHIPPED .thread and is STATIC on
+     load (.op-thread kills the ink-draw — the established road never replays; law 9, W8 correction). */
+  .op-thread-svg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; overflow: visible;
+  }
+  .op-thread-base {
+    fill: none; stroke: var(--navy); stroke-width: 2.5;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .op-thread {                        /* .thread supplies stroke:var(--gold) + linecap; we set weight + STATIC */
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+    animation: none;                  /* @layer screens > components → overrides .thread's ink-draw (no replay) */
+  }
+
+  /* -- Ibrahim 14:24 epigraph (§S3 / R-7) — Courier marginalia beneath the path, quiet and centred.
+     NOT a second Amiri scripture panel (the daily ayah holds the reverence budget); the verse text
+     is owner-sourced (R-7) — nothing celebratory adjacent, and never a shared-element morph (D-58). */
+  .oibrahim {
+    display: flex; flex-direction: column; align-items: center; gap: var(--sp-1);
+    text-align: center;
+    padding: var(--sp-6) var(--sp-4) 0;
+  }
+  .oib-line {
+    margin: 0;
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    line-height: 1.4;
+    color: var(--paper-62);           /* §2.1 --paper-62 on Kiswah */
+  }
+  .oib-ref {
+    margin: 0;
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    letter-spacing: .06em;
+    color: var(--paper-45);           /* the reference recedes further — a footnote */
+  }
 }
 
 @layer motion {
