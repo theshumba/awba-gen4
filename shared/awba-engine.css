@@ -1055,6 +1055,287 @@
     cursor: pointer;
   }
   .ls-back[hidden] { display: none; }
+
+  /* -- S1-beats · The nine beat renderers (all Page ground) ------------------------------------
+     Each beat is a distinct authored surface; each reads as manuscript, never game chrome. Scripture
+     sits under law 3 (clean ground, strongest ink, nothing festive adjacent). */
+
+  /* read — a keyline-less Readex body column; .marker chips carry the marker glyph + its label. */
+  .read {
+    font-family: var(--font-work);
+    font-weight: 400;
+    font-size: var(--fs-body);
+    line-height: 1.7;
+    color: var(--ink);              /* §2.1 --kiswah on cream, 16.22:1 */
+    max-width: 60ch;
+  }
+  .read > * + * { margin-top: var(--sp-4); }
+  .marker {                         /* fact / remember / fard / angle — glyph in --icon-accent + label */
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--madder);           /* §2.1 --madder on cream, 5.44:1 — marginalia tint */
+  }
+  .marker svg { width: 16px; height: 16px; color: var(--icon-accent); }   /* Page detail = crimson */
+
+  /* frame — a single centered framing statement, generous space, optional Courier kicker. */
+  .frame {
+    text-align: center;
+    padding: var(--sp-6) var(--sp-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+  .frame .fstmt {
+    margin: 0;
+    font-family: var(--font-work);
+    font-weight: 500;
+    font-size: var(--fs-h2);
+    line-height: 1.35;
+    color: var(--ink);              /* §2.1 --kiswah on cream */
+  }
+  .kicker {                         /* Courier kicker above a framing / reveal line */
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--madder);           /* §2.1 --madder on cream */
+  }
+
+  /* verse — the .scard scripture card. Law 3: --go:0 (no grain), strongest ink, nothing festive
+     authored in this block. The card paints its own opaque cream so it always sits on clean ground. */
+  .scard {
+    --go: 0;                        /* no grain behind scripture (law 3) */
+    padding: var(--sp-6);
+    background: var(--cream);
+    border-radius: var(--r-4);      /* paper laid down — the settle object */
+    box-shadow: var(--keyline);     /* manuscript separation, not a float */
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+  .slabel {                         /* the Courier kicker above the ayah */
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--madder);           /* §2.1 --madder on cream */
+  }
+  .scard .ayah {                    /* the shipped .ayah, held to the strongest ink on clean cream */
+    color: var(--kiswah);           /* §2.1 strongest ink, full opacity, no ramp (law 3) */
+    margin: 0;
+  }
+  .trans {                          /* translation of the meaning — carries the ˹ ˺ brackets */
+    font-family: var(--font-work);
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--ink-85);           /* §2.1 strong body ink on cream */
+  }
+  .tsrc {                           /* the provenance line — Courier marginalia in Madder */
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--madder);           /* §2.1 --madder on cream, 5.44:1 */
+  }
+
+  /* panel — an ink-ruled card with numbered items; four visually-distinct variants. */
+  .pnl {
+    padding: var(--sp-4);
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-2);
+    box-shadow: var(--keyline);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+  .pintro {                         /* the panel lead line */
+    margin: 0;
+    font-family: var(--font-work);
+    font-weight: 600;
+    font-size: var(--fs-h2);
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .pnl-i {                          /* a numbered item — the number sits in the Courier margin */
+    display: grid;
+    grid-template-columns: 1.6em 1fr;
+    gap: var(--sp-2s);
+    align-items: baseline;
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .pn {
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    color: var(--madder);           /* §2.1 --madder marginalia */
+    text-align: right;
+  }
+  /* the four panel variants read distinctly (§S1-beats): */
+  .pnl.v-check { border-color: var(--rule); }                 /* default ruled card */
+  .pnl.v-guard {                                              /* caution framing — a left jadwal rule, still ink (never red) */
+    border-left: var(--sp-1) solid var(--ink-62);
+    padding-left: var(--sp-5);
+  }
+  .pnl.v-pull {                                               /* a pull-quote — larger type, a hanging crimson rule */
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    border-left: var(--sp-1) solid var(--crimson);            /* §2.1 crimson rubrication rule */
+    padding: var(--sp-2) var(--sp-6);
+    font-family: var(--font-work);
+    font-weight: 500;
+    font-size: var(--fs-h2);
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  .pnl.v-tell { padding-top: var(--sp-3); }                   /* a reveal card — signalled by its Madder kicker */
+  .pnl.v-tell .tkick {
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--madder);           /* §2.1 --madder — "here's the thing" reveal cue */
+  }
+
+  /* depth — the 3-lens accordion (§S2 / D-45). Fixed order; each lens cued by SHAPE (a distinct
+     header glyph + a distinct left-rule style) AND LABEL, never colour alone. Opt-in; the runner's
+     Continue is never blocked (this surface disables nothing). */
+  .lacc {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2s);
+  }
+  .lens {
+    border: 1px solid var(--rule);
+    border-radius: var(--r-2);
+    overflow: hidden;
+  }
+  .lh {                             /* the lens header — a 44px-min tappable */
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    border: none;
+    background: transparent;
+    font-family: var(--font-work);
+    font-weight: 600;
+    font-size: var(--fs-h2);
+    text-align: left;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .lh svg { width: 20px; height: 20px; flex: 0 0 auto; }   /* the distinct per-lens shape glyph */
+  .lb {                             /* the lens body — hidden until the lens opens; mounts on settle */
+    display: none;
+    padding: 0 var(--sp-4) var(--sp-4);
+  }
+  .lens.open > .lb,
+  .lens[open] > .lb {
+    display: block;
+    animation: settle var(--dur-settle) var(--ease) both;
+  }
+  /* the three lenses — shape (left-rule style) + label + secondary ink colour: */
+  .lens.l-reality    { border-left: var(--sp-1) solid  var(--madder);  }   /* §2.1 --madder 5.44:1 · Reality */
+  .lens.l-reality    .lh { color: var(--madder); }
+  .lens.l-revelation { border-left: var(--sp-1) double var(--crimson); }   /* §2.1 --crimson 6.13:1 · Revelation — double rule = distinct shape */
+  .lens.l-revelation .lh { color: var(--crimson); }
+  .lens.l-ruling     { border-left: var(--sp-1) dashed var(--olive);   }   /* §2.1 --olive 4.95:1 · Ruling — dashed rule = distinct shape */
+  .lens.l-ruling     .lh { color: var(--olive); }
+  /* Revelation's scripture obeys the law via a nested .scard (--go:0, strongest ink) — no extra rule. */
+
+  /* reflect — a private, never-persisted textarea + a revealed model reflection. */
+  .reflect {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2s);
+  }
+  .reflect label {
+    font-family: var(--font-work);
+    font-size: var(--fs-ui);
+    color: var(--ink-62);
+  }
+  .reflect textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    padding: var(--sp-3);
+    font-family: var(--font-work);
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--cream);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-2);
+  }
+  .reflect textarea:focus-visible { border-color: var(--crimson); }   /* focus ties to the Page accent */
+  .model {                          /* the revealed reflection — a quiet marginal reveal */
+    margin-top: var(--sp-3);
+    padding: var(--sp-4);
+    border-left: var(--sp-1) solid var(--madder);   /* §2.1 --madder — a margin note, not a shout */
+    background: var(--cream);
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--ink-85);
+    animation: settle var(--dur-settle) var(--ease) both;
+  }
+
+  /* -- S3 · Quiz surfaces — layout wrappers over the SHIPPED .opt/.tf/.tile and their verdicts.
+     The shipped .opt.correct (gold dot draws), .opt.wrong (grey ink-blot, law 8), .opt-why and
+     .btn.retry (--rose frame) are consumed as-is; only the layout + the quiet accrual META are new. */
+  .opts {                           /* the mc option stack */
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2s);
+  }
+  .tfrow {                          /* the true / false pair */
+    display: flex;
+    gap: var(--sp-2s);
+  }
+  .tilebox {                        /* the assembled-answer tray */
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2s);
+    min-height: 52px;
+    padding: var(--sp-3);
+    border: 1px dashed var(--rule);
+    border-radius: var(--r-2);
+  }
+  .bank {                           /* the word-bank source row */
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2s);
+    margin-top: var(--sp-3);
+  }
+
+  /* The quiet accrual META surface (§S3 / D-45) — the streak chip lands on the result/foot zone,
+     NEVER over content and NEVER on a verse beat. The chip is a shipped gold .dab at small scale;
+     any count is the Courier .ls-count ("N in a row"); the 3-streak flourish slot hosts a shipped
+     gold flourish. Never red, never a shake, never a floating pill. */
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    min-height: 28px;
+    margin-top: var(--sp-3);
+  }
+  .meta .dab {                      /* the accruing gold chip — shipped .dab, faint gold wash, shape reads */
+    width: 16px; height: 16px;
+    background: color-mix(in srgb, var(--gold) 18%, transparent);
+  }
+  .meta .dab svg { width: 10px; height: 10px; color: var(--gold); }   /* §2.1 gold as fill/shape on cream */
+  .flourish {                       /* the 3-streak slot — hosts the shipped gold flourish */
+    margin-top: var(--sp-2s);
+    line-height: 0;
+  }
 }
 
 @layer motion {
