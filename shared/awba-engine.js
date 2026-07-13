@@ -1613,6 +1613,23 @@ AW._resolveScore = function (s, ok) {
   return n;
 };
 
+/* AW._noorClaimer() — the persist-once claimer behind the reward "noor moment" (RWD-01 / T-04-04a).
+   Returns claim(amount): it adds `amount` to stored noor through the AW.S seam (D-24) EXACTLY ONCE
+   (Gen-3 parity — the noor moment credits a single time). The first call persists and returns true;
+   every later call is an idempotent no-op returning false, so a re-entry, a double-tap, or a
+   back-then-forward through the six-moment terminus can never double-credit. This is the 04-03
+   `noorClaimed` closure guard, extracted so the once-only invariant is unit-testable DOM-free. No
+   DOM, no timers — pure persistence discipline (parse-time-safe). */
+AW._noorClaimer = function () {
+  var claimed = false;
+  return function (amount) {
+    if (claimed) return false;
+    claimed = true;
+    AW.S.set('noor', AW.S.get('noor', 0) + (amount | 0));
+    return true;
+  };
+};
+
 /* ============================================================================================
    AwbaLesson(cfg) — the lesson runner (ENG-01/03/05, CNT-01/04, MOT-05). Josh's Gen-3 cfg shape is
    consumed byte-unchanged; the mechanics are byte-preserved (the numbers come from the 04-01 pure
@@ -1629,7 +1646,8 @@ function AwbaLesson(cfg) {
   /* Gen-3 setup vars, byte-preserved (115-128) EXCEPT the retired body builder + the retired
      unit-accent wiring line (the cfg unit-tint field stays inert — no register recolour, D-45). */
   var pos = -1, stepIndex = 0, answered = false, combo = 0, comboBest = 0, correct = 0, mistakes = 0,
-    quizN = 0, noorEarned = 0, noorClaimed = false;
+    quizN = 0, noorEarned = 0;
+  var claimNoor = AW._noorClaimer();   // the noor moment persists exactly once (RWD-01 / T-04-04a)
   beats.forEach(function (b) { if (['mc', 'tf', 'tile'].indexOf(b.t) >= 0) quizN++; });
 
   /* Athar skeleton — a Page-register manuscript shell (never the retired Gen-3 body builder). */
@@ -1886,22 +1904,51 @@ function AwbaLesson(cfg) {
     bindBack();
   }
 
-  /* ---------- the plain reward terminus (verdict → noor → returns → done) — static Page surfaces.
-     The WAAPI choreography + the Ring moment + the du'a close layer on in 04-04; here the lesson
-     simply completes, persisting noor once (at the noor moment) and best-of stars (at done). ---- */
+  /* ---------- the reward choreography (RWD-01/02/03 · D-51) — the flagship post-lesson sequence.
+     The four Page moments (verdict → noor → returns → done) as WAAPI-chained reveals; the Ring
+     moment (Orbit) and the du'a close (Sky) layer on in Task 2. Every staggered reveal chains
+     through AW.animate(el, kf, '--dur-*', '--ease').finished with a 60ms gap (each anim self-guards
+     reduced motion → 1ms). Celebration is INK (drifting .dab stars), never on scripture. Noor
+     persists once at the noor moment (claimNoor); best-of stars persist at done() and never
+     downgrade. ------------------------------------------------------------------------------------ */
+
+  function delay(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }   // the 60ms stagger gap
+
+  /* verdict stars — shape-first gold INK: a filled .dab (gold + check) per earned star, a hollow
+     .dab (ring) per unearned, in the shipped [data-state] grammar (D-45). The .dab primitive drifts
+     into place (Circle verb) and rests static under reduced motion; the grade reads by SHAPE — gold
+     is only the fill, never the sole signal. */
   function starRow(n) {
     var s = '';
     for (var i = 0; i < 3; i++) {
       var on = i < n;
-      s += '<span class="ls-dab" data-state="' + (on ? 'mastered' : 'not-yet') + '">' + (on ? AW.icon('check') : '') + '</span>';
+      s += '<span class="dab" data-state="' + (on ? 'mastered' : 'not-yet') + '"' +
+        ' style="--dx:' + (i % 2 ? 7 : -7) + 'px;--dy:-6px">' + (on ? AW.icon('check') : '') + '</span>';
     }
-    return '<div class="rw-stars">' + s + '</div>';   // shape-first: filled dab = earned, hollow = not (D-45)
+    return '<div class="rw-stars">' + s + '</div>';
   }
+  /* each stat tile starts hidden (opacity:0) so its staggered settle reveal reads cleanly. */
   function statTile(glyph, num, lab) {
-    return '<div class="rw-stat">' + AW.icon(glyph) + '<span class="num">' + num + '</span><span class="lab">' + lab + '</span></div>';
+    return '<div class="rw-stat" style="opacity:0">' + AW.icon(glyph) +
+      '<span class="num">' + num + '</span><span class="lab">' + lab + '</span></div>';
+  }
+  /* countUp — a Marcellus display flourish that rides an AW.animate's OWN progress (no raw ms, no
+     hand-rolled duration parsing): the numeral tracks the reveal 0 → total, snapping to total when
+     it finishes. Under reduced motion the reveal is ~1ms, so the number simply appears at its final
+     value. Degrades to an immediate final value where rAF is unavailable. */
+  function countUp(el, total, anim) {
+    if (typeof requestAnimationFrame !== 'function' || total <= 0) { el.textContent = '+' + total; return; }
+    (function tick() {
+      var p = 1;
+      try { var ct = anim.effect && anim.effect.getComputedTiming(); if (ct && ct.progress != null) p = ct.progress; } catch (e) {}
+      el.textContent = '+' + Math.round(p * total);
+      if (anim.playState === 'running') requestAnimationFrame(tick);
+    })();
   }
 
-  function verdict() {
+  /* 1 · Verdict (Page) — shape-first stars drift in, the verdict word, then three stat tiles settle
+     in staggered on the Page verb (settle, 60ms gaps). Marks from shipped GLYPHS (spark/check/star). */
+  async function verdict() {
     setHUD(false);
     paintProg();
     var acc = quizN ? Math.round((correct / quizN) * 100) : 100;
@@ -1921,42 +1968,65 @@ function AwbaLesson(cfg) {
       statTile('star', comboBest + '×', 'Best run') +
       '</div></div>' +
       foot(btn('Claim your noor'));
-    document.getElementById('cont').addEventListener('click', rewardNoor);
+    document.getElementById('cont').addEventListener('click', rewardNoor);   // wire before the reveal
+    var tiles = root.querySelectorAll('.rw-stat');
+    for (var i = 0; i < tiles.length; i++) {
+      var anim = AW.animate(tiles[i],
+        [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }],
+        '--dur-settle', '--ease');
+      await (i < tiles.length - 1 ? delay(60) : anim.finished);
+    }
   }
 
-  function rewardNoor() {
+  /* 2 · Noor claim (Page) — persist EXACTLY once at the noor moment (claimNoor, interruption-safe),
+     then the Marcellus count-up rides the settle reveal. AW.sound('complete') peaks here. */
+  async function rewardNoor() {
+    claimNoor(noorEarned);                                // the noor moment — persists once (T-04-04a)
+    AW.sound('complete');
     root.innerHTML =
       '<div class="rw-noor">' + sceneIco('pattern') +
-      '<h1 class="noorbig">' + AW.icon('spark') + ' +' + noorEarned + '</h1>' +
+      '<h1 class="noorbig">' + AW.icon('spark') + ' <span id="lsnoornum">+0</span></h1>' +
       '<h2 class="rw-word" style="font-size:var(--fs-h2)">Noor gathered</h2>' +
       '<p>Light you collect as you learn. It never runs out on you.</p>' +
       (cfg.grew ? '<div class="grew"><div class="kicker">What changed</div><p>' + cfg.grew + '</p></div>' : '') +
       '</div>' +
       foot(btn('Lovely'));
-    if (!noorClaimed) {                                  // persist noor exactly once (Gen-3 parity)
-      noorClaimed = true;
-      AW.S.set('noor', AW.S.get('noor', 0) + noorEarned);
-    }
-    AW.sound('complete');
     document.getElementById('cont').addEventListener('click', rewardReturns);
+    var numEl = document.getElementById('lsnoornum');
+    var anim = AW.animate(root.querySelector('.noorbig'),
+      [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }],
+      '--dur-settle', '--ease');
+    countUp(numEl, noorEarned, anim);
+    await anim.finished;
+    numEl.textContent = '+' + noorEarned;                 // exact final, regardless of tick timing
   }
 
-  function rewardReturns() {
+  /* 3 · Returns (Page) — the decorative --apricot horizon glow (CSS ::before, never apricot text)
+     behind a big Marcellus --kiswah returns count; AW.weekCal() days are lighter-ink presence dots
+     that NEVER show a gap/red/miss (RWD-02). The count then the week settle in, staggered. */
+  async function rewardReturns() {
     var ret = AW.S.get('returns', 0);
     var days = AW.weekCal().map(function (d) {
       return '<span class="day' + (d.on ? ' here' : '') + '" aria-hidden="true"></span>';
     }).join('');
     root.innerHTML =
       '<div class="rw-returns">' +
-      '<div class="num">' + ret + '</div>' +
+      '<div class="num" style="opacity:0">' + ret + '</div>' +
       '<div class="rlabel">' + (ret === 1 ? 'day you came back' : 'days you came back') + '</div>' +
       '<p>Not a score to protect. Proof that you keep returning — and that is the whole point of this place.</p>' +
-      '<div class="weekcal">' + days + '</div>' +
+      '<div class="weekcal" style="opacity:0">' + days + '</div>' +
       '</div>' +
       foot(btn('Keep it gentle'));
     document.getElementById('cont').addEventListener('click', done);
+    AW.animate(root.querySelector('.rw-returns .num'),
+      [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], '--dur-settle', '--ease');
+    await delay(60);
+    await AW.animate(root.querySelector('.weekcal'),
+      [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], '--dur-settle', '--ease').finished;
   }
 
+  /* 4 · Done (Page) — best-of star persist (never downgrade); recap + the onward handoff. In Task 2
+     this becomes a "Continue" into the Ring moment; here (Task 1) it is the terminal Page screen. */
   function done() {
     var st = AW.S.get('stars', {}), prev = st[cfg.id] || 0, now = AW.lessonStars(mistakes);
     if (now > prev) { st[cfg.id] = now; AW.S.set('stars', st); }   // best-of only — never downgrade
