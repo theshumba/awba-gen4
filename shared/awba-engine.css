@@ -2017,6 +2017,62 @@
     letter-spacing: .06em;
     color: var(--paper-45);           /* the reference recedes further — a footnote */
   }
+
+  /* -- Node popup (§S4 · LRN-03 / D-55 / R-4) — the singleton cream "slip of paper" laid over the
+     Orbit world. It mounts on document.body (the AW.sheet exemption), NEVER inside .reg-orbit, so its
+     CTA resolves to the default Page-crimson .btn rather than the invisible .reg-orbit cream-on-cream
+     key (Pitfall 3). position:fixed; anchored to the tapped station by getBoundingClientRect; the
+     arrow (::after) tracks the station via --ax even when the slip is clamped inside the viewport. */
+  .npop {
+    position: fixed;
+    z-index: 70;                        /* over the world; the sheet scrim (90) still overlays it */
+    box-sizing: border-box;
+    width: min(16rem, calc(100vw - var(--sp-8)));
+    display: flex; flex-direction: column; gap: var(--sp-2s);
+    padding: var(--sp-3);
+    background: var(--cream);
+    color: var(--ink);                  /* §2.1 --kiswah on cream, 16.22:1 — Page rubrication applies here */
+    border-radius: var(--r-3);
+    box-shadow: var(--sh-2);            /* the warm-ink lift — a paper object over the dark ground */
+    animation: settle var(--dur-settle) var(--ease) both;   /* Page settle; reduced-motion collapses --dur-settle */
+  }
+  /* the pointer back to the station — a cream triangle offset by --ax so it stays under the node */
+  .npop::after {
+    content: ""; position: absolute;
+    left: calc(50% + var(--ax, 0px));
+    width: 0; height: 0;
+    border: 7px solid transparent;
+    transform: translateX(-50%);
+  }
+  .npop[data-side="below"]::after { bottom: 100%; border-bottom-color: var(--cream); }   /* slip under node → arrow up */
+  .npop[data-side="above"]::after { top: 100%;    border-top-color: var(--cream); }      /* slip over node → arrow down */
+
+  .np-label {                           /* the station label — the popup heading (§ Typography --fs-h2) */
+    font-family: var(--font-work); font-weight: 600;
+    font-size: var(--fs-h2); line-height: 1.3;
+  }
+  .np-sub {                             /* the subtitle / microcopy line beneath the label */
+    font-size: var(--fs-body); line-height: 1.5; color: var(--ink-62);   /* §2.1 secondary ink on cream */
+  }
+  .np-locked { color: var(--ink-62); }  /* the gentle "not yet" — quiet ink, never a red/alarm/shake (D-54) */
+
+  /* seed-row — a station's taught-atom dots (R-2 BINARY-done grammar): faint --madder at rest, inked
+     full-madder ALL-together iff the station is done; never a live partial (Pitfall 5 — per-atom
+     progress is not persisted, so a 3/5 partial would be untruthful across sessions). */
+  .np-seeds { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
+  .np-seed {
+    width: 8px; height: 8px; border-radius: var(--r-round);
+    background: var(--madder); opacity: .34;   /* faint at rest — the doodle-at-rest tint (§2.1 madder on cream) */
+  }
+  .np-seed.is-inked { opacity: 1; }            /* all inked together when done — the honest binary state */
+
+  /* star row — 1..3 earned gold, the rest hollowed muted (done stations only) */
+  .np-stars { display: inline-flex; gap: var(--sp-1); }
+  .np-star  { display: inline-flex; color: var(--ink-40); }        /* unearned — a quiet, recessed mark */
+  .np-star.is-earned { color: var(--gold); }                       /* earned — §2.1 gold as shape on cream */
+  .np-star svg { width: 16px; height: 16px; }
+
+  .np-cta { margin-top: var(--sp-1); }         /* the CTA — the shipped Page-crimson .btn (body-mounted, visible) */
 }
 
 @layer motion {

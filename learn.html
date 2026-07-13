@@ -90,9 +90,12 @@
 
   /* Flatten into the CNT-03 unlock sequence + a parallel per-node unit meta (number + English
      title) for the continue card + course chip. Never mutate the node objects. */
-  var flat = [], meta = [];
+  var flat = [], meta = [], byId = {}, metaById = {};
   UNITS.forEach(function (u) {
-    u.nodes.forEach(function (nd) { flat.push(nd); meta.push({ un: u.n, ut: u.title }); });
+    u.nodes.forEach(function (nd) {
+      flat.push(nd); meta.push({ un: u.n, ut: u.title });
+      byId[nd.id] = nd; metaById[nd.id] = { un: u.n, ut: u.title };
+    });
   });
 
   var app = document.getElementById('app');
@@ -196,11 +199,90 @@
     if (target && target.scrollIntoView) target.scrollIntoView({ block: 'center' });
   }
 
+  /* -- The node popup (§S4 · LRN-03 / D-55 / R-4) — a singleton cream slip of paper. It is a PAGE
+     object mounted on document.body (mirroring AW.sheet), NEVER inside .reg-orbit, so its CTA
+     resolves to the default Page-crimson .btn rather than the invisible .reg-orbit cream-on-cream
+     key (Pitfall 3). Anchored to the tapped station via getBoundingClientRect with edge-clamping +
+     an arrow offset (--ax); singleton (opening one closes any other); outside-tap + Esc close. */
+  var openPop = null, popNode = null, popWired = false;
+  var stCur = null, stByIdCur = {};   /* the live snapshot + id→state, refreshed each render (popup reads them) */
+
+  function closePop() {
+    if (openPop) { openPop.remove(); openPop = null; }
+    if (popNode) { popNode.setAttribute('aria-expanded', 'false'); popNode = null; }
+  }
+
+  function placePop(pop, node) {
+    var r = node.getBoundingClientRect();
+    var nx = r.left + r.width / 2;                       /* station centre (scroll-aware — fixed positioning) */
+    var half = (pop.offsetWidth / 2) || 120;
+    var m = 6;                                           /* viewport-edge breathing */
+    var cx = Math.max(half + m, Math.min(window.innerWidth - half - m, nx));
+    pop.style.left = (cx - half) + 'px';                 /* the LEFT edge (no transform — settle owns transform) */
+    pop.style.setProperty('--ax', (nx - cx) + 'px');     /* arrow offset: still points at the station when clamped */
+    var gap = 10, ph = pop.offsetHeight;
+    if (window.innerHeight - r.bottom >= ph + gap || r.top < ph + gap) {
+      pop.dataset.side = 'below';                        /* room below (or too tight above) → slip under the node */
+      pop.style.top = (r.bottom + gap) + 'px';
+    } else {
+      pop.dataset.side = 'above';
+      pop.style.top = Math.max(m, r.top - ph - gap) + 'px';
+    }
+  }
+
+  function openPopFor(node) {
+    var reopen = (node === popNode);
+    closePop();                                          /* singleton — any open slip closes first */
+    if (reopen) return;                                  /* a second tap on the same station just closes it */
+    var pop = document.createElement('div');
+    pop.className = 'npop';
+    pop.setAttribute('role', 'dialog');
+    pop.innerHTML = popContent(node);
+    document.body.appendChild(pop);                      /* MOUNT ON BODY (R-4 / Pitfall 3) — never in .reg-orbit */
+    node.setAttribute('aria-expanded', 'true');
+    openPop = pop; popNode = node;
+    wireCta(pop, node);                                  /* CTA nav + morph + chest-claim wiring (below) */
+    placePop(pop, node);                                 /* measure + anchor AFTER contents are in the DOM */
+  }
+
+  /* popContent(node) — the slip's contents per the station's derived state (§S4 copy table). */
+  function popContent(node) {
+    var nd = byId[node.getAttribute('data-id')];
+    return '<div class="np-label">' + (nd ? nd.label : '') + '</div>';
+  }
+
+  /* wireCta(pop, node) — the CTA behaviour (navigation + the click-time shared-element morph + the
+     chest claim hook). Populated below by 05-04 Task 2/3. */
+  function wireCta(pop, node) { /* no-op until the CTA contents land (Task 2) */ }
+
+  function setupPopup() {
+    if (popWired) return; popWired = true;
+    /* tap a station → its popup (delegated on the persistent #app; stopPropagation keeps THIS click
+       from also reaching the outside-tap closer below). */
+    app.addEventListener('click', function (e) {
+      var node = e.target.closest && e.target.closest('.onode');
+      if (node && app.contains(node)) { e.stopPropagation(); openPopFor(node); }
+    });
+    /* outside-tap closes — a document listener that ignores taps on the slip or on a station */
+    document.addEventListener('click', function (e) {
+      if (!openPop) return;
+      if (e.target.closest && (e.target.closest('.npop') || e.target.closest('.onode'))) return;
+      closePop();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && openPop) closePop();
+    });
+    /* re-anchor an open slip when the world shifts under it (resize / font settle) */
+    window.addEventListener('resize', function () { if (openPop && popNode) placePop(openPop, popNode); });
+  }
+
   function render() {
+    closePop();                                  // an app.innerHTML rebuild detaches node buttons — drop any open slip
     var st = AW.state();
     var states = AW.deriveNodeState(flat, st);   // [{id,state}] — the shipped Gen-3 unlock rules (extend, don't fork)
     var stById = {};
     states.forEach(function (s) { stById[s.id] = s.state; });
+    stCur = st; stByIdCur = stById;              // hand the live snapshot to the popup content builder
     var activeIdx = -1;
     for (var i = 0; i < states.length; i++) {
       if (states[i].state === 'active') { activeIdx = i; break; }
@@ -334,7 +416,7 @@
       var lane = 0.5 + 0.34 * Math.sin(idx * 1.15 + 0.5);
       return '<div class="onode-row" style="--lane:' + lane.toFixed(3) + '">' +
         '<button class="onode" type="button" data-id="' + nd.id + '" data-idx="' + idx + '"' +
-          ' data-kind="' + kind + '" data-nstate="' + state + '">' +
+          ' data-kind="' + kind + '" data-nstate="' + state + '" aria-expanded="false">' +
           mark +
           '<span class="onode-label">' + nd.label + '</span>' +
           (meta ? '<span class="onode-meta">' + meta + '</span>' : '') +
@@ -416,6 +498,7 @@
        (first load only) scroll the next available / validated-hash node into view (D-61). */
     drawThreads();
     setupObservers();
+    setupPopup();
     if (!booted) { booted = true; autoScroll(); }
   }
 
