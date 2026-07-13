@@ -466,6 +466,32 @@ AW.weekCal = function () {
     });
   };
 
+/* NODE_ATOMS — the verbatim per-node taught-atom map (D-57/R-1), copied byte-faithfully from
+   05-RESEARCH.md §Atom Map (Josh's BUILD-RECORD §4, cross-checked against the source atom
+   files). The 15 lesson ids only — reviews/chests teach no atoms of their own, so they are
+   deliberately absent (AW.atomsDone below reads NODE_ATOMS[id]||0, which is 0 for any id not
+   listed here). Σ === 61 = the 65-atom corpus minus 4 documented, un-earnable holds (U3-13,
+   U3-16, U4-03, U4-09) — never invent a count; this map IS the taught total. */
+  var NODE_ATOMS = {
+    u1m1: 3, u1m2: 4, u1m3: 5, u1m4: 5,
+    u2m1: 5, u2m2: 4, u2m3: 3, u2m3b: 3,
+    u3m1: 4, u3m2: 5, u3m3: 5,
+    u4m1: 3, u4m2: 4, u4m2b: 4, u4m3: 4
+  };
+
+/* AW.atomsDone(progress) — PURE: Σ NODE_ATOMS[id] over every id present in progress.stars.
+   Review/chest star keys contribute 0 (they are simply absent from NODE_ATOMS). One constant,
+   one place — every Ring caller + AW.skyDawn + the boot --dawn stamp reads this, never a *3
+   proxy or an invented number (D-57/R-1). */
+  AW.atomsDone = function (progress) {
+    var stars = (progress && progress.stars) || {};
+    var total = 0;
+    for (var id in stars) {
+      if (Object.prototype.hasOwnProperty.call(stars, id)) total += (NODE_ATOMS[id] || 0);
+    }
+    return total;
+  };
+
 /* ---------- boot-stamp — apply prefs to <html> at parse time (D-21) ----------
    Guarded so the headless migration test (no `document` global) never executes this block. */
 if (typeof document !== 'undefined') {
@@ -1356,6 +1382,19 @@ function skyDawn(atomsDone) {
 AW.skyTemp = skyTemp;
 AW.skyDawn = skyDawn;
 
+/* AW.dailyIndex(date, poolLen) — PURE: the daily-ayah pool index, day-of-YEAR from LOCAL date
+   parts only (D-16 — never toISOString/new Date(ymdString), which shift by the reviewer's UTC
+   offset). Fixes the Gen-3 bug (`DAILY[new Date().getDate() % 7]`, day-of-MONTH, repeats every
+   ~28-31 days) — day-of-year advances every real day of the year (LRN-05). Safe modulo handles
+   any poolLen. */
+AW.dailyIndex = function (date, poolLen) {
+  var d = date || new Date();
+  var start = new Date(d.getFullYear(), 0, 0);          // local Dec-31-prev-year midnight
+  var cur = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  var doy = Math.round((cur - start) / 86400000);        // 1..366, local
+  return ((doy % poolLen) + poolLen) % poolLen;           // safe modulo
+};
+
 /* ============================================================
    RUNNERS  ·  Phase 4 — AwbaLesson(cfg) / AwbaReview(cfg) (D-22)
    ============================================================ */
@@ -1655,6 +1694,13 @@ function bindMuteBtn(refresh) {
     if (refresh) refresh();
   });
 }
+
+/* AW.muteBtnHtml / AW.bindMuteBtn — expose the module-private mute-toggle helpers above so a
+   page-inline script (e.g. learn.html, D-60) can reach the ONE shared 44px mute pattern both
+   runners already use. Behaviour-neutral: these are the same functions, just also reachable
+   off AW (Pitfall 6). No new glyph — glyphCount (components.test.js) stays frozen at 13. */
+AW.muteBtnHtml = muteBtnHtml;
+AW.bindMuteBtn = bindMuteBtn;
 
 /* ============================================================================================
    AwbaLesson(cfg) — the lesson runner (ENG-01/03/05, CNT-01/04, MOT-05). Josh's Gen-3 cfg shape is
