@@ -1671,6 +1671,7 @@ function AwbaLesson(cfg) {
      unit-accent wiring line (the cfg unit-tint field stays inert — no register recolour, D-45). */
   var pos = -1, stepIndex = 0, answered = false, combo = 0, comboBest = 0, correct = 0, mistakes = 0,
     quizN = 0, noorEarned = 0;
+  var flourishTimer = null;            // WR-02 — the pending 3-streak flourish timer, closure-scoped so resolve() can clear a stale one before it writes into a later answer's #lsflourish
   var claimNoor = AW._noorClaimer();   // the noor moment persists exactly once (RWD-01 / T-04-04a)
   beats.forEach(function (b) { if (['mc', 'tf', 'tile'].indexOf(b.t) >= 0) quizN++; });
 
@@ -1884,6 +1885,7 @@ function AwbaLesson(cfg) {
      (the miss is already banked, so the star math stays byte-preserved). */
   var PRAISE = ['That’s it.', 'Beautiful.', 'Exactly right.', 'Masha’Allah.'];
   function resolve(ok, it) {
+    clearTimeout(flourishTimer);   // WR-02 — cancel any 3-streak flourish still pending from a prior beat before this resolve rebuilds #lsflourish (D-45: fires once, only at combo===3)
     var st = AW._resolveScore(
       { correct: correct, combo: combo, comboBest: comboBest, mistakes: mistakes, noorEarned: noorEarned }, ok);
     correct = st.correct; combo = st.combo; comboBest = st.comboBest; mistakes = st.mistakes; noorEarned = st.noorEarned;
@@ -1904,7 +1906,7 @@ function AwbaLesson(cfg) {
         btn('Continue') + backCtl();
       if (AW.comboPerfect(combo)) {
         AW.sound('streak');
-        setTimeout(function () {                          // Gen-3's 260ms once-per-streak delay
+        flourishTimer = setTimeout(function () {          // Gen-3's 260ms once-per-streak delay (captured so a stale one gets cleared)
           var fl = document.getElementById('lsflourish');
           if (fl) fl.innerHTML = '<svg viewBox="0 0 64 12" width="64" height="12" aria-hidden="true"><path class="thread" d="M2 8 Q32 -2 62 8"/></svg>';
         }, 260);
