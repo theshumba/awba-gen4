@@ -1243,8 +1243,11 @@ AW.ringSVG = function (cfg) {
       ' 0 0 1 ' + f(x1) + ' ' + f(y1) + '" stroke="' + C_GOLD + '" stroke-width="1.9" stroke-opacity="0.95" stroke-linecap="round" fill="none"/>');
   }
 
-  // Head-dot: a single static gold circle at the inking frontier (the tawaf head).
-  var head = frontier || dabs[0];
+  // Head-dot: a single static gold circle at the inking frontier (the tawaf head). WR-02: gated on
+  // an ACTUAL frontier — at atomsDone 0 there is no frontier, so no head renders and the ring is
+  // genuinely all-faint (§6.6 #3; §6.3 places the head "at the current inking frontier", and a solid
+  // gold dot is not "faint"). It no longer falls back to dabs[0] at zero progress.
+  var head = frontier;
   var headSVG = head ? '<circle class="ring-head" cx="' + f(head.x) + '" cy="' + f(head.y) +
     '" r="' + f(size * 0.013) + '" fill="' + C_GOLD + '"/>' : '';
 

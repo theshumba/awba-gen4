@@ -64,9 +64,10 @@ test('ringSVG: atomsDone 0 differs from 65+4, and full progress carries thread +
   assert.ok(out.full.indexOf('ring-head') !== -1, 'full progress must place the head-dot');
   const threadArcs = (out.full.match(/ring-thread/g) || []).length;
   assert.equal(threadArcs, 4, 'four completed circuits → four gold thread arcs (a closed ring)');
-  // Zero progress: no circuit complete → no thread arc yet; the head still exists (static).
+  // Zero progress: no circuit complete → no thread arc; and no frontier → no head-dot, so the ring
+  // is genuinely all-faint (WR-02 / §6.6 #3 — a solid gold dot is not "faint").
   assert.equal(out.none.indexOf('ring-thread'), -1, 'no completed circuit → no gold thread arc');
-  assert.ok(out.none.indexOf('ring-head') !== -1, 'the head-dot exists even at zero progress');
+  assert.equal(out.none.indexOf('ring-head'), -1, 'zero progress → no head-dot: the ring is all-faint (WR-02)');
 });
 
 /* ---------- (4) reduced motion — the final state, zero animation nodes ---------- */
