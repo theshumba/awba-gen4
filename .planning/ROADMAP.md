@@ -77,7 +77,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   - [x] 03-09-PLAN.md — Components re-skin + motion vocabulary rewrite (§4)
   - [x] 03-10-PLAN.md — Prayer-clock sky: 5 temperatures, manual times, `--dawn` (§7) — pure now→temperature fn, no schema bump, boot dataset.sky + home-shell mirror, --dawn horizon glow; suite 53/53
   - [x] 03-11-PLAN.md — New Athar preview.html — the living reference (§8) — rebuilt from scratch as 8 sections of real AW.* output (register worlds / type under scripture law / thermal ramp / component inventory / byte-verbatim citation sheet / deterministic tawaf ring / prayer-clock sky / reduced-motion proof); demoCfg spliced byte-identical (SHA f7ec7f07); the four poppins-*.woff2 deleted (Poppins fully retired); suite 53/53; watched live in headless Chrome
-  - [ ] 03-12-PLAN.md — Final human visual gate: §12 prechecks + §9 checklist (checkpoint, autonomous:false)
+  - [x] 03-12-PLAN.md — Final human visual gate: §12 prechecks + §9 checklist — prechecks all green; Melusi walked the ten items 2026-07-13: **APPROVED**, no items routed back
 **UI hint**: yes
 
 ### Phase 4: Lesson & Review Engine Port + Detail Layer
