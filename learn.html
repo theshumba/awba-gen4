@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- viewport-fit=cover is the safe-area prerequisite (env(safe-area-inset-*) resolves to 0 without it). -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba · Learn</title>
+<!-- Kiswah Black — the Orbit ground (matches reviews/*, the dark register; lessons use cream #F3EDE2). -->
+<meta name="theme-color" content="#131013">
+<!-- learn.html sits at repo ROOT: every asset path is root-relative (shared/…), NEVER ../ — it mirrors
+     preview.html's head, not the lessons/ head one level down. Preload the two critical faces only. -->
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/readex-pro-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/amiri-quran-400.woff2" crossorigin>
+<link rel="stylesheet" href="shared/awba-engine.css">
+<script src="shared/awba-engine.js"></script>
+</head>
+<body>
+<main class="reg-orbit grain" id="app"></main>
+<script>
+/* ============================================================================================
+   learn.html — the Orbit front door ("a day in Awba", moment 1). A page, not an AwbaLesson cfg:
+   ONE inline classic script holding the course data + render() + wiring. Every surface consumes
+   shipped AW.* primitives; the only new CSS is @layer screens composition. All state is read
+   through AW.state() only (D-24) — no raw storage-key access on this page.
+   ============================================================================================ */
+(function () {
+  'use strict';
+
+  /* Course structure — ported verbatim from Gen-3 _MVP-BUILD/learn.html UNITS (D-53). ids / hrefs
+     / labels / review / chest are byte-faithful; hrefs stay root-relative exactly as Gen-3 wrote
+     them (learn.html is at root, so no ../). The retired `color` field is DROPPED (no unit
+     colour-coding under Athar). English unit titles are kept (R-6 chapter-term fallback). */
+  var UNITS = [
+    { n: 1, title: 'The Foundation', desc: 'What belief is, and how to hold it',
+      nodes: [
+        { id: 'u1m1', href: 'lessons/u1-m1.html', label: 'What sound belief is' },
+        { id: 'u1m2', href: 'lessons/u1-m2.html', label: 'Why belief matters' },
+        { id: 'u1m3', href: 'lessons/u1-m3.html', label: 'Where belief comes from' },
+        { id: 'u1m4', href: 'lessons/u1-m4.html', label: 'How we keep it sound' },
+        { id: 'u1r', href: 'reviews/u1-review.html', label: 'Legendary review', review: true },
+        { id: 'u1c', chest: true, label: 'A gift' }] },
+    { n: 2, title: 'The Drift', desc: 'How belief slips, and how to guard it',
+      nodes: [
+        { id: 'u2m1', href: 'lessons/u2-m1.html', label: 'The causes within you' },
+        { id: 'u2m2', href: 'lessons/u2-m2.html', label: 'The pulls from outside' },
+        { id: 'u2m3', href: 'lessons/u2-m3.html', label: 'Protecting yourself I' },
+        { id: 'u2m3b', href: 'lessons/u2-m3b.html', label: 'Protecting yourself II' },
+        { id: 'u2r', href: 'reviews/u2-review.html', label: 'Legendary review', review: true },
+        { id: 'u2c', chest: true, label: 'A gift' }] },
+    { n: 3, title: 'The Heart of It: Tawhid', desc: 'The one word everything else serves',
+      nodes: [
+        { id: 'u3m1', href: 'lessons/u3-m1.html', label: 'What Tawhid is' },
+        { id: 'u3m2', href: 'lessons/u3-m2.html', label: 'Worth more than everything' },
+        { id: 'u3m3', href: 'lessons/u3-m3.html', label: 'One religion, one thread' },
+        { id: 'u3r', href: 'reviews/u3-review.html', label: 'Legendary review', review: true },
+        { id: 'u3c', chest: true, label: 'A gift' }] },
+    { n: 4, title: 'The Pillars', desc: 'Standing it up, and knowing it is true',
+      nodes: [
+        { id: 'u4m1', href: 'lessons/u4-m1.html', label: 'The two pillars' },
+        { id: 'u4m2', href: 'lessons/u4-m2.html', label: 'The Lord of everything' },
+        { id: 'u4m2b', href: 'lessons/u4-m2b.html', label: 'The deniers’ twist' },
+        { id: 'u4m3', href: 'lessons/u4-m3.html', label: 'How we know He is there' },
+        { id: 'u4r', href: 'reviews/u4-review.html', label: 'The final review', review: true },
+        { id: 'u4c', chest: true, label: 'The course gift' }] }
+  ];
+
+  /* Flatten into the CNT-03 unlock sequence + a parallel per-node unit meta (number + English
+     title) for the continue card + course chip. Never mutate the node objects. */
+  var flat = [], meta = [];
+  UNITS.forEach(function (u) {
+    u.nodes.forEach(function (nd) { flat.push(nd); meta.push({ un: u.n, ut: u.title }); });
+  });
+
+  var app = document.getElementById('app');
+
+  function render() {
+    var st = AW.state();
+    var states = AW.deriveNodeState(flat, st);   // [{id,state}] — the shipped Gen-3 unlock rules (extend, don't fork)
+    var activeIdx = -1;
+    for (var i = 0; i < states.length; i++) {
+      if (states[i].state === 'active') { activeIdx = i; break; }
+    }
+    var activeUnit = activeIdx >= 0 ? meta[activeIdx].un : (meta.length ? meta[meta.length - 1].un : 1);
+
+    /* HUD marginalia (D-60) — a transparent .ls-hud row: LEFT a course chip (mini cream Farag-square
+       island holding the active-course scene icon); RIGHT cluster the returns .hstat (flame + count),
+       the noor .hstat (spark + count), and the shared 44px mute toggle. No pill fills. The chip /
+       returns / noor taps open their sheets in 05-05 — rendered here as marginalia, no faked sheet. */
+    var courseIcon = AW.UNIT_ICON['u' + activeUnit] || 'compass';
+    var hud =
+      '<div class="ls-hud">' +
+        '<button class="oh-chip" id="courseChip" type="button" aria-label="Switch course">' +
+          '<span class="oh-chip-sq">' + AW.icon(courseIcon, { size: '22px' }) + '</span>' +
+        '</button>' +
+        '<span class="ls-stats">' +
+          '<span class="hstat">' + AW.icon('flame') + '<span>' + st.returns + '</span></span>' +
+          '<span class="hstat">' + AW.icon('spark') + '<span>' + st.noor + '</span></span>' +
+          AW.muteBtnHtml() +
+        '</span>' +
+      '</div>';
+
+    /* Composition body (top→bottom): Ring hero → streak strip + constellation → continue card →
+       daily ayah. Ring/streak/continue land in Task 2; the daily ayah lands in Task 3. */
+    var body = '';
+
+    app.innerHTML = '<div class="ob-shell">' + hud + '<div class="ob-wrap">' + body + '</div></div>';
+
+    /* the one shared mute pattern (D-60) — re-render on toggle so the glyph + aria swap */
+    AW.bindMuteBtn(render);
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

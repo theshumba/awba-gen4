@@ -1724,6 +1724,49 @@
     color: var(--gold);             /* §2.1 gold on Kiswah, 8.40:1 */
   }
   .rv-noorline svg { width: 18px; height: 18px; }
+
+  /* ==========================================================================================
+     S1 · The Orbit front door (learn.html · 05-02) — composition ONLY over shipped primitives.
+     ONE register (.reg-orbit, Kiswah Black, --go:.07); zero new token / face / hex. Every pairing
+     cited to 03-UI-SPEC-ATHAR §2.1 at rendered size. Crimson never touches the Orbit ground — it
+     appears only inside cream Page-object islands (the course-chip + continue-card Farag squares).
+     ========================================================================================== */
+  #app.reg-orbit {                    /* the page IS the ground — full-bleed on phones */
+    min-height: 100dvh;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  @media (min-width: 600px) {         /* the intentional shell column on the cream cloth */
+    #app.reg-orbit {
+      max-width: 480px;
+      margin-inline: auto;
+      min-height: min(100dvh, 900px);
+      border-radius: var(--r-4);
+      overflow: hidden;
+    }
+  }
+  .ob-shell { position: relative; z-index: 1; }   /* all content rides above the grain::after (z-index:0) */
+  .ob-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-12);                /* major composition breaks: hero → continue → ayah */
+    padding: var(--sp-6) var(--sp-4) var(--sp-12);
+  }
+  .ls-hud { animation: settle var(--dur-settle) var(--ease) both; }   /* quiet one-pass Page settle on load */
+  .oh-chip {                          /* HUD course chip — a mini cream Farag-square island (D-60) */
+    border: none; background: transparent; padding: 0;
+    display: inline-flex; cursor: pointer;
+  }
+  .oh-chip-sq {
+    width: 36px; height: 36px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--cream);         /* §2.1 cream island on the dark ground (cream/navy-family 13.33:1) */
+    color: var(--ink);                /* island structure ink = kiswah, 16.22:1 on cream */
+    --icon-accent: var(--crimson);    /* the island's accent detail = Page crimson, 6.13:1 on cream */
+    border: var(--sp-2) solid var(--rule);
+    border-radius: var(--r-square);   /* hard manuscript corners — a Farag square */
+  }
+  .oh-chip-sq svg { width: 22px; height: auto; }
 }
 
 @layer motion {
