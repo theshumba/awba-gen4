@@ -92,7 +92,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. The post-lesson sequence (verdict → noor claim → returns → done) plays as choreography — staggered star/stat reveals, noor count-up, a returns hero in Athar language with a week calendar that never shows a "miss" state — and celebratory expressions (gold-dot accrual, streak celebration, Ring draw, Festival stamp) fire only on meta-progress screens, never over a scripture (`verse`) beat.
   5. Calm, dignified sound cues play on correct/incorrect/complete with a visible mute toggle; 3-Lens depth renders as an individually-expanding accordion (three visually distinct lenses per the Athar contract, fixed order) that never blocks Continue; every Arabic span carries `lang="ar" dir="rtl"`, ayah text uses the Quran face, and ﷺ / honorifics / brackets render intact.
 **Plans**: 7 plans
-  - [ ] 04-01-PLAN.md — Test foundation: pure runner-math helpers (ENG-03/04) + AW.sound plumbing (MOT-05) + render-smoke & port-audit harnesses
+  - [x] 04-01-PLAN.md — Test foundation: pure runner-math helpers (ENG-03/04) + AW.sound plumbing (MOT-05) + render-smoke & port-audit harnesses (completed 2026-07-13 — suite 64→70 green)
   - [ ] 04-02-PLAN.md — Lesson @layer screens CSS (Page register): shell, 9 beat surfaces, scripture-law scard, 3-lens accordion, reward screens
   - [ ] 04-03-PLAN.md — AwbaLesson(cfg) runner: all 9 beats + quiz (exact numbers) + port u1-m1 — the walking slice (one lesson renders end-to-end)
   - [ ] 04-04-PLAN.md — Reward choreography flagship: WAAPI verdict→noor→returns→done→Ring→du’a (RWD-01/02/03), celebration never over scripture
