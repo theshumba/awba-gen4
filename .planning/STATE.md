@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: "Phase 5 wave 1 (05-01) COMPLETE 2026-07-13 — engine seams + atomic 65→61 re-wire landed, suite 98→107; resume at 05-02 (opus, learn.html Orbit shell)"
-last_updated: "2026-07-13T22:24:00.000Z"
+stopped_at: "Phase 5 wave 2 (05-02) COMPLETE 2026-07-13 — learn.html Orbit front door lives (HUD + static Ring hero + streak/constellation + navy continue card + day-of-year daily ayah), suite 107/107; resume at 05-03 (opus, unit headers + winding path + node grammar + gold thread + Ibrahim line)"
+last_updated: "2026-07-13T22:55:00.000Z"
 last_activity: 2026-07-13
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 31
-  completed_plans: 26
+  completed_plans: 27
   percent: 57
 ---
 
@@ -25,9 +25,10 @@ See: .planning/PROJECT.md (updated 2026-07-11)
 
 ## Current Position
 
-Phase: 05 (Learn Page & Cross-Page View Transitions) — PLANNED (6 plans / 6 sequential waves), wave 1 (05-01) COMPLETE, wave 2 (05-02) next
+Phase: 05 (Learn Page & Cross-Page View Transitions) — PLANNED (6 plans / 6 sequential waves), waves 1–2 (05-01, 05-02) COMPLETE, wave 3 (05-03) next
 - Wave routing: 05-01 sonnet (engine seams: NODE_ATOMS/atomsDone/dailyIndex/mute exports + atomic 65→61 re-wire + learn-state tests) · 05-02 opus (Orbit shell: HUD/Ring/continue/streak/daily ayah) · 05-03 opus (unit headers + winding path + node grammar + gold thread) · 05-04 opus (popup + nav wiring + View Transitions) · 05-05 opus (sheets + tabs + chest→circuit-plate Festival claim) · 05-06 sonnet prechecks + BLOCKING human gate (autonomous:false)
 - **05-01 (engine seams + Wave-0 tests + atomic 65→61 atom re-wire): COMPLETE 2026-07-13** — `scripts/tests/learn-state.test.js` (NEW, 9 tests, RED confirmed before GREEN) pins `NODE_ATOMS` (15 verbatim per-lesson counts from RESEARCH §Atom Map, Σ=61) + `AW.atomsDone(progress)` (D-57/R-1), `AW.dailyIndex(date, poolLen)` (day-of-year from local date parts, fixes the Gen-3 `getDate()%7` monthly-repeat bug, LRN-05), `AW.muteBtnHtml`/`AW.bindMuteBtn` exports (D-60/Pitfall 6, no new glyph), and the CNT-03 unlock-order contract walked over the SHIPPED `AW.deriveNodeState` (extended, never forked) plus chest-claim idempotency (RWD-04). The 65→61 atom-denominator sweep landed as ONE atomic commit (`800dfd7`): `DEF_STRUCT.atoms`/`SKY_ATOMS` 65→61, both reward-runner atom computations + the boot `--dawn` stamp now read `AW.atomsDone(AW.state())` (the `ATOMS_PER_NODE=3` proxy fully retired), paired with every `ring.test.js`/`sky.test.js`/`preview.html` assertion moving to 61 in the same commit — suite stayed green throughout, no red intermediate commit. `render-smoke.mjs findPages()` extended to discover root `learn.html` (existsSync-guarded, currently skipped since 05-02 hasn't created it yet). Commits `e59131c`, `800dfd7`, `bc545fc`. Suite **98→107/107** green; `localStorage` grep-count held at 13; no CSS/token/layer-order touched (plan scope excluded CSS); glyphCount held at 13. Zero deviations. **Note:** CNT-03/LRN-05 in REQUIREMENTS.md are deliberately left `[ ]` (Pending) — this plan proves their pure engine contract headlessly, but the requirement text demands live rendering ("verified by walking the storage-driven states", "rendered reverently") which only lands with the actual `learn.html` UI in 05-02/05-03.
+- **05-02 (learn.html Orbit front door — HUD + static Ring hero + streak/constellation + continue card + daily ayah): COMPLETE 2026-07-13** — `learn.html` created at repo ROOT with a `preview.html`-shaped root-relative head (asset paths `shared/…`, NO `../`; `theme-color #131013`; `viewport-fit=cover`; Readex + Amiri-Quran preloads) and `<main class="reg-orbit grain">` + ONE inline classic `<script>` (a page, not an `AwbaLesson` cfg). **Task 1** `9dbefa6`: UNITS ported verbatim (retired `color` field dropped; the curly-apostrophe U4-m2b label "The deniers’ twist" byte-matched U+2019 to Gen-3), flat CNT-03 unlock sequence + per-node unit meta, HUD marginalia via shipped `.ls-hud`/`.hstat` (course-chip cream Farag island + active-unit `AW.UNIT_ICON` scene, returns/noor stats, the shared 44px mute toggle bound via `AW.muteBtnHtml`/`AW.bindMuteBtn`), new `@layer screens` page-ground layout + course-chip island. **Task 2** `8722e3d`: static Ring hero `AW.ringSVG({ atomsDone: AW.atomsDone(AW.state()), size: 300 })` with **NO animateFrom** (law 9 — the only macro map; width cap on the wrapper since shipped `.ring{width:100%}` in `@layer motion` outranks screens), the re-voiced Courier streak line + `AW.weekCal()` constellation (lit gold on-days, un-lit `--paper-45` off-days, never a gap/miss), the navy continue card pointing at the first `active` node from `AW.deriveNodeState` ("Circuit 1 · The Foundation" → `lessons/u1-m1.html` on a fresh install) with a gold-ghost "Continue the path" `.btn` + a course-complete fallback line (no celebration primitive). **Task 3** `34535a9`: the 7-verse `DAILY` pool spliced BYTE-VERBATIM from Gen-3 (SHA `e23fd7cf3085dfe8adb8c090fcd874113588fe765228586ab643d4f7572f8711`, ˹ ˺ intact), day-of-year rotation `DAILY[AW.dailyIndex(new Date(), DAILY.length)]`, rendered under scripture law (Amiri Quran `.ayah`, `--go:0` opaque-Kiswah clean panel, strongest `--cream` ink + the one permitted glow `rgba(244,240,247,.30)` reused verbatim, translation + source line + "unverified · pending review" pill, nothing celebratory adjacent), tap → the shipped `AW.sheetRef` cite face-split (Qur'an → no grade → Amiri Quran + pending pill only); `scripts/port-audit.mjs` gained `checkDailyFidelity()` (SHA-gates the spliced pool vs Gen-3 → `DAILY BYTES OK`, exit non-zero on drift), wired into `main()`. All CSS is `@layer screens`-only (order-line count held at 1, token-only, zero new hex). Headless DOM dump confirmed the composed surfaces render (reg-orbit root, HUD, static Ring all-faint at atomsDone 0 with no head-dot = correct WR-02, constellation, "Circuit 1 · The Foundation" → u1-m1, daily ayah + pending pill). Suite **107/107** green; render-smoke `SMOKE OK learn.html`; `port-audit` exit 0 (`DAILY BYTES OK`). **1 deviation (Rule 1):** the Task 3 forbidden-substring grep `(dab|thread|plate|rosette|view-transition-name)` false-positives on the byte-verbatim U3-m3 label "One religion, one thread" — content integrity forbids editing it; an intent-precise class/attribute-scoped check confirms NO celebration-primitive class and NO view-transition-name in learn.html (a stray `view-transition-name` in my own comment was reworded, leaving only the immutable content label). Doubts for the 05-06 gate logged in 05-02-SUMMARY (ring width on 320px, the English-fallback Farag square pending owner Arabic terms, ayah glow strength on-device, the `thread` verify false positive, continue-card copy voice).
 
 ### Phase 4 history (CLOSED 2026-07-13 — gate passed by owner directive, review-fixed, verified 5/5) — **7/7 plans complete**
 
@@ -64,9 +65,9 @@ Progress: [███░░░░░░░] 43%
 
 **Velocity:**
 
-- Total plans completed: 1 (this phase: 05-01)
-- Average duration: ~20 min
-- Total execution time: ~20 min
+- Total plans completed: 2 (this phase: 05-01, 05-02)
+- Average duration: ~24 min
+- Total execution time: ~48 min
 
 **By Phase:**
 
@@ -75,12 +76,12 @@ Progress: [███░░░░░░░] 43%
 | 02 | 2 | - | - |
 | 03 | 11 | - | ~20 min (03-09) |
 | 04 | 6 | - | ~27 min |
-| 05 | 1 | - | ~20 min |
+| 05 | 2 | - | ~24 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 04-04, 04-05, 04-06, 04-07, 05-01
-- Trend: Phase 4 closed 7/7 (owner-approved §9 gate). Phase 5 wave 1 (05-01) is the test-foundation/engine-seam plan — no DOM rendered yet, but the four pure seams (`AW.dailyIndex`, `NODE_ATOMS`/`AW.atomsDone`, the mute exports) the actual `learn.html` build (05-02+) will consume are now live and headlessly proven, and the locked 61-atom Ring/Sky denominator (D-57/R-1) is wired everywhere in one atomic sweep so no later plan has to touch it again. Next: 05-02, the Orbit shell (HUD + static Ring hero + continue card + streak/constellation + daily ayah).
+- Last 5 plans: 04-05, 04-06, 04-07, 05-01, 05-02
+- Trend: Phase 4 closed 7/7 (owner-approved §9 gate). Phase 5 wave 1 (05-01) landed the pure engine seams + the locked 61-atom denominator; wave 2 (05-02) built the actual Orbit front door — `learn.html` renders at repo root with HUD marginalia, a STATIC Ring hero (the only macro map, no replay), the re-voiced streak strip + `AW.weekCal()` constellation, a navy continue card pointing at the live active node, and the day-of-year daily ayah under scripture law (byte-verbatim DAILY, SHA-gated). Composition-and-wiring only — every surface consumes shipped `AW.*`, all CSS is `@layer screens`, suite held 107/107. Next: 05-03, the winding path — unit headers (Farag squares + `AW.UNIT_ICON`), the node grammar (`data-state` thermal shapes over `AW.deriveNodeState`), the earned gold thread (static, law 9), and the Ibrahim 14:24 marginalia epigraph.
 
 *Updated after each plan completion*
 | Phase 01 P01 | 20 min | 2 tasks | 13 files |
@@ -101,6 +102,7 @@ Progress: [███░░░░░░░] 43%
 | Phase 04 P04 | ~40 min | 2 tasks | 2 files |
 | Phase 04 P05 | ~15 min | 3 tasks | 4 files |
 | Phase 05 P01 | ~20 min | 3 tasks | 6 files |
+| Phase 05 P02 | ~28 min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -173,6 +175,12 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-05: Gen-3's AW.CLOCK/AW.HEART foot icons dropped (the 13-glyph registry is frozen by components.test.js) — timeout verdict = ember-inked title, miss = law-8 text; no new glyph; goldsel → inline gold borderColor selection cue (the AwbaLesson precedent re-voiced for Orbit)
 - [Phase 05]: 05-01: NODE_ATOMS is a module-scope var (not AW.NODE_ATOMS) — matches the existing DEF_STRUCT/SKY_ATOMS precedent of keeping per-computation denominators off the public AW surface; only the pure AW.atomsDone(progress) function is exported, tests read NODE_ATOMS directly as a bare identifier inside the same vm context
 - [Phase 05]: 05-01: the 65→61 atom-denominator sweep (D-57/R-1) landed as ONE atomic commit — engine constants + every paired ring.test.js/sky.test.js/preview.html assertion together — so the suite never had a red intermediate state; the ATOMS_PER_NODE=3 proxy and the boot TOTAL_NODES coarse-count proxy are both fully retired, replaced everywhere by AW.atomsDone(AW.state())
+- [Phase 05]: 05-02: learn.html is a PAGE, not an AwbaLesson cfg — ONE inline classic <script> holds UNITS/DAILY + render() + wiring, consuming shipped AW.* only; asset paths are root-relative (shared/…, NO ../) mirroring preview.html (the highest-risk byte error), never the lessons/ ../-prefixed head
+- [Phase 05]: 05-02: the static Ring hero's width cap lives on a WRAPPER (.ob-ringcap width:min(300px,74vw)), because the shipped .ring{width:100%} sits in @layer motion and outranks any @layer screens width rule — cap the container, never the .ring
+- [Phase 05]: 05-02: scripture on the DARK Orbit ground = an opaque --kiswah panel with --go:0 (the dark-register analog of the shipped .scard opaque-cream), so the page grain never shows behind the ayah; strongest --cream ink + the one permitted glow rgba(244,240,247,.30) reused verbatim (not a new hex)
+- [Phase 05]: 05-02: the continue-card / course-chip Farag squares are cream Page-object ISLANDS (kiswah ink; chip sets --icon-accent:--crimson) — the only place near the Orbit ground where the Page palette applies; crimson never touches the Kiswah ground itself; the chapter-term is the English unit title (R-6 fallback, Arabic terms owner-sourced, never invented)
+- [Phase 05]: 05-02: the .weekcal constellation off-day dot is re-based to --paper-45 on the Orbit dark ground (the shipped .weekcal .day --ink-62 is for the cream sheet and is invisible on dark); the lit .here gold dot is kept via a higher-specificity override placed later in @layer screens
+- [Phase 05]: 05-02: KNOWN verify false positive — the Task 3 forbidden-substring grep `(dab|thread|plate|rosette|view-transition-name)` matches the byte-verbatim U3-m3 node label "One religion, one thread"; content integrity forbids editing it. The real invariant (no celebration-primitive CLASS, no view-transition-name) holds — verify via `grep -nE 'class="[^"]*\b(dab|thread|plate|rosette)\b|view-transition-name|viewTransitionName|\.(dab|thread|plate|rosette)\b' learn.html` → none. A future phase should scope that grep to class/attribute context.
 
 ### Pending Todos
 
@@ -201,6 +209,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-13T22:24:00.000Z
-Stopped at: Phase 5 wave 1 (05-01) COMPLETE — engine seams + atomic 65→61 re-wire landed, suite 98→107
-Resume file: .planning/phases/05-learn-page-cross-page-view-transitions/05-02-PLAN.md
+Last session: 2026-07-13T22:55:00.000Z
+Stopped at: Phase 5 wave 2 (05-02) COMPLETE — learn.html Orbit front door lives (HUD + static Ring hero + streak/constellation + navy continue card + day-of-year daily ayah); DAILY spliced byte-verbatim + SHA-gated; suite 107/107; render-smoke SMOKE OK learn.html
+Resume file: .planning/phases/05-learn-page-cross-page-view-transitions/05-03-PLAN.md

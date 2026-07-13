@@ -114,7 +114,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. Navigating path↔lesson↔review cross-fades/morphs via Cross-Document View Transitions wired on every page, degrading gracefully to a normal navigation on browsers without support (e.g. Firefox).
 **Plans**: 6 plans
   - [x] 05-01-PLAN.md — Engine seams + Wave-0 tests + atom re-wire (65→61 denominator, D-57) (completed 2026-07-13 — NODE_ATOMS/AW.atomsDone/AW.dailyIndex/mute exports added + tested (learn-state.test.js, RED→GREEN); 65→61 denominator swept atomically across engine + ring.test.js/sky.test.js/preview.html; render-smoke discovers root learn.html; suite 98→107 green)
-  - [ ] 05-02-PLAN.md — learn.html Orbit shell: HUD + Ring hero (static) + continue card + streak/constellation + daily ayah (LRN-01/05)
+  - [x] 05-02-PLAN.md — learn.html Orbit shell: HUD + Ring hero (static) + continue card + streak/constellation + daily ayah (LRN-01/05) (completed 2026-07-13 — learn.html at repo root, root-relative head; static Ring hero (no animateFrom, law 9); AW.weekCal() constellation; navy continue card → live active node; DAILY spliced byte-verbatim (SHA e23fd7cf…) + day-of-year rotation + port-audit DAILY BYTES OK; @layer-screens-only CSS, order line count 1; render-smoke clean; suite 107/107)
   - [ ] 05-03-PLAN.md — Unit headers + winding path + live node grammar + earned gold thread + Ibrahim line (LRN-02/04, CNT-03)
   - [ ] 05-04-PLAN.md — Node popup + navigation wiring + cross-document View Transitions morph (LRN-03, MOT-02)
   - [ ] 05-05-PLAN.md — Shared sheet family + tab bar coming-soon + chest claim + Festival interstitial (LRN-06/07, RWD-04)
@@ -158,6 +158,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 2. State Layer & Engine-Contract Freeze | 2/2 | Complete   | 2026-07-12 |
 | 3. Components, Icon Kit & Motion | 10/12 | In Progress|  |
 | 4. Lesson & Review Engine Port | 6/7 | In Progress | - |
-| 5. Learn Page & View Transitions | 1/6 | In Progress | - |
+| 5. Learn Page & View Transitions | 2/6 | In Progress | - |
 | 6. Accessibility, RTL & Typography | 0/TBD | Not started | - |
 | 7. PWA Shell, Offline & Delivery | 0/TBD | Not started | - |
