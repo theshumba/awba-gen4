@@ -1541,9 +1541,43 @@ function reflectHtml(it) {
   );
 }
 
-/* AW._beatHtml(it, cfg) — the pure view dispatcher (test seam). Content beats only in this pass;
-   the quiz beats (mc/tf/tile) join in Task 2. Returns the beat's inner HTML string; the driver
-   wraps it in `.stage`, inserts, and wires. */
+/* the three quiz-beat builders (mc/tf/tile) — layout wrappers over the SHIPPED .opt/.tf/.tile; the
+   verdicts (.opt.correct gold dot / .opt.wrong grey blot / .opt-why / .btn.retry) are applied by the
+   driver on resolve, never authored here. */
+function mcHtml(it) {
+  var opts = (it.o || []).map(function (o, i) {
+    return '<button class="opt" type="button" data-i="' + i + '">' + o + '</button>';
+  }).join('');
+  return (
+    '<h2 class="pintro">' + (it.q || '') + '</h2>' +
+    (it.quote ? '<p class="trans">“' + it.quote + '”</p>' : '') +
+    '<div class="opts">' + opts + '</div>'
+  );
+}
+function tfHtml(it) {
+  return (
+    '<div class="kicker">True or false</div>' +
+    '<h2 class="pintro">' + (it.q || '') + '</h2>' +
+    '<div class="tfrow">' +
+    '<button class="tf" type="button" data-v="true">True</button>' +
+    '<button class="tf" type="button" data-v="false">False</button>' +
+    '</div>'
+  );
+}
+function tileHtml(it) {
+  var bank = (it.bank || []).map(function (w, i) {
+    return '<button class="tile" type="button" data-w="' + i + '">' + w + '</button>';
+  }).join('');
+  return (
+    '<div class="kicker">Build the answer</div>' +
+    '<h2 class="pintro">' + (it.prompt || '') + '</h2>' +
+    '<div class="tilebox" id="lstilebox"></div>' +
+    '<div class="bank" id="lsbank">' + bank + '</div>'
+  );
+}
+
+/* AW._beatHtml(it, cfg) — the pure view dispatcher (test seam). Returns the beat's inner HTML
+   string for any of the nine beat types; the driver wraps it in `.stage`, inserts, and wires. */
 AW._beatHtml = function (it, cfg) {
   if (!it) return '';
   if (it.t === 'read') return readHtml(it);
@@ -1552,7 +1586,31 @@ AW._beatHtml = function (it, cfg) {
   if (it.t === 'panel') return panelHtml(it);
   if (it.t === 'depth') return depthHtml(it);
   if (it.t === 'reflect') return reflectHtml(it);
+  if (it.t === 'mc') return mcHtml(it);
+  if (it.t === 'tf') return tfHtml(it);
+  if (it.t === 'tile') return tileHtml(it);
   return '';
+};
+
+/* AW._resolveScore(s, ok) — the pure, byte-preserved scoring reducer (Gen-3 resolve() 274-287). A
+   correct answer accrues +1 correct, +1 combo (best-of tracked), +AW.PER_LESSON (12) noor; a miss
+   banks +1 mistake and zeroes the combo, costing no noor (the un-loseable promise). No DOM, no
+   storage — the driver applies the returned tallies and the 04-01 helpers gate combo/streak/stars. */
+AW._resolveScore = function (s, ok) {
+  var n = {
+    correct: s.correct, combo: s.combo, comboBest: s.comboBest,
+    mistakes: s.mistakes, noorEarned: s.noorEarned,
+  };
+  if (ok) {
+    n.correct++;
+    n.combo++;
+    n.comboBest = Math.max(n.comboBest, n.combo);
+    n.noorEarned += AW.PER_LESSON;
+  } else {
+    n.mistakes++;
+    n.combo = 0;
+  }
+  return n;
 };
 
 /* ============================================================================================
@@ -1568,8 +1626,8 @@ function AwbaLesson(cfg) {
   var beats = cfg.beats || [];
   var steps = beats.length;
 
-  /* Gen-3 setup vars, byte-preserved (115-128) EXCEPT the retired skeleton builder + the retired
-     unitColor→--blue line (unitColor stays an inert cfg field). */
+  /* Gen-3 setup vars, byte-preserved (115-128) EXCEPT the retired body builder + the retired
+     unit-accent wiring line (the cfg unit-tint field stays inert — no register recolour, D-45). */
   var pos = -1, stepIndex = 0, answered = false, combo = 0, comboBest = 0, correct = 0, mistakes = 0,
     quizN = 0, noorEarned = 0, noorClaimed = false;
   beats.forEach(function (b) { if (['mc', 'tf', 'tile'].indexOf(b.t) >= 0) quizN++; });
@@ -1585,14 +1643,38 @@ function AwbaLesson(cfg) {
   var hudEl = document.getElementById('lshud');
   var progEl = document.getElementById('lsprog');
 
+  /* the mute control — a 44px HUD button (§S6 / MOT-05). Its speaker glyph is an inline control
+     affordance (currentColor, inherits --icon-accent via .ls-mute svg), NOT a KIT/GLYPHS entry:
+     the registry has no sound mark and its two counts are frozen by the components suite. */
+  var SPEAKER_ON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9 h4 l5 -4 v14 l-5 -4 H4 Z" fill="currentColor"/><path d="M16 8 a5 5 0 0 1 0 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  var SPEAKER_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9 h4 l5 -4 v14 l-5 -4 H4 Z" fill="currentColor"/><line x1="16" y1="9" x2="21" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  var hudStats = false;
+  function muteBtn() {
+    var muted = AW.prefs.get('soundMuted', false);
+    var label = muted ? 'Unmute sounds' : 'Mute sounds';
+    return '<button class="ls-mute" id="lsmute" type="button" aria-pressed="' + (muted ? 'true' : 'false') +
+      '" aria-label="' + label + '">' + (muted ? SPEAKER_OFF : SPEAKER_ON) + '</button>';
+  }
+  function bindMute() {
+    var m = document.getElementById('lsmute');
+    if (!m) return;
+    m.addEventListener('click', function () {
+      var now = !AW.prefs.get('soundMuted', false);
+      AW.prefs.set('soundMuted', now);
+      document.documentElement.setAttribute('data-sound', now ? 'muted' : '');
+      setHUD(hudStats);
+    });
+  }
   function setHUD(showStats) {
+    hudStats = showStats;
     var stats = showStats
       ? '<span class="ls-stats">' +
         '<span class="hstat">' + AW.icon('spark') + '<span>' + (AW.S.get('noor', 0) + noorEarned) + '</span></span>' +
         '<span class="hstat">' + AW.icon('flame') + '<span>' + AW.S.get('returns', 0) + '</span></span>' +
         '</span>'
       : '<span class="ls-stats"></span>';
-    hudEl.innerHTML = stats;
+    hudEl.innerHTML = stats + muteBtn();
+    bindMute();
   }
   function bumpNoor() { setHUD(true); }
 
@@ -1606,7 +1688,7 @@ function AwbaLesson(cfg) {
     progEl.innerHTML = dabs + '<span class="ls-count">' + Math.min(pos + 1, steps) + ' / ' + steps + '</span>';
   }
 
-  function foot(inner) { return '<div class="foot">' + inner + '</div>'; }
+  function foot(inner) { return '<div class="foot" id="lsfoot">' + inner + '</div>'; }
   function btn(label, cls, id) { return '<button class="btn ' + (cls || '') + '" id="' + (id || 'cont') + '" type="button">' + label + '</button>'; }
   function backCtl() { return '<button class="ls-back" id="lsback" type="button"' + (pos < 0 ? ' hidden' : '') + '>Back a step</button>'; }
   function next() { pos++; render(); }
@@ -1653,14 +1735,13 @@ function AwbaLesson(cfg) {
 
   function render() {
     if (pos < 0) { opener(); return; }
-    if (pos >= steps) { terminus(); return; }
+    if (pos >= steps) { verdict(); return; }
     var it = beats[pos];
     answered = false;
     setHUD(true);
     paintProg();
 
-    // quiz beats — a walkable temporary handler this pass; the law-8 resolution + reward land next.
-    if (it.t === 'mc' || it.t === 'tf' || it.t === 'tile') { quizTemp(it); return; }
+    if (it.t === 'mc' || it.t === 'tf' || it.t === 'tile') { quiz(it); return; }
 
     root.innerHTML = '<div class="stage">' + AW._beatHtml(it, cfg) + '</div>' + foot(btn('Continue') + backCtl());
     AW.wire(root, cfg);
@@ -1697,23 +1778,199 @@ function AwbaLesson(cfg) {
     bindBack();
   }
 
-  // temporary quiz walk-through — replaced by the real resolution next pass.
-  function quizTemp(it) {
-    root.innerHTML = '<div class="stage"><h2 class="pintro">' + (it.q || it.prompt || '') + '</h2></div>' +
-      foot(btn('Continue') + backCtl());
-    bindCont(true);
+  /* quiz — render the beat + a Check foot; wire the choice, then resolve on Check. */
+  function quiz(it) {
+    root.innerHTML = '<div class="stage">' + AW._beatHtml(it, cfg) + '</div>' +
+      foot(btn('Check', 'disabled', 'check') + backCtl());
+    if (it.t === 'tile') bindTile(it); else bindChoice(it);
     bindBack();
   }
 
-  // temporary terminus — replaced by the real verdict → noor → returns → done reward next pass.
-  function terminus() {
+  function bindChoice(it) {
+    var sel = it.t === 'mc' ? '.opt' : '.tf';
+    var nodes = root.querySelectorAll(sel), chosen = null;
+    var check = document.getElementById('check');
+    nodes.forEach(function (n) {
+      n.addEventListener('click', function () {
+        if (answered) return;
+        nodes.forEach(function (x) { x.style.borderColor = ''; });
+        n.style.borderColor = 'var(--crimson)';           // persistent selection cue (token-only)
+        chosen = it.t === 'mc' ? +n.dataset.i : (n.dataset.v === 'true');
+        check.classList.remove('disabled');
+      });
+    });
+    check.addEventListener('click', function () {
+      if (answered || chosen === null) return;
+      answered = true;
+      var ok = chosen === it.c;
+      nodes.forEach(function (x) { x.style.pointerEvents = 'none'; x.style.borderColor = ''; });
+      if (it.t === 'mc') {
+        nodes[it.c].classList.add('correct');            // gold dot draws on the answer
+        if (!ok) nodes[chosen].classList.add('wrong');   // law-8 grey ink-blot on the miss
+      } else {
+        nodes.forEach(function (x) { if ((x.dataset.v === 'true') === it.c) x.classList.add('correct'); });
+        if (!ok) nodes.forEach(function (x) { if (x.dataset.v === String(chosen)) x.classList.add('wrong'); });
+      }
+      resolve(ok, it);
+    });
+  }
+
+  function bindTile(it) {
+    var box = document.getElementById('lstilebox'), bankEl = document.getElementById('lsbank'),
+      check = document.getElementById('check');
+    var placed = [];
+    function refresh() { check.classList.toggle('disabled', placed.length === 0); }
+    bankEl.querySelectorAll('.tile').forEach(function (t) {
+      t.addEventListener('click', function () {
+        if (answered || t.classList.contains('used')) return;
+        t.classList.add('used'); t.style.opacity = '.35'; t.style.pointerEvents = 'none';
+        var bt = document.createElement('button'); bt.className = 'tile'; bt.type = 'button'; bt.textContent = t.textContent;
+        bt.addEventListener('click', function () {
+          if (answered) return;
+          bt.remove(); t.classList.remove('used'); t.style.opacity = ''; t.style.pointerEvents = '';
+          placed = placed.filter(function (x) { return x !== bt; });
+          refresh();
+        });
+        box.appendChild(bt); placed.push(bt); refresh();
+      });
+    });
+    check.addEventListener('click', function () {
+      if (answered || placed.length === 0) return;
+      answered = true;
+      var built = placed.map(function (b) { return b.textContent; });
+      var ok = JSON.stringify(built) === JSON.stringify(it.solution);
+      box.querySelectorAll('.tile').forEach(function (b) { b.style.pointerEvents = 'none'; b.style.borderColor = ok ? 'var(--gold)' : 'var(--rule)'; });
+      bankEl.querySelectorAll('.tile').forEach(function (b) { b.style.pointerEvents = 'none'; });
+      resolve(ok, it);
+    });
+  }
+
+  /* resolve — the mechanics come from AW._resolveScore (Gen-3 numbers); the expression is Athar
+     (D-45): correct → praise + a META gold .dab when comboShow, a quiet .thread flourish at
+     comboPerfect; miss → law-8 "Nothing lost" + the it.gentle line + a --rose retry that advances
+     (the miss is already banked, so the star math stays byte-preserved). */
+  var PRAISE = ['That’s it.', 'Beautiful.', 'Exactly right.', 'Masha’Allah.'];
+  function resolve(ok, it) {
+    var st = AW._resolveScore(
+      { correct: correct, combo: combo, comboBest: comboBest, mistakes: mistakes, noorEarned: noorEarned }, ok);
+    correct = st.correct; combo = st.combo; comboBest = st.comboBest; mistakes = st.mistakes; noorEarned = st.noorEarned;
+    bumpNoor();
+    if (ok) AW.sound('correct'); else AW.sound('incorrect');
+    var fw = document.getElementById('lsfoot');
+    if (ok) {
+      var title = PRAISE[correct % PRAISE.length];
+      var chip = AW.comboShow(combo)
+        ? '<span class="dab">' + AW.icon('spark') + '</span><span class="ls-count">' + combo + ' in a row</span>'
+        : '';
+      fw.innerHTML =
+        '<h2 class="pintro">' + title + '</h2>' +
+        '<p>' + (it.good || '') + '</p>' +
+        '<div class="meta">' + chip +
+        '<span class="ls-count">' + AW.icon('spark') + ' +' + AW.PER_LESSON + ' noor</span>' +
+        '<span class="flourish" id="lsflourish"></span></div>' +
+        btn('Continue') + backCtl();
+      if (AW.comboPerfect(combo)) {
+        AW.sound('streak');
+        setTimeout(function () {                          // Gen-3's 260ms once-per-streak delay
+          var fl = document.getElementById('lsflourish');
+          if (fl) fl.innerHTML = '<svg viewBox="0 0 64 12" width="64" height="12" aria-hidden="true"><path class="thread" d="M2 8 Q32 -2 62 8"/></svg>';
+        }, 260);
+      }
+    } else {
+      fw.innerHTML =
+        '<h2 class="pintro">Nothing lost</h2>' +
+        '<p class="opt-why">' + (it.gentle || '') + '</p>' +
+        btn('Continue', 'retry') + backCtl();
+    }
+    document.getElementById('cont').addEventListener('click', function () { stepIndex++; next(); });
+    bindBack();
+  }
+
+  /* ---------- the plain reward terminus (verdict → noor → returns → done) — static Page surfaces.
+     The WAAPI choreography + the Ring moment + the du'a close layer on in 04-04; here the lesson
+     simply completes, persisting noor once (at the noor moment) and best-of stars (at done). ---- */
+  function starRow(n) {
+    var s = '';
+    for (var i = 0; i < 3; i++) {
+      var on = i < n;
+      s += '<span class="ls-dab" data-state="' + (on ? 'mastered' : 'not-yet') + '">' + (on ? AW.icon('check') : '') + '</span>';
+    }
+    return '<div class="rw-stars">' + s + '</div>';   // shape-first: filled dab = earned, hollow = not (D-45)
+  }
+  function statTile(glyph, num, lab) {
+    return '<div class="rw-stat">' + AW.icon(glyph) + '<span class="num">' + num + '</span><span class="lab">' + lab + '</span></div>';
+  }
+
+  function verdict() {
     setHUD(false);
     paintProg();
+    var acc = quizN ? Math.round((correct / quizN) * 100) : 100;
+    var stars = AW.lessonStars(mistakes);
+    var word = mistakes === 0 ? 'Flawless' : (mistakes === 1 ? 'Beautifully done' : 'You made it through');
+    var sub = mistakes === 0 ? 'Every answer, clean. A lamp with a deep well of oil.'
+      : (mistakes === 1 ? 'One gentle miss, and you carried on. That is exactly the spirit.'
+        : 'You stayed with it to the end. That is what counts here.');
+    root.innerHTML =
+      '<div class="rw-verdict">' +
+      starRow(stars) +
+      '<h1 class="rw-word">' + word + '</h1>' +
+      '<p>' + sub + '</p>' +
+      '<div class="rw-stats">' +
+      statTile('spark', '+' + noorEarned, 'Noor') +
+      statTile('check', acc + '%', 'Accuracy') +
+      statTile('star', comboBest + '×', 'Best run') +
+      '</div></div>' +
+      foot(btn('Claim your noor'));
+    document.getElementById('cont').addEventListener('click', rewardNoor);
+  }
+
+  function rewardNoor() {
+    root.innerHTML =
+      '<div class="rw-noor">' + sceneIco('pattern') +
+      '<h1 class="noorbig">' + AW.icon('spark') + ' +' + noorEarned + '</h1>' +
+      '<h2 class="rw-word" style="font-size:var(--fs-h2)">Noor gathered</h2>' +
+      '<p>Light you collect as you learn. It never runs out on you.</p>' +
+      (cfg.grew ? '<div class="grew"><div class="kicker">What changed</div><p>' + cfg.grew + '</p></div>' : '') +
+      '</div>' +
+      foot(btn('Lovely'));
+    if (!noorClaimed) {                                  // persist noor exactly once (Gen-3 parity)
+      noorClaimed = true;
+      AW.S.set('noor', AW.S.get('noor', 0) + noorEarned);
+    }
+    AW.sound('complete');
+    document.getElementById('cont').addEventListener('click', rewardReturns);
+  }
+
+  function rewardReturns() {
+    var ret = AW.S.get('returns', 0);
+    var days = AW.weekCal().map(function (d) {
+      return '<span class="day' + (d.on ? ' here' : '') + '" aria-hidden="true"></span>';
+    }).join('');
+    root.innerHTML =
+      '<div class="rw-returns">' +
+      '<div class="num">' + ret + '</div>' +
+      '<div class="rlabel">' + (ret === 1 ? 'day you came back' : 'days you came back') + '</div>' +
+      '<p>Not a score to protect. Proof that you keep returning — and that is the whole point of this place.</p>' +
+      '<div class="weekcal">' + days + '</div>' +
+      '</div>' +
+      foot(btn('Keep it gentle'));
+    document.getElementById('cont').addEventListener('click', done);
+  }
+
+  function done() {
+    var st = AW.S.get('stars', {}), prev = st[cfg.id] || 0, now = AW.lessonStars(mistakes);
+    if (now > prev) { st[cfg.id] = now; AW.S.set('stars', st); }   // best-of only — never downgrade
+    var rec = (cfg.recap || []).map(function (r) {
+      return '<li>' + AW.icon('check') + '<span>' + r + '</span></li>';
+    }).join('');
+    var nextBtn = cfg.next ? '<a class="btn" href="' + cfg.next.href + '">Next: ' + cfg.next.label + '</a>' : '';
     root.innerHTML =
       '<div class="rw-done">' + sceneIco('crescent') +
       '<h1 class="rw-word">' + (cfg.doneTitle || 'Carried a little further') + '</h1>' +
-      '<a class="ls-back" href="../learn.html">Back to the path</a>' +
-      '</div>';
+      (cfg.doneLine ? '<p>' + cfg.doneLine + '</p>' : '') +
+      (rec ? '<ul class="recl">' + rec + '</ul>' : '') +
+      '</div>' +
+      foot(nextBtn + '<a class="ls-back" href="../learn.html">Back to the path</a>');
   }
 
   render(); // pos = -1 → opener
