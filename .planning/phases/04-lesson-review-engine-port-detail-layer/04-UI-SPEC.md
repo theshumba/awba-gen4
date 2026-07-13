@@ -130,7 +130,7 @@ Never: body text emphasis, quiz option fills, progress fills, decorative blocks.
 **Thermal state colour (app-wide, shape-first — D-A8):** `--powder #A9BFEE` (not-yet) · `--ember
 #E8502A` (progress) · `--gold #D9A441` (mastered). On cream these are **shape/border/fill-with-keyline
 only** — ember 3.21:1 (border/large only, never small text), gold 1.93:1 (filled shape + `--rule`
-keyline, never lone text), powder 1.58:1 (→ use hollow `--ink-40` ring instead). Shape (hollow /
+keyline, never lone text), powder 1.58:1 (→ use hollow `--ink-62` ring instead — WR-04 ruling: 5.02:1, clears WCAG 1.4.11's 3:1; `--ink-40` failed at 2.56:1). Shape (hollow /
 half-dab / filled+check) is the primary channel on every ground.
 
 ### Orbit register — the Ring moment + the whole review session (Kiswah Black ground)
@@ -211,7 +211,7 @@ punishment; scripture copy is verbatim and untouched (spliced, never retyped —
   `--icon-accent` (crimson). **Mute toggle** lives here (§S6). No pill fills.
 - **Per-beat progress:** a row of thermal `data-state` **dabs**, one per beat. Passed beats =
   `mastered` (filled `--gold` + `--rule` keyline + `check` glyph); current = `progress` (half-dab,
-  `--ember` border); upcoming = `not-yet` (hollow ring, `--ink-40` border on cream — D-A8). Gen-3
+  `--ember` border); upcoming = `not-yet` (hollow ring, `--ink-62` border on cream — D-A8 + WR-04: this border IS the shape-first signal, must clear 3:1). Gen-3
   `stepIndex` fills left→right and **only ever increments** — Back decrements `pos` but a filled dab
   **never un-fills** (clamp `stepIndex=max(pos,0)`). A Courier counter ("3 / 6") sits beside it.
 - **Opener:** `AW.greetMode()` greeting (`--fs-h1`); the journey chapter-term in **Aref Ruqaa** inside
@@ -335,7 +335,7 @@ scripture (`verse`) beat; celebration fires only on these meta-progress screens 
   block → **clean no-op, zero console error** (silent v1). Assets are an owner decision (calm,
   dignified sound EFFECTS not music); they drop into `shared/sfx/` later with **zero code change**.
 - **Mute toggle placement:** in the lesson **and** review HUD marginalia row, a **44px** icon button
-  (a shipped glyph, `--icon-accent`), `aria-pressed`, persists via `awba_prefs.soundMuted` boot-stamp.
+  (a shipped glyph, `--icon-accent`), `aria-pressed` + an explicit accessible name (`aria-label="Mute sounds"` / `"Unmute sounds"`, swapped with state), persists via `awba_prefs.soundMuted` boot-stamp.
   Visible on every lesson/review screen.
 - **Cue peaks land on meta-progress screens, NEVER the ayah/scripture moment** (MOT-05). `complete`
   peaks at reward/mastery; `streak` at the 3-streak flourish; nothing plays on a verse beat or the
