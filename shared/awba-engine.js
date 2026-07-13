@@ -1355,5 +1355,44 @@ AW.skyTemp = skyTemp;
 AW.skyDawn = skyDawn;
 
 /* ============================================================
-   RUNNERS  ·  Phase 4 placeholder — AwbaLesson(cfg) / AwbaReview(cfg) (D-22)
+   RUNNERS  ·  Phase 4 — AwbaLesson(cfg) / AwbaReview(cfg) (D-22)
    ============================================================ */
+
+/* ---------- RUNNER MATH — pure, DOM-free contracts (D-47 / ENG-03 / ENG-04) ----------
+   Byte-copied from Gen-3 (`_MVP-BUILD/shared/awba-engine.js`: resolve() 274-287, starsFor() 289,
+   review bind() 438, review result() 451/369) — never invented, never "improved". These are the
+   frozen mechanics the lesson/review runners (04-03/04-05) call instead of re-deriving the math
+   inline; every helper below is pure (no DOM, no storage reads/writes of any kind). */
+
+AW.PER_LESSON = 12;  // noor per correct quiz answer (Gen-3 PER, resolve() 274)
+AW.REFLECT = 15;     // noor on a reflect-beat reveal (Gen-3 REFLECT, reflect 219)
+AW.PER_REVIEW = 15;  // noor per correct review answer in the main phase (Gen-3 PER, bind() 438)
+AW.SWIFT = 5;        // bonus noor when a review answer lands in time (Gen-3 SWIFT, bind() 438)
+AW.QTIME = 14;        // review soft-timer seconds (Gen-3 QTIME, startTimer() 364)
+
+/* AW.lessonStars(mistakes) — starsFor() 289: never 0. */
+AW.lessonStars = function (mistakes) {
+  return mistakes === 0 ? 3 : mistakes === 1 ? 2 : 1;
+};
+
+/* AW.comboShow(combo) — showCombo() gate: the accruing chip shows at combo>=2 (resolve() 274). */
+AW.comboShow = function (combo) {
+  return combo >= 2;
+};
+
+/* AW.comboPerfect(combo) — firePerfect() gate: fires once, at exactly a 3-streak (resolve() 274). */
+AW.comboPerfect = function (combo) {
+  return combo === 3;
+};
+
+/* AW.reviewScore(inTime) — bind() 438: PER + SWIFT bonus only when the answer landed in time. */
+AW.reviewScore = function (inTime) {
+  return AW.PER_REVIEW + (inTime ? AW.SWIFT : 0);
+};
+
+/* AW.reviewStars(correct, total, allInTime) — result() 451: flawless + never-timed-out -> 3;
+   flawless but ANY timeout occurred (allInTime killed permanently at 369) -> capped at 2; any
+   miss at all -> 1, regardless of timing. */
+AW.reviewStars = function (correct, total, allInTime) {
+  return correct === total ? (allInTime ? 3 : 2) : 1;
+};
