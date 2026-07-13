@@ -1455,7 +1455,7 @@
   .weekcal .day {                   /* a quiet day — a lighter-ink presence dot; no day is ever "missed" */
     width: 12px; height: 12px;
     border-radius: var(--r-round);
-    background: var(--ink-40);       /* §2.1 quiet ink presence on cream */
+    background: var(--ink-62);       /* WR-04: --ink-62 = 5.02:1 on cream, clears WCAG 1.4.11's 3:1 non-text threshold; --ink-40 was 2.56:1 and failed. Still a quiet, neutral ink presence — the .here dot below reads warmer/earned in gold, so a present day stays quieter than a returned one. */
   }
   .weekcal .day.here {              /* a day the learner returned — a warmer, deeper presence */
     background: var(--gold);         /* §2.1 gold fill (shape); the keyline reads its edge */
