@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba · U1·M4 · How we keep belief sound</title>
+<meta name="theme-color" content="#F3EDE2">
+<link rel="preload" as="font" type="font/woff2" href="../shared/fonts/readex-pro-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../shared/fonts/amiri-quran-400.woff2" crossorigin>
+<link rel="stylesheet" href="../shared/awba-engine.css">
+<script src="../shared/awba-engine.js"></script>
+</head>
+<body>
+<script>
+AwbaLesson({
+ id:'u1m4', unitColor:'#2E6BF5',
+ journey:'Unit 1 · Lesson 4 · The method',
+ opener:{h2:'One question is left',p:'You know what belief is, why it matters, and where it comes from. How do you actually check that a belief is sound? Five principles.',
+  thought:'Here is the whole method in one line. You do not bend the texts to fit your belief. You bring your belief to the texts, and let them correct you.'},
+ terms:{
+  sahabah:{ar:'صَحَابَة',tl:'ṣaḥābah',word:'the Companions',def:'The generation who met the Prophet, believed in him, and learned the religion directly from him.',ctx:'Because they received the revelation firsthand, their understanding of the texts is the safest guide to what those texts mean.'}
+ },
+ refs:{
+  'nur-24-51':{ref:'an-Nūr 24:51',ar:'إِنَّمَا كَانَ قَوْلَ ٱلْمُؤْمِنِينَ إِذَا دُعُوٓا۟ إِلَى ٱللَّهِ وَرَسُولِهِۦ لِيَحْكُمَ بَيْنَهُمْ أَن يَقُولُوا۟ سَمِعْنَا وَأَطَعْنَا',mean:'The only response of the ˹true˺ believers, when they are called to Allah and His Messenger so he may judge between them, is to say, "We hear and obey." It is they who will ˹truly˺ succeed.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'},
+  'isra-17-36':{ref:'al-Isrāʾ 17:36',ar:'وَلَا تَقْفُ مَا لَيْسَ لَكَ بِهِۦ عِلْمٌ ۚ إِنَّ ٱلسَّمْعَ وَٱلْبَصَرَ وَٱلْفُؤَادَ كُلُّ أُو۟لَـٰٓئِكَ كَانَ عَنْهُ مَسْـُٔولًا',mean:'Do not follow what you have no ˹sure˺ knowledge of. Indeed, all will be called to account for ˹their˺ hearing, sight, and intellect.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'},
+  'baqarah-2-137':{ref:'al-Baqarah 2:137',ar:'فَإِنْ ءَامَنُوا۟ بِمِثْلِ مَآ ءَامَنتُم بِهِۦ فَقَدِ ٱهْتَدَوا۟',mean:'So if they believe in what you believe, then they will indeed be ˹rightly˺ guided.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'},
+  'yusuf-12-2':{ref:'Yūsuf 12:2',ar:'إِنَّآ أَنزَلْنَـٰهُ قُرْءَٰنًا عَرَبِيًّا لَّعَلَّكُمْ تَعْقِلُونَ',mean:'Indeed, We have sent it down as an Arabic Quran so that you may understand.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'}
+ },
+ beats:[
+  {t:'panel',variant:'check',title:'The five checks',intro:'The principles used to check whether a belief is sound.',
+   items:[
+    {name:'Submit to all of it',body:'Believe in and follow every text of the Qur’an and Sunnah, rather than keeping the parts you like. '+AW.cite('nur-24-51','an-Nūr 24:51')},
+    {name:'Read the texts together',body:'Gather all the texts on a question and understand them as one, instead of seizing a single line in isolation.'},
+    {name:'From revelation alone',body:'Affirm what the texts affirm, deny what they deny, stay silent where they are silent. No dream, feeling, or private claim adds an article of belief. '+AW.cite('isra-17-36','al-Isrāʾ 17:36')},
+    {name:'As the first community understood them',body:'Read the texts the way the <span class="term" data-term="sahabah">ṣaḥābah</span> who received them did, not reinvented each era to fit the mood of the age. '+AW.cite('baqarah-2-137','al-Baqarah 2:137')},
+    {name:'Through their own language',body:'Return to the Arabic the Qur’an was revealed in to reach the intended meaning. '+AW.cite('yusuf-12-2','Yūsuf 12:2')}],
+   marker:{type:'remember',body:'Five checks, one aim. Keep belief tied to what was actually revealed, understood the way it was first understood.'}},
+  {t:'depth',point:'Sound belief is the one you check against the texts, not the one you bend the texts to fit.',
+   lenses:{reality:'If you only keep the evidence that already suits you, your belief becomes a mirror of what you wanted to be true. Letting the evidence correct you is the only way to end up with the truth instead of your own reflection.',
+   revelation:'The believers are described by a single response when called to the revelation. We hear and obey. '+AW.cite('nur-24-51','an-Nūr 24:51'),
+   ruling:'Where the texts have spoken clearly, there is no picking and choosing.'}},
+  {t:'reflect',prompt:'What changes when you let the evidence correct you, instead of keeping only the evidence that fits what you hoped was true?',
+   model:'It is a quiet shift, but a big one. Belief stops being a mirror of your preferences and becomes something you can actually trust, because it rests on more than your own wishes.'},
+  {t:'mc',q:'A friend says a belief must be true, because a pious teacher saw it confirmed in a dream. Run it through the method. Sound basis for creed?',
+   o:['Yes, if the teacher is known to be pious','No, belief is taken only from the Qur’an and Sunnah','Yes, if the dream felt especially real'],c:1,
+   good:'However sincere the person, a dream or private experience is not a source of creed. That is the third check at work.',
+   gentle:'Sincerity and vividness do not make something a source of belief. Creed is taken only from the Qur’an and Sunnah.'},
+  {t:'mc',q:'Someone builds a whole belief on a single verse read alone, brushing aside the verses that qualify it. Sound method?',
+   o:['Yes, one clear verse is enough','No, all the relevant texts are gathered and weighed together','Yes, if the verse is authentic'],c:1,
+   good:'A true statement, quoted alone, can still mislead. The method reads every relevant text as one. That is the second check.',
+   gentle:'Even an authentic verse can mislead in isolation. The method weighs all the texts together.'},
+  {t:'tf',q:'Every generation should feel free to reinterpret the texts however it likes, to fit modern life.',c:false,
+   good:'The texts are understood the way the first community understood them. Reinventing their meaning each era is exactly what this principle guards against.',
+   gentle:'The method reads the texts as the Companions did. Free reinterpretation is what it sets aside.'}
+ ],
+ grew:'You can now run any claimed belief through the five checks, and catch the two most common failures: private sources and isolated verses.',
+ recap:['Submit to all the texts, read together, from revelation alone.','Understood as the first community understood them, in their own language.','Let the texts correct your belief, never the reverse.'],
+ doneTitle:'The foundation is complete',
+ doneLine:'What belief is, why it matters, where it comes from, how it stays sound. Time to prove it, in gold.',
+ next:{href:'../reviews/u1-review.html',label:'Unit 1 Legendary Review'}
+});
+</script>
+</body>
+</html>

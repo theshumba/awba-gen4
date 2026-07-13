@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba · U1·M3 · Where belief comes from</title>
+<meta name="theme-color" content="#F3EDE2">
+<link rel="preload" as="font" type="font/woff2" href="../shared/fonts/readex-pro-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../shared/fonts/amiri-quran-400.woff2" crossorigin>
+<link rel="stylesheet" href="../shared/awba-engine.css">
+<script src="../shared/awba-engine.js"></script>
+</head>
+<body>
+<script>
+AwbaLesson({
+ id:'u1m3', unitColor:'#2E6BF5',
+ journey:'Unit 1 · Lesson 3 · The roots',
+ opener:{h2:'You know why it matters',p:'So where does sound belief actually come from, and how can you know it is true? Three things today: a leaning you were born with, three sources, and the place of reason.'},
+ terms:{
+  fitrah:{ar:'فِطْرَة',tl:'fiṭrah',word:'natural disposition',def:'The innate nature every person is born with, already leaning toward its Maker.',ctx:'It is why belief in one God can feel less like new information and more like remembering.'},
+  sunnah:{ar:'سُنَّة',tl:'sunnah',word:'the Prophet’s way',def:'The Prophet’s words, actions, and the things he approved of.',ctx:'The one entrusted to deliver the message was also entrusted to explain it.'},
+  ijma:{ar:'إِجْمَاع',tl:'ijmāʿ',word:'consensus',def:'The agreement of the earliest Muslim generations on a matter of belief.',ctx:'When those closest to the revelation all understood a point the same way, that agreement is strong evidence.'}
+ },
+ refs:{
+  'bukhari-fitrah':{kind:'The hadith',ref:'Ṣaḥīḥ al-Bukhārī 1385',grade:'Sahih',ar:'كُلُّ مَوْلُودٍ يُولَدُ عَلَى الْفِطْرَةِ، فَأَبَوَاهُ يُهَوِّدَانِهِ أَوْ يُنَصِّرَانِهِ أَوْ يُمَجِّسَانِهِ',mean:'Every child is born with a true faith of Islam (i.e. to worship none but Allah Alone) and his parents convert him to Judaism or Christianity or Magianism.',src:'Ṣaḥīḥ al-Bukhārī 1385 · via Sunnah.com · pending review'},
+  'hijr-15-9':{ref:'al-Ḥijr 15:9',ar:'إِنَّا نَحْنُ نَزَّلْنَا ٱلذِّكْرَ وَإِنَّا لَهُۥ لَحَـٰفِظُونَ',mean:'It is certainly We Who have revealed the Reminder, and it is certainly We Who will preserve it.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'},
+  'nahl-16-44':{ref:'an-Naḥl 16:44',ar:'وَأَنزَلْنَآ إِلَيْكَ ٱلذِّكْرَ لِتُبَيِّنَ لِلنَّاسِ مَا نُزِّلَ إِلَيْهِمْ',mean:'˹We sent them˺ with clear proofs and divine Books. And We have sent down to you ˹O Prophet˺ the Reminder, so that you may explain to people what has been revealed for them, and perhaps they will reflect.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'},
+  'nisa-4-115':{ref:'an-Nisāʾ 4:115',ar:'وَمَن يُشَاقِقِ ٱلرَّسُولَ مِنۢ بَعْدِ مَا تَبَيَّنَ لَهُ ٱلْهُدَىٰ وَيَتَّبِعْ غَيْرَ سَبِيلِ ٱلْمُؤْمِنِينَ نُوَلِّهِۦ مَا تَوَلَّىٰ',mean:'And whoever defies the Messenger after guidance has become clear to them and follows a path other than that of the believers, We will let them pursue what they have chosen.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'},
+  'araf-7-3':{ref:'al-Aʿraf 7:3',ar:'ٱتَّبِعُوا۟ مَآ أُنزِلَ إِلَيْكُم مِّن رَّبِّكُمْ وَلَا تَتَّبِعُوا۟ مِن دُونِهِۦٓ أَوْلِيَآءَ',mean:'Follow what has been sent down to you from your Lord, and do not take others as guardians besides Him. How seldom are you mindful!',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'}
+ },
+ beats:[
+  {t:'read',kicker:'The starting point',title:'Something already in you',
+   html:'<p>Long before anyone teaches you a single thing, something in you already leans toward your Maker. Islam calls that leaning the <span class="term" data-term="fitrah">fiṭrah</span>.</p><p>You can watch it surface in hard moments. When the plane drops or the news turns bad, people who never pray find themselves reaching for something greater, almost without deciding to. The Prophet, peace be upon him, described this: every child is born upon that natural state, and it is upbringing that shapes them one way or another. '+AW.cite('bukhari-fitrah','Ṣaḥīḥ al-Bukhārī 1385')+'</p>',
+   marker:{type:'angle',body:'The fiṭrah does not force you to believe. It leaves a door ajar. Sound belief is what walks through it.'}},
+  {t:'verse',kicker:'The natural way',label:'From the Qur’an · ar-Rūm 30:30',
+   ar:'فَأَقِمْ وَجْهَكَ لِلدِّينِ حَنِيفًا ۚ فِطْرَتَ ٱللَّهِ ٱلَّتِى فَطَرَ ٱلنَّاسَ عَلَيْهَا ۚ لَا تَبْدِيلَ لِخَلْقِ ٱللَّهِ',
+   tr:'So be steadfast in faith in all uprightness ˹O Prophet˺—the natural Way of Allah which He has instilled in ˹all˺ people. Let there be no change in this creation of Allah.'},
+  {t:'panel',variant:'check',title:'The three sources',intro:'Sound belief is not taken from feelings or fashion. It is drawn from three sources, weighed in this order.',
+   items:[
+    {name:'The Qur’an',body:'The preserved word of God, unchanged since it was revealed, so the whole community shares one reference. '+AW.cite('hijr-15-9','al-Ḥijr 15:9')},
+    {name:'The Sunnah',body:'The Prophet’s <span class="term" data-term="sunnah">sunnah</span>, his words, actions, and approvals. The one entrusted to deliver the message was entrusted to explain it. '+AW.cite('nahl-16-44','an-Naḥl 16:44')},
+    {name:'The consensus of the first generations',body:'The <span class="term" data-term="ijma">ijmāʿ</span> of the earliest Muslims. When those closest to the revelation agreed on a point of belief, that agreement is strong evidence. '+AW.cite('nisa-4-115','an-Nisāʾ 4:115')}],
+   marker:{type:'remember',body:'Notice the order. The Qur’an first, then the Sunnah that explains it, then the agreement of those who received it firsthand.'}},
+  {t:'depth',point:'The big truth is written into you. The details are revealed to you.',
+   lenses:{reality:'Your fiṭrah can tell you there is a Maker, and that He is one. What it cannot tell you is the rest. What He is called, how He wants to be worshipped, what waits after death.',
+   revelation:'So the details of belief are not left to guesswork. They are taken from what God actually revealed. '+AW.cite('araf-7-3','al-Aʿraf 7:3'),
+   ruling:'The fiṭrah opens the question. Revelation gives the settled answer, through a clear order of sources.'}},
+  {t:'frame',kicker:'And reason?',lead:'Reason is a gift, and Islam leans on it heavily. It can carry you all the way to knowing there is a Maker, and that He is one. But the fine details of the unseen sit beyond its reach. So where an authentic text and our reasoning seem to clash, we look again, trusting that the One who gave us reason also sent the revelation, and the clear text is given precedence.'},
+  {t:'mc',q:'You have met the three sources of sound belief. Which one is the third?',
+   o:['Your own reasoning','The agreement of the earliest generations','Whatever most people believe today'],c:1,
+   good:'The third source is the consensus of the earliest generations. Personal reasoning and popular opinion are not sources of creed.',
+   gentle:'The third source is the agreement of the earliest generations, those closest to the revelation itself.'},
+  {t:'tf',q:'If your own reasoning seems to clash with an authentic text, your reasoning decides.',c:false,
+   good:'Reason leads us toward belief and helps us understand it, but where a sound text and our reasoning seem to conflict, the clear text is given precedence.',
+   gentle:'Reason is honoured, but it sits under revelation, not over it. The clear text is given precedence.'}
+ ],
+ grew:'You can now name where sound belief comes from: the fiṭrah that opens the question, and the three sources that answer it.',
+ recap:['It begins in you, in the fiṭrah you were born with.','It is drawn from the Qur’an, the Sunnah, and the first community’s consensus, in that order.','Reason leads you to belief, then serves under revelation.'],
+ doneTitle:'You have found the roots',
+ doneLine:'You can tell a real source from a passing one. Next, the method that keeps belief sound.',
+ next:{href:'u1-m4.html',label:'How we keep it sound'}
+});
+</script>
+</body>
+</html>

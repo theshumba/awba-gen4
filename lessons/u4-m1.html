@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba · U4·M1 · The two pillars</title>
+<meta name="theme-color" content="#F3EDE2">
+<link rel="preload" as="font" type="font/woff2" href="../shared/fonts/readex-pro-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../shared/fonts/amiri-quran-400.woff2" crossorigin>
+<link rel="stylesheet" href="../shared/awba-engine.css">
+<script src="../shared/awba-engine.js"></script>
+</head>
+<body>
+<script>
+AwbaLesson({
+ id:'u4m1', unitColor:'#C98F00',
+ journey:'Unit 4 · Lesson 1 · The final unit',
+ opener:{h2:'The last stretch of the foundation',p:'You know Tawhid. Now we stand it up. Today, the two motions inside the most famous sentence in Islam.',
+  thought:'Laa ilaaha illa Allah. You have said it, heard it, seen it written. Today you take it apart and see how it works.'},
+ terms:{
+  taghut:{ar:'طَاغُوت',tl:'ṭāghūt',word:'a false object of worship',def:'Anything set up and served in the place of God.',ctx:'A person, a grave, a cause, a craving. Rejecting every ṭāghūt is half of the testimony itself.'},
+  rububiyah:{ar:'رُبُوبِيَّة',tl:'rubūbiyyah',word:'Lordship',def:'Allah’s uniqueness in creating, owning, and running all things.',ctx:'One of the three categories the scholars use to organise Tawhid, and the focus of the next lesson.'}
+ },
+ refs:{
+  'baqarah-2-256':{ref:'al-Baqarah 2:256',ar:'فَمَن يَكْفُرْ بِٱلطَّـٰغُوتِ وَيُؤْمِنۢ بِٱللَّهِ فَقَدِ ٱسْتَمْسَكَ بِٱلْعُرْوَةِ ٱلْوُثْقَىٰ لَا ٱنفِصَامَ لَهَا',mean:'So whoever renounces false gods and believes in Allah has certainly grasped the firmest, unfailing hand-hold. And Allah is All-Hearing, All-Knowing.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'},
+  'nahl-16-36':{ref:'an-Naḥl 16:36',ar:'وَلَقَدْ بَعَثْنَا فِى كُلِّ أُمَّةٍ رَّسُولًا أَنِ ٱعْبُدُوا۟ ٱللَّهَ وَٱجْتَنِبُوا۟ ٱلطَّـٰغُوتَ',mean:'We surely sent a messenger to every community, saying, "Worship Allah and shun false gods."',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'}
+ },
+ beats:[
+  {t:'frame',kicker:'Two motions in one breath',lead:'Laa ilaaha illa Allah has two halves. First it clears the ground: no god at all. Then it plants the flag: except Allah. Negation, then affirmation. Neither half is enough on its own.'},
+  {t:'panel',variant:'check',title:'The two pillars',intro:'The scholars call these the pillars the whole testimony stands on.',
+   items:[
+    {name:'Negation · clear the ground',body:'Deny worship to everything besides Allah. Disbelieve in every <span class="term" data-term="taghut">ṭāghūt</span>, whatever form it takes. You cannot hold the firmest hand-hold while still gripping something false with the other hand.'},
+    {name:'Affirmation · plant the flag',body:'Devote all worship to Allah alone, as He prescribed on the lips of His messengers. Bare denial with nothing affirmed is emptiness. The ground is cleared so something true can stand.'}],
+   marker:{type:'remember',body:'Whoever only affirms without rejecting, or only rejects without affirming, has not yet arrived at Tawhid. The two come together or not at all.'}},
+  {t:'verse',kicker:'The hand-hold',label:'From the Qur’an · al-Baqarah 2:256',
+   ar:'فَمَن يَكْفُرْ بِٱلطَّـٰغُوتِ وَيُؤْمِنۢ بِٱللَّهِ فَقَدِ ٱسْتَمْسَكَ بِٱلْعُرْوَةِ ٱلْوُثْقَىٰ لَا ٱنفِصَامَ لَهَا',
+   tr:'So whoever renounces false gods and believes in Allah has certainly grasped the firmest, unfailing hand-hold. And Allah is All-Hearing, All-Knowing.'},
+  {t:'read',kicker:'The map of the unit',title:'Three windows onto one belief',
+   html:'<p>To organise everything the texts say about Tawhid, the scholars view it through three windows. <span class="term" data-term="rububiyah">Rubūbiyyah</span>, Lordship: who actually runs reality. Ulūhiyyah, divinity: who alone deserves worship. And al-asmāʾ wa’ṣ-ṣifāt: how Allah is described, His names and attributes, His alone.</p><p>Sound Tawhid holds all three together. This unit walks the first window in depth, and the next lesson opens it.</p>',
+   marker:{type:'fact',body:'One belief, three windows. Splitting a big idea into angles makes it easier to hold, and easier to test.'}},
+  {t:'depth',point:'Clearing the ground comes before building.',
+   lenses:{reality:'Every messenger began with both motions, not one. Worship Allah, and shun the false gods. '+AW.cite('nahl-16-36','an-Naḥl 16:36')+' A field is cleared before a house is raised on it.',
+   revelation:'The verse of the hand-hold puts the negation first: whoever renounces false gods and believes in Allah. '+AW.cite('baqarah-2-256','al-Baqarah 2:256'),
+   ruling:'Rejecting ṭāghūt is a condition of sound belief in Allah, not an optional extra beside it.'}},
+  {t:'mc',q:'The two pillars of Tawhid are:',
+   o:['Prayer and fasting','Negation and affirmation','Fear and hope'],c:1,
+   good:'Clear the ground, plant the flag. No god at all, except Allah. The testimony works in two motions.',
+   gentle:'The two pillars are negation and affirmation. The testimony clears the ground, then plants the flag.'},
+  {t:'tile',prompt:'Build the testimony, in its own order.',
+   solution:['Laa','ilaaha','illa','Allah'],bank:['illa','Allah','Laa','wallah','ilaaha','inna'],
+   good:'Laa ilaaha illa Allah. Negation first, affirmation after. Two motions, one breath.',
+   gentle:'The order matters: Laa ilaaha, no god at all. Illa Allah, except Allah.'}
+ ],
+ grew:'You can now take the testimony apart into its two pillars, and name the three windows of Tawhid.',
+ recap:['Negation clears the ground: no god, no ṭāghūt.','Affirmation plants the flag: except Allah, worshipped alone.','Three windows ahead: Lordship, divinity, names and attributes.'],
+ doneTitle:'The pillars are set',
+ doneLine:'Next, the first window opens: the Lord of everything, and a surprising twist about who already agreed.',
+ next:{href:'u4-m2.html',label:'The Lord of everything'}
+});
+</script>
+</body>
+</html>

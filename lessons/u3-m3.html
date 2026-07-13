@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba · U3·M3 · One religion, one thread</title>
+<meta name="theme-color" content="#F3EDE2">
+<link rel="preload" as="font" type="font/woff2" href="../shared/fonts/readex-pro-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../shared/fonts/amiri-quran-400.woff2" crossorigin>
+<link rel="stylesheet" href="../shared/awba-engine.css">
+<script src="../shared/awba-engine.js"></script>
+</head>
+<body>
+<script>
+AwbaLesson({
+ id:'u3m3', unitColor:'#0FA3A3',
+ journey:'Unit 3 · Lesson 3 · The thread',
+ opener:{h2:'Follow the thread back',p:'You know what Tawhid is and what it weighs. Today, watch it run through every messenger who ever lived, and then watch what it does to a life.'},
+ terms:{},
+ refs:{
+  'imran-3-19':{ref:'Āl ʿImrān 3:19',ar:'إِنَّ ٱلدِّينَ عِندَ ٱللَّهِ ٱلْإِسْلَـٰمُ',mean:'Certainly, Allah’s only Way is Islam.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'},
+  'anam-6-82':{ref:'al-Anʿām 6:82',ar:'ٱلَّذِينَ ءَامَنُوا۟ وَلَمْ يَلْبِسُوٓا۟ إِيمَـٰنَهُم بِظُلْمٍ أُو۟لَـٰٓئِكَ لَهُمُ ٱلْأَمْنُ وَهُم مُّهْتَدُونَ',mean:'It is ˹only˺ those who are faithful and do not tarnish their faith with falsehood who are guaranteed security and are ˹rightly˺ guided.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'},
+  'nahl-16-97':{ref:'an-Naḥl 16:97',ar:'مَنْ عَمِلَ صَـٰلِحًا مِّن ذَكَرٍ أَوْ أُنثَىٰ وَهُوَ مُؤْمِنٌ فَلَنُحْيِيَنَّهُۥ حَيَوٰةً طَيِّبَةً',mean:'Whoever does good, whether male or female, and is a believer, We will surely bless them with a good life, and We will certainly reward them according to the best of their deeds.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'},
+  'ibrahim-14-27':{ref:'Ibrāhīm 14:27',ar:'يُثَبِّتُ ٱللَّهُ ٱلَّذِينَ ءَامَنُوا۟ بِٱلْقَوْلِ ٱلثَّابِتِ فِى ٱلْحَيَوٰةِ ٱلدُّنْيَا وَفِى ٱلْـَٔاخِرَةِ',mean:'Allah makes the believers steadfast with the firm Word ˹of faith˺ in this worldly life and the Hereafter.',src:'The Clear Quran · Dr. Mustafa Khattab · pending review'}
+ },
+ beats:[
+  {t:'read',kicker:'The thread',title:'One religion, every messenger',
+   html:'<p class="story-lead">Trace the line back. Nuh, submitting to his Lord on the water. Ibrahim, instructing his sons to die in nothing but submission. Yusuf in Egypt, Musa before Pharaoh, the disciples around Isa, each described in the Qur’an with the same word: Muslims, those who submit.</p><p>Different peoples, different centuries, different languages. One religion running through them all like a thread through beads: submit to the one God, and worship Him alone.</p>'},
+  {t:'verse',kicker:'Named plainly',label:'From the Qur’an · Āl ʿImrān 3:19',
+   ar:'إِنَّ ٱلدِّينَ عِندَ ٱللَّهِ ٱلْإِسْلَـٰمُ',
+   tr:'Certainly, Allah’s only Way is Islam.'},
+  {t:'read',kicker:'A precision worth having',title:'One religion, differing laws',
+   html:'<p>But wait, you might say. The prophets’ rules were not identical. What was lawful for one people differed for another. True, and the tradition holds both facts together with a beautiful image. The Prophet said the prophets are like brothers born to co-wives: their mothers differ, their religion is one. The report is agreed upon.</p><p>The foundation, Tawhid, never changed. The detailed laws were suited to each people and time. Same destination, adapted routes.</p>',
+   marker:{type:'angle',body:'Changing rules never meant a changing core. When you meet a difference between the prophets, it is the law that differs, never the thread.'}},
+  {t:'panel',variant:'guard',title:'What the thread does to a life',intro:'Held sincerely, Tawhid bears fruit you can feel.',
+   items:[
+    {name:'Security and guidance',tag:'In the heart',body:'Belief kept clean of shirk is answered with safety and sure footing. '+AW.cite('anam-6-82','al-Anʿām 6:82')},
+    {name:'A good life',tag:'In the days',body:'Not a life without hardship, but a heart that carries hardship differently. '+AW.cite('nahl-16-97','an-Naḥl 16:97')},
+    {name:'The firm word, when it counts',tag:'At the end',body:'What you built your life on is what holds you when everything else is stripped away, in this life and beyond it. '+AW.cite('ibrahim-14-27','Ibrāhīm 14:27')}],
+   marker:{type:'remember',body:'What you rehearse daily is what surfaces under pressure. Tawhid, rehearsed, becomes the firm word.'}},
+  {t:'depth',point:'The deepest fears are met by this one belief.',
+   lenses:{reality:'People fear the dark of the grave and the weight of judgement more than anything else they can name. The tradition answers both fears with the same single word held firm.',
+   revelation:'Those who affirm His oneness are promised steadiness at the questioning, and safety from the great terror of the Day itself. The firm word steadies the believer where nothing else reaches. '+AW.cite('ibrahim-14-27','Ibrāhīm 14:27'),
+   ruling:'Salvation and safety are fruits of Tawhid held to the end. That is why it is the last word one hopes to leave on.'}},
+  {t:'mc',q:'Between the prophets, what actually differed?',
+   o:['The core religion itself','The detailed laws for each people','Belief in Allah'],c:1,
+   good:'Brothers born to co-wives: the mothers differ, the religion is one. The laws adapted; the thread never moved.',
+   gentle:'The laws were suited to each people and time. The core, submission to the one God, never changed.'},
+  {t:'tf',q:'The prophets founded fundamentally different religions with different core beliefs.',c:false,
+   good:'One religion, every messenger. The Qur’an describes prophet after prophet with the same word: those who submit.',
+   gentle:'The thread is one. Different laws, different centuries, one unchanged core: worship God alone.'}
+ ],
+ grew:'You can now trace one religion through every messenger, keep the religion-versus-laws distinction sharp, and name Tawhid’s three fruits.',
+ recap:['One religion ran through every messenger: submission to the one God.','Laws differed by people and time. The thread never did.','Its fruits: security, a good life, and the firm word at the end.'],
+ doneTitle:'You hold the thread',
+ doneLine:'Tawhid, defined, weighed, and traced. Prove the unit in gold, then we stand it on its pillars.',
+ next:{href:'../reviews/u3-review.html',label:'Unit 3 Legendary Review'}
+});
+</script>
+</body>
+</html>
