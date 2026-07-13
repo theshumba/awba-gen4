@@ -170,7 +170,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+- Phase 6 a11y wave MUST give path-node buttons an accessible name (`aria-label="{node label}, {locked|available|done}"`) — flagged by the Phase-5 UI checker (Dimension 2) so it isn't dropped between phases; the learn-page nodes are shape-only at rest by design.
 
 ### Blockers/Concerns
 
