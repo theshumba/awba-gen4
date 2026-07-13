@@ -77,6 +77,17 @@
  {ref:'aḏ-Ḏāriyāt 51:56',ar:'وَمَا خَلَقْتُ ٱلْجِنَّ وَٱلْإِنسَ إِلَّا لِيَعْبُدُونِ',tr:'I did not create jinn and humans except to worship Me.'}
 ];
 
+  /* The R-3 MVP sprout — ONE small hand-inked doodle stamped on a done lesson node (the "plant"
+     growing from a finished lesson). This is an ATHAR-asset-kit decorative mark, NOT an AW.icon
+     glyph (so glyphCount stays frozen at 13); the full ~20-doodle pool is the D-55 fast-follow.
+     Token-only ink (var(--gold)), decorative (aria-hidden), and STATIC on load (law 9). */
+  var SPROUT =
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+      '<path d="M12 21 V12" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>' +
+      '<path d="M12 14 C9.5 14 7.5 12 7.2 8.8 C10.4 9 12 11 12 14Z" fill="var(--gold)"/>' +
+      '<path d="M12 12 C13.6 9.6 16.4 9 18.8 9.4 C18.4 12.4 15.2 13.4 12 12Z" fill="var(--gold)" opacity=".8"/>' +
+    '</svg>';
+
   /* Flatten into the CNT-03 unlock sequence + a parallel per-node unit meta (number + English
      title) for the continue card + course chip. Never mutate the node objects. */
   var flat = [], meta = [];
@@ -89,6 +100,8 @@
   function render() {
     var st = AW.state();
     var states = AW.deriveNodeState(flat, st);   // [{id,state}] — the shipped Gen-3 unlock rules (extend, don't fork)
+    var stById = {};
+    states.forEach(function (s) { stById[s.id] = s.state; });
     var activeIdx = -1;
     for (var i = 0; i < states.length; i++) {
       if (states[i].state === 'active') { activeIdx = i; break; }
@@ -177,9 +190,63 @@
        invented; the mechanism is Aref-Ruqaa, the string is the English fallback in Readex) + the desc
        (--paper-62). NO unit colour-coding, NO "SECTION n" eyebrow (both retired at Gate 2). Each header
        precedes its unit's .opath node section (the nodes + SVG thread are laid in later passes). */
-    var journey = '';
+    /* Each node's data-state is derived LIVE from the shipped AW.deriveNodeState (consumed above,
+       never forked); the visual is the SHIPPED thermal/celebration grammar mapped by kind + state:
+         · lesson locked   → hollow powder ring + lock glyph (no breathe)
+         · lesson active    → ember half-dab + the ONLY path breathe (a data-ambient the shipped
+                              reduced-motion block stills)
+         · lesson done      → filled gold dab + check + the Courier star count + one sprout (R-3)
+         · review (any)     → gold rosette: a filled .rosette seal when done, a rosette FRAME +
+                              trophy when not-yet (never crimson — banned on Orbit)
+         · chest node       → the plate-framed gift node (folk keyline + chest glyph + label; the
+                              Gen-3 treasure-box art stays retired)
+       Nodes are real <button>s (keyboard-focusable, getBoundingClientRect-anchorable for 05-04's
+       popup); they lie on a serpentine (a per-node --lane), NOT alternating Duolingo circles. Tap
+       handling (the popup) is 05-04 — this pass renders the true storage-derived states. */
+    function nodeHtml(nd, idx) {
+      var state = stById[nd.id] || 'locked';
+      var kind = nd.chest ? 'chest' : (nd.review ? 'review' : 'lesson');
+      var mark;
+      if (kind === 'lesson') {
+        if (state === 'done') {
+          mark = '<span class="onode-mark" data-state="mastered">' + AW.icon('check') + '</span>';
+        } else if (state === 'active') {
+          mark = '<span class="onode-mark" data-state="progress" data-ambient></span>';
+        } else {
+          mark = '<span class="onode-mark onode-locked" data-state="not-yet">' + AW.icon('lock') + '</span>';
+        }
+      } else if (kind === 'review') {
+        mark = (state === 'done')
+          ? '<span class="onode-mark rosette op-static">' + AW.icon('check') + '</span>'
+          : '<span class="onode-mark op-rosette">' + AW.icon('trophy') + '</span>';
+      } else {
+        mark = '<span class="onode-mark op-plate op-plate-' + state + '">' + AW.icon('chest') + '</span>';
+      }
+      var meta = '';
+      if (state === 'done' && kind !== 'chest') {
+        var starsN = st.stars[nd.id] || 0, stars = '';
+        for (var s = 0; s < starsN; s++) stars += AW.icon('star');
+        meta = '<span class="onode-stars">' + stars + '</span>';
+        if (kind === 'lesson') meta += '<span class="onode-sprout">' + SPROUT + '</span>';
+      }
+      /* a gentle off-centre serpentine (the thread smooths it into a hand-inked walk); one long
+         wave across the whole journey via the flat index, never a symmetric left/right zigzag. */
+      var lane = 0.5 + 0.34 * Math.sin(idx * 1.15 + 0.5);
+      return '<div class="onode-row" style="--lane:' + lane.toFixed(3) + '">' +
+        '<button class="onode" type="button" data-id="' + nd.id + '" data-idx="' + idx + '"' +
+          ' data-kind="' + kind + '" data-nstate="' + state + '">' +
+          mark +
+          '<span class="onode-label">' + nd.label + '</span>' +
+          (meta ? '<span class="onode-meta">' + meta + '</span>' : '') +
+        '</button>' +
+      '</div>';
+    }
+
+    var journey = '', fi = 0;
     UNITS.forEach(function (u) {
       var uicon = AW.UNIT_ICON['u' + u.n] || 'compass';
+      var rows = '';
+      u.nodes.forEach(function (nd) { rows += nodeHtml(nd, fi); fi++; });
       journey +=
         '<section class="ounit">' +
           '<div class="ounit-head">' +
@@ -187,7 +254,7 @@
             '<span class="ounit-term">' + u.title + '</span>' +
             '<p class="ounit-desc">' + u.desc + '</p>' +
           '</div>' +
-          '<div class="opath"></div>' +
+          '<div class="opath">' + rows + '</div>' +
         '</section>';
     });
     var journeyWrap = '<div class="ojourney">' + journey + '</div>';
@@ -210,6 +277,17 @@
       refs[ayahV.ref] = { kind: 'The verse', ref: ayahV.ref, ar: ayahV.ar, mean: ayahV.tr,
         src: 'The Clear Quran · Dr. Mustafa Khattab · pending review' };
       ah.addEventListener('click', function () { AW.sheetRef(refs, ayahV.ref); });
+    }
+
+    /* Node entrance — a staggered one-pass settle per section (≤300ms total), then still. Reduced
+       motion → no stagger (delays skipped) and the shipped --dur-settle collapse makes them appear
+       in place. The only persistent path ambient is the single active-node breathe (data-ambient). */
+    if (!AW.reducedMotion()) {
+      app.querySelectorAll('.opath').forEach(function (sec) {
+        sec.querySelectorAll('.onode').forEach(function (n, i) {
+          n.style.animationDelay = Math.min(i * 45, 270) + 'ms';
+        });
+      });
     }
   }
 

@@ -1904,8 +1904,77 @@
     color: var(--paper-62);           /* §2.1 --paper-62 on Kiswah */
   }
 
-  /* the path container — relative so the absolutely-positioned SVG thread overlay can anchor to it */
-  .opath { position: relative; padding: var(--sp-2s) 0 var(--sp-4); }
+  /* the path container — relative so the absolutely-positioned SVG thread overlay anchors to it; a
+     flowing column with generous row rhythm so the ink thread has room to wind between stations. */
+  .opath {
+    position: relative;
+    display: flex; flex-direction: column;
+    gap: var(--sp-6);
+    padding: var(--sp-2s) 0 var(--sp-4);
+  }
+
+  /* -- The winding node stations (LRN-04 / D-54) — real <button>s on a serpentine (--lane), NOT
+     alternating identical circles. Each node is a fixed-width column so it + its wrapped label ride
+     within the row at any --lane; the mark (44px min touch) is the thermal/celebration shape. */
+  .onode-row { display: flex; }
+  .onode {
+    width: 6.5rem;
+    margin-inline-start: calc((100% - 6.5rem) * var(--lane, .5));   /* the serpentine offset */
+    display: flex; flex-direction: column; align-items: center; gap: var(--sp-1);
+    border: none; background: transparent; padding: 0;
+    cursor: pointer;
+    position: relative; z-index: 1;                 /* stations ride above the pointer-events:none thread */
+    animation: settle var(--dur-settle) var(--ease) both;   /* one-pass entrance; delay set inline (stilled by reduced motion) */
+  }
+  .onode-mark {
+    width: 44px; height: 44px;                       /* 44px minimum touch target (the thermal shape sits on it) */
+    border-radius: var(--r-round);
+    box-sizing: border-box;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+  }
+  .onode-mark svg { width: 20px; height: 20px; }
+  .onode-locked { color: var(--powder); }            /* the lock glyph reads powder (its baked .45 opacity dims it) */
+  .onode-label {
+    font-size: var(--fs-ui); line-height: 1.35; text-align: center;
+    color: var(--paper-85);                          /* §2.1 --paper-85 on Kiswah */
+  }
+  .onode[data-nstate="locked"] .onode-label { color: var(--paper-45); }   /* locked labels recede, never a strike */
+  .onode-meta { display: inline-flex; align-items: center; gap: var(--sp-1); min-height: 14px; }
+  .onode-stars { display: inline-flex; gap: 1px; }   /* the earned star count — gold star glyphs (1–3) */
+  .onode-stars svg { width: 13px; height: 13px; }
+  .onode-sprout { display: inline-flex; color: var(--gold); }   /* the R-3 MVP sprout stamp on a done lesson */
+  .onode-sprout svg { width: 14px; height: 14px; }
+
+  /* the single active node breathes — the ONLY ambient on the path (the Sky breathe verb). The
+     shipped reduced-motion block ([data-ambient]{animation:none!important}, @layer motion) stills it. */
+  .onode-mark[data-ambient] { animation: breathe var(--dur-amb) var(--ease) infinite alternate; }
+
+  /* review node — gold rosette. done = the SHIPPED filled .rosette seal, resized to node scale and
+     made STATIC on load (law 9 — established seals never re-stamp on a home visit); not-yet/active =
+     a hollow gold rosette FRAME + trophy. The "legendary" signal is the gold rosette, never crimson. */
+  .onode .rosette { width: 44px; height: 44px; }
+  .onode .rosette svg { width: 22px; height: 22px; }
+  .op-static { animation: none; }
+  .op-rosette {
+    border: var(--sp-2) solid var(--gold);           /* gold rim 8.40:1 on Kiswah */
+    background: transparent;
+    color: var(--gold);
+  }
+  .op-rosette svg { width: 22px; height: 22px; }
+
+  /* chest node — the plate-framed gift node (a folk keyline at rest on Orbit; the Gen-3 treasure-box
+     art stays retired). Hard manuscript corners echo the Festival plate; the frame + ink follow
+     state — a lit gold gift when available/opened, a cool keyline when locked. */
+  .op-plate {
+    border: var(--sp-2) solid var(--powder);
+    border-radius: var(--r-square);
+    background: transparent;
+    color: var(--paper-45);
+  }
+  .op-plate svg { width: 22px; height: 22px; }
+  .op-plate-available,
+  .op-plate-done { border-color: var(--gold); color: var(--cream); }   /* the gift is lit gold (8.40:1) */
 }
 
 @layer motion {
