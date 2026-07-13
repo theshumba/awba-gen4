@@ -920,7 +920,143 @@
   }
   .rosette svg { width: 28px; height: 28px; }
 }
-@layer screens   { /* reserved — Phase 2+: per-screen rules */ }
+@layer screens {
+
+  /* ==========================================================================================
+     PER-SCREEN SURFACES (S1–S4 of 04-UI-SPEC) — the lesson + reward manuscript, authored in the
+     Athar registers on ONLY shipped tokens/primitives. Every colour pairing is cited to
+     03-UI-SPEC-ATHAR §2.1 (AA at rendered size). One ground per screen (law 1); one verb per
+     register (law 9); scripture on clean ground, strongest ink, nothing festive adjacent (law 3).
+     The runner (04-03) emits these class names; this layer gives them their Athar expression.
+     No new token, no new face, no new @layer order line is authored here.
+     ========================================================================================== */
+
+  /* -- S1 · Lesson shell — the warm manuscript page (Page register: .reg-page cream, --go:.028) -
+     The stage is the one beat container; each beat mounts on the Page verb (settle, --dur-settle).
+     Horizontal gutters are --sp-6; beat-to-beat rhythm is --sp-5. */
+  .stage {
+    padding: var(--sp-6) var(--sp-6) var(--sp-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+    animation: settle var(--dur-settle) var(--ease) both;   /* Page reveal on mount */
+  }
+
+  /* HUD marginalia row (§S1) — reads as the margin of a page, never game chrome. The shipped
+     .hstat is already the transparent/borderless Courier stat (--ink-62 on cream, §2.1); here we
+     only lay the row out and reserve the 44px mute-toggle slot. No pill fills anywhere. */
+  .ls-hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    padding: var(--sp-2s) var(--sp-6);
+  }
+  .ls-stats { display: inline-flex; align-items: center; gap: var(--sp-6); }
+  .ls-mute {                        /* 44×44 marginalia toggle — a shipped glyph in --icon-accent */
+    width: 44px; height: 44px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; background: transparent;
+    color: var(--ink-62);           /* §2.1 --ink-62 on cream */
+    cursor: pointer;
+  }
+  .ls-mute svg { width: 20px; height: 20px; color: var(--icon-accent); }   /* Page detail = crimson */
+
+  /* Per-beat progress-dab row (§S1 · D-A8 · WR-04) — the thermal shape-first grammar. Shape is the
+     primary channel; colour is secondary. Upcoming = hollow --ink-62 ring (5.02:1, clears WCAG
+     1.4.11's 3:1); current = half-inked --ember dab; passed = filled --gold dab + --rule keyline +
+     check glyph. The state chrome is shipped ([data-state] in @layer components); .ls-dab is only
+     the screen-level sizing this row needs. A filled dab never un-fills (runner clamps stepIndex). */
+  .ls-prog {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2s);
+    padding: 0 var(--sp-6);
+    flex-wrap: wrap;
+  }
+  .ls-dab {                         /* sizing shell for one shipped [data-state] dab */
+    width: 16px; height: 16px;
+    border-radius: var(--r-round);
+    box-sizing: border-box;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+  }
+  .ls-dab svg { width: 9px; height: 9px; }     /* the passed-dab check glyph inks dark on gold */
+  .ls-count {                       /* the "3 / 6" counter — Courier marginalia (§ Typography) */
+    margin-inline-start: var(--sp-2);
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    letter-spacing: .08em;
+    color: var(--ink-62);           /* §2.1 --ink-62 on cream */
+    white-space: nowrap;
+  }
+
+  /* Opener hero (§S1) — the greeting, the journey chapter-term in a Farag square, the unit scene
+     icon, an optional soft intro. The one screen where Readex 300 is allowed (≥18px). */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--sp-5);
+    padding: var(--sp-12) var(--sp-6) var(--sp-8);
+  }
+  .hero .greet {                    /* AW.greetMode() greeting — Readex 600 screen title */
+    margin: 0;
+    font-family: var(--font-work);
+    font-weight: 600;
+    font-size: var(--fs-h1);
+    line-height: 1.18;
+    color: var(--ink);              /* §2.1 --kiswah on cream, 16.22:1 */
+  }
+  .hero .hero-ico { line-height: 0; color: var(--icon-accent); }   /* unit scene icon — Page crimson detail */
+  .journey {                        /* the chapter key-term — Aref Ruqaa in a Farag square (§ Typography, law 5) */
+    font-family: var(--font-term);
+    font-size: var(--fs-term);
+    line-height: 1.0;
+    color: var(--crimson);          /* §2.1 --crimson on cream, 6.13:1 — the ≤10% Page accent */
+    width: fit-content;
+    margin-inline: auto;
+    padding: var(--sp-3) var(--sp-6);
+    border: var(--sp-2) solid var(--rule);   /* --sp-2 = the 2px jadwal/keyline rule width */
+    border-radius: var(--r-square);
+    direction: rtl;
+    unicode-bidi: isolate;
+    letter-spacing: 0;
+  }
+  .thought {                        /* optional soft intro — Readex 300, sized ≥18px (the only 300 use) */
+    margin: 0;
+    max-width: 46ch;
+    font-family: var(--font-work);
+    font-weight: 300;
+    font-size: var(--fs-h2);        /* 18→20px — clears the 300-weight ≥18px floor */
+    line-height: 1.5;
+    color: var(--ink-85);           /* §2.1 strong body ink on cream */
+  }
+
+  /* Foot (§S1) — one primary .btn (shipped) + a quiet Back; clear button/footer separation
+     (Gen-3 v1.2 fix) via a top keyline. Back is --ink-62 and hidden at the opener (runner sets
+     [hidden] while pos<0). */
+  .foot {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-6) max(var(--sp-6), env(safe-area-inset-bottom));
+    border-top: 1px solid var(--rule);   /* manuscript keyline — separates action from the page */
+  }
+  .ls-back {
+    align-self: center;
+    padding: var(--sp-2s) var(--sp-4);
+    border: none;
+    background: transparent;
+    font-family: var(--font-work);
+    font-size: var(--fs-ui);
+    color: var(--ink-62);           /* §2.1 --ink-62 on cream — a quiet return, not a second CTA */
+    cursor: pointer;
+  }
+  .ls-back[hidden] { display: none; }
+}
+
 @layer motion {
 
   /* ==========================================================================================
