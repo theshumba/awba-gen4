@@ -91,7 +91,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Quiz and review mechanics match Gen-3 exactly in NUMBERS, expressed in Athar language: +12 noor/correct, +15 reflect, combo accrual at 2+ (gold-dot accrual per D-A14), 3-streak celebration (Athar expression, never the retired PERFECT overlay), stars 3/2/1 (never 0), grey-ink mercy — never red, never amber (Athar law 8); review 14s soft timer, timeout → auto-skip → untimed no-noor circle-back, any timeout caps at 2★, gold progress thread, no back button.
   4. The post-lesson sequence (verdict → noor claim → returns → done) plays as choreography — staggered star/stat reveals, noor count-up, a returns hero in Athar language with a week calendar that never shows a "miss" state — and celebratory expressions (gold-dot accrual, streak celebration, Ring draw, Festival stamp) fire only on meta-progress screens, never over a scripture (`verse`) beat.
   5. Calm, dignified sound cues play on correct/incorrect/complete with a visible mute toggle; 3-Lens depth renders as an individually-expanding accordion (three visually distinct lenses per the Athar contract, fixed order) that never blocks Continue; every Arabic span carries `lang="ar" dir="rtl"`, ayah text uses the Quran face, and ﷺ / honorifics / brackets render intact.
-**Plans**: TBD
+**Plans**: 7 plans
+  - [ ] 04-01-PLAN.md — Test foundation: pure runner-math helpers (ENG-03/04) + AW.sound plumbing (MOT-05) + render-smoke & port-audit harnesses
+  - [ ] 04-02-PLAN.md — Lesson @layer screens CSS (Page register): shell, 9 beat surfaces, scripture-law scard, 3-lens accordion, reward screens
+  - [ ] 04-03-PLAN.md — AwbaLesson(cfg) runner: all 9 beats + quiz (exact numbers) + port u1-m1 — the walking slice (one lesson renders end-to-end)
+  - [ ] 04-04-PLAN.md — Reward choreography flagship: WAAPI verdict→noor→returns→done→Ring→du’a (RWD-01/02/03), celebration never over scripture
+  - [ ] 04-05-PLAN.md — AwbaReview(cfg) runner + review CSS (Orbit+gold) + port u1-review: 14s timer state-machine, circle-back, rosette mastery (ENG-02/04)
+  - [ ] 04-06-PLAN.md — Full content port: 14 lessons + 3 reviews byte-verbatim, holds verified (U4-03 absent, U3-13/U3-16), all 19 exit 0 (CNT-01/02/04)
+  - [ ] 04-07-PLAN.md — Phase gate: automated prechecks (suite + validator×19 + grep gates + render-smoke) then BLOCKING human visual walk (autonomous:false)
 **UI hint**: yes
 
 ### Phase 5: Learn Page & Cross-Page View Transitions
@@ -144,7 +151,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. Foundation — Tokens, Shell & Fonts | 4/4 | Complete | 2026-07-12 |
 | 2. State Layer & Engine-Contract Freeze | 2/2 | Complete   | 2026-07-12 |
 | 3. Components, Icon Kit & Motion | 10/12 | In Progress|  |
-| 4. Lesson & Review Engine Port | 0/TBD | Not started | - |
+| 4. Lesson & Review Engine Port | 0/7 | Planned | - |
 | 5. Learn Page & View Transitions | 0/TBD | Not started | - |
 | 6. Accessibility, RTL & Typography | 0/TBD | Not started | - |
 | 7. PWA Shell, Offline & Delivery | 0/TBD | Not started | - |
