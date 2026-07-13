@@ -317,10 +317,13 @@ geometry, MEDIUM confidence):**
 - An absolutely-positioned, `pointer-events:none` inline `<svg>` overlay draws **one continuous thread
   `<path>`** connecting node centres (a single ink thread walking the layout). The **earned portion
   re-inks gold** via the shipped `.thread` class (`stroke:var(--gold)` + `ink-draw` keyframe over
-  `stroke-dashoffset`) — the earned fraction = `earnedLen/totalLen`. **On learn-page load the earned
-  gold is STATIC** (consistent with the Ring, law 9 — no replay on every home visit); the `ink-draw`
-  animation fires only on a genuine unit-complete transition (which happens on the reward page, not
-  here). Recompute the thread `d` from node centres **after layout** (on `load` + a `resize`/
+  `stroke-dashoffset`) — the earned fraction = `earnedLen/totalLen`. **The earned
+  gold thread is ALWAYS STATIC wherever it is visible** (law 9 — established ink never re-draws; the
+  celebratory draw moment is the RING on the reward page, a separate element — no surface ever replays
+  the path thread). The ROADMAP's "path animates as units complete" criterion is satisfied by the node
+  entrance stagger + thermal `data-state` flips (settle verb) reflecting newly-earned states on the next
+  visit, not by a thread re-draw. (Corrected per plan-checker W8 — the prior "fires on the reward page"
+  claim had no realizing task anywhere.) Recompute the thread `d` from node centres **after layout** (on `load` + a `resize`/
   `ResizeObserver` handler) so the line follows the nodes at any width, 320→desktop.
 
 **Node grammar (thermal, shape-first, ink-drawn — D-54; consume the shipped `data-state` shapes, css:857-875):**
@@ -484,7 +487,7 @@ over `file://` (opaque origin → clean no-op, plain nav — Pitfall 2).
 |---|---|---|
 | Ring hero on load | static (law 9 — no `animateFrom`) | unchanged (already static) |
 | Earned path gold thread on load | static (drawn to earned extent, no replay) | unchanged (static) |
-| Path `ink-draw` on a genuine unit-complete | plays only on the reward page, not learn | collapsed to instant (self-guarded) |
+| Path earned-thread | always static everywhere (law 9; W8 correction — no draw surface exists) | already static |
 | `active`-node breathe (the ONLY path ambient) | slow ember opacity pulse `--dur-amb` | **stilled** — static ember half-dab |
 | Node-entrance settle/drift stagger | one-pass staggered mount ≤300ms | nodes appear in place, no stagger |
 | Daily-ayah quiet fade-in | opacity, ≤300ms, one pass | appears static |

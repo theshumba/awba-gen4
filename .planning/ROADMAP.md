@@ -112,7 +112,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Node popups anchor to their node with edge clamping + arrow offset (singleton, outside-tap closes) showing START / REVIEW / LEGENDARY CTAs with noor hints; tapping a chest grants a deterministic +25 noor exactly once (idempotent), never randomized.
   4. The daily ayah rotates through the verified 7-verse pool by day-of-year (no monthly repeat) and is revealed reverently; streak / noor / course-switcher bottom sheets share one implementation (Fiqh/Seerah/Qur'an as coming-soon rows), and every tab (Practice/Returns/Profile/More) gives designed coming-soon feedback — never a dead tap.
   5. Navigating path↔lesson↔review cross-fades/morphs via Cross-Document View Transitions wired on every page, degrading gracefully to a normal navigation on browsers without support (e.g. Firefox).
-**Plans**: TBD
+**Plans**: 6 plans
+  - [ ] 05-01-PLAN.md — Engine seams + Wave-0 tests + atom re-wire (65→61 denominator, D-57)
+  - [ ] 05-02-PLAN.md — learn.html Orbit shell: HUD + Ring hero (static) + continue card + streak/constellation + daily ayah (LRN-01/05)
+  - [ ] 05-03-PLAN.md — Unit headers + winding path + live node grammar + earned gold thread + Ibrahim line (LRN-02/04, CNT-03)
+  - [ ] 05-04-PLAN.md — Node popup + navigation wiring + cross-document View Transitions morph (LRN-03, MOT-02)
+  - [ ] 05-05-PLAN.md — Shared sheet family + tab bar coming-soon + chest claim + Festival interstitial (LRN-06/07, RWD-04)
+  - [ ] 05-06-PLAN.md — Phase gate: automated prechecks + BLOCKING human visual walk (autonomous:false)
 **UI hint**: yes
 
 ### Phase 6: Accessibility, RTL & Typography Hardening
@@ -152,6 +158,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 2. State Layer & Engine-Contract Freeze | 2/2 | Complete   | 2026-07-12 |
 | 3. Components, Icon Kit & Motion | 10/12 | In Progress|  |
 | 4. Lesson & Review Engine Port | 6/7 | In Progress | - |
-| 5. Learn Page & View Transitions | 0/TBD | Not started | - |
+| 5. Learn Page & View Transitions | 0/6 | Planned | - |
 | 6. Accessibility, RTL & Typography | 0/TBD | Not started | - |
 | 7. PWA Shell, Offline & Delivery | 0/TBD | Not started | - |

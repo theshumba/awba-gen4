@@ -4,14 +4,14 @@ milestone: v1.5
 milestone_name: milestone
 status: executing
 stopped_at: Phase 5 context gathered (auto mode, D-53..D-61)
-last_updated: "2026-07-13T20:49:35.633Z"
+last_updated: "2026-07-13T22:11:18.877Z"
 last_activity: 2026-07-13
 progress:
   total_phases: 7
-  completed_phases: 4
-  total_plans: 25
-  completed_plans: 25
-  percent: 57
+  completed_phases: 3
+  total_plans: 31
+  completed_plans: 24
+  percent: 43
 ---
 
 # Project State
@@ -53,7 +53,7 @@ Phase: 03 (Components, Icon Kit & Motion Language) — **RE-CUT UNDER ATHAR (Gat
 - **Plan 03-11 (new Athar preview — the living reference / FLAGSHIP VISUAL): COMPLETE 2026-07-12** — `preview.html` rebuilt from scratch as the Athar living reference: the old §1-12 indigo/gummy/confetti sections + the `pv-unit` switch + `.pv-poppins` REMOVED wholesale, replaced by §8's eight sections of REAL `AW.*` output on the real register grounds — (1) register worlds (the four grounds side by side, each with grain + `--icon-accent` + a real `AW.icon` scene + its verb), (2) type specimens under scripture law (six rationed faces; ayah/hadith/term inject byte-verbatim Arabic from demoCfg via `textContent`), (3) the thermal ramp + three `data-state` shapes on cream AND dark, (4) the component inventory (real `.btn`/`.opt`/`.tf`/`.tile`/`.tab`/`.hstat`/`.cite`/`.term`, the law-8 wrong answer, one paper-press), (5) scripture on clean cream (the hujurat ayah, no grade + the muslim-8 hadith + olive grade pill, always-on pending pill, nothing celebratory), (6) the `AW.ringSVG` tawaf ring at three states + an animated/static pair with replay + two seeds proving uniqueness, (7) the five `data-sky` sky temperatures + the `--dawn` degree, (8) a `data-motion="reduce"` toggle proving the breathe stops / dabs rest / ring shows finished. Head is zero-CDN, classic engine include, page-relative `readex-pro-400` + `amiri-quran-400` preloads only. **The four `shared/fonts/poppins-*.woff2` DELETED — Poppins fully retired from the repo** (Inter kept only as the ˹ ˺ fallback). demoCfg spliced **byte-identical** from the prior preview (SHA `f7ec7f07`, verified vs HEAD). Commits `ed3d55c`, `eb8e17d`. No engine files touched → suite unchanged **53/53**. Watched live in headless Chrome (masthead + all 8 sections + a reduced-motion load): only the ember frontier draws (12/12 animated paths ember), the gold thread sits well against the inked dabs, the ember reads as warmth, two seeds visibly differ, all rings static under `data-motion=reduce` — **reads like the locked Athar gallery, not a test harness**. Doubts flagged for the §9 gate in 03-11-SUMMARY.
 - 03-12 closure / human §9 gate — the owner walked `preview.html` against the ten plain-language gate items: **APPROVED 2026-07-13** (9/9 review warnings fixed, VERIFICATION 5/5). Phase 3 CLOSED.
 
-Status: Executing Phase 4 — 04-01..04-05 (foundation, CSS, both runners + choreography, first ported lesson + review) + 04-06 (full 19-file content port complete) done, next 04-07 (phase gate: prechecks + BLOCKING human visual walk)
+Status: Ready to execute
 Last activity: 2026-07-13
 
 Progress: [███░░░░░░░] 43%

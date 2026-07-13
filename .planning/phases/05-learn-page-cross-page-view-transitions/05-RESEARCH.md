@@ -471,16 +471,16 @@ AW.sheet(
 
 ## Open Questions
 
-1. **Ring atom denominator: 61 or 65?**
+1. **Ring atom denominator: 61 or 65? (RESOLVED — 61, per UI-SPEC Ruling R-1; adopted at orchestration 2026-07-13)**
    - What we know: taught=61, corpus=65, gap=4 documented holds. `AW.ringSVG`/`skyDawn`/`ring.test.js`/`preview.html` all currently assume 65.
    - What's unclear: owner preference for "fully inks at completion" (61) vs "honest 61/65 with 4 held" (65).
    - Recommendation: **61**, documented as corpus-minus-holds; make it the one `NODE_ATOMS`-derived constant. Flag as a locked decision in the plan.
 
-2. **Tab bar ground: cream strip vs gold-on-Orbit override?**
+2. **Tab bar ground: cream strip vs gold-on-Orbit override? (RESOLVED — gold `.tab.active` override on Orbit, per UI-SPEC Ruling R-5)**
    - What we know: `.tab.active` crimson fails on Kiswah (Pitfall 4); both fixes are one-liners.
    - Recommendation: Claude's discretion (D-60) — a cream footer strip is the simplest and keeps the shipped crimson cue; a gold override keeps a fully marginalia-on-dark read. Either is fine; pick one in planning.
 
-3. **Plant-stamp scope: full ~20-doodle pool vs single-sprout MVP (D-55 fallback)?**
+3. **Plant-stamp scope: full ~20-doodle pool vs single-sprout MVP (D-55 fallback)? (RESOLVED — single-sprout MVP now, doodle pool logged as the D-55 fast-follow, per UI-SPEC Ruling R-3)**
    - What we know: the bounded asset kit sanctions ~20 sprout/plant SVGs; D-55 explicitly permits shipping seed-rows + one sprout glyph and deferring the pool as a fast-follow.
    - Recommendation: **planner decides the wave split** — ship seed-rows + a single sprout stamp in v1 of this phase; log the full doodle pool as the D-55 fast-follow. Keeps the phase from ballooning on asset authoring.
 
