@@ -1380,7 +1380,8 @@ AW.comboShow = function (combo) {
   return combo >= 2;
 };
 
-/* AW.comboPerfect(combo) — firePerfect() gate: fires once, at exactly a 3-streak (resolve() 274). */
+/* AW.comboPerfect(combo) — the 3-streak flourish gate: fires once, at exactly combo===3
+   (Gen-3 resolve() 274; re-voiced per D-45 as a quiet gold-thread flourish, never an overlay). */
 AW.comboPerfect = function (combo) {
   return combo === 3;
 };
@@ -1395,4 +1396,23 @@ AW.reviewScore = function (inTime) {
    miss at all -> 1, regardless of timing. */
 AW.reviewStars = function (correct, total, allInTime) {
   return correct === total ? (allInTime ? 3 : 2) : 1;
+};
+
+/* ---------- AW.sound — silent no-op sound plumbing (MOT-05 / D-52) ----------
+   Full plumbing now, ships v1 silent: a missing cue file (or an autoplay block) resolves to a
+   clean no-op with zero console errors. cue in {correct, incorrect, complete, streak}. Reads the
+   existing awba_prefs.soundMuted slot via AW.prefs.get (no schema bump); the mute-toggle UI itself
+   lands in the lesson/review HUD (04-03/04-05), not here. Path is page-relative to where
+   lesson/review pages actually live (`lessons/`/`reviews/`, one level below `shared/` — the same
+   relativity as their `<script src="../shared/awba-engine.js">` include). Cue asset format/set is
+   an owner decision (Assumption A5); when files land in `shared/sfx/`, zero code change is
+   required here. */
+AW.sound = function (cue) {
+  if (AW.prefs.get('soundMuted', false)) return;
+  try {
+    var a = new Audio('../shared/sfx/' + cue + '.mp3');
+    a.play().catch(function () {});
+  } catch (e) {
+    /* no-op — missing Audio support / blocked playback never surfaces to the learner */
+  }
 };
