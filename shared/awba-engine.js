@@ -59,7 +59,15 @@ AW.S = (function () {
   /* memFallback (W1): set true when load() resolves from an in-memory COPY of an
      unrecognized-schema blob it deliberately declined to persist (the fall-through below).
      set() consults it to skip persist() so a later write (e.g. the ringSeed lazy accessor)
-     can never clobber that untouched-on-disk blob. */
+     can never clobber that untouched-on-disk blob.
+     BLAST RADIUS (WR-09) — this is intentionally session-wide, NOT per-write: once tripped, EVERY
+     AW.S.set() for the rest of the session (noor, returns, lastDay/days, stars, chests, the ringSeed
+     mint) works from the in-memory copy and is not written back, so that session's progress is
+     discarded on the next load. That is the correct trade — a future-schema blob a newer build wrote
+     must never be overwritten by this older build — but it is otherwise silent. AW.S.isFallback()
+     below exposes this flag so a caller/support tool can detect the degraded-persistence state and
+     surface a notice. AW.prefs is a separate closure with its own key and is UNAFFECTED: prefs still
+     persist normally. The suppression semantics are unchanged; only its discoverability is added. */
   var memFallback = false;
 
   function defaultState() {
@@ -257,6 +265,15 @@ AW.S = (function () {
       if (!mem) mem = load();
       mem[k] = v;
       if (!memFallback) persist(mem); // W1: skip persist over an unrecognized-schema blob
+    },
+    /* isFallback (WR-09): read-only view of the degraded-persistence state. Ensures load() has run
+       (the same lazy contract as get/set) then reports whether this session is working from an
+       un-persisted in-memory copy of an unrecognized-schema blob — i.e. whether AW.S.set() writes
+       are being suppressed for the session. Never mutates state; does not change the suppression
+       semantics. Callers/support tooling can use it to surface a "progress not saving" notice. */
+    isFallback: function () {
+      if (!mem) mem = load();
+      return memFallback;
     },
   };
 })();

@@ -223,6 +223,51 @@ test('runMigrations: a migration step that fails to bump schemaVersion is guarde
   assert.ok(elapsed < 2000, 'guard must trip promptly, not spin for a long time');
 });
 
+/* ---------- (4e) memFallback is explicit + scoped to AW.S only — prefs persistence unaffected (WR-09) ----------
+   A from-the-future awba_state blob correctly suppresses AW.S persistence for the whole session (so an
+   older build can never clobber a newer build's blob). WR-09 makes that state DISCOVERABLE through
+   AW.S.isFallback() without changing the suppression semantics, and confines the blast radius to AW.S:
+   AW.prefs (a separate closure/key) still persists normally. */
+
+test('AW.S.isFallback() reports the suppressed state; AW.S persistence is suppressed while AW.prefs persistence is NOT (WR-09)', () => {
+  const futureBlob = JSON.stringify({ schemaVersion: 2, noor: 500, returns: 9, stars: { u4r: 3 }, days: [], chests: {} });
+  const ls = makeLS({ awba_state: futureBlob });
+  const sandbox = loadEngine(
+    ls,
+    `AW.S.set('noor', 999);            // would clobber the future blob — must be suppressed
+     AW.prefs.set('soundMuted', true); // an unrelated prefs write — must still persist
+     globalThis.__out = {
+       fallback: AW.S.isFallback(),
+       noorInSession: AW.S.get('noor', 0),
+       mutedInSession: AW.prefs.get('soundMuted', false)
+     };`
+  );
+  const out = readOut(sandbox);
+  const dump = ls._dump();
+  // The flag is exposed and true — the degraded state is discoverable, not silent.
+  assert.equal(out.fallback, true, 'isFallback() must report the suppressed-persistence state');
+  // In-session the set() is visible (it works from the in-memory copy)...
+  assert.equal(out.noorInSession, 999, 'the write is applied in memory for the session');
+  // ...but the on-disk awba_state blob is left byte-identical — persistence was suppressed.
+  assert.equal(dump.awba_state, futureBlob, 'AW.S.set must not persist over the future-schema blob');
+  // AW.prefs is a separate closure/key and is UNAFFECTED — it persists normally.
+  assert.ok('awba_prefs' in dump, 'awba_prefs must have been written (prefs persistence is unaffected)');
+  assert.equal(JSON.parse(dump.awba_prefs).soundMuted, true, 'the prefs write landed on disk');
+  assert.equal(out.mutedInSession, true, 'and is readable in session');
+});
+
+test('AW.S.isFallback() is false and persistence works normally for a recognized-schema blob (WR-09)', () => {
+  const ls = makeLS({ awba_state: JSON.stringify({ schemaVersion: 1, noor: 10, returns: 0, lastDay: null, days: [], stars: {}, chests: {} }) });
+  const sandbox = loadEngine(
+    ls,
+    `AW.S.set('noor', 42);
+     globalThis.__out = { fallback: AW.S.isFallback() };`
+  );
+  const out = readOut(sandbox);
+  assert.equal(out.fallback, false, 'a recognized-schema blob is not in fallback');
+  assert.equal(JSON.parse(ls._dump().awba_state).noor, 42, 'a normal set() persists to disk');
+});
+
 /* ---------- (5) prefs isolation from progress state ---------- */
 
 test('AW.prefs isolates soundMuted/motion under awba_prefs, independent of awba_state', () => {
