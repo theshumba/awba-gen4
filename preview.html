@@ -192,7 +192,7 @@ body{ background: var(--cream); }
       <div class="pv-hero-ring" id="pv-hero-ring"></div>
       <h1 class="pv-hero-title">Your path, traced in ink.</h1>
       <p class="pv-hero-sub">A page of the book. A night under the sky. A mark that is yours alone. One calm app, shown in its own materials — every panel below is the real engine output, not a mock.</p>
-      <p class="pv-hero-mark">seed 4711 · 44 of 65 inked · warmed by the live prayer clock</p>
+      <p class="pv-hero-mark">seed 4711 · 44 of 61 inked · warmed by the live prayer clock</p>
     </div>
   </div>
 </header>
@@ -278,7 +278,7 @@ body{ background: var(--cream); }
       </div>
       <div class="pv-spec">
         <div class="pv-spec-lab">Courier Prime 400<br>marginalia only<br>dates, counters, footnotes</div>
-        <div class="pv-face-marg">18 / 65 · seed 4711 · pp. 12–14 · pending review</div>
+        <div class="pv-face-marg">18 / 61 · seed 4711 · pp. 12–14 · pending review</div>
       </div>
     </div>
     <p class="pv-note pv-note--tight">Rakkas and Aref Ruqaa never share a real screen (law 5) — they appear together here only as a specimen. Heavy tashkeel is set in the Amiri faces only; the display faces carry plain or common-tashkeel forms.</p>
@@ -415,9 +415,9 @@ body{ background: var(--cream); }
     <div class="reg-orbit grain pv-ring-stage">
       <div class="pv-world-in">
         <div class="pv-rings">
-          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-empty"></div><figcaption class="pv-ring-cap">Empty — 0 / 65, all faint</figcaption></figure>
-          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-mid"></div><figcaption class="pv-ring-cap">Mid — 28 / 65, one circuit sealed, an ember frontier</figcaption></figure>
-          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-full"></div><figcaption class="pv-ring-cap">Complete — 65 / 65, the gold thread closed</figcaption></figure>
+          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-empty"></div><figcaption class="pv-ring-cap">Empty — 0 / 61, all faint</figcaption></figure>
+          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-mid"></div><figcaption class="pv-ring-cap">Mid — 28 / 61, one circuit sealed, an ember frontier</figcaption></figure>
+          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-full"></div><figcaption class="pv-ring-cap">Complete — 61 / 61, the gold thread closed</figcaption></figure>
         </div>
 
         <p class="pv-note" style="color:var(--paper-62);text-align:center;margin-block:var(--sp-8) var(--sp-6)">Only the ember frontier draws — the established ring never re-inks. Watch it again:</p>
@@ -428,8 +428,8 @@ body{ background: var(--cream); }
 
         <p class="pv-note" style="color:var(--paper-62);text-align:center;margin-block:var(--sp-8) var(--sp-6)">Two learners, two fingerprints — same progress, a different seed:</p>
         <div class="pv-rings">
-          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-seedA"></div><figcaption class="pv-ring-cap">seed 4711 · 65 / 65</figcaption></figure>
-          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-seedB"></div><figcaption class="pv-ring-cap">seed 9973 · 65 / 65</figcaption></figure>
+          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-seedA"></div><figcaption class="pv-ring-cap">seed 4711 · 61 / 61</figcaption></figure>
+          <figure class="pv-ring-fig"><div class="ring-mount" id="pv-ring-seedB"></div><figcaption class="pv-ring-cap">seed 9973 · 61 / 61</figcaption></figure>
         </div>
       </div>
     </div>
@@ -620,11 +620,11 @@ body{ background: var(--cream); }
   /* §6 — the tawaf ring at three states, an animated/static pair, and two seeds (uniqueness). */
   mountRing('pv-ring-empty', { seed: 4711, atomsDone: 0, size: 300 });
   mountRing('pv-ring-mid', { seed: 4711, atomsDone: 28, size: 300 });
-  mountRing('pv-ring-full', { seed: 4711, atomsDone: 65, circuitsDone: 4, size: 300 });
+  mountRing('pv-ring-full', { seed: 4711, atomsDone: 61, circuitsDone: 4, size: 300 });
   mountRing('pv-ring-anim', { seed: 4711, atomsDone: 28, animateFrom: 25, size: 300 });
   mountRingStatic('pv-ring-static', { seed: 4711, atomsDone: 28, size: 300 });
-  mountRing('pv-ring-seedA', { seed: 4711, atomsDone: 65, circuitsDone: 4, size: 300 });
-  mountRing('pv-ring-seedB', { seed: 9973, atomsDone: 65, circuitsDone: 4, size: 300 });
+  mountRing('pv-ring-seedA', { seed: 4711, atomsDone: 61, circuitsDone: 4, size: 300 });
+  mountRing('pv-ring-seedB', { seed: 9973, atomsDone: 61, circuitsDone: 4, size: 300 });
 
   /* §6 replay — re-render the animated ring with an explicit animateFrom so ONLY the ember frontier
      (the atoms newly inked in the in-progress lesson, index 25→28) draws again. Every OTHER ring on

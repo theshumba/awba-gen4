@@ -88,24 +88,24 @@ test('engine references no device-location or network lookup for the Sky', () =>
 });
 
 /* ---------- 4b · the --dawn progress degree: scaling + the 0.6 ambient cap (§7.3/§7.5 acc. 6) ----------
-   skyDawn(atomsDone) = min(0.6, atomsDone/65). WR-06: the whole --dawn contract had zero coverage.
+   skyDawn(atomsDone) = min(0.6, atomsDone/61). WR-06: the whole --dawn contract had zero coverage.
    These pin BOTH the linear scaling below the cap AND the cap itself, so a future edit that removes/
-   raises SKY_DAWN_CAP, breaks the /65 scaling, or reintroduces a Math.random()/Date dependency fails
-   loudly instead of passing node --test silently. */
+   raises SKY_DAWN_CAP, breaks the /61 scaling, or reintroduces a Math.random()/Date dependency fails
+   loudly instead of passing node --test silently. 61 = the taught-atom total (D-57/R-1). */
 
 /* skyDawnAt — evaluate AW.skyDawn(atomsDone) against the real engine, one fresh load per call. */
 function skyDawnAt(atomsDone) {
   return loadEngine(makeLS({}), 'globalThis.__out = AW.skyDawn(' + atomsDone + ');').__out;
 }
 
-test('skyDawn: 0 progress → 0 warmth; the /65 scaling below the cap is exact (WR-06)', () => {
+test('skyDawn: 0 progress → 0 warmth; the /61 scaling below the cap is exact (WR-06)', () => {
   assert.equal(skyDawnAt(0), 0, 'no progress → no dawn warmth');
-  assert.equal(skyDawnAt(26), 26 / 65, 'below the cap, warmth scales linearly as atomsDone/65');
+  assert.equal(skyDawnAt(26), 26 / 61, 'below the cap, warmth scales linearly as atomsDone/61');
   assert.ok(skyDawnAt(26) < 0.6, 'the mid value sits below the ambient cap (the scaling, not the cap, is pinned here)');
 });
 
 test('skyDawn: caps at 0.6 so it stays ambient and never competes with the prayer clock / Ring (WR-06)', () => {
-  assert.equal(skyDawnAt(65), 0.6, 'full progress caps at 0.6 — NOT 1.0 (§7.5 acceptance 6)');
+  assert.equal(skyDawnAt(61), 0.6, 'full progress caps at 0.6 — NOT 1.0 (§7.5 acceptance 6)');
   assert.equal(skyDawnAt(45), 0.6, 'any progress past the 0.6 crossing is clamped to the cap');
 });
 

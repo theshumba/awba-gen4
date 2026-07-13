@@ -522,15 +522,10 @@ if (typeof document !== 'undefined') {
 
   /* --dawn (§7.3) — the subordinate horizon-warmth degree, scaled by course progress and capped by
      skyDawn so it stays ambient and can never be mistaken for the Ring (the Ring is the metric).
-     Boot proxy: completed nodes over the course shape (15 lessons + 4 reviews) mapped onto the
-     65-atom axis; Phase 5 wires the exact atomsDone into the Ring caller. Set on <html> so
-     .reg-orbit::before inherits var(--dawn). */
+     Reads the exact taught-atom frontier via AW.atomsDone(AW.state()) (D-57/R-1, the 61-atom
+     total) — never a node-count proxy. Set on <html> so .reg-orbit::before inherits var(--dawn). */
   try {
-    var _st = AW.state();
-    var _nodes = (_st && _st.stars) ? Object.keys(_st.stars).length : 0;
-    var ATOMS = 65, TOTAL_NODES = 19;
-    var _atoms = Math.min(ATOMS, Math.round((_nodes / TOTAL_NODES) * ATOMS));
-    document.documentElement.style.setProperty('--dawn', String(skyDawn(_atoms)));
+    document.documentElement.style.setProperty('--dawn', String(skyDawn(AW.atomsDone(AW.state()))));
   } catch (e) {}
 
   document.addEventListener('visibilitychange', function () {
@@ -1172,11 +1167,12 @@ function mulberry32(a) {
    static. Returns an inline <svg> string. No Date, no Math.random in this path. */
 AW.ringSVG = function (cfg) {
   cfg = cfg || {};
-  /* WR-03: merge cfg.structure field-by-field against the canonical 4/15/65 shape and coerce each
-     field to a positive finite integer. A partial or malformed structure object (e.g. { circuits: 4 }
-     with lessons/atoms absent, or a non-numeric field) must never yield a NaN aria-label / data-atoms
-     nor a silently empty ring — each missing/invalid field independently falls back to its default. */
-  var DEF_STRUCT = { circuits: 4, lessons: 15, atoms: 65 };
+  /* WR-03: merge cfg.structure field-by-field against the canonical 4/15/61 shape (D-57/R-1 — the
+     taught-atom total) and coerce each field to a positive finite integer. A partial or malformed
+     structure object (e.g. { circuits: 4 } with lessons/atoms absent, or a non-numeric field) must
+     never yield a NaN aria-label / data-atoms nor a silently empty ring — each missing/invalid
+     field independently falls back to its default. */
+  var DEF_STRUCT = { circuits: 4, lessons: 15, atoms: 61 };
   var cfgStruct = cfg.structure || {};
   var posInt = function (v, dflt) {
     return (typeof v === 'number' && isFinite(v) && v > 0) ? (v | 0) : dflt;
@@ -1370,11 +1366,12 @@ function skyTemp(now, times, mode) {
   return 'night';                        // Isha → local midnight
 }
 
-/* skyDawn(atomsDone) — the subordinate --dawn degree (§7.3): min(cap, atomsDone/65). A pure 0..1
+/* skyDawn(atomsDone) — the subordinate --dawn degree (§7.3): min(cap, atomsDone/61). A pure 0..1
    warmth scaled by course progress and CAPPED so it stays ambient and can never compete with the
-   prayer-clock tint or the Ring. One degree of horizon apricot — never the metric. */
+   prayer-clock tint or the Ring. One degree of horizon apricot — never the metric. 61 = the
+   taught-atom total (D-57/R-1), matching AW.ringSVG's DEF_STRUCT.atoms. */
 function skyDawn(atomsDone) {
-  var SKY_DAWN_CAP = 0.6, SKY_ATOMS = 65;
+  var SKY_DAWN_CAP = 0.6, SKY_ATOMS = 61;
   var frac = Math.max(0, atomsDone | 0) / SKY_ATOMS;
   return Math.min(SKY_DAWN_CAP, frac);
 }
@@ -1724,14 +1721,13 @@ function AwbaLesson(cfg) {
   beats.forEach(function (b) { if (['mc', 'tf', 'tile'].indexOf(b.t) >= 0) quizN++; });
 
   /* Pitfall 7 / WR-01 — the Ring's animateFrom is captured HERE, at INIT: BEFORE the opener, BEFORE
-     AW.touchDay, BEFORE this lesson's best-of star persists at done(). ATOMS_PER_NODE = 3 is a
-     documented Phase-4 proxy (Phase-5 CNT-03 wires the exact per-node atoms); pre-lesson atoms =
-     (# nodes that already carry a star) * 3. On a genuine first completion done() adds THIS node's
-     star key, so postAtoms > preLessonAtoms and the Ring inks ONLY the new frontier [preLessonAtoms,
-     postAtoms). On a replay the key already exists at init, so postAtoms === preLessonAtoms, the span
-     is empty, and the established Ring never re-draws (law 9) — no phantom celebration. */
-  var ATOMS_PER_NODE = 3;
-  var preLessonAtoms = (Object.keys((AW.state().stars) || {}).length) * ATOMS_PER_NODE;
+     AW.touchDay, BEFORE this lesson's best-of star persists at done(). Pre-lesson atoms are the
+     exact taught-atom frontier (D-57/R-1, AW.atomsDone — the verified NODE_ATOMS map, never a
+     *3 proxy). On a genuine first completion done() adds THIS node's star key, so postAtoms >
+     preLessonAtoms and the Ring inks ONLY the new frontier [preLessonAtoms, postAtoms). On a
+     replay the key already exists at init, so postAtoms === preLessonAtoms, the span is empty,
+     and the established Ring never re-draws (law 9) — no phantom celebration. */
+  var preLessonAtoms = AW.atomsDone(AW.state());
 
   /* Athar skeleton — a Page-register manuscript shell (never the retired Gen-3 body builder). */
   document.body.innerHTML =
@@ -2117,7 +2113,8 @@ function AwbaLesson(cfg) {
   }
 
   /* 5 · The Ring moment (Orbit) — the terminal tawaf-fingerprint. postAtoms is recomputed HERE,
-     AFTER done() persisted this lesson's best-of star (Pitfall 7 / WR-01): on a genuine first
+     AFTER done() persisted this lesson's best-of star (Pitfall 7 / WR-01), via AW.atomsDone(AW.state())
+     (D-57/R-1 — the exact taught-atom frontier, never a *3 proxy): on a genuine first
      completion the star KEY was newly added, so postAtoms > preLessonAtoms and AW.ringSVG inks ONLY
      the new frontier [preLessonAtoms, postAtoms); on a replay the key already existed at init, so
      postAtoms === preLessonAtoms, the span is empty, and the established Ring renders static — no
@@ -2127,7 +2124,7 @@ function AwbaLesson(cfg) {
     setGround('reg-orbit');
     setHUD(false);
     progEl.innerHTML = '';
-    var postAtoms = (Object.keys((AW.state().stars) || {}).length) * ATOMS_PER_NODE;
+    var postAtoms = AW.atomsDone(AW.state());
     var grew = postAtoms > preLessonAtoms;
     root.innerHTML = '<div class="rw-ring"></div>' + foot(btn('Continue'));
     root.querySelector('.rw-ring').innerHTML =

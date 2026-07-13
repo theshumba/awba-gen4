@@ -49,12 +49,12 @@ test('ringSVG: different seed at identical progress → different fingerprint (�
 
 /* ---------- (3) progression — all-faint → inked + closed gold thread ---------- */
 
-test('ringSVG: atomsDone 0 differs from 65+4, and full progress carries thread + head (§6.6 #3)', () => {
+test('ringSVG: atomsDone 0 differs from 61+4, and full progress carries thread + head (§6.6 #3)', () => {
   const sandbox = loadEngine(
     makeLS({}),
     `globalThis.__out = {
        none: AW.ringSVG({ seed: 3, atomsDone: 0, circuitsDone: 0 }),
-       full: AW.ringSVG({ seed: 3, atomsDone: 65, circuitsDone: 4 })
+       full: AW.ringSVG({ seed: 3, atomsDone: 61, circuitsDone: 4 })
      };`
   );
   const out = sandbox.__out;
@@ -141,7 +141,7 @@ test('ringSVG: animateFrom < atomsDone animates exactly the newly-inked frontier
 test('ringSVG: full-progress output is ≤600 <path nodes and carries no <filter> (§6.6 #6)', () => {
   const sandbox = loadEngine(
     makeLS({}),
-    `globalThis.__out = { full: AW.ringSVG({ seed: 42, atomsDone: 65, circuitsDone: 4 }) };`
+    `globalThis.__out = { full: AW.ringSVG({ seed: 42, atomsDone: 61, circuitsDone: 4 }) };`
   );
   const full = sandbox.__out.full;
   const nodes = (full.match(/<path/g) || []).length;
@@ -168,7 +168,7 @@ test('ringSVG: with no explicit seed, repeated calls are stable via the stored r
 
 /* ---------- (WR-03) a partial/malformed structure never emits NaN or a silently empty ring ---------- */
 
-test('ringSVG: a partial structure object falls back field-by-field to 4/15/65 — no NaN label, no empty ring (WR-03)', () => {
+test('ringSVG: a partial structure object falls back field-by-field to 4/15/61 — no NaN label, no empty ring (WR-03)', () => {
   const sandbox = loadEngine(
     makeLS({}),
     `globalThis.__out = {
@@ -177,14 +177,14 @@ test('ringSVG: a partial structure object falls back field-by-field to 4/15/65 �
      };`
   );
   const { partial, bad } = sandbox.__out;
-  // Missing lessons/atoms fall back to 15/65 → a well-formed label and a populated ring.
-  assert.ok(partial.indexOf('aria-label="Tawaf ring — 5 of 65 inked"') !== -1, 'partial structure must use the 65-atom default in the label');
+  // Missing lessons/atoms fall back to 15/61 → a well-formed label and a populated ring.
+  assert.ok(partial.indexOf('aria-label="Tawaf ring — 5 of 61 inked"') !== -1, 'partial structure must use the 61-atom default in the label');
   assert.equal(partial.indexOf('NaN'), -1, 'no NaN may leak into the markup');
   assert.ok(partial.indexOf('data-atoms="5"') !== -1, 'atomsDone renders against the defaulted atom total');
   assert.ok((partial.match(/<path/g) || []).length > 0, 'the ring must not be silently empty');
   // Every field invalid → the whole canonical shape is restored (still no NaN, still populated).
   assert.equal(bad.indexOf('NaN'), -1, 'an all-invalid structure must still never emit NaN');
-  assert.ok(bad.indexOf('of 65 inked') !== -1, 'an all-invalid structure falls back to 65 atoms');
+  assert.ok(bad.indexOf('of 61 inked') !== -1, 'an all-invalid structure falls back to 61 atoms');
   assert.ok((bad.match(/<path/g) || []).length > 0, 'an all-invalid structure still renders dabs');
 });
 
@@ -208,14 +208,14 @@ test('ringSVG: negative / NaN atomsDone clamp to 0 (all-faint) without throwing 
   assert.ok(neg.paths > 0 && nan.paths > 0, 'the ring still renders its faint dabs (no empty/throw)');
 });
 
-test('ringSVG: atomsDone beyond the atom total clamps to 65 (WR-07)', () => {
+test('ringSVG: atomsDone beyond the atom total clamps to 61 (WR-07)', () => {
   const sandbox = loadEngine(
     makeLS({}),
     `globalThis.__out = AW.ringSVG({ seed: 1, atomsDone: 999 });`
   );
   const svg = sandbox.__out;
-  assert.ok(svg.indexOf('data-atoms="65"') !== -1, 'atomsDone 999 clamps to the 65-atom ceiling');
-  assert.ok(svg.indexOf('aria-label="Tawaf ring — 65 of 65 inked"') !== -1, 'the label reflects the clamped count');
+  assert.ok(svg.indexOf('data-atoms="61"') !== -1, 'atomsDone 999 clamps to the 61-atom ceiling');
+  assert.ok(svg.indexOf('aria-label="Tawaf ring — 61 of 61 inked"') !== -1, 'the label reflects the clamped count');
 });
 
 test('ringSVG: seed 0 / NaN / negative are accepted deterministically without throwing (WR-07)', () => {
