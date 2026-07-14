@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba</title>
+<!-- D-70: index.html is a tiny redirect to learn.html — learn.html is NOT renamed. Meta-refresh +
+     location.replace + a plain <a> fallback (works with JS off / no meta-refresh support). Carries
+     the install head trio (manifest / theme-color / apple-touch-icon) so the base URL is itself
+     installable if a user lands here directly. -->
+<meta http-equiv="refresh" content="0; url=learn.html">
+<meta name="theme-color" content="#131013">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+<script>location.replace('learn.html');</script>
+</head>
+<body>
+<p><a href="learn.html">Continue to Awba</a></p>
+</body>
+</html>
