@@ -2075,7 +2075,7 @@
 
   /* star row — 1..3 earned gold, the rest hollowed muted (done stations only) */
   .np-stars { display: inline-flex; gap: var(--sp-1); }
-  .np-star  { display: inline-flex; color: var(--ink-40); }        /* unearned — a quiet, recessed mark */
+  .np-star  { display: inline-flex; color: var(--ink-62); }        /* unearned — a quiet, recessed mark; --ink-62 = 5.02:1 on cream (WCAG 1.4.11), quieter than the earned gold below */
   .np-star.is-earned { color: var(--gold); }                       /* earned — §2.1 gold as shape on cream */
   .np-star svg { width: 16px; height: 16px; }
 
