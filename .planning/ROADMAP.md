@@ -133,7 +133,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. A final typography/RTL stress-test (verifying FND-03 and CNT-04 at full-app scale) confirms transliteration diacritics (ʿ ʾ ā ī ū ḥ ṣ ṭ ẓ ḍ ġ) and Khattab `˹˺` brackets display correctly, and Arabic containers use `unicode-bidi: isolate` so mixed Arabic/Latin lines never scramble.
 **Plans**: 7 plans (3 Wave-0 foundation gates -> 3 narrow-seam implementation plans -> the two-stage gate; sequential waves, one executor at a time on main)
 **Wave model**: each plan's `wave` number is its SEQUENCE POSITION (sequential-on-main, one executor at a time), NOT a parallel batch — 06-04 (depends on 06-01) and 06-06 (depends on 06-01/06-04) carry wave numbers above max(deps)+1 by design, not as a dependency error.
-  - [ ] 06-01-PLAN.md — a11y probe harness: keyboard/dialogs/announce probes (shipped baseline pinned ACTIVE, gaps { todo }-gated so the suite holds fail 0) (ACC-01/02)
+  - [x] 06-01-PLAN.md — a11y probe harness: keyboard/dialogs/announce probes (shipped baseline pinned ACTIVE, gaps { todo }-gated so the suite holds fail 0) (ACC-01/02) (completed 2026-07-14 — three permanent probe files added: a11y-keyboard.test.js [8 active: native-semantics sweep, zero positive tabindex, reflect label, register-token :focus-visible gold-on-Orbit/crimson-on-Page via live-token comparison, .onode journey DOM order; 4 todo: state-in-name, native streak strip, native ayah citation button, aria-pressed selection cue], a11y-dialogs.test.js [5 active: AW.sheet/npop/Festival role+aria-modal+Escape+singleton+focus-restore, claim-before-open Escape ordering; 10 todo: sheet/popup/Festival containment-wrap via synthetic-Tab defaultPrevented + focus-into/name/focus-move/focus-return], a11y-announce.test.js [all 10 todo: region exists+survives-swaps, correct/miss/reflect composed announce, reward focus-to-heading, review answer announce, 10s single-fire, timeout mercy narration, Question-N-of-M narration, result focus-and-stat — driven via --virtual-time-budget]; suite 114→154 [130 pass/0 fail/24 todo, exact 4+10+10 ledger]; zero product source touched; localStorage 13; commits 72f0879/4d71489/4802036)
   - [ ] 06-02-PLAN.md — typography/RTL gate: rewrite the broken glyph gate (14-face roster, real-string harvest) + rtl-audit.mjs + the neutral-copy typo-stress fixture (ACC-03 / FND-03 / CNT-04 re-verify, D-66)
   - [ ] 06-03-PLAN.md — contrast-audit.mjs: WCAG computed-style sweep over 20 pages + the full interaction-state forcing table (ACC-03, D-65)
   - [ ] 06-04-PLAN.md — engine a11y primitives: AW.announce + .aw-sr live region + AW._trapFocus + AW.sheet(html,label) name/focus-into + focus-ring unify (ACC-01/02, D-63/D-64)
@@ -167,5 +167,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Components, Icon Kit & Motion | 10/12 | In Progress|  |
 | 4. Lesson & Review Engine Port | 6/7 | In Progress | - |
 | 5. Learn Page & View Transitions | 4/6 | In Progress | - |
-| 6. Accessibility, RTL & Typography | 0/7 | Planned | - |
+| 6. Accessibility, RTL & Typography | 1/7 | In Progress | - |
 | 7. PWA Shell, Offline & Delivery | 0/TBD | Not started | - |
