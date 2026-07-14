@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Awba app icon — the surviving AW.KIT lantern scene (shared/awba-engine.js, viewBox 0 0 240 300),
+     given an Athar home-screen treatment: gold ink (--gold #D9A441) on the Kiswah dark ground
+     (#131013, the shipped dark theme-color). Plain variant — art ≈57% of the 512 frame. Source for
+     icon-512.png (→ icon-192.png / apple-touch-icon-180.png via sips). Per D-69 / PLT-02. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#131013"></rect>
+  <g transform="translate(256,256) scale(1.05) translate(-125,-151)" style="color:#D9A441;--icon-accent:#D9A441">
+    <path d="M119 20 C174 12 212 58 205 120 C200 163 222 210 178 252 C142 286 80 290 52 250 C28 216 36 166 42 118 C48 72 66 28 119 20 Z" fill="currentColor" opacity=".12"></path>
+    <circle cx="120" cy="46" r="6" fill="none" stroke="currentColor" stroke-width="3"></circle>
+    <line x1="120" y1="52" x2="120" y2="66" stroke="currentColor" stroke-width="3"></line>
+    <path d="M100 78 L140 78 L131 66 L109 66 Z" fill="currentColor"></path>
+    <circle cx="120" cy="62" r="4" fill="currentColor"></circle>
+    <path d="M98 82 L142 82 Q151 112 142 152 L133 170 L107 170 L98 152 Q89 112 98 82 Z" fill="currentColor"></path>
+    <path d="M112 98 L128 98 L128 152 L112 152 Z" fill="none"></path>
+    <path d="M120 116 c-5 5 -6 12 0 18 c6 -6 5 -13 0 -18 z" fill="currentColor"></path>
+    <path d="M108 170 L132 170 L120 186 Z" fill="currentColor"></path>
+    <circle cx="120" cy="190" r="4" fill="currentColor"></circle>
+    <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(168,110)"></path>
+    <path d="M0 -6 C1 -2 2 -1 6 0 C2 1 1 2 0 6 C-1 2 -2 1 -6 0 C-2 -1 -1 -2 0 -6 Z" fill="var(--icon-accent)" transform="translate(74,132) scale(0.8)"></path>
+  </g>
+</svg>
