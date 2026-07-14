@@ -1946,7 +1946,7 @@
     font-size: var(--fs-ui); line-height: 1.35; text-align: center;
     color: var(--paper-85);                          /* §2.1 --paper-85 on Kiswah */
   }
-  .onode[data-nstate="locked"] .onode-label { color: var(--paper-45); }   /* locked labels recede, never a strike */
+  .onode[data-nstate="locked"] .onode-label { color: var(--paper-62); }   /* locked labels recede (quieter than the --paper-85 available/done label), never a strike; --paper-62 = 6.69:1 clears WCAG 1.4.3 */
   .onode-meta { display: inline-flex; align-items: center; gap: var(--sp-1); min-height: 14px; }
   .onode-stars { display: inline-flex; gap: 1px; }   /* the earned star count — gold star glyphs (1–3) */
   .onode-stars svg { width: 13px; height: 13px; }
@@ -2022,7 +2022,7 @@
     font-family: var(--font-marg);
     font-size: var(--fs-marg);
     letter-spacing: .06em;
-    color: var(--paper-45);           /* the reference recedes further — a footnote */
+    color: var(--paper-62);           /* the reference footnote — §2.1 --paper-62 = 6.69:1 on Kiswah, clears WCAG 1.4.3 (matches .oib-line above) */
   }
 
   /* -- Node popup (§S4 · LRN-03 / D-55 / R-4) — the singleton cream "slip of paper" laid over the
