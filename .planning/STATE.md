@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: "Phase 5 wave 5 (05-05) COMPLETE 2026-07-14 — every tap on the learn front door is now alive: the HUD returns/noor stats, the streak strip, the course chip and the whole tab bar open their sheets through ONE shared AW.sheet implementation (no bespoke sheet DOM — the streak sheet is one openStreakSheet function opened from the HUD returns stat + the streak strip + the Returns tab); the tab bar has Learn active with the R-5 GOLD active cue on Orbit (a .reg-orbit .tab.active override + 2px gold top-rule in @layer screens — the shipped crimson .tab.active is OVERRIDDEN, never edited; crimson is 2.65:1 on Kiswah) and every other tab opens a designed coming-soon sheet (never a dead tap); the chest claim grants +25 noor EXACTLY ONCE via the write-once chests guard in AW.S (deterministic, idempotent — claim-twice probe delta=25) and opens the Festival circuit-plate interstitial (a separate .reg-festival overlay on document.body — the dated folk plate stamps in, ink dabs drift-settle around a small Ring, that circuit's gold thread arc closes, private + maker's-marked with date+seed in Courier; the learn screen beneath stays Orbit, law 1; reduced motion → final-static, +25 still granted). Suite 107/107, render-smoke 20/20 + vt-nav check, localStorage 0 in learn/13 in engine, @layer order line count 1, glyphCount 13; resume at 05-06 (sonnet prechecks + BLOCKING human gate, autonomous:false)"
+stopped_at: "PHASE 5 CLOSED 2026-07-14 verified 5/5 (review 4 warnings fixed 5873fa9; verifier blocker — dead VT morph reveal selector — fixed 47cf7d2, re-verified PASS; suite 114/114). Next: /gsd:discuss-phase 6 (a11y/RTL/typography hardening)"
 last_updated: "2026-07-14T00:00:00.000Z"
 last_activity: 2026-07-14
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 31
-  completed_plans: 30
+  completed_plans: 31
   percent: 71
 ---
 
