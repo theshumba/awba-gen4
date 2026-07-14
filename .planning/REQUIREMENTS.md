@@ -60,9 +60,10 @@ Macro product scope is fixed by Josh's Gen-3 MVP (the owner-approved direction).
 
 ### Accessibility
 
-- [ ] **ACC-01**: Full keyboard operability with visible `:focus-visible` styles on every interactive element (tap-highlight suppression compensated)
-- [ ] **ACC-02**: Quiz verdicts, noor changes, combo, and screen changes announced via aria-live/role=status; icon-only controls carry accessible names; reflect textarea properly labelled
-- [ ] **ACC-03**: Colour contrast of amber/green/gold states verified against WCAG AA; correct/incorrect states carry a non-colour signal
+- [x] **ACC-01**: Full keyboard operability with visible `:focus-visible` styles on every interactive element (tap-highlight suppression compensated)
+- [x] **ACC-02**: Quiz verdicts, noor changes, combo, and screen changes announced via aria-live/role=status; icon-only controls carry accessible names; reflect textarea properly labelled
+- [x] **ACC-03**: Colour contrast of amber/green/gold states verified against WCAG AA; correct/incorrect states carry a non-colour signal <!-- Athar-bound (06-CONTEXT): crimson/gold/ember states; proven by contrast-audit.mjs + the aria-pressed/3px non-colour cue -->
+
 
 ### Platform & delivery
 
@@ -133,9 +134,9 @@ Every v1 requirement maps to exactly one phase. Coverage: 42/42 (100%). See `.pl
 | CNT-03 | Phase 5 | Complete |
 | RWD-04 | Phase 5 | Complete |
 | MOT-02 | Phase 5 | Complete |
-| ACC-01 | Phase 6 | Pending |
-| ACC-02 | Phase 6 | Pending |
-| ACC-03 | Phase 6 | Pending |
+| ACC-01 | Phase 6 | Complete |
+| ACC-02 | Phase 6 | Complete |
+| ACC-03 | Phase 6 | Complete |
 | PLT-02 | Phase 7 | Pending |
 | PLT-03 | Phase 7 | Pending |
 | PLT-04 | Phase 7 | Pending |
