@@ -420,6 +420,107 @@
       '</div>');
   }
 
+  /* ============================================================================================
+     S5 · the chest claim (+25 once, idempotent) + the Festival circuit-plate interstitial
+     (RWD-04 / D-56). The mechanic is BYTE-PRESERVED from Gen-3: the chest is available when its
+     unit's review has stars; claiming grants +25 noor EXACTLY ONCE via a write-once guard on the
+     `chests` slot in AW.S (Gen-3 awba_chest_* keys already migrate) — deterministic, NEVER
+     randomized, a sure gift (the popup already said "+25 noor"). The claim IS the sanctioned
+     Festival threshold: a SEPARATE overlay ground (the learn screen beneath stays Orbit, law 1).
+     ============================================================================================ */
+
+  function fmtDate(d) {   /* a private, local (D-16 — never toISOString), Courier-friendly date */
+    var mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return d.getDate() + ' ' + mon[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  /* festivalHtml — the interstitial composition: a small Ring with a CIRCLE crowd-arrival of ink
+     .dab drift-settling around it (shipped .rv-ringdabs/drift, staggered animation-delay), that
+     circuit's gold thread arc closing (the shipped .thread / ink-draw over stroke-dashoffset), and
+     the dated folk .plate that stamps in (shipped .plate/stamp; its title may use Rakkas — valid
+     ONLY inside this Festival threshold). The plate is private, maker's-marked with date + ring
+     seed in Courier. No new keyframe — every verb is a shipped one. */
+  function festivalHtml(circuitN, dateStr, seed) {
+    var dabs = '';
+    for (var i = 0; i < 6; i++) dabs += '<span class="dab" style="animation-delay:' + (i * 40) + 'ms"></span>';
+    var mark = 'Circuit ' + (circuitN || '') + ' · ' + dateStr + ' · ' + seed.toString(36);
+    return '<div class="ofest-inner">' +
+        '<div class="ofest-ring">' +
+          '<svg class="ofest-arc" viewBox="0 0 108 108" aria-hidden="true" focusable="false">' +
+            '<circle class="ofest-arc-base" cx="54" cy="54" r="46"></circle>' +
+            /* the closing gold thread arc — --len/dasharray ≥ the r=46 circumference (~289) so the
+               shipped ink-draw sweeps it from hidden → fully drawn (closed); static under reduce. */
+            '<path class="thread ofest-thread" style="--len:290;stroke-dasharray:290" d="M54 8 A46 46 0 1 1 53.6 8"></path>' +
+          '</svg>' +
+          '<div class="rv-ringdabs">' + dabs + '</div>' +
+          '<span class="ofest-glyph">' + AW.icon('spark', { size: '30px' }) + '</span>' +
+        '</div>' +
+        '<div class="plate ofest-plate">' +
+          '<div class="ofest-plate-title">A gift of light</div>' +
+          '<div class="ofest-mark">' + mark + '</div>' +
+        '</div>' +
+        '<div class="ofest-noor">+25 noor · yours to keep</div>' +
+        '<button class="btn ofest-close" type="button">Keep the light</button>' +
+      '</div>';
+  }
+
+  function closeFestival(overlay, esc) {
+    document.removeEventListener('keydown', esc);
+    document.documentElement.classList.remove('sheet-lock');
+    render();                              /* refresh the path FIRST (the chest node now reads done) —
+                                              revealed as the overlay fades out over it */
+    overlay.classList.remove('open');
+    var done = false;
+    function fin() { if (done) return; done = true; if (overlay.parentNode) overlay.remove(); }
+    overlay.addEventListener('transitionend', fin);
+    setTimeout(fin, 500);                  /* fallback when no transition fires (reduced motion) */
+  }
+
+  /* openFestival — append the .reg-festival threshold OVERLAY to document.body (never inside
+     .reg-orbit; the learn screen stays Orbit, law 1). Dismiss (button / backdrop / Esc) → re-render
+     the path. All motion is the shipped stamp/drift/ink-draw, self-quieted under reduced motion; the
+     +25 noor was already granted before this ran (the mechanic never depends on motion). */
+  function openFestival(nodeId) {
+    var m = metaById[nodeId] || {};
+    var overlay = document.createElement('div');
+    overlay.className = 'ofest reg-festival';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'A gift of light');
+    overlay.innerHTML = festivalHtml(m.un, fmtDate(new Date()), AW.ringSeed());
+    document.body.appendChild(overlay);
+    document.documentElement.classList.add('sheet-lock');
+    function esc(e) { if (e.key === 'Escape') closeFestival(overlay, esc); }
+    document.addEventListener('keydown', esc);
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay || (e.target.closest && e.target.closest('.ofest-close'))) closeFestival(overlay, esc);
+    });
+    var raf = window.requestAnimationFrame || function (f) { return setTimeout(f, 16); };
+    raf(function () { overlay.classList.add('open'); });   /* a quiet threshold fade-in */
+    var btn = overlay.querySelector('.ofest-close');
+    if (btn && btn.focus) btn.focus();
+  }
+
+  /* window.__awbaClaimChest(nodeId) — the hook the 05-04 popup CTA calls. The write-once guard makes
+     the +25 noor EXACTLY ONCE and idempotent (a second claim is a no-op — never doubles); the reward
+     is a fixed +25, NEVER randomized. Rule-2 hardening: only a real, earned (available), unopened
+     chest ever claims (the popup already gates the CTA to available chests; this is defence-in-depth
+     so a stray call can never credit a locked/non-chest id). */
+  window.__awbaClaimChest = function (nodeId) {
+    var nd = byId[nodeId];
+    if (!nd || !nd.chest) return;                       // only real chest nodes
+    var st = AW.state();
+    var chests = st.chests;                              // defensive copy (AW.S.get returns a clone)
+    if (chests[nodeId]) return;                          // write-once — a second claim is a NO-OP
+    var states = AW.deriveNodeState(flat, st), derived = null;
+    for (var i = 0; i < states.length; i++) { if (states[i].id === nodeId) { derived = states[i].state; break; } }
+    if (derived !== 'available') return;                 // not yet earned → no-op (never claim early)
+    chests[nodeId] = true;
+    AW.S.set('chests', chests);
+    AW.S.set('noor', AW.S.get('noor', 0) + 25);          // +25 EXACTLY ONCE, deterministic — NEVER randomized
+    openFestival(nodeId);                                // the Festival threshold; learn screen stays Orbit
+  };
+
   function render() {
     closePop();                                  // an app.innerHTML rebuild detaches node buttons — drop any open slip
     var st = AW.state();
