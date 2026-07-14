@@ -377,14 +377,30 @@ const PRE_IIFE_SEED_LEARN = [
   '</scr' + 'ipt>',
 ].join('\n');
 
-/* Task 1 (this commit): STATIC states only — the page's own default, un-forced render (fresh
-   storage: u1m1 active, the rest locked). Task 2 extends this same driver with the full
-   interaction-forcing table (seeded done/stars/chests, popup variants, the Festival surface). */
 const LEARN_LOAD_DRIVER = `
 window.addEventListener('load', function () {
 ${DRIVER_CORE}
   try {
     sweepCurrentDOM('learn-default');
+    var combos = [
+      document.querySelector('.onode[data-nstate="locked"]'),
+      document.querySelector('.onode[data-nstate="active"]'),
+      document.querySelector('.onode[data-nstate="done"][data-kind="lesson"]'),
+      document.querySelector('.onode[data-kind="review"]'),
+      document.querySelector('.onode[data-kind="chest"]'),
+    ].filter(Boolean);
+    combos.forEach(function (nd) {
+      nd.click();
+      sweepCurrentDOM('learn-popup-' + nd.getAttribute('data-kind') + '-' + nd.getAttribute('data-nstate'));
+    });
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    if (typeof window.__awbaClaimChest === 'function') {
+      try { window.__awbaClaimChest('u1c'); } catch (e) {}
+      sweepCurrentDOM('learn-chest-festival'); // the chest-claim + Festival threshold surface
+      var closeBtn = document.querySelector('.ofest-close');
+      if (closeBtn) closeBtn.click();
+      sweepCurrentDOM('learn-festival-closed');
+    }
     R.done = true;
     publish();
   } catch (e) { R.driverError = String((e && e.message) || e); publish(); }
@@ -403,6 +419,42 @@ window.addEventListener('load', function () {
 ${DRIVER_CORE}
   try {
     sweepCurrentDOM('lesson-default');
+    var cont = document.getElementById('cont');
+    if (cont) cont.click(); // leave the opener
+    var seenDepth = false, quizChecks = 0, maxSteps = 30;
+    for (var step = 0; step < maxSteps; step++) {
+      var lenses = document.querySelectorAll('.lens');
+      if (lenses.length && !seenDepth) {
+        seenDepth = true;
+        sweepCurrentDOM('lesson-depth-closed'); // the .lh header colours read pre-expansion
+        Array.prototype.forEach.call(lenses, function (l) { l.classList.add('open'); }); // the shipped .open class
+        sweepCurrentDOM('lesson-depth-open'); // now the .lb body text is swept too
+      }
+      var check = document.getElementById('check');
+      if (check) {
+        quizChecks++;
+        var optNodes = document.querySelectorAll('.opt');
+        var tfNodes = document.querySelectorAll('.tf');
+        var tileBank = document.querySelectorAll('#lsbank .tile:not(.used)');
+        if (optNodes.length) optNodes[0].click();
+        else if (tfNodes.length) tfNodes[0].click();
+        else if (tileBank.length) tileBank[0].click();
+        // SELECTED-BUT-NOT-YET-CHECKED: snapshot the pre-check selection state BEFORE #check fires,
+        // so a future new selection cue (a wider border, aria-pressed) is genuinely re-swept here.
+        sweepCurrentDOM('lesson-quiz-selected-precheck-' + quizChecks);
+        check.click();
+        // resolved: .opt.wrong/.opt-why on a miss, .opt.correct on a hit — both real code paths,
+        // content-dependent; across the 15-lesson corpus both are reliably reached (see header).
+        sweepCurrentDOM('lesson-quiz-resolved-' + quizChecks);
+        var c2 = document.getElementById('cont');
+        if (c2) { c2.click(); continue; }
+        break;
+      }
+      var contBtn = document.getElementById('cont');
+      if (contBtn) { contBtn.click(); sweepCurrentDOM('lesson-step-' + step); continue; }
+      sweepCurrentDOM('lesson-terminal-' + step); // verdict/noor/returns/done/ring/dua, whichever is current
+      break;
+    }
     R.done = true;
     publish();
   } catch (e) { R.driverError = String((e && e.message) || e); publish(); }
@@ -420,10 +472,43 @@ window.addEventListener('load', function () {
 ${DRIVER_CORE}
   try {
     sweepCurrentDOM('review-intro');
-    R.done = true;
-    publish();
-  } catch (e) { R.driverError = String((e && e.message) || e); publish(); }
-  document.title = 'CONTRAST-DONE';
+    var start = document.getElementById('start');
+    if (!start) { R.done = true; publish(); document.title = 'CONTRAST-DONE'; return; }
+    start.click();
+    sweepCurrentDOM('review-q1-fresh');
+    var sawLow = false, sawTimeout = false, answeredCount = 0, pollTicks = 0, maxPollTicks = 400;
+    function finish() { R.done = true; publish(); document.title = 'CONTRAST-DONE'; }
+    function tick() {
+      pollTicks++;
+      try {
+        var tbar = document.getElementById('rvtbar');
+        var tnote = document.getElementById('rvtnote');
+        if (tbar && tbar.classList.contains('low') && !sawLow) { sawLow = true; sweepCurrentDOM('review-timer-low'); }
+        if (tnote && tnote.textContent && !sawTimeout) { sawTimeout = true; sweepCurrentDOM('review-timeout'); }
+        var check = document.getElementById('check');
+        // let the FIRST question's real timer expire naturally (sawTimeout gates it); every
+        // question after that is answered immediately so the whole run fits the virtual-time budget.
+        if (check && (answeredCount > 0 || sawTimeout)) {
+          var opt = document.querySelector('.opt'), tf = document.querySelector('.tf');
+          var pick = opt || tf;
+          if (pick) {
+            pick.click();
+            sweepCurrentDOM('review-selected-precheck-' + (answeredCount + 1));
+            check.click();
+            answeredCount++;
+            sweepCurrentDOM('review-resolved-' + answeredCount);
+          }
+        }
+        var goback = document.getElementById('goback');
+        if (goback) { goback.click(); sweepCurrentDOM('review-circleback'); }
+        var resultEl = document.querySelector('.rv-result');
+        if (resultEl) { sweepCurrentDOM('review-result'); finish(); return; }
+      } catch (e) { R.driverError = String((e && e.message) || e); finish(); return; }
+      if (pollTicks < maxPollTicks) setTimeout(tick, 150);
+      else { sweepCurrentDOM('review-maxpolls'); finish(); }
+    }
+    setTimeout(tick, 150);
+  } catch (e) { R.driverError = String((e && e.message) || e); publish(); document.title = 'CONTRAST-DONE'; }
 });
 `;
 
@@ -463,8 +548,9 @@ function timeoutFor(type) {
 
 function buildProbe(pageFile, type) {
   let html = readFileSync(pageFile, 'utf8');
-  if (type === 'learn' && false) {
-    // TEMP: disabled for the task-1 static-only test run
+  if (type === 'learn') {
+    // pre-IIFE seed: insert right after the FIRST engine <script src=...awba-engine.js"></script>,
+    // which is BEFORE the learn IIFE's own <script> tag (method / forcing-table note above).
     const engineTagRe = /<script src="[^"]*awba-engine\.js"><\/script>/;
     if (engineTagRe.test(html)) {
       html = html.replace(engineTagRe, (m) => m + '\n' + PRE_IIFE_SEED_LEARN);
