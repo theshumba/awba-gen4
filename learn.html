@@ -245,15 +245,92 @@
     placePop(pop, node);                                 /* measure + anchor AFTER contents are in the DOM */
   }
 
-  /* popContent(node) — the slip's contents per the station's derived state (§S4 copy table). */
-  function popContent(node) {
-    var nd = byId[node.getAttribute('data-id')];
-    return '<div class="np-label">' + (nd ? nd.label : '') + '</div>';
+  /* nodeAtomCount(id) — the station's taught-atom count for its seed-row, WITHOUT exposing the
+     engine-private NODE_ATOMS map: a single-star probe through the pure AW.atomsDone returns
+     NODE_ATOMS[id]||0 (reviews/chests are absent from the map → 0 dots → no seed-row). */
+  function nodeAtomCount(id) {
+    var s = {}; s[id] = 1;
+    return AW.atomsDone({ stars: s });
   }
 
-  /* wireCta(pop, node) — the CTA behaviour (navigation + the click-time shared-element morph + the
-     chest claim hook). Populated below by 05-04 Task 2/3. */
-  function wireCta(pop, node) { /* no-op until the CTA contents land (Task 2) */ }
+  /* popContent(node) — the slip's contents per the station's live-derived state (§S4 + copy table):
+     label · subtitle/microcopy · star row (done) · seed-row · CTA. Locked = the gentle "not yet",
+     NO CTA (D-54). Chest = the gift copy (claim hook stubbed for 05-05). */
+  function popContent(node) {
+    var id = node.getAttribute('data-id');
+    var kind = node.getAttribute('data-kind');
+    var state = node.getAttribute('data-nstate');
+    var nd = byId[id] || {};
+    var href = nd.href || '';
+
+    /* seed-row (R-2 BINARY-done): faint --madder at rest, all inked together iff the station is done;
+       never a live partial (Pitfall 5). Lessons carry atoms; reviews/chests resolve to 0. */
+    var n = nodeAtomCount(id), seeds = '';
+    if (n > 0) {
+      var inked = (state === 'done') ? ' is-inked' : '', dots = '';
+      for (var i = 0; i < n; i++) dots += '<span class="np-seed' + inked + '"></span>';
+      seeds = '<div class="np-seeds" aria-hidden="true">' + dots + '</div>';
+    }
+
+    /* star row (done lesson/review) — 1..3 earned gold, the rest hollowed muted */
+    var stars = '';
+    if (state === 'done' && kind !== 'chest') {
+      var sN = (stCur && stCur.stars && stCur.stars[id]) || 0, sH = '';
+      for (var k = 0; k < 3; k++) sH += '<span class="np-star' + (k < sN ? ' is-earned' : '') + '">' + AW.icon('star') + '</span>';
+      stars = '<div class="np-stars">' + sH + '</div>';
+    }
+
+    var head = '<div class="np-label">' + (nd.label || '') + '</div>';
+    var sub = '', cta = '';
+
+    if (state === 'locked') {
+      /* the gentle "not yet" (D-54) — quiet microcopy, NO CTA, never a buzzer/shake/red */
+      sub = '<div class="np-sub np-locked">Not yet — finish what comes before.</div>';
+    } else if (kind === 'chest') {
+      head = '<div class="np-label">A gift of light</div>';
+      if (state === 'available') {
+        sub = '<div class="np-sub">+25 noor, for finishing the unit. It is yours to keep.</div>';
+        cta = '<button class="btn np-cta" type="button" data-claim="' + id + '">Open the gift</button>';
+      } else {
+        sub = '<div class="np-sub">Already opened. The light stayed with you.</div>';
+      }
+    } else if (kind === 'review') {
+      if (state === 'done') {
+        cta = '<a class="btn np-cta" href="' + href + '" data-morph>LEGENDARY AGAIN</a>';
+      } else {
+        sub = '<div class="np-sub">A gold, timed mastery run. Nothing can be lost.</div>';
+        cta = '<a class="btn np-cta" href="' + href + '" data-morph>START</a>';
+      }
+    } else {
+      if (state === 'done') {
+        cta = '<a class="btn np-cta" href="' + href + '" data-morph>REVIEW · improve your stars</a>';
+      } else {
+        sub = '<div class="np-sub">5–8 minutes · not yet begun</div>';
+        cta = '<a class="btn np-cta" href="' + href + '" data-morph>START · earn noor</a>';
+      }
+    }
+    return head + sub + stars + seeds + cta;
+  }
+
+  /* wireCta(pop, node) — the CTA behaviour. A lesson/review CTA hands the station's square to the
+     shared engine as the morph source at click time, then lets its <a href> navigate (05-04 Task 3
+     guards + stamps + tweens it). A chest CTA calls the 05-05 Festival claim hook if present (a
+     no-op stub until then) and closes the slip; the claim is never randomized. */
+  function wireCta(pop, node) {
+    var cta = pop.querySelector('.np-cta');
+    if (!cta) return;
+    if (cta.hasAttribute('data-claim')) {
+      cta.addEventListener('click', function () {
+        var cid = cta.getAttribute('data-claim');
+        if (typeof window.__awbaClaimChest === 'function') window.__awbaClaimChest(cid);
+        closePop();
+      });
+    } else if (cta.hasAttribute('data-morph')) {
+      cta.addEventListener('click', function () {
+        window.__awbaMorphEl = node.querySelector('.onode-mark') || null;   // ONE source; scripture never chosen
+      });
+    }
+  }
 
   function setupPopup() {
     if (popWired) return; popWired = true;
@@ -471,6 +548,13 @@
 
     /* the one shared mute pattern (D-60) — re-render on toggle so the glyph + aria swap */
     AW.bindMuteBtn(render);
+
+    /* the continue card carries the same morph (§S6): its chapter-term square is the source, handed
+       to the shared engine at click time; the <a href> then navigates and the guarded stamp tweens it. */
+    var ccGo = app.querySelector('.cc-go');
+    if (ccGo) ccGo.addEventListener('click', function () {
+      window.__awbaMorphEl = app.querySelector('.cc-term') || null;
+    });
 
     /* the daily ayah taps open the shipped citation sheet (a Page cream object over the world). The
        DAILY verses are Qur'an → no grade → AW.sheetRef renders the .r-ar.ayah Amiri Quran face split
