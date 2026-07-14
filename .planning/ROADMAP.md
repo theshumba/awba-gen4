@@ -132,6 +132,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Amber, green, and gold state colours pass WCAG AA contrast, and correct/incorrect states carry a non-colour signal (icon/shape), verified against the standard.
   4. A final typography/RTL stress-test (verifying FND-03 and CNT-04 at full-app scale) confirms transliteration diacritics (ʿ ʾ ā ī ū ḥ ṣ ṭ ẓ ḍ ġ) and Khattab `˹˺` brackets display correctly, and Arabic containers use `unicode-bidi: isolate` so mixed Arabic/Latin lines never scramble.
 **Plans**: 7 plans (3 Wave-0 foundation gates -> 3 narrow-seam implementation plans -> the two-stage gate; sequential waves, one executor at a time on main)
+**Wave model**: each plan's `wave` number is its SEQUENCE POSITION (sequential-on-main, one executor at a time), NOT a parallel batch — 06-04 (depends on 06-01) and 06-06 (depends on 06-01/06-04) carry wave numbers above max(deps)+1 by design, not as a dependency error.
   - [ ] 06-01-PLAN.md — a11y probe harness: keyboard/dialogs/announce probes (shipped baseline pinned ACTIVE, gaps { todo }-gated so the suite holds fail 0) (ACC-01/02)
   - [ ] 06-02-PLAN.md — typography/RTL gate: rewrite the broken glyph gate (14-face roster, real-string harvest) + rtl-audit.mjs + the neutral-copy typo-stress fixture (ACC-03 / FND-03 / CNT-04 re-verify, D-66)
   - [ ] 06-03-PLAN.md — contrast-audit.mjs: WCAG computed-style sweep over 20 pages + the full interaction-state forcing table (ACC-03, D-65)

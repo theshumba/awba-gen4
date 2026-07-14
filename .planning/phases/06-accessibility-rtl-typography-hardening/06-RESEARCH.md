@@ -337,9 +337,11 @@ Verified in-repo patterns to copy (not invent):
 
 ## Open Questions
 
-1. **The D-65 "numeric time already visible" premise is false against source** (review timer renders a bar + empty tnote only, js:2240-2243). Options: accept the 10s announcement as the sole text cue (zero visual change — safest under "no visual redesign"), or add a quiet Courier seconds readout (visual change, owner-walk item). Recommendation: announcement-only; log the discrepancy in the plan for the gate walk.
-2. **Ayah card conversion** (`<section role=button>` → `<button>`): flattens inner semantics (the Arabic span inside a button is still read, but as one blob). Alternative honouring D-62's spirit: keep the section, move the interactive affordance to an explicit inner "Read the citation" button. Recommendation: planner picks at plan time; either satisfies ACC-01.
-3. **Sheet accessible names**: extend `AW.sheet(html, label)` (backwards-compatible second arg) vs a generic fixed label. Recommendation: extend — sheetRef/sheetTerm/learn callers pass natural labels; default "Details".
+> All three were RESOLVED during Phase-6 planning — see the (RESOLVED — R-8/R-9/R-10) markers below.
+
+1. **The D-65 "numeric time already visible" premise is false against source** (review timer renders a bar + empty tnote only, js:2240-2243). Options: accept the 10s announcement as the sole text cue (zero visual change — safest under "no visual redesign"), or add a quiet Courier seconds readout (visual change, owner-walk item). Recommendation: announcement-only; log the discrepancy in the plan for the gate walk. **(RESOLVED — R-8: announcement-only adopted; a visible Courier seconds readout remains a deferred owner-ledger choice, surfaced at the 06-07 gate walk.)**
+2. **Ayah card conversion** (`<section role=button>` → `<button>`): flattens inner semantics (the Arabic span inside a button is still read, but as one blob). Alternative honouring D-62's spirit: keep the section, move the interactive affordance to an explicit inner "Read the citation" button. Recommendation: planner picks at plan time; either satisfies ACC-01. **(RESOLVED — R-9: keep the `<section>`, add a native inner "Read the citation" button — 06-06 T1; the sacred `.ayah` keeps its isolated scripture reading, law 3.)**
+3. **Sheet accessible names**: extend `AW.sheet(html, label)` (backwards-compatible second arg) vs a generic fixed label. Recommendation: extend — sheetRef/sheetTerm/learn callers pass natural labels; default "Details". **(RESOLVED — R-10: extend `AW.sheet(html, label)`, backwards-compatible, default "Details" — 06-04 T2; sheetRef/sheetTerm/learn callers pass natural labels.)**
 
 ## Environment Availability
 
