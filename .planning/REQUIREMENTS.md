@@ -68,10 +68,10 @@ Macro product scope is fixed by Josh's Gen-3 MVP (the owner-approved direction).
 ### Platform & delivery
 
 - [x] **PLT-01**: True responsive layout: full-bleed app on phones (dvh-safe, overscroll handled, safe-area insets), gracious centered-column presentation on desktop — no fixed 380px card
-- [ ] **PLT-02**: Installable PWA: manifest, lantern icon family (any+maskable+apple), root-scoped service worker (cache-first hashed/static assets, network-first navigations), offline works after first visit
-- [ ] **PLT-03**: A gentle "add to home screen" nudge exists (mitigates iOS 7-day localStorage eviction threat to the un-loseable promise) — mercy-toned, dismissible, never nagging
-- [ ] **PLT-04**: Site deploys as pure static files (GitHub Pages/Vercel compatible), zero build step; repo has a README covering structure, how Josh reviews (open files), and how to run the validator
-- [ ] **PLT-05**: Regression checklist carried from Gen-3 v1.1–v1.5 owner fixes, checked before ship (popup anchoring, footer spacing, timer teeth, accordion lenses, chest idempotency, TF selection visibility, back button rules)
+- [x] **PLT-02**: Installable PWA: manifest, lantern icon family (any+maskable+apple), root-scoped service worker (cache-first hashed/static assets, network-first navigations), offline works after first visit
+- [x] **PLT-03**: A gentle "add to home screen" nudge exists (mitigates iOS 7-day localStorage eviction threat to the un-loseable promise) — mercy-toned, dismissible, never nagging
+- [x] **PLT-04**: Site deploys as pure static files (GitHub Pages/Vercel compatible), zero build step; repo has a README covering structure, how Josh reviews (open files), and how to run the validator
+- [x] **PLT-05**: Regression checklist carried from Gen-3 v1.1–v1.5 owner fixes, checked before ship (popup anchoring, footer spacing, timer teeth, accordion lenses, chest idempotency, TF selection visibility, back button rules)
 
 ## v2 Requirements (deferred, recorded)
 
@@ -137,7 +137,7 @@ Every v1 requirement maps to exactly one phase. Coverage: 42/42 (100%). See `.pl
 | ACC-01 | Phase 6 | Complete |
 | ACC-02 | Phase 6 | Complete |
 | ACC-03 | Phase 6 | Complete |
-| PLT-02 | Phase 7 | Pending |
-| PLT-03 | Phase 7 | Pending |
-| PLT-04 | Phase 7 | Pending |
-| PLT-05 | Phase 7 | Pending |
+| PLT-02 | Phase 7 | Complete |
+| PLT-03 | Phase 7 | Complete |
+| PLT-04 | Phase 7 | Complete |
+| PLT-05 | Phase 7 | Complete |

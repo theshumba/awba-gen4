@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Lesson & Review Engine Port + Detail Layer** - All 19 data files render verbatim; reward choreography, sound, holds verified (completed 2026-07-13 — gate passed by owner directive, 5 review warnings fixed, VERIFICATION 5/5)
 - [x] **Phase 5: Learn Page & Cross-Page View Transitions** - Winding node path, live states, daily ayah, native page-to-page transitions (completed 2026-07-14 — gate passed by owner directive, review-fixed, VERIFICATION 5/5 incl. the VT-morph selector fix)
 - [x] **Phase 6: Accessibility, RTL & Typography Hardening** - Keyboard, aria-live, contrast, bidi + glyph stress-test across every screen (completed 2026-07-14 — all 7 plans, gate passed by owner directive, 1 review Warning fixed [W1 AW.sheet re-entrancy], VERIFICATION PASS; human sensory walk carried forward on the owner ledger)
-- [ ] **Phase 7: PWA Shell, Offline & Delivery** - Installable PWA, offline-after-first-visit, static deploy, Gen-3 regression ship-gate
+- [x] **Phase 7: PWA Shell, Offline & Delivery** - Installable PWA, offline-after-first-visit, static deploy, Gen-3 regression ship-gate (completed 2026-07-14 — manifest + lantern icon family + root-scoped service worker [precache/cache-first/network-first/activate-purge] + mercy-toned install nudge + README + PLT-05 Gen-3 regression gate; gate resolved by owner directive, code-review 0 findings, VERIFICATION PASS; device install/offline walk carried forward on the owner ledger) — **MILESTONE COMPLETE: all 7 phases done, the app is FINISHED**
 
 ## Phase Details
 
@@ -168,4 +168,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Lesson & Review Engine Port | 7/7 | Complete | 2026-07-13 |
 | 5. Learn Page & View Transitions | 6/6 | Complete | 2026-07-14 |
 | 6. Accessibility, RTL & Typography | 7/7 | Complete | 2026-07-14 |
-| 7. PWA Shell, Offline & Delivery | 0/TBD | Not started | - |
+| 7. PWA Shell, Offline & Delivery | 3/3 | Complete | 2026-07-14 |
