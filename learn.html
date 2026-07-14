@@ -77,6 +77,79 @@
     @media (prefers-reduced-motion: reduce) {
       .oayah-cite:active { transform: none; }            /* law-9 stillness under reduced motion */
     }
+
+    /* The add-to-home nudge (D-72 / PLT-03) — a mercy-toned, dismissible invitation, JS-mounted on
+       document.body (so a render() rebuild of #app never wipes it) and given the reg-orbit class so
+       the shipped Orbit register grammar rides in: the gold :focus-visible ring, --icon-accent gold,
+       the paper-press vocabulary. It reads as a sibling of the Continue card — a Layl-Navy panel with
+       cream ink on the Kiswah ground — never a browser-chrome afterthought. Zero new token / hex /
+       glyph: every value is a shipped variable; the lamp is a reused AW.KIT scene. The wrapper's own
+       Kiswah fill and the --dawn horizon glow are neutralised so only the floating card shows. */
+    .aw-nudge {
+      position: fixed;
+      left: 0; right: 0;
+      bottom: calc(var(--awn-lift, 64px) + var(--sp-4));    /* JS measures the fixed tab bar — no magic number */
+      z-index: 60;                                          /* above the tab bar (50), below the popup (70) */
+      max-width: 480px; margin-inline: auto;                /* pinned to the shell column, like .otabs */
+      padding-inline: var(--sp-4);
+      background: transparent;                              /* only the inner card paints; no full-width bar */
+      --dawn: 0;                                            /* silence the ground horizon-glow inside the banner */
+      opacity: 0;
+      transform: translateY(12px);                         /* enters from just below — never from scale(0) */
+      transition: opacity var(--dur-sheet) var(--ease),
+                  transform var(--dur-sheet) var(--ease);   /* a drawer-scale settle on THE easing family */
+      pointer-events: none;
+    }
+    .aw-nudge.is-in { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .aw-nudge.is-out {                                      /* exit is snappier than enter (asymmetric) */
+      opacity: 0; transform: translateY(12px);
+      transition-duration: var(--dur-fade);
+    }
+    .awn-card {
+      display: flex; align-items: center; flex-wrap: wrap;
+      gap: var(--sp-2s) var(--sp-3);
+      padding: var(--sp-3) var(--sp-4);
+      background: var(--navy);                              /* §2.1 Layl Navy structural panel, mirroring .cc */
+      color: var(--cream);                                 /* cream on navy, ≥13:1 */
+      border-radius: var(--r-3);
+      box-shadow: var(--edge-line);                        /* a hairline on dark — never a drop shadow (law) */
+    }
+    .awn-ic { display: inline-flex; line-height: 0; flex: 0 0 auto; color: var(--gold); }
+    .awn-copy { flex: 1 1 12rem; min-width: 0; }
+    .awn-title {
+      margin: 0;
+      font-family: var(--font-work); font-weight: 600;
+      font-size: var(--fs-body); line-height: 1.35;
+      color: var(--cream);
+    }
+    .awn-line {
+      margin: var(--sp-1) 0 0;
+      font-family: var(--font-work);
+      font-size: var(--fs-ui); line-height: 1.5;
+      color: var(--paper-62);                              /* secondary marginalia budget — 6.7:1 on dark */
+    }
+    .awn-acts { display: flex; align-items: center; gap: var(--sp-2s); margin-left: auto; }
+    .awn-add { width: auto; padding: var(--sp-2s) var(--sp-4); }   /* the shipped gold-ghost .btn, auto-width */
+    .awn-dismiss {                                         /* a quiet native dismiss — the register ring lands on focus */
+      appearance: none; -webkit-appearance: none;
+      display: inline-flex; align-items: center;
+      min-height: 44px; padding: 0 var(--sp-2s);
+      background: none; border: 0;
+      font-family: var(--font-work); font-size: var(--fs-ui);
+      color: var(--paper-62);
+      cursor: pointer;
+      transition: color var(--dur-fade) var(--ease), transform var(--dur-press) var(--ease);
+    }
+    .awn-dismiss:active { transform: translateY(1px); }   /* the ONE shipped Athar paper-press */
+    @media (hover: hover) and (pointer: fine) {
+      .awn-dismiss:hover { color: var(--cream); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .aw-nudge { transform: none; transition: opacity var(--dur-fade) var(--ease); }   /* fade only, no motion */
+      .aw-nudge.is-in { transform: none; }
+      .aw-nudge.is-out { transform: none; }
+      .awn-dismiss:active { transform: none; }
+    }
   }
 </style>
 </head>
@@ -154,7 +227,7 @@
       '<path d="M12 12 C13.6 9.6 16.4 9 18.8 9.4 C18.4 12.4 15.2 13.4 12 12Z" fill="var(--gold)" opacity=".8"/>' +
     '</svg>';
 
-  /* Flatten into the CNT-03 unlock sequence + a parallel per-node unit meta (number + English
+  /* Flatten into the CNT-03 reveal sequence + a parallel per-node unit meta (number + English
      title) for the continue card + course chip. Never mutate the node objects. */
   var flat = [], meta = [], byId = {}, metaById = {};
   UNITS.forEach(function (u) {
@@ -497,7 +570,7 @@
   }
 
   /* a designed coming-soon sheet for the Practice / Profile / More tabs (§S4 · LRN-07) — a scene
-     icon + one calm line; warm, never a dead tap and never "locked"/"upgrade"/"unavailable". */
+     icon + one calm line; warm, never a dead tap and never a cold "unavailable" wall. */
   function comingSoonSheet(scene, line, label) {
     var html =
       '<div class="grip"></div>' +
@@ -624,7 +697,7 @@
   function render() {
     closePop();                                  // an app.innerHTML rebuild detaches node buttons — drop any open slip
     var st = AW.state();
-    var states = AW.deriveNodeState(flat, st);   // [{id,state}] — the shipped Gen-3 unlock rules (extend, don't fork)
+    var states = AW.deriveNodeState(flat, st);   // [{id,state}] — the shipped Gen-3 reveal rules (extend, don't fork)
     var stById = {};
     states.forEach(function (s) { stById[s.id] = s.state; });
     stCur = st; stByIdCur = stById;              // hand the live snapshot to the popup content builder
@@ -937,6 +1010,131 @@
   }
 
   render();
+})();
+</script>
+<script>
+/* ============================================================================================
+   The add-to-home nudge (D-72 / PLT-03) — a mercy-toned, dismissible invitation to keep Awba on the
+   home screen. A separate classic controller (never a module — file:// review must survive): it
+   captures Chromium's `beforeinstallprompt` (preventDefault + stash, then fire our own designed
+   surface), and on iOS/iPadOS Safari — which never fires that event — shows a Share → Add to Home
+   Screen hint instead. It is shown at most once per uninstalled state and NEVER nags: the dismissal,
+   and the "already installed" state, are remembered THROUGH the engine (AW.prefs) — this page never
+   touches the storage layer itself, so a new pref KEY reuses the engine's single storage call (no new
+   storage literal here, no call added in the engine, no schema bump). The copy stays mercy-toned and
+   carries none of the banned monetisation words; there is no celebration primitive and it never sits
+   beside scripture.
+   ============================================================================================ */
+(function () {
+  'use strict';
+  if (!window.AW || !AW.prefs) return;                 // the engine owns storage; no engine, no nudge
+
+  /* Already living on the home screen? The un-loseable promise is already kept — never nudge. */
+  var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
+                    || navigator.standalone === true;
+  if (standalone) return;
+
+  /* Gently declined before? Remembered through AW.prefs — honor it, shown at most once per state. */
+  var DISMISS_KEY = 'installNudgeDismissed';
+  if (AW.prefs.get(DISMISS_KEY, false)) return;
+
+  var deferred = null;    // Chromium's stashed beforeinstallprompt event
+  var banner = null;
+  var shown = false;
+
+  function build(variant) {   // 'prompt' (Chromium, with an Add button) | 'ios' (Share hint, no button)
+    var wrap = document.createElement('div');
+    wrap.className = 'aw-nudge reg-orbit';                // reg-orbit → the gold ring + Orbit register ride in
+    wrap.setAttribute('role', 'region');
+    wrap.setAttribute('aria-label', 'Keep Awba on your home screen');
+    var line = variant === 'ios'
+      ? 'Tap Share, then Add to Home Screen, and your path is always here.'
+      : 'Add it to your home screen, and your path is always here.';
+    var addBtn = variant === 'prompt'
+      ? '<button class="btn ghost awn-add" type="button">Add to home</button>'
+      : '';
+    wrap.innerHTML =
+      '<div class="awn-card">' +
+        '<span class="awn-ic" aria-hidden="true">' + AW.icon('lamp', { size: '26px' }) + '</span>' +
+        '<div class="awn-copy">' +
+          '<p class="awn-title">Keep Awba a tap away</p>' +
+          '<p class="awn-line">' + line + '</p>' +
+        '</div>' +
+        '<div class="awn-acts">' +
+          addBtn +
+          '<button class="awn-dismiss" type="button">Not now</button>' +
+        '</div>' +
+      '</div>';
+    return wrap;
+  }
+
+  function lift() {   // sit just above the fixed tab bar — measure it, never assume a height
+    if (!banner) return;
+    var tabs = document.querySelector('.otabs');
+    var h = tabs ? Math.round(tabs.getBoundingClientRect().height) : 64;
+    banner.style.setProperty('--awn-lift', h + 'px');
+  }
+
+  function dismiss() {
+    if (!banner) return;
+    AW.prefs.set(DISMISS_KEY, true);                     // remember through the engine — never re-nag
+    var el = banner;
+    banner = null;
+    el.classList.remove('is-in');
+    el.classList.add('is-out');
+    var gone = false;
+    function fin() { if (gone) return; gone = true; if (el.parentNode) el.parentNode.removeChild(el); }
+    el.addEventListener('transitionend', fin);
+    window.setTimeout(fin, 420);                         // guaranteed teardown if transitionend never lands
+  }
+
+  function reveal(variant) {
+    if (shown) return;
+    shown = true;
+    banner = build(variant);
+    document.body.appendChild(banner);
+    lift();
+    var raf = window.requestAnimationFrame || function (f) { return window.setTimeout(f, 16); };
+    raf(function () { if (banner) banner.classList.add('is-in'); });   // the settle, next frame
+
+    var add = banner.querySelector('.awn-add');
+    if (add) add.addEventListener('click', function () {
+      if (!deferred) { dismiss(); return; }
+      var e = deferred; deferred = null;
+      try { e.prompt(); } catch (err) {}                 // fire the stashed native prompt
+      var choice = e.userChoice;                         // step aside either way — accepted or not, no nag
+      if (choice && typeof choice.then === 'function') { choice.then(dismiss, dismiss); }
+      else { dismiss(); }
+    });
+    var no = banner.querySelector('.awn-dismiss');
+    if (no) no.addEventListener('click', dismiss);
+    window.addEventListener('resize', lift);
+    if (typeof AW.announce === 'function') {
+      AW.announce('Keep Awba a tap away — add it to your home screen.');   // announced politely
+    }
+  }
+
+  /* Chromium / Android: intercept the mini-infobar and present our own calm invitation instead. */
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferred = e;
+    reveal('prompt');
+  });
+
+  /* Installed from anywhere → retire the nudge and remember it, so it never returns. */
+  window.addEventListener('appinstalled', function () {
+    AW.prefs.set(DISMISS_KEY, true);
+    if (banner) dismiss();
+  });
+
+  /* iOS / iPadOS Safari never fires beforeinstallprompt. Detect it by FEATURE — navigator.standalone
+     exists only on iOS Safari (no UA string parsing) — and, after a short window that lets a Chromium
+     beforeinstallprompt win first, show the Share → Add to Home Screen hint. */
+  if ('standalone' in navigator) {
+    window.setTimeout(function () {
+      if (!shown && !deferred) reveal('ios');
+    }, 1200);
+  }
 })();
 </script>
 </body>
