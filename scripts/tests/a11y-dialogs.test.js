@@ -289,13 +289,13 @@ test('D-63: focus returns to the triggering node when the popup closes — lands
   assert.equal(result.popup.focusReturnedToTrigger, true, 'closing the popup must restore focus to the .onode that opened it');
 });
 
-test('D-63: the Festival trap wraps Tab focus within itself — lands in 06-06', { todo: 'D-63: Festival containment-wrap lands in 06-06' }, () => {
+test('D-63: the Festival trap wraps Tab focus within itself — lands in 06-06', () => {
   if (chromeMissing) return;
   assert.ok(result, 'the driver produced a run');
   assert.equal(result.festival.wrap.defaultPrevented, true, 'a Tab dispatched at the Festival boundary must be intercepted by the shared focus-trap helper, even in its single-focusable self-loop');
 });
 
-test('D-63: focus returns to the re-rendered chest node after the Festival closes — lands in 06-06', { todo: 'D-63: Festival focus-return lands in 06-06' }, () => {
+test('D-63: focus returns to the re-rendered chest node after the Festival closes — lands in 06-06', () => {
   if (chromeMissing) return;
   assert.ok(result, 'the driver produced a run');
   assert.equal(result.festival.focusReturnedToChestNode, true, 'closeFestival() must re-query the chest node by data-id AFTER render() and focus it (Pitfall 6)');

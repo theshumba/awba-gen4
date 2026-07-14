@@ -449,7 +449,8 @@
         '<div class="osh-sub">' + (n === 1 ? 'day you came back' : 'days you came back') + '</div>' +
       '</div>' +
       '<div class="weekcal osh-week">' + dots + '</div>' +
-      '<div class="osh-note">This number can never break and never reset. Every return adds to it, however long the gap. That is the point of this place.</div>');
+      '<div class="osh-note">This number can never break and never reset. Every return adds to it, however long the gap. That is the point of this place.</div>',
+      'Your streak');                    /* D-63/R-10 — a natural accessible name for the sheet */
   }
 
   /* the noor sheet — a gold-filled Marcellus noor count + "noor gathered" + the verbatim noor note. */
@@ -461,7 +462,8 @@
         '<div class="osh-big osh-gold">' + st.noor + '</div>' +
         '<div class="osh-sub">noor gathered</div>' +
       '</div>' +
-      '<div class="osh-note">Light you collect as you learn. It is never spent against you, never dangled, and it never runs out.</div>');
+      '<div class="osh-note">Light you collect as you learn. It is never spent against you, never dangled, and it never runs out.</div>',
+      'Noor gathered');                  /* D-63/R-10 — a natural accessible name for the sheet */
   }
 
   /* the course switcher — Aqeedah ACTIVE (an olive "sound/verified" pill) + Fiqh/Seerah/Qur'an as
@@ -480,18 +482,20 @@
       row(false, 'lantern', 'Aqeedah · Level 1', 'ACTIVE', true) +
       row(true, 'open', 'Fiqh · Level 1', 'COMING SOON', false) +
       row(true, 'crescent', 'Seerah', 'COMING SOON', false) +
-      row(true, 'cite', 'Qur’an', 'COMING SOON', false));
+      row(true, 'cite', 'Qur’an', 'COMING SOON', false),
+      'Switch course');                  /* D-63/R-10 — a natural accessible name for the sheet */
   }
 
   /* a designed coming-soon sheet for the Practice / Profile / More tabs (§S4 · LRN-07) — a scene
      icon + one calm line; warm, never a dead tap and never "locked"/"upgrade"/"unavailable". */
-  function comingSoonSheet(scene, line) {
-    AW.sheet(
+  function comingSoonSheet(scene, line, label) {
+    var html =
       '<div class="grip"></div>' +
       '<div class="ocs-body">' +
         '<span class="ocs-ic">' + AW.icon(scene, { size: '40px' }) + '</span>' +
         '<p class="ocs-line">' + line + '</p>' +
-      '</div>');
+      '</div>';
+    AW.sheet(html, label);               /* D-63/R-10 — the tab name is the sheet's accessible name */
   }
 
   /* ============================================================================================
@@ -538,7 +542,8 @@
       '</div>';
   }
 
-  function closeFestival(overlay, esc) {
+  function closeFestival(overlay, esc, nodeId) {
+    if (overlay.__festUntrap) { overlay.__festUntrap(); overlay.__festUntrap = null; }   /* dispose the shared trap (D-63) */
     document.removeEventListener('keydown', esc);
     document.documentElement.classList.remove('sheet-lock');
     render();                              /* refresh the path FIRST (the chest node now reads done) —
@@ -548,6 +553,13 @@
     function fin() { if (done) return; done = true; if (overlay.parentNode) overlay.remove(); }
     overlay.addEventListener('transitionend', fin);
     setTimeout(fin, 500);                  /* fallback when no transition fires (reduced motion) */
+    /* focus-return-after-render (Pitfall 6): the CTA that opened this lived in the now-removed popup and
+       render() just rebuilt the path, so re-query the chest node by data-id AFTER render() and land
+       focus on it — never dump the keyboard user at <body>. */
+    if (nodeId) {
+      var chestNode = app.querySelector('.onode[data-id="' + nodeId + '"]');
+      if (chestNode && chestNode.focus) chestNode.focus();
+    }
   }
 
   /* openFestival — append the .reg-festival threshold OVERLAY to document.body (never inside
@@ -564,15 +576,18 @@
     overlay.innerHTML = festivalHtml(m.un, fmtDate(new Date()), AW.ringSeed());
     document.body.appendChild(overlay);
     document.documentElement.classList.add('sheet-lock');
-    function esc(e) { if (e.key === 'Escape') closeFestival(overlay, esc); }
+    function esc(e) { if (e.key === 'Escape') closeFestival(overlay, esc, nodeId); }
     document.addEventListener('keydown', esc);
     overlay.addEventListener('click', function (e) {
-      if (e.target === overlay || (e.target.closest && e.target.closest('.ofest-close'))) closeFestival(overlay, esc);
+      if (e.target === overlay || (e.target.closest && e.target.closest('.ofest-close'))) closeFestival(overlay, esc, nodeId);
     });
     var raf = window.requestAnimationFrame || function (f) { return setTimeout(f, 16); };
     raf(function () { overlay.classList.add('open'); });   /* a quiet threshold fade-in */
     var btn = overlay.querySelector('.ofest-close');
     if (btn && btn.focus) btn.focus();
+    /* contain Tab within the threshold via the ONE shared helper — the only focusable is .ofest-close,
+       so the cycle is a self-loop (Tab keeps you on "Keep the light"); disposed in closeFestival. */
+    overlay.__festUntrap = AW._trapFocus(overlay);
   }
 
   /* window.__awbaClaimChest(nodeId) — the hook the 05-04 popup CTA calls. The write-once guard makes
@@ -851,17 +866,17 @@
     });
     var tP = document.getElementById('tabPractice');
     if (tP) tP.addEventListener('click', function () {
-      comingSoonSheet('beads', 'Practice is on its way. For now, keep walking the path.');
+      comingSoonSheet('beads', 'Practice is on its way. For now, keep walking the path.', 'Practice');
     });
     var tR = document.getElementById('tabReturns');
     if (tR) tR.addEventListener('click', openStreakSheet);
     var tPr = document.getElementById('tabProfile');
     if (tPr) tPr.addEventListener('click', function () {
-      comingSoonSheet('man', 'Your corner is on its way. For now, keep walking the path.');
+      comingSoonSheet('man', 'Your corner is on its way. For now, keep walking the path.', 'Profile');
     });
     var tM = document.getElementById('tabMore');
     if (tM) tM.addEventListener('click', function () {
-      comingSoonSheet('pattern', 'There is more to come. For now, keep walking the path.');
+      comingSoonSheet('pattern', 'There is more to come. For now, keep walking the path.', 'More');
     });
 
     /* the continue card carries the same morph (§S6): its chapter-term square is the source, handed
