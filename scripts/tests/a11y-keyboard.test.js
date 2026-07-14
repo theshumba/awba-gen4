@@ -296,7 +296,7 @@ test('ACC-01: the daily ayah card exposes a native inner citation button (R-9: b
   assert.equal(learnResult.ayahCiteButton, true, 'a native "Read the citation" button must exist inside #ayahHost — the section itself keeps its scripture semantics (R-9), the button owns keyboard/SR');
 });
 
-test('ACC-01: selecting an .opt/.tf/.tile sets aria-pressed="true" as a non-colour selection cue (R-11) — lands in 06-05', { todo: 'ACC-01: aria-pressed selection cue lands in 06-05' }, () => {
+test('ACC-01: selecting an .opt/.tf/.tile sets aria-pressed="true" as a non-colour selection cue (R-11) — lands in 06-05', () => {
   if (chromeMissing) return;
   assert.ok(lessonResult, 'the lesson driver produced a run');
   assert.equal(lessonResult.selectedAriaPressed, 'true', 'a selected quiz option must carry aria-pressed="true" — the border-recolour alone is a hue-only signal (WCAG 1.4.1)');

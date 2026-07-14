@@ -1995,20 +1995,24 @@ function AwbaLesson(cfg) {
     var sel = it.t === 'mc' ? '.opt' : '.tf';
     var nodes = root.querySelectorAll(sel), chosen = null;
     var check = document.getElementById('check');
+    check.disabled = true;   // ACC-01/Pitfall 4: the class-only 'disabled' Check was focusable + silently inert — a real disabled attribute keeps it out of the tab order until an option is chosen
     nodes.forEach(function (n) {
       n.addEventListener('click', function () {
         if (answered) return;
-        nodes.forEach(function (x) { x.style.borderColor = ''; });
+        nodes.forEach(function (x) { x.style.borderColor = ''; x.style.borderWidth = ''; x.style.transform = ''; x.setAttribute('aria-pressed', 'false'); });   // clear the prior selection cue on re-selection
         n.style.borderColor = 'var(--crimson)';           // persistent selection cue (token-only)
+        n.style.borderWidth = '3px';                       // ACC-03 non-colour channel: 2→3px "thicker" (box-sizing:border-box → no reflow), zero new hex
+        n.style.transform = 'translateY(1px)';             // ACC-03 "pushed in": the shipped paper-press held static (law 9, no new keyframe — rides the existing --dur-press transition)
+        n.setAttribute('aria-pressed', 'true');            // ACC-03/R-11: the non-colour selection state a SR + a colourblind eye can read (WCAG 1.4.1)
         chosen = it.t === 'mc' ? +n.dataset.i : (n.dataset.v === 'true');
-        check.classList.remove('disabled');
+        check.classList.remove('disabled'); check.disabled = false;   // an option is chosen — the Check is now a live control
       });
     });
     check.addEventListener('click', function () {
       if (answered || chosen === null) return;
       answered = true;
       var ok = chosen === it.c;
-      nodes.forEach(function (x) { x.style.pointerEvents = 'none'; x.style.borderColor = ''; });
+      nodes.forEach(function (x) { x.style.pointerEvents = 'none'; x.style.borderColor = ''; x.style.borderWidth = ''; x.style.transform = ''; x.disabled = true; });   // resolved options leave the tab order (real disabled, not just pointer-events — Pitfall 4); the selection cue clears so the verdict styling reads clean
       if (it.t === 'mc') {
         nodes[it.c].classList.add('correct');            // gold dot draws on the answer
         if (!ok) nodes[chosen].classList.add('wrong');   // law-8 grey ink-blot on the miss
@@ -2024,12 +2028,16 @@ function AwbaLesson(cfg) {
     var box = document.getElementById('lstilebox'), bankEl = document.getElementById('lsbank'),
       check = document.getElementById('check');
     var placed = [];
-    function refresh() { check.classList.toggle('disabled', placed.length === 0); }
+    check.disabled = true;   // ACC-01/Pitfall 4: the class-only 'disabled' Check gets a real disabled attribute until a tile is placed
+    function refresh() { var empty = placed.length === 0; check.classList.toggle('disabled', empty); check.disabled = empty; }
     bankEl.querySelectorAll('.tile').forEach(function (t) {
       t.addEventListener('click', function () {
         if (answered || t.classList.contains('used')) return;
         t.classList.add('used'); t.style.opacity = '.35'; t.style.pointerEvents = 'none';
         var bt = document.createElement('button'); bt.className = 'tile'; bt.type = 'button'; bt.textContent = t.textContent;
+        bt.setAttribute('aria-pressed', 'true');   // ACC-03/R-11: a placed token reads as pressed (its non-colour state — the bank tile also dims to .35)
+        bt.style.borderWidth = '3px';              // ACC-03 "thicker" (border-box → no reflow), zero new hex
+        bt.style.transform = 'translateY(1px)';    // ACC-03 "pushed in": the shipped paper-press held static (law 9, no new keyframe)
         bt.addEventListener('click', function () {
           if (answered) return;
           bt.remove(); t.classList.remove('used'); t.style.opacity = ''; t.style.pointerEvents = '';
@@ -2044,8 +2052,8 @@ function AwbaLesson(cfg) {
       answered = true;
       var built = placed.map(function (b) { return b.textContent; });
       var ok = JSON.stringify(built) === JSON.stringify(it.solution);
-      box.querySelectorAll('.tile').forEach(function (b) { b.style.pointerEvents = 'none'; b.style.borderColor = ok ? 'var(--gold)' : 'var(--rule)'; });
-      bankEl.querySelectorAll('.tile').forEach(function (b) { b.style.pointerEvents = 'none'; });
+      box.querySelectorAll('.tile').forEach(function (b) { b.style.pointerEvents = 'none'; b.style.transform = ''; b.style.borderColor = ok ? 'var(--gold)' : 'var(--rule)'; b.disabled = true; });   // resolved tokens leave the tab order (real disabled — Pitfall 4)
+      bankEl.querySelectorAll('.tile').forEach(function (b) { b.style.pointerEvents = 'none'; b.disabled = true; });
       resolve(ok, it);
     });
   }
@@ -2408,7 +2416,7 @@ function AwbaReview(cfg) {
     if (answered) return; answered = true;
     skipped.push(queue[qi]);
     tnote.textContent = 'time — it will wait at the end';
-    root.querySelectorAll('.opt,.tf').forEach(function (x) { x.style.pointerEvents = 'none'; });
+    root.querySelectorAll('.opt,.tf').forEach(function (x) { x.style.pointerEvents = 'none'; x.style.borderWidth = ''; x.style.transform = ''; x.disabled = true; });   // the parked question's options leave the tab order too (real disabled — Pitfall 4)
     var fw = document.getElementById('footwrap');
     fw.className = 'foot rv-timeout';
     fw.innerHTML = '<h2 class="pintro">Time — this one will wait at the end</h2>' +
@@ -2503,19 +2511,23 @@ function AwbaReview(cfg) {
     var sel = it.tf ? '.tf' : '.opt';
     var nodes = root.querySelectorAll(sel), chosen = null;
     var check = document.getElementById('check');
+    check.disabled = true;   // ACC-01/Pitfall 4: the class-only 'disabled' Check gets a real disabled attribute until an option is chosen
     nodes.forEach(function (n) {
       n.addEventListener('click', function () {
         if (answered) return;
-        nodes.forEach(function (x) { x.style.borderColor = ''; });
+        nodes.forEach(function (x) { x.style.borderColor = ''; x.style.borderWidth = ''; x.style.transform = ''; x.setAttribute('aria-pressed', 'false'); });   // clear the prior selection cue on re-selection
         n.style.borderColor = 'var(--gold)';           // selection cue — gold on Orbit, never crimson
+        n.style.borderWidth = '3px';                    // ACC-03 non-colour channel: 2→3px "thicker" (box-sizing:border-box → no reflow), zero new hex
+        n.style.transform = 'translateY(1px)';          // ACC-03 "pushed in": the shipped paper-press held static (law 9, no new keyframe — rides the existing --dur-press transition)
+        n.setAttribute('aria-pressed', 'true');         // ACC-03/R-11: the non-colour selection state a SR + a colourblind eye can read (WCAG 1.4.1)
         chosen = it.tf ? (n.dataset.v === 'true') : +n.dataset.i;
-        check.classList.remove('disabled');
+        check.classList.remove('disabled'); check.disabled = false;   // an option is chosen — the Check is now a live control
       });
     });
     check.addEventListener('click', function () {
       if (answered) return; if (chosen === null) return; answered = true; clearInterval(timer);
       var ok = chosen === it.c;
-      nodes.forEach(function (x) { x.style.pointerEvents = 'none'; x.style.borderColor = ''; });
+      nodes.forEach(function (x) { x.style.pointerEvents = 'none'; x.style.borderColor = ''; x.style.borderWidth = ''; x.style.transform = ''; x.disabled = true; });   // resolved options leave the tab order (real disabled — Pitfall 4); the selection cue clears for the verdict styling
       if (it.tf) {
         nodes.forEach(function (x) { if ((x.dataset.v === 'true') === it.c) x.classList.add('correct'); });
         if (!ok) nodes.forEach(function (x) { if (x.dataset.v === String(chosen)) x.classList.add('wrong'); });
