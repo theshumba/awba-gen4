@@ -271,28 +271,28 @@ test('ACC-02: a body-level role="status" region exists and survives repeated scr
   assert.notEqual(lessonResult.regionAfterSwaps, null, 'the SAME region must still be present after the runner wipes document.body.innerHTML and swaps several screens');
 });
 
-test('ACC-02: a correct lesson answer composes one "{praise} +12 noor" announcement — lands in 06-05', { todo: 'ACC-02: lesson correct announce lands in 06-05' }, () => {
+test('ACC-02: a correct lesson answer composes one "{praise} +12 noor" announcement — lands in 06-05', () => {
   if (chromeMissing) return;
   assert.ok(lessonResult, 'the lesson driver produced a run');
   assert.equal(lessonResult.correctAnnounceChanged, true, 'resolve() must set the region text on a correct answer');
   assert.match(lessonResult.correctAnnounce || '', /^(That’s it\.|Beautiful\.|Exactly right\.|Masha’Allah\.) \+12 noor/, 'the composed announce reuses the SAME visible praise word + AW.PER_LESSON noor amount');
 });
 
-test('ACC-02: a missed lesson answer composes one "Nothing lost. {gentle}" announcement — lands in 06-05', { todo: 'ACC-02: lesson miss announce lands in 06-05' }, () => {
+test('ACC-02: a missed lesson answer composes one "Nothing lost. {gentle}" announcement — lands in 06-05', () => {
   if (chromeMissing) return;
   assert.ok(lessonResult, 'the lesson driver produced a run');
   assert.equal(lessonResult.missAnnounceChanged, true, 'resolve() must set the region text on a missed answer');
   assert.match(lessonResult.missAnnounce || '', /^Nothing lost\./, 'the law-8 "Nothing lost" line opens the miss announcement, followed by the beat\'s own gentle line');
 });
 
-test('ACC-02: revealing a reflection announces "+15 noor — a reflection" — lands in 06-05', { todo: 'ACC-02: reflect announce lands in 06-05' }, () => {
+test('ACC-02: revealing a reflection announces "+15 noor — a reflection" — lands in 06-05', () => {
   if (chromeMissing) return;
   assert.ok(lessonResult, 'the lesson driver produced a run');
   assert.equal(lessonResult.reflectAnnounceChanged, true, 'the reflect reveal handler must set the region text');
   assert.equal(lessonResult.reflectAnnounce, '+15 noor — a reflection', 'the reflect reveal announces the exact AW.REFLECT amount');
 });
 
-test('ACC-02: each reward screen swap moves focus to that screen\'s heading (R-10, focus not announce) — lands in 06-05', { todo: 'ACC-02: reward focus-to-heading lands in 06-05' }, () => {
+test('ACC-02: each reward screen swap moves focus to that screen\'s heading (R-10, focus not announce) — lands in 06-05', () => {
   if (chromeMissing) return;
   assert.ok(lessonResult, 'the lesson driver produced a run');
   assert.equal(lessonResult.rewardFocusedHeading, true, 'the verdict screen\'s .rw-word heading must receive focus (tabindex="-1" + .focus()) after the innerHTML swap');

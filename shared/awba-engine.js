@@ -546,11 +546,13 @@ if (typeof document !== 'undefined') {
      — which always lands AFTER a runner's own inline script (further down the same body) has
      already run and wiped body.innerHTML, so the region is never caught by that wipe. `AW.announce`
      sets `textContent` ONLY — never innerHTML, so no markup/script can ever reach the region
-     (T-06-04a) — through a 150ms trailing last-write-wins coalescer (a second call within the
-     window replaces the still-pending text); an identical repeat string is re-announced via
+     (T-06-04a). The write is SYNCHRONOUS last-write-wins (a later call in the same task replaces
+     the text at once, no trailing delay), so an in-place event's line is inspectable in the very
+     task that fired it — the 06-05 a11y probes read the region synchronously right after the
+     triggering .click(); the runners announce exactly ONCE per resolve/answer, so there is no burst
+     to batch (Pitfall 9 / T-06-05b). An identical repeat string is re-announced via
      clear-then-set-in-rAF, since some screen readers do not re-announce a node whose text didn't
      change. */
-  var announceTimer = null;
   var ensureAnnounceRegion = function () {
     if (!document.body) return null;
     var r = document.body.querySelector(':scope > [role="status"]');
@@ -569,19 +571,15 @@ if (typeof document !== 'undefined') {
   }
   AW.announce = function (text) {
     var next = text == null ? '' : String(text);
-    if (announceTimer) clearTimeout(announceTimer);
-    announceTimer = setTimeout(function () {
-      announceTimer = null;
-      var r = ensureAnnounceRegion();
-      if (!r) return;
-      if (r.textContent === next) {
-        r.textContent = '';
-        var raf = window.requestAnimationFrame || function (cb) { setTimeout(cb, 0); };
-        raf(function () { r.textContent = next; });
-      } else {
-        r.textContent = next;
-      }
-    }, 150);
+    var r = ensureAnnounceRegion();
+    if (!r) return;
+    if (r.textContent === next) {
+      r.textContent = '';
+      var raf = window.requestAnimationFrame || function (cb) { setTimeout(cb, 0); };
+      raf(function () { var rr = ensureAnnounceRegion(); if (rr) rr.textContent = next; });
+    } else {
+      r.textContent = next;
+    }
   };
 }
 
@@ -1972,6 +1970,7 @@ function AwbaLesson(cfg) {
           shown = true;
           noorEarned += AW.REFLECT;
           bumpNoor();
+          AW.announce('+' + AW.REFLECT + ' noor — a reflection');   // the reflect reveal earns AW.REFLECT — announced once, reusing the verbatim amount
           document.getElementById('lsmodel').innerHTML =
             '<div class="model"><div class="kicker">A reflection · +' + AW.REFLECT + ' noor</div><p>' + (it.model || '') + '</p></div>';
           c.textContent = 'Continue';
@@ -2064,8 +2063,11 @@ function AwbaLesson(cfg) {
     bumpNoor();
     if (ok) AW.sound('correct'); else AW.sound('incorrect');
     var fw = document.getElementById('lsfoot');
+    var say = '';   // R-10: ONE composed line per resolve() into the body-level region — the visible #lsfoot is NEVER made a live region (Pitfall 9); numbers reuse AW.PER_LESSON verbatim (no mechanics change)
     if (ok) {
       var title = PRAISE[correct % PRAISE.length];
+      // reuse the SAME praise word the foot shows + the shipped noor amount; fold the combo/3-streak into the one string (comboShow gates it exactly as the visible chip does)
+      say = title + ' +' + AW.PER_LESSON + ' noor' + (AW.comboShow(combo) ? ' — ' + combo + ' in a row' : '');
       var chip = AW.comboShow(combo)
         ? '<span class="dab">' + AW.icon('spark') + '</span><span class="ls-count">' + combo + ' in a row</span>'
         : '';
@@ -2084,11 +2086,13 @@ function AwbaLesson(cfg) {
         }, 260);
       }
     } else {
+      say = 'Nothing lost. ' + (it.gentle || '');   // law-8 mercy line + the beat's own gentle line — no noor is lost, nothing scolds
       fw.innerHTML =
         '<h2 class="pintro">Nothing lost</h2>' +
         '<p class="opt-why">' + (it.gentle || '') + '</p>' +
         btn('Continue', 'retry') + backCtl();
     }
+    AW.announce(say);   // the single in-place announce for this answer (correct or miss)
     document.getElementById('cont').addEventListener('click', function () { stepIndex++; next(); });
     bindBack();
   }
@@ -2104,6 +2108,10 @@ function AwbaLesson(cfg) {
 
   function setGround(reg) { if (shellEl) shellEl.className = reg + ' ls-shell'; }   // Page → Orbit → Sky
   function delay(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }   // the 60ms stagger gap
+  /* focusHeading — R-10: after a reward screen swap, land focus on that screen's heading (tabindex=-1)
+     so focus never evaporates to <body> and the SR reads the new screen from its start. focus() for the
+     screen change; the heading is NEVER also announced (Pitfall 2 — no double-speak). */
+  function focusHeading(sel) { var h = root.querySelector(sel); if (h) h.focus(); }
 
   /* verdict stars — shape-first gold INK: a filled .dab (gold + check) per earned star, a hollow
      .dab (ring) per unearned, in the shipped [data-state] grammar (D-45). The .dab primitive drifts
@@ -2152,7 +2160,7 @@ function AwbaLesson(cfg) {
     root.innerHTML =
       '<div class="rw-verdict">' +
       starRow(stars) +
-      '<h1 class="rw-word">' + word + '</h1>' +
+      '<h1 class="rw-word" tabindex="-1">' + word + '</h1>' +
       '<p>' + sub + '</p>' +
       '<div class="rw-stats">' +
       statTile('spark', '+' + noorEarned, 'Noor') +
@@ -2161,6 +2169,7 @@ function AwbaLesson(cfg) {
       '</div></div>' +
       foot(btn('Claim your noor'));
     document.getElementById('cont').addEventListener('click', rewardNoor);   // wire before the reveal
+    focusHeading('.rw-word');   // R-10: focus this screen's heading (screen change → focus, not announce; no double-speak)
     var tiles = root.querySelectorAll('.rw-stat');
     for (var i = 0; i < tiles.length; i++) {
       var anim = AW.animate(tiles[i],
@@ -2179,12 +2188,13 @@ function AwbaLesson(cfg) {
     root.innerHTML =
       '<div class="rw-noor">' + sceneIco('pattern') +
       '<h1 class="noorbig">' + AW.icon('spark') + ' <span id="lsnoornum">+0</span></h1>' +
-      '<h2 class="rw-word" style="font-size:var(--fs-h2)">Noor gathered</h2>' +
+      '<h2 class="rw-word" style="font-size:var(--fs-h2)" tabindex="-1">Noor gathered</h2>' +
       '<p>Light you collect as you learn. It never runs out on you.</p>' +
       (cfg.grew ? '<div class="grew"><div class="kicker">What changed</div><p>' + cfg.grew + '</p></div>' : '') +
       '</div>' +
       foot(btn('Lovely'));
     document.getElementById('cont').addEventListener('click', rewardReturns);
+    focusHeading('.rw-word');   // land on the static "Noor gathered" heading — NOT .noorbig (its #lsnoornum count animates; the countUp numeral must never be read)
     var numEl = document.getElementById('lsnoornum');
     var anim = AW.animate(root.querySelector('.noorbig'),
       [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }],
@@ -2205,13 +2215,14 @@ function AwbaLesson(cfg) {
     }).join('');
     root.innerHTML =
       '<div class="rw-returns">' +
-      '<div class="num" style="opacity:0">' + ret + '</div>' +
+      '<div class="num" style="opacity:0" tabindex="-1">' + ret + '</div>' +
       '<div class="rlabel">' + (ret === 1 ? 'day you came back' : 'days you came back') + '</div>' +
       '<p>Not a score to protect. Proof that you keep returning — and that is the whole point of this place.</p>' +
       '<div class="weekcal" style="opacity:0">' + days + '</div>' +
       '</div>' +
       foot(btn('Keep it gentle'));
     document.getElementById('cont').addEventListener('click', done);
+    focusHeading('.rw-returns .num');   // land on the returns count (this screen's first content); SR then reads the label + line naturally
     AW.animate(root.querySelector('.rw-returns .num'),
       [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], '--dur-settle', '--ease');
     await delay(60);
@@ -2230,12 +2241,13 @@ function AwbaLesson(cfg) {
     }).join('');
     root.innerHTML =
       '<div class="rw-done">' + sceneIco('crescent') +
-      '<h1 class="rw-word">' + (cfg.doneTitle || 'Carried a little further') + '</h1>' +
+      '<h1 class="rw-word" tabindex="-1">' + (cfg.doneTitle || 'Carried a little further') + '</h1>' +
       (cfg.doneLine ? '<p>' + cfg.doneLine + '</p>' : '') +
       (rec ? '<ul class="recl">' + rec + '</ul>' : '') +
       '</div>' +
       foot(btn('Continue'));
     document.getElementById('cont').addEventListener('click', ringMoment);
+    focusHeading('.rw-word');   // land on the done screen's heading after the swap
   }
 
   /* 5 · The Ring moment (Orbit) — the terminal tawaf-fingerprint. postAtoms is recomputed HERE,
@@ -2255,8 +2267,9 @@ function AwbaLesson(cfg) {
     root.innerHTML = '<div class="rw-ring"></div>' + foot(btn('Continue'));
     root.querySelector('.rw-ring').innerHTML =
       AW.ringSVG({ atomsDone: postAtoms, animateFrom: preLessonAtoms }) +
-      '<p class="rcap">' + (grew ? 'A new mark, inked into your ring.' : 'Your ring, as it stands.') + '</p>';
+      '<p class="rcap" tabindex="-1">' + (grew ? 'A new mark, inked into your ring.' : 'Your ring, as it stands.') + '</p>';
     document.getElementById('cont').addEventListener('click', duaClose);
+    focusHeading('.rcap');   // land on the ring caption (the ring SVG itself is aria-hidden ink) after the swap
   }
 
   /* 6 · The du'a close (Sky) — the terminal moment on the Last-Third night ground. The du'a renders
@@ -2282,9 +2295,10 @@ function AwbaLesson(cfg) {
     root.innerHTML =
       '<div class="rw-dua">' +
       duaBlock +
-      '<p class="close">Alhamdulillah — continue.</p>' +
+      '<p class="close" tabindex="-1">Alhamdulillah — continue.</p>' +
       '</div>' +
       foot(nextBtn + '<a class="ls-back" href="../learn.html">Back to the path</a>');
+    focusHeading('.close[tabindex="-1"]');   // land on the reverent close line — NEVER the scripture .close (Arabic, its own reverent frame)
   }
 
   render(); // pos = -1 → opener
