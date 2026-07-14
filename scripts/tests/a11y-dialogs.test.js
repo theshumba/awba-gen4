@@ -300,3 +300,18 @@ test('D-63: focus returns to the re-rendered chest node after the Festival close
   assert.ok(result, 'the driver produced a run');
   assert.equal(result.festival.focusReturnedToChestNode, true, 'closeFestival() must re-query the chest node by data-id AFTER render() and focus it (Pitfall 6)');
 });
+
+/* ---------- ADDED (07-03 / PLT-05 D-74): the .npop placePop edge-clamp (Gen-3 popup anchoring) ----------
+   The interactive harness above pins the popup's DIALOG contract (role / singleton / Escape /
+   outside-tap / focus). The Gen-3 popup-ANCHORING fix — the horizontal clamp that keeps a node
+   popup inside the viewport when the tapped station sits near a screen edge, with its arrow still
+   pointing at the station — was not separately asserted anywhere. This zero-dep source invariant
+   (no Chrome needed, so it never skips) closes that regression gap: it fails if placePop's viewport
+   clamp or the compensating arrow offset is ever removed. */
+test('PLT-05 regression: learn.html placePop clamps the node popup inside the viewport + keeps the arrow pointing (Gen-3 popup anchoring)', () => {
+  const src = readFileSync(LEARN, 'utf8');
+  assert.match(src, /Math\.max\(half \+ m, Math\.min\(window\.innerWidth - half - m, nx\)\)/,
+    'placePop must clamp the popup horizontally between (half + m) and (innerWidth - half - m) so it never overflows a viewport edge');
+  assert.match(src, /setProperty\('--ax', \(nx - cx\)/,
+    'when the popup is clamped, --ax must offset the arrow by (nx - cx) so it still points at the tapped station');
+});

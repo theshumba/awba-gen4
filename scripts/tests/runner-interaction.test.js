@@ -99,3 +99,29 @@ test('WR-03: one AW.wire pass binds a hidden citation chip exactly once → one 
   assert.equal(sb.__out.boundListeners, 1, 'one AW.wire pass binds exactly one click listener on the (hidden) chip');
   assert.equal(sb.__out.sheetOpens, 1, 'that single listener opens the citation sheet exactly once');
 });
+
+/* ---------- ADDED (07-03 / PLT-05 D-74): the back-button rules (Gen-3 348) ----------
+   The Gen-3 owner fix has two halves: a lesson carries a BOUNDED "Back a step" control that is
+   hidden at the opener and never steps below it, while a review has NO back affordance on ANY
+   screen. Neither half had an automated pin (the ship-checklist expected coverage here). These
+   source invariants against shared/awba-engine.js fail if either rule regresses — a lesson losing
+   its bounded step-back (or showing it at the opener), or a review ever growing a back control. */
+test('WR-05 / PLT-05: the lesson runner carries a BOUNDED "Back a step" control, hidden at the opener', () => {
+  assert.match(ENGINE_SRC, /<button class="ls-back" id="lsback" type="button"/,
+    'AwbaLesson must render the .ls-back "Back a step" control');
+  assert.match(ENGINE_SRC, /id="lsback" type="button"' \+ \(pos < 0 \? ' hidden' : ''\)/,
+    'the .ls-back control must be hidden at the opener (pos < 0)');
+  assert.match(ENGINE_SRC, /if \(pos >= 0\) \{ pos--; stepIndex = Math\.max\(pos, 0\)/,
+    'a step-back must move to the previous beat and clamp at the opener (never below pos 0)');
+});
+test('WR-05 / PLT-05: the review runner has NO back affordance on any screen (Gen-3 348)', () => {
+  assert.match(ENGINE_SRC, /No back button, ever \(Gen-3 348\)/,
+    'AwbaReview must keep the "No back button, ever" intent anchor');
+  assert.match(ENGINE_SRC, /getElementById\('awback'\); if \(rb\) rb\.style\.display = 'none';/,
+    'AwbaReview must actively suppress any stray #awback back affordance');
+  // Non-vacuous: the lesson step-back markup must NOT live inside the AwbaReview body.
+  const rvStart = ENGINE_SRC.indexOf('function AwbaReview');
+  assert.ok(rvStart > -1, 'AwbaReview must exist');
+  assert.equal(/id="lsback"|>Back a step</.test(ENGINE_SRC.slice(rvStart)), false,
+    'the review runner must never emit the lesson step-back control');
+});
