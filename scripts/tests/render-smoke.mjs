@@ -22,7 +22,7 @@
 'use strict';
 
 import { execFileSync } from 'node:child_process';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, writeFileSync, unlinkSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -94,6 +94,40 @@ function smokeOne(pagePath) {
   return true;
 }
 
+/* MOT-02 / Pitfall 2 — a file:// → file:// navigation between two engine-loaded pages must no-op
+   cleanly: the pageswap/pagereveal handlers guard `if (!e.viewTransition) return;`, so over an
+   opaque file:// origin (where cross-document morphs never qualify) they bail and the page just
+   navigates. We can't click a link headless, so a throwaway harness at repo root loads the shared
+   engine (registering the handlers) then navigates to a real lesson; --dump-dom follows the nav and
+   stderr captures any Uncaught/SEVERE from either the unload or the reveal — proving the guard never
+   throws. The probe is removed in `finally` so it never lingers or gets committed. */
+function navCheck() {
+  const target = path.join(ROOT, 'lessons', 'u1-m1.html');
+  if (!existsSync(target)) return true; // no lesson yet → skip (mirrors findPages tolerance)
+  const probe = path.join(ROOT, '.vt-nav-probe.html');
+  const html =
+    '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">' +
+    '<script src="shared/awba-engine.js"></script>' +
+    '<script>location.replace("lessons/u1-m1.html");</script>' +
+    '</head><body><main class="reg-orbit"></main></body></html>';
+  writeFileSync(probe, html);
+  try {
+    const { stdout, stderr, crashed } = loadInChrome(probe);
+    if (CONSOLE_ISSUE_RE.test(stderr)) {
+      console.log('SMOKE FAIL vt-nav learn→lessons/u1-m1.html console error detected');
+      return false;
+    }
+    if (crashed && !stdout) {
+      console.log('SMOKE FAIL vt-nav chrome invocation produced no DOM');
+      return false;
+    }
+    console.log('SMOKE OK vt-nav learn→lessons/u1-m1.html (file:// morph no-ops cleanly)');
+    return true;
+  } finally {
+    try { unlinkSync(probe); } catch (e) { /* nothing to clean */ }
+  }
+}
+
 function main() {
   const pages = findPages();
   if (pages.length === 0) {
@@ -104,6 +138,7 @@ function main() {
   for (const p of pages) {
     if (!smokeOne(p)) allOk = false;
   }
+  if (!navCheck()) allOk = false;
   process.exit(allOk ? 0 : 1);
 }
 

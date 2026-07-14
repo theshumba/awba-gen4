@@ -536,6 +536,35 @@ if (typeof document !== 'undefined') {
   }
 }
 
+/* ---------- cross-document page morph (MOT-02 / D-58) — the ONE shared-element name pair ----------
+   Guarded (typeof document) exactly like the boot-stamp above, so the headless ls-stub tests (no
+   window/document in the vm sandbox) never run this. Each handler bails when e.viewTransition is
+   null — an opaque-origin file:// navigation (or an unsupported browser) then simply navigates,
+   with zero console noise (Pitfall 2 / T-05-04a). Because the engine loads on all 20 pages, this
+   one block gives every page the calm native morph with NO per-page edit: the learn side stamps the
+   tapped square handed over in window.__awbaMorphEl (pageswap), the lesson side stamps its .journey
+   opener square (pagereveal), and BOTH clear the mark after `finished` so successive navigations
+   never carry two same-named boxes (a collision aborts the morph — the uniqueness rule). Scripture
+   is never a source (no .ayah/.scard/epigraph is ever handed in — D-58). Reads/writes no storage. */
+if (typeof document !== 'undefined') {
+  window.addEventListener('pageswap', function (e) {
+    if (!e.viewTransition) return;                        // file:// / unsupported → plain nav, clean no-op
+    var el = window.__awbaMorphEl;
+    if (el && el.style) {
+      el.style.viewTransitionName = 'circuit-term';        // the tapped node / continue-card square
+      e.viewTransition.finished.then(function () { el.style.viewTransitionName = ''; });
+    }
+  });
+  window.addEventListener('pagereveal', function (e) {
+    if (!e.viewTransition) return;
+    var opener = document.querySelector('.journey');       // the shipped lesson opener Farag square
+    if (opener && opener.style) {
+      opener.style.viewTransitionName = 'circuit-term';    // the SAME mark — the pair the browser tweens
+      e.viewTransition.finished.then(function () { opener.style.viewTransitionName = ''; });
+    }
+  });
+}
+
 /* Test ergonomics only (harmless in-browser): expose AW on globalThis so a headless test can
    read `ctx.AW` directly after a separate vm run, without needing the engine+probe
    concatenation trick. In-browser, data files already reference `AW` as a free identifier

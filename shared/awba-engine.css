@@ -15,6 +15,13 @@
    ============================================================================================ */
 @layer tokens, base, components, screens, motion;
 
+/* -- Cross-document page morph opt-in (MOT-02 / D-58) — a DOCUMENT DESCRIPTOR, kept TOP-LEVEL and
+   high in the file (Pitfall 1: buried inside a cascade layer or declared too late, the browser may
+   ignore it for navigation). All 20 pages <link> this one stylesheet, so every page inherits the
+   calm native page-to-page morph with zero per-page CSS. The @layer order line above is stated
+   exactly once and is never re-declared. */
+@view-transition { navigation: auto; }
+
 @layer tokens {
 
   /* -- Self-hosted font faces (Athar · §2.2, scripture-safe subset set) ----------------------
@@ -1818,7 +1825,7 @@
   /* Daily ayah (§S2 / D-59) — the only scripture on the screen, under scripture law on the Orbit
      dark ground: --go:0 + an opaque clean Kiswah panel (no grain over scripture, law 3); strongest
      cream ink + the one permitted glow (dark grounds only, the exact shipped value); Amiri Quran via
-     the shipped .ayah. Nothing celebratory in or beside it; it never carries a view-transition-name. */
+     the shipped .ayah. Nothing celebratory in or beside it; it is never a shared-element morph source (D-58). */
   .oayah {
     --go: 0;                          /* scripture always sits on clean ground (law 3) */
     display: flex; flex-direction: column; gap: var(--sp-4);
@@ -2167,4 +2174,16 @@
   [data-motion="reduce"] .sky-breathe,
   [data-motion="reduce"] .dab,
   [data-motion="reduce"] [data-ambient] { animation: none !important; }
+
+  /* -- Cross-document page-morph quieting (MOT-02 / D-58) — the native page-morph animations are
+     UA-origin, so an author !important is required to still them (it wins regardless of layer, but it
+     lives here beside the shipped guards so ALL quieting reads in one place). Both triggers: the OS
+     setting AND the awba_prefs boot-stamp. Killing the animation collapses the morph to a motionless
+     instant swap — the navigation still happens, only the movement is removed. */
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  }
+  [data-motion="reduce"] ::view-transition-group(*),
+  [data-motion="reduce"] ::view-transition-old(*),
+  [data-motion="reduce"] ::view-transition-new(*) { animation: none !important; }
 }
