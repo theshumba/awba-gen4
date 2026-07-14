@@ -30,30 +30,30 @@ Macro product scope is fixed by Josh's Gen-3 MVP (the owner-approved direction).
 
 - [x] **CNT-01**: All 15 lessons + 4 reviews ported from Josh's redacted Gen-3 output verbatim (NOT regenerated from atoms — the sensitive holds live in his omissions); scripture text byte-identical to source files
 - [x] **CNT-02**: Sensitive-content holds verified present in the port: U4-03 absent entirely, U3-13 not surfaced, U3-16 principle-only, group-namings held — checked by explicit diff/grep pass, recorded
-- [ ] **CNT-03**: Learn path unlock order matches Gen-3 (strictly sequential incl. m3/m3b, m2/m2b splits; chest after review), verified by walking the storage-driven states
+- [x] **CNT-03**: Learn path unlock order matches Gen-3 (strictly sequential incl. m3/m3b, m2/m2b splits; chest after review), verified by walking the storage-driven states
 - [x] **CNT-04**: Every Arabic span carries `lang="ar" dir="rtl"`; ayah text uses the Quran-specific face; ﷺ renders after the Prophet's name; honorifics/brackets intact
 
 ### Learn page
 
-- [ ] **LRN-01**: Learn page renders HUD (course chip, returns flame, noor — all tappable), streak band ("NEVER BREAKS"), daily ayah card, 4 unit header cards, winding node path, tab bar
-- [ ] **LRN-02**: Node states derive live from storage: locked (with gentle "not yet" feedback on tap — shake + microcopy, never a buzzer), available, active (breathing ring + lantern mascot), done (stars) — review nodes gold, chest nodes gift-framed
-- [ ] **LRN-03**: Node popups anchor to their node with edge clamping + arrow offset (Gen-3 v1.4 fix preserved), singleton, outside-tap closes; START/REVIEW/LEGENDARY CTAs with noor hints
-- [ ] **LRN-04**: The path is drawn as a real visual journey (connected/flowing, not just alternating circles) and animates: nodes enter with overshoot pops, path fills as units complete
-- [ ] **LRN-05**: Daily ayah rotates through the verified 7-verse pool by day-of-year (no monthly repeat bug), rendered reverently (quiet reveal, no celebration effects on scripture)
-- [ ] **LRN-06**: Streak/noor/course-switcher bottom sheets (one shared implementation, no duplicated HTML); course switcher shows Fiqh/Seerah/Qur'an as polished coming-soon rows
-- [ ] **LRN-07**: Tab bar: Learn active; Practice/Returns/Profile/More give designed coming-soon feedback on tap (sheet or state — never a dead tap)
+- [x] **LRN-01**: Learn page renders HUD (course chip, returns flame, noor — all tappable), streak band ("NEVER BREAKS"), daily ayah card, 4 unit header cards, winding node path, tab bar
+- [x] **LRN-02**: Node states derive live from storage: locked (with gentle "not yet" feedback on tap — shake + microcopy, never a buzzer), available, active (breathing ring + lantern mascot), done (stars) — review nodes gold, chest nodes gift-framed
+- [x] **LRN-03**: Node popups anchor to their node with edge clamping + arrow offset (Gen-3 v1.4 fix preserved), singleton, outside-tap closes; START/REVIEW/LEGENDARY CTAs with noor hints
+- [x] **LRN-04**: The path is drawn as a real visual journey (connected/flowing, not just alternating circles) and animates: nodes enter with overshoot pops, path fills as units complete
+- [x] **LRN-05**: Daily ayah rotates through the verified 7-verse pool by day-of-year (no monthly repeat bug), rendered reverently (quiet reveal, no celebration effects on scripture)
+- [x] **LRN-06**: Streak/noor/course-switcher bottom sheets (one shared implementation, no duplicated HTML); course switcher shows Fiqh/Seerah/Qur'an as polished coming-soon rows
+- [x] **LRN-07**: Tab bar: Learn active; Practice/Returns/Profile/More give designed coming-soon feedback on tap (sheet or state — never a dead tap)
 
 ### Reward choreography
 
 - [x] **RWD-01**: Post-lesson sequence (verdict → noor claim → returns → done) is choreographed: staggered star/stat reveals, noor count-up animation, per-beat companion presence — reads as a sequence of moments, not static screens
 - [x] **RWD-02**: Returns screen: orange hero, big count, week calendar whose visual grammar never shows a "miss" state (lighter presence, never gaps/red/broken)
 - [x] **RWD-03**: Combo pill + PERFECT overlay + confetti preserved and elevated (confetti performant, never fires over scripture screens); reward screens keep clear button/footer separation (Gen-3 v1.2 fix)
-- [ ] **RWD-04**: Chest = deterministic gift (+25 noor, contents implied before tap), idempotent claim (Gen-3 v1.1 fix), never randomized odds
+- [x] **RWD-04**: Chest = deterministic gift (+25 noor, contents implied before tap), idempotent claim (Gen-3 v1.1 fix), never randomized odds
 
 ### Motion & feel
 
 - [x] **MOT-01**: One motion vocabulary (token-defined durations + `linear()` spring easings) used across nodes, buttons, sheets, quiz feedback, reward beats
-- [ ] **MOT-02**: Cross-document View Transitions wired on every page (`@view-transition`) so path↔lesson↔review navigations cross-fade/morph instead of hard-cutting; graceful no-op on Firefox
+- [x] **MOT-02**: Cross-document View Transitions wired on every page (`@view-transition`) so path↔lesson↔review navigations cross-fade/morph instead of hard-cutting; graceful no-op on Firefox
 - [x] **MOT-03**: Tap press physics (gummy shadow-collapse) applied to every tappable surface (options, tiles, chips, sheet rows, tabs — full inventory)
 - [x] **MOT-04**: `prefers-reduced-motion` respected globally (confetti, PERFECT, bob/glow, transitions all quieten) plus user override in preferences
 - [x] **MOT-05**: Correct/incorrect/complete/streak sound cues — calm, dignified, own identity (not arcade-bright) — with a visible mute toggle; celebration audio peaks land on meta-progress screens, never the ayah/scripture moment
@@ -123,16 +123,16 @@ Every v1 requirement maps to exactly one phase. Coverage: 42/42 (100%). See `.pl
 | RWD-02 | Phase 4 | Complete |
 | RWD-03 | Phase 4 | Complete |
 | MOT-05 | Phase 4 | Complete |
-| LRN-01 | Phase 5 | Pending |
-| LRN-02 | Phase 5 | Pending |
-| LRN-03 | Phase 5 | Pending |
-| LRN-04 | Phase 5 | Pending |
-| LRN-05 | Phase 5 | Pending |
-| LRN-06 | Phase 5 | Pending |
-| LRN-07 | Phase 5 | Pending |
-| CNT-03 | Phase 5 | Pending |
-| RWD-04 | Phase 5 | Pending |
-| MOT-02 | Phase 5 | Pending |
+| LRN-01 | Phase 5 | Complete |
+| LRN-02 | Phase 5 | Complete |
+| LRN-03 | Phase 5 | Complete |
+| LRN-04 | Phase 5 | Complete |
+| LRN-05 | Phase 5 | Complete |
+| LRN-06 | Phase 5 | Complete |
+| LRN-07 | Phase 5 | Complete |
+| CNT-03 | Phase 5 | Complete |
+| RWD-04 | Phase 5 | Complete |
+| MOT-02 | Phase 5 | Complete |
 | ACC-01 | Phase 6 | Pending |
 | ACC-02 | Phase 6 | Pending |
 | ACC-03 | Phase 6 | Pending |
