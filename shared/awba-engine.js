@@ -2397,6 +2397,7 @@ function AwbaReview(cfg) {
     timer = setInterval(function () {
       tleft--; var pct = Math.max(0, tleft / (AW.QTIME * 10)) * 100; tfill.style.width = pct + '%';
       if (pct < 28) tbar.classList.add('low');
+      if (tleft === 100) AW.announce('10 seconds');   // ONE soft warning at 10s left (tleft is monotonic → free single-fire); the 100ms tick itself is NEVER announced (Pitfall 3, ENG-04 byte-preserved)
       if (tleft <= 0) { clearInterval(timer); thisInTime = false; allInTime = false; timeUp(); }
     }, 100);
   }
@@ -2412,7 +2413,8 @@ function AwbaReview(cfg) {
     fw.className = 'foot rv-timeout';
     fw.innerHTML = '<h2 class="pintro">Time — this one will wait at the end</h2>' +
       '<p class="opt-why">Nothing lost. It comes back after the run, untimed.</p>';
-    setTimeout(advance, 1500);
+    AW.announce('Time — this one will wait at the end. Nothing lost. It comes back after the run, untimed.');   // narrate the mercy into the region — the visible #footwrap alone is silent to a SR
+    setTimeout(advance, 1500);   // the 1500ms auto-skip is byte-preserved (ENG-04) — narrated only at the announcement layer (renderQ), never paused/extended
   }
 
   /* advance — Gen-3 382: queue exhausted in the main phase with skipped questions → the
@@ -2491,6 +2493,7 @@ function AwbaReview(cfg) {
     bind(it);
     if (phase === 'main') { timerwrap.classList.add('on'); startTimer(); }
     else { clearInterval(timer); timerwrap.classList.remove('on'); thisInTime = false; }
+    AW.announce('Question ' + (qi + 1) + ' of ' + queue.length);   // narrate every question swap — the 1500ms auto-skip and the circle-back are otherwise silent screen changes (Pitfall 3, timer untouched)
   }
 
   /* bind — Gen-3 426: selection (gold cue on this register), then Check resolves. A main-phase
@@ -2523,17 +2526,20 @@ function AwbaReview(cfg) {
       if (ok) { correct++; if (phase === 'main') noorEarned += AW.reviewScore(thisInTime); paintThread(); }
       setHUD(true);
       if (ok) AW.sound('correct'); else AW.sound('incorrect');   // meta moment, never scripture
+      var word = ok ? (phase === 'back' ? 'Named — thread lit' : (thisInTime ? 'Swift and sound' : 'That’s it')) : 'Nothing lost';
+      var noorSay = (ok && phase === 'main') ? ' +' + AW.reviewScore(thisInTime) + ' noor' : '';   // swift-noor only when this main-phase answer actually earned it (same gate as the visible meta)
       var swift = ok && phase === 'main'
         ? '<div class="meta"><span class="ls-count">' + AW.icon('spark', { size: '16px' }) + ' +' + AW.reviewScore(thisInTime) + (thisInTime ? ' swift' : '') + '</span></div>'
         : '';
       var fw = document.getElementById('footwrap');
       fw.className = 'foot ' + (ok ? 'rv-good' : '');
       fw.innerHTML =
-        '<h2 class="pintro">' + (ok ? (phase === 'back' ? 'Named — thread lit' : (thisInTime ? 'Swift and sound' : 'That’s it')) : 'Nothing lost') + '</h2>' +
+        '<h2 class="pintro">' + word + '</h2>' +
         swift +
         '<p class="opt-why">' + it.t + '</p>' +
         btn(qi < queue.length - 1 || (phase === 'main' && skipped.length) ? 'Next' : 'See your result', '', 'next');
       document.getElementById('next').addEventListener('click', advance);
+      AW.announce(word + '.' + noorSay);   // ONE composed answer line: the SAME verdict word the foot shows + the swift-noor if earned (reuses AW.reviewScore — no number change)
     });
   }
 
@@ -2559,7 +2565,7 @@ function AwbaReview(cfg) {
       '<div class="kicker">Review complete</div>' +
       '<div class="rv-seal"><span class="rosette">' + AW.icon('check') + '</span></div>' +
       '<div class="rw-stars">' + sH + '</div>' +
-      '<h1 class="rv-title">' + verdict + '</h1>' +
+      '<h1 class="rv-title" tabindex="-1">' + verdict + '</h1>' +
       '<p>' + correct + ' of ' + CH.length + ' named' + (allInTime && correct === CH.length ? ', every one in time' : '') + '.</p>' +
       '<div class="rv-mastery"><div class="kicker">What you can do now</div><p>' + (cfg.mastery || '') + '</p></div>' +
       '<div class="rv-noorline">' + AW.icon('spark') + ' <span>+' + noorEarned + ' noor gathered</span></div>' +
@@ -2569,6 +2575,8 @@ function AwbaReview(cfg) {
     if (seal) AW.animate(seal,
       [{ transform: 'scale(1.03)', opacity: 0 }, { opacity: 1, offset: 0.6 }, { transform: 'scale(1)', opacity: 1 }],
       '--dur-stamp', '--ease');
+    var rvt = root.querySelector('.rv-title'); if (rvt) rvt.focus();   // R-10: land focus on the result heading after the swap
+    AW.announce(verdict + '. ' + correct + ' of ' + CH.length + ' named. +' + noorEarned + ' noor gathered.');   // announce the result stat once: verdict word + N of M + noor total (D-64)
   }
 
   intro();

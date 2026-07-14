@@ -298,35 +298,35 @@ test('ACC-02: each reward screen swap moves focus to that screen\'s heading (R-1
   assert.equal(lessonResult.rewardFocusedHeading, true, 'the verdict screen\'s .rw-word heading must receive focus (tabindex="-1" + .focus()) after the innerHTML swap');
 });
 
-test('ACC-02: a correct review answer composes one "{word}. +{n} noor" announcement — lands in 06-05', { todo: 'ACC-02: review answer announce lands in 06-05' }, () => {
+test('ACC-02: a correct review answer composes one "{word}. +{n} noor" announcement — lands in 06-05', () => {
   if (chromeMissing) return;
   assert.ok(reviewAnsweredResult, 'the review-answered driver produced a run');
   assert.equal(reviewAnsweredResult.answerAnnounceChanged, true, 'the review bind() check handler must set the region text on a correct answer');
   assert.equal(reviewAnsweredResult.answerAnnounce, 'Swift and sound. +20 noor', 'a swift in-time main-phase correct answer composes the shipped verdict word + PER_REVIEW+SWIFT noor');
 });
 
-test('ACC-02: the review result screen focuses its heading and announces the verdict/stat line — lands in 06-05', { todo: 'ACC-02: result focus-and-stat lands in 06-05' }, () => {
+test('ACC-02: the review result screen focuses its heading and announces the verdict/stat line — lands in 06-05', () => {
   if (chromeMissing) return;
   assert.ok(reviewAnsweredResult, 'the review-answered driver produced a run');
   assert.equal(reviewAnsweredResult.resultFocusedHeading, true, 'the result screen\'s .rv-title heading must receive focus after the innerHTML swap');
   assert.match(reviewAnsweredResult.resultRegionText || '', /6 of 6 named/, 'the result announcement composes the verdict word + the correct/total count + the noor total (js:2446-2455)');
 });
 
-test('ACC-02: the 10-second warning fires exactly once at tleft===100 — lands in 06-05', { todo: 'ACC-02: 10s single-fire lands in 06-05' }, () => {
+test('ACC-02: the 10-second warning fires exactly once at tleft===100 — lands in 06-05', () => {
   if (chromeMissing) return;
   assert.ok(reviewTimeoutResult, 'the review-timeout driver produced a run');
   const tenSecHits = reviewTimeoutResult.log.filter((l) => /10 seconds/.test(l.region || '')).length;
   assert.equal(tenSecHits >= 1, true, 'the region must carry the "10 seconds" warning at least once as the timer crosses tleft===100');
 });
 
-test('ACC-02: a review timeout announces the mercy line — lands in 06-05', { todo: 'ACC-02: timeout mercy narration lands in 06-05' }, () => {
+test('ACC-02: a review timeout announces the mercy line — lands in 06-05', () => {
   if (chromeMissing) return;
   assert.ok(reviewTimeoutResult, 'the review-timeout driver produced a run');
   const mercyHits = reviewTimeoutResult.log.filter((l) => /this one will wait at the end/.test(l.region || '')).length;
   assert.equal(mercyHits >= 1, true, 'timeUp() must announce the shipped mercy line into the region, not just render it visibly in #footwrap');
 });
 
-test('ACC-02: the auto-skip narrates the next question as "Question {n} of {m}" — lands in 06-05', { todo: 'ACC-02: Question N of M narration lands in 06-05' }, () => {
+test('ACC-02: the auto-skip narrates the next question as "Question {n} of {m}" — lands in 06-05', () => {
   if (chromeMissing) return;
   assert.ok(reviewTimeoutResult, 'the review-timeout driver produced a run');
   const narrationHits = reviewTimeoutResult.log.filter((l) => /Question 2 of 6/.test(l.region || '')).length;
