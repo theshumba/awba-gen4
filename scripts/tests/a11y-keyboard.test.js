@@ -274,7 +274,7 @@ test('the .onode DOM order equals the canonical CNT-03 journey sequence (DOM ord
 
 /* ---------- TODO (exactly FOUR — the phase's residue ledger depends on this exact count) ---------- */
 
-test('ACC-01: each .onode carries a state-in-name aria-label ("{label}, {state phrase}") — lands in 06-06', { todo: 'ACC-01: node state-in-name lands in 06-06' }, () => {
+test('ACC-01: each .onode carries a state-in-name aria-label ("{label}, {state phrase}") — lands in 06-06', () => {
   if (chromeMissing) return;
   assert.ok(learnResult, 'the learn.html driver produced a run');
   // u1m1 on fresh storage is the lesson's first, active node — 06-UI-SPEC's Node state-phrase
@@ -284,13 +284,13 @@ test('ACC-01: each .onode carries a state-in-name aria-label ("{label}, {state p
   assert.equal(label, 'What sound belief is, available', 'the node aria-label must compose label + its state phrase');
 });
 
-test('ACC-01: #streakStrip is a native <button>, not a role="button" DIV with dead Enter/Space — lands in 06-06', { todo: 'ACC-01: native streak strip lands in 06-06' }, () => {
+test('ACC-01: #streakStrip is a native <button>, not a role="button" DIV with dead Enter/Space — lands in 06-06', () => {
   if (chromeMissing) return;
   assert.ok(learnResult, 'the learn.html driver produced a run');
   assert.equal(learnResult.streakStripTag, 'BUTTON', '#streakStrip must be a native <button>, never a role="button" DIV');
 });
 
-test('ACC-01: the daily ayah card exposes a native inner citation button (R-9: button.oayah-cite) — lands in 06-06', { todo: 'ACC-01: native ayah affordance lands in 06-06' }, () => {
+test('ACC-01: the daily ayah card exposes a native inner citation button (R-9: button.oayah-cite) — lands in 06-06', () => {
   if (chromeMissing) return;
   assert.ok(learnResult, 'the learn.html driver produced a run');
   assert.equal(learnResult.ayahCiteButton, true, 'a native "Read the citation" button must exist inside #ayahHost — the section itself keeps its scripture semantics (R-9), the button owns keyboard/SR');

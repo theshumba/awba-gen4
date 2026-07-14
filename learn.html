@@ -13,6 +13,62 @@
 <link rel="preload" as="font" type="font/woff2" href="shared/fonts/amiri-quran-400.woff2" crossorigin>
 <link rel="stylesheet" href="shared/awba-engine.css">
 <script src="shared/awba-engine.js"></script>
+<!-- The only page-authored CSS (§S6): the two D-62/R-9 conversions' seam styling — a native-button
+     chrome reset for the streak strip and the quiet marginalia affordance on the daily-ayah card.
+     A content block for the already-declared `screens` layer (never the name-list order line); zero
+     new tokens, zero new hex — every value is a shipped variable. The register :focus-visible ring
+     (the ring on the Orbit ground) rides in automatically from the engine grammar, untouched here. -->
+<style>
+  @layer screens {
+    /* Streak strip: div→native <button> (D-62). Strip the UA button chrome so the shipped .ob-streak
+       block styling reads unchanged; the flex column + settle stay from the engine class. */
+    #streakStrip {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      background: none;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      font: inherit;
+      color: inherit;
+      text-align: inherit;
+      cursor: pointer;
+    }
+    /* "Read the citation" (R-9) — the daily-ayah affordance: a quiet Courier marginalia line that owns
+       the keyboard/SR entry to the citation sheet while the sacred .ayah keeps its isolated reading. It
+       sits under the ayah's reverence budget (law 3/7) — no display weight, no fill; a hairline
+       underline is the only affordance cue, deepening on hover; the register ring lands on focus. */
+    .oayah-cite {
+      appearance: none;
+      -webkit-appearance: none;
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;                 /* the 44px tap target without inflating the 12px line */
+      padding: 0;
+      background: none;
+      border: 0;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      letter-spacing: .09em;
+      color: var(--paper-62);           /* §2.1 --paper-62 on Kiswah ~6.7:1 — the quiet marginalia budget */
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+      text-decoration-color: var(--paper-45);
+      cursor: pointer;
+      transition: color 160ms ease, text-decoration-color 160ms ease;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .oayah-cite:hover { color: var(--cream); text-decoration-color: var(--paper-62); }
+    }
+    .oayah-cite:active { transform: translateY(1px); }   /* the shipped Athar paper-press, quiet */
+    @media (prefers-reduced-motion: reduce) {
+      .oayah-cite:active { transform: none; }            /* law-9 stillness under reduced motion */
+    }
+  }
+</style>
 </head>
 <body>
 <main class="reg-orbit grain" id="app"></main>
@@ -568,10 +624,10 @@
     var dots = '';
     wk.forEach(function (d) { dots += '<span class="day' + (d.on ? ' here' : '') + '"></span>'; });
     var streak =
-      '<div class="ob-streak" id="streakStrip" role="button" tabindex="0" aria-label="' + st.returns + ' returns — open your streak">' +
+      '<button class="ob-streak" id="streakStrip" type="button" aria-label="' + st.returns + ' returns — open your streak">' +
         '<div class="ss-line">' + st.returns + ' returns · your streak never breaks</div>' +
         '<div class="weekcal ss-const">' + dots + '</div>' +
-      '</div>';
+      '</button>';
 
     /* Continue card (one navy panel pointing at the next available node, D-53) — cream text on navy
        (≥13:1), light-edge depth (never a drop shadow on dark). Courier kicker "Continue";
@@ -603,13 +659,18 @@
        lang=ar dir=rtl, strongest cream ink + the one permitted glow, translation + source + the calm
        pending pill; nothing celebratory in or beside it; it never morphs across pages (D-58). */
     var ayahV = DAILY[AW.dailyIndex(new Date(), DAILY.length)];
+    /* R-9: the card KEEPS its <section> (drops role=button/tabindex so the sacred .ayah keeps its
+       isolated scripture SR reading, law 3) and gains a native inner <button class="oayah-cite"> that
+       owns the keyboard/SR entry to the citation sheet; a pointer-only convenience click on the rest
+       of the card delegates to it (wired below). */
     var ayah =
-      '<section class="oayah" id="ayahHost" tabindex="0" role="button" aria-label="Open the full citation for this verse">' +
+      '<section class="oayah" id="ayahHost">' +
         '<div class="oa-kick">' + AW.icon('spark') + '<span>A little light for today · ' + ayahV.ref + '</span></div>' +
         '<div class="ayah" lang="ar" dir="rtl">' + ayahV.ar + '</div>' +
         '<div class="oa-trans">' + ayahV.tr + '</div>' +
         '<div class="oa-src">The Clear Quran · Dr. Mustafa Khattab · pending review</div>' +
         '<div class="oa-pill">unverified · pending review</div>' +
+        '<button class="oayah-cite" type="button">Read the citation</button>' +
       '</section>';
 
     /* Unit headers + the winding-journey scaffold (S3 / D-53) — one cream-Farag-square-fronted card
@@ -657,12 +718,25 @@
         meta = '<span class="onode-stars">' + stars + '</span>';
         if (kind === 'lesson') meta += '<span class="onode-sprout">' + SPROUT + '</span>';
       }
+      /* state-in-name (D-64 / ACC-02) — compose the accessible name "{label}, {state phrase}" from the
+         shipped data-kind + data-nstate per the UI-SPEC node state-phrase table, so a blind learner
+         hears each station's status without a visual cue. No new state source — the STATE.md Pending
+         Todo (path-node accessible names) closes here. */
+      var statePhrase;
+      if (kind === 'chest') {
+        statePhrase = (state === 'available') ? 'ready to open' : (state === 'done' ? 'opened' : 'locked');
+      } else if (state === 'done') {
+        statePhrase = 'complete, ' + (st.stars[nd.id] || 0) + ' of 3 stars';
+      } else {
+        statePhrase = (state === 'active') ? 'available' : 'locked';
+      }
+      var ariaLabel = nd.label + ', ' + statePhrase;
       /* a gentle off-centre serpentine (the thread smooths it into a hand-inked walk); one long
          wave across the whole journey via the flat index, never a symmetric left/right zigzag. */
       var lane = 0.5 + 0.34 * Math.sin(idx * 1.15 + 0.5);
       return '<div class="onode-row" style="--lane:' + lane.toFixed(3) + '">' +
         '<button class="onode" type="button" data-id="' + nd.id + '" data-idx="' + idx + '"' +
-          ' data-kind="' + kind + '" data-nstate="' + state + '" aria-expanded="false">' +
+          ' data-kind="' + kind + '" data-nstate="' + state + '" aria-label="' + ariaLabel + '" aria-expanded="false">' +
           mark +
           '<span class="onode-label">' + nd.label + '</span>' +
           (meta ? '<span class="onode-meta">' + meta + '</span>' : '') +
@@ -787,7 +861,17 @@
       var refs = {};
       refs[ayahV.ref] = { kind: 'The verse', ref: ayahV.ref, ar: ayahV.ar, mean: ayahV.tr,
         src: 'The Clear Quran · Dr. Mustafa Khattab · pending review' };
-      ah.addEventListener('click', function () { AW.sheetRef(refs, ayahV.ref); });
+      var openCite = function () { AW.sheetRef(refs, ayahV.ref); };
+      /* the native button owns keyboard/SR (R-9); stopPropagation keeps its own click from also
+         firing the card's convenience handler (harmless — the sheet is a singleton — but clean). */
+      var citeBtn = ah.querySelector('.oayah-cite');
+      if (citeBtn) citeBtn.addEventListener('click', function (e) { e.stopPropagation(); openCite(); });
+      /* a pointer-only convenience click on the rest of the card, delegating to the same opener; the
+         button (not the section) is the operable, keyboard-reachable affordance. */
+      ah.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('.oayah-cite')) return;
+        openCite();
+      });
     }
 
     /* Node entrance — a staggered one-pass settle per section (≤300ms total), then still. Reduced
