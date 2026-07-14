@@ -387,6 +387,14 @@
     outline-color: var(--gold);
     box-shadow: 0 0 0 6px color-mix(in srgb, var(--gold) 28%, transparent);
   }
+  /* The ONE sanctioned ring suppression (D-62) — non-operable focus-landing headings only
+     (reward/review screen headings given tabindex="-1" purely so focus doesn't evaporate on an
+     innerHTML swap, Pitfall 2). Never applies to any button/a/textarea/input — every operable
+     control keeps its ring. */
+  [tabindex="-1"]:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
 
   /* -- Scripture law + Arabic/RTL (§2.2 · laws 3/4) -----------------------------------------
      letter-spacing:0 ALWAYS (Arabic is connected — any tracking breaks joining); containers
@@ -1075,6 +1083,13 @@
     cursor: pointer;
   }
   .ls-back[hidden] { display: none; }
+  /* --ink-62 (above) is correct on the Page ground .ls-back normally sits on, but duaClose() also
+     renders this SAME link on the reg-sky-night du'a-close terminal screen, where dark ink on a
+     dark ground computes to ~1.2:1 (WCAG AA text failure, needs 4.5:1 — found by the 06-03
+     contrast-audit forced-state sweep). --paper-62 is the existing dark-ground secondary-ink
+     token already used for this identical purpose elsewhere (.rv-shell .ls-count, §2.1 Orbit
+     table) — token-only, zero new hex. */
+  .reg-sky-night .ls-back, .nightfall .ls-back { color: var(--paper-62); }
 
   /* -- S1-beats · The nine beat renderers (all Page ground) ------------------------------------
      Each beat is a distinct authored surface; each reads as manuscript, never game chrome. Scripture
