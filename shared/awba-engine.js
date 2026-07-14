@@ -1158,7 +1158,8 @@ AW.sheet = (function () {
   var api = {
     open: function (html, label) {
       ensure();
-      invoker = document.activeElement; // Phase-6 hook: restore focus on close (shipped, PRESERVED)
+      if (trap) { trap(); trap = null; } // dispose a prior trap before replacing content (re-entrant singleton safety — mirrors openPopFor's closePop-first; W1 06-REVIEW)
+      if (!scrim.classList.contains('open')) invoker = document.activeElement; // Phase-6 hook: capture invoker ONLY when opening from closed — a content-replace keeps the original restore target (shipped restore PRESERVED)
       sheet.setAttribute('aria-label', label || 'Details'); // D-63/R-10 — backwards-compatible name
       sheet.innerHTML = '<button class="sheet-x" aria-label="Close">×</button>' + html;
       sheet.querySelector('.sheet-x').addEventListener('click', api.close);
