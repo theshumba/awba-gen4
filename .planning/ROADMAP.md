@@ -15,9 +15,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation — Design Tokens, Responsive Shell & Fonts** - True full-viewport shell, one token layer, self-hosted fonts; kills the fixed 380px card (completed 2026-07-12, VERIFICATION PASSED 4/4)
 - [x] **Phase 2: State Layer & Engine-Contract Freeze** - Versioned storage + migration, frozen `AW`/`AwbaLesson`/`AwbaReview` contract, standing validator (completed 2026-07-12)
 - [x] **Phase 3: Components, Icon Kit & Motion Language** - Athar re-cut: register architecture, 20-icon currentColor registry, citation/gloss sheets, paper-press + one-easing motion vocabulary, Ring generator, prayer-clock sky (completed 2026-07-13 — §9 human gate APPROVED, 9/9 review warnings fixed, VERIFICATION 5/5)
-- [ ] **Phase 4: Lesson & Review Engine Port + Detail Layer** - All 19 data files render verbatim; reward choreography, sound, holds verified
-- [ ] **Phase 5: Learn Page & Cross-Page View Transitions** - Winding node path, live states, daily ayah, native page-to-page transitions
-- [ ] **Phase 6: Accessibility, RTL & Typography Hardening** - Keyboard, aria-live, contrast, bidi + glyph stress-test across every screen
+- [x] **Phase 4: Lesson & Review Engine Port + Detail Layer** - All 19 data files render verbatim; reward choreography, sound, holds verified (completed 2026-07-13 — gate passed by owner directive, 5 review warnings fixed, VERIFICATION 5/5)
+- [x] **Phase 5: Learn Page & Cross-Page View Transitions** - Winding node path, live states, daily ayah, native page-to-page transitions (completed 2026-07-14 — gate passed by owner directive, review-fixed, VERIFICATION 5/5 incl. the VT-morph selector fix)
+- [x] **Phase 6: Accessibility, RTL & Typography Hardening** - Keyboard, aria-live, contrast, bidi + glyph stress-test across every screen (completed 2026-07-14 — all 7 plans, gate passed by owner directive, 1 review Warning fixed [W1 AW.sheet re-entrancy], VERIFICATION PASS; human sensory walk carried forward on the owner ledger)
 - [ ] **Phase 7: PWA Shell, Offline & Delivery** - Installable PWA, offline-after-first-visit, static deploy, Gen-3 regression ship-gate
 
 ## Phase Details
@@ -164,8 +164,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation — Tokens, Shell & Fonts | 4/4 | Complete | 2026-07-12 |
 | 2. State Layer & Engine-Contract Freeze | 2/2 | Complete   | 2026-07-12 |
-| 3. Components, Icon Kit & Motion | 10/12 | In Progress|  |
-| 4. Lesson & Review Engine Port | 6/7 | In Progress | - |
-| 5. Learn Page & View Transitions | 4/6 | In Progress | - |
-| 6. Accessibility, RTL & Typography | 3/7 | In Progress | - |
+| 3. Components, Icon Kit & Motion | 12/12 | Complete | 2026-07-13 |
+| 4. Lesson & Review Engine Port | 7/7 | Complete | 2026-07-13 |
+| 5. Learn Page & View Transitions | 6/6 | Complete | 2026-07-14 |
+| 6. Accessibility, RTL & Typography | 7/7 | Complete | 2026-07-14 |
 | 7. PWA Shell, Offline & Delivery | 0/TBD | Not started | - |
