@@ -206,3 +206,22 @@ test('non-vacuous: reverting the WR-01 guard reintroduces the uncaught TypeError
   );
   assert.equal(reverted.results.corrupt.delta, 0, 'the reverted throw blocks the claim — no noor granted');
 });
+
+/* ---------- (7) VT MORPH COHERENCE: the pagereveal selector must match a class the real opener renders ----------
+   05-VERIFICATION gap: the reveal-side selector pointed at a class no real lesson page renders,
+   so the shared-element morph silently never fired. This pin extracts the selector from the
+   engine's pagereveal handler and asserts the SAME class name appears as a rendered class in the
+   engine's opener template — if either side drifts (selector repoint or template rename), it fails. */
+
+test('vt morph coherence: pagereveal selector matches a class the opener template actually renders', () => {
+  const src = readFileSync(path.join(ROOT, 'shared', 'awba-engine.js'), 'utf8');
+  const reveal = src.match(/pagereveal[\s\S]{0,400}?querySelector\('([^']+)'\)/);
+  assert.ok(reveal, 'the pagereveal handler has a querySelector selector');
+  const sel = reveal[1];
+  assert.ok(sel.startsWith('.'), 'the reveal selector is a class selector: ' + sel);
+  const cls = sel.slice(1);
+  assert.ok(
+    new RegExp('class="[^"]*\\b' + cls + '\\b[^"]*"').test(src),
+    'the opener template renders class "' + cls + '" (selector ↔ template coherence)'
+  );
+});

@@ -542,8 +542,9 @@ if (typeof document !== 'undefined') {
    null — an opaque-origin file:// navigation (or an unsupported browser) then simply navigates,
    with zero console noise (Pitfall 2 / T-05-04a). Because the engine loads on all 20 pages, this
    one block gives every page the calm native morph with NO per-page edit: the learn side stamps the
-   tapped square handed over in window.__awbaMorphEl (pageswap), the lesson side stamps its .journey
-   opener square (pagereveal), and BOTH clear the mark after `finished` so successive navigations
+   tapped square handed over in window.__awbaMorphEl (pageswap), the lesson side stamps its .hero-ico
+   opener scene-icon square (pagereveal — the SAME unit icon the tapped node carries, and the only
+   .hero-ico in the document at snapshot time), and BOTH clear the mark after `finished` so successive navigations
    never carry two same-named boxes (a collision aborts the morph — the uniqueness rule). Scripture
    is never a source (no .ayah/.scard/epigraph is ever handed in — D-58). Reads/writes no storage. */
 if (typeof document !== 'undefined') {
@@ -557,7 +558,7 @@ if (typeof document !== 'undefined') {
   });
   window.addEventListener('pagereveal', function (e) {
     if (!e.viewTransition) return;
-    var opener = document.querySelector('.journey');       // the shipped lesson opener Farag square
+    var opener = document.querySelector('.hero-ico');      // the opener's unit scene-icon square (05-VERIFICATION gap fix: '.journey' matched nothing on real pages — Phase 4 renders cfg.journey as a .kicker breadcrumb; the icon square is the true shared element)
     if (opener && opener.style) {
       opener.style.viewTransitionName = 'circuit-term';    // the SAME mark — the pair the browser tweens
       e.viewTransition.finished.then(function () { opener.style.viewTransitionName = ''; });
