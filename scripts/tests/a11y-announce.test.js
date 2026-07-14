@@ -264,7 +264,7 @@ test('the announce review-timeout harness drives the shipped runner through a vi
 
 /* ---------- TODO (exactly TEN — the phase's residue ledger depends on this exact count) ---------- */
 
-test('ACC-02: a body-level role="status" region exists and survives repeated screen swaps — lands in 06-04', { todo: 'ACC-02: region exists + survives swaps lands in 06-04' }, () => {
+test('ACC-02: a body-level role="status" region exists and survives repeated screen swaps — lands in 06-04', () => {
   if (chromeMissing) return;
   assert.ok(lessonResult, 'the lesson driver produced a run');
   assert.notEqual(lessonResult.regionAtStart, null, 'exactly one role="status" region must be a direct child of document.body at load');

@@ -534,6 +534,55 @@ if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', applySky);
   }
+
+  /* ---------- AW.announce(text) — the ONE body-level polite live region (D-64/ACC-02) ----------
+     Mirrors the applySky lazy+DCL-ensure precedent immediately above. `ensureAnnounceRegion()`
+     lazily creates (or re-finds) a single role="status" <div class="aw-sr"> as a DIRECT child of
+     document.body — never nested inside a container a runner's innerHTML wipe destroys (Pitfall
+     1: both runners wipe document.body.innerHTML at init; learn.html rebuilds #app.innerHTML per
+     render). document.body is null at parse time on every page (this engine loads in <head> with
+     no defer — D-22/D-23), so the immediate call below is a safe no-op there; the DOMContentLoaded
+     ensure (the SAME readyState==='loading' guard as applySky) creates the region once body exists
+     — which always lands AFTER a runner's own inline script (further down the same body) has
+     already run and wiped body.innerHTML, so the region is never caught by that wipe. `AW.announce`
+     sets `textContent` ONLY — never innerHTML, so no markup/script can ever reach the region
+     (T-06-04a) — through a 150ms trailing last-write-wins coalescer (a second call within the
+     window replaces the still-pending text); an identical repeat string is re-announced via
+     clear-then-set-in-rAF, since some screen readers do not re-announce a node whose text didn't
+     change. */
+  var announceTimer = null;
+  var ensureAnnounceRegion = function () {
+    if (!document.body) return null;
+    var r = document.body.querySelector(':scope > [role="status"]');
+    if (r) return r;
+    r = document.createElement('div');
+    r.className = 'aw-sr';
+    r.setAttribute('role', 'status');
+    r.setAttribute('aria-live', 'polite');
+    r.setAttribute('aria-atomic', 'true');
+    document.body.appendChild(r);
+    return r;
+  };
+  ensureAnnounceRegion();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ensureAnnounceRegion);
+  }
+  AW.announce = function (text) {
+    var next = text == null ? '' : String(text);
+    if (announceTimer) clearTimeout(announceTimer);
+    announceTimer = setTimeout(function () {
+      announceTimer = null;
+      var r = ensureAnnounceRegion();
+      if (!r) return;
+      if (r.textContent === next) {
+        r.textContent = '';
+        var raf = window.requestAnimationFrame || function (cb) { setTimeout(cb, 0); };
+        raf(function () { r.textContent = next; });
+      } else {
+        r.textContent = next;
+      }
+    }, 150);
+  };
 }
 
 /* ---------- cross-document page morph (MOT-02 / D-58) — the ONE shared-element name pair ----------

@@ -353,6 +353,19 @@
     background: linear-gradient(90deg, var(--powder) 4%, var(--ember) 52%, var(--gold) 96%);
   }
 
+  /* -- The one polite live region (D-64 / ACC-02) --------------------------------------------
+     .aw-sr is the visually-hidden utility for AW.announce's single body-level role="status"
+     region — clipped, not display:none (display:none/visibility:hidden regions are ignored by
+     screen readers). No colour — it carries no visible ink, zero new hex. */
+  .aw-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip-path: inset(50%);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
   /* -- Focus-visible (ACC-01 / D-A10) -------------------------------------------------------
      Shown on :focus-visible only (keyboard) — never on plain :focus — so there is no ring flash
      on tap. Recoloured per ground for AA-safe non-text contrast (≥3:1): Crimson on cream grounds
