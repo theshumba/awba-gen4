@@ -2080,6 +2080,61 @@
   .np-star svg { width: 16px; height: 16px; }
 
   .np-cta { margin-top: var(--sp-1); }         /* the CTA — the shipped Page-crimson .btn (body-mounted, visible) */
+
+  /* -- The shared sheet family (§S4 · D-60 / LRN-06) — the streak / noor hero numerals (Marcellus
+     display, law 5 ≥28px) + the verbatim note, and the course-switcher rows. Every sheet renders on
+     the ONE shipped cream AW.sheet singleton; this is composition-only (zero new token/face/hex). */
+  .osh-hero {
+    display: flex; flex-direction: column; align-items: center; gap: var(--sp-1);
+    padding: var(--sp-2s) 0 var(--sp-4);
+  }
+  .osh-big {                            /* the count — Marcellus display numerals (law 5, ≥28px floor) */
+    font-family: var(--font-display);
+    font-size: var(--fs-display);
+    line-height: 1.08;
+    color: var(--ink);                  /* §2.1 --kiswah on cream, 16.22:1 */
+  }
+  .osh-big.osh-gold { color: var(--gold); }   /* the noor count — §2.1 gold as numeral fill on cream */
+  .osh-sub {                            /* "day(s) you came back" / "noor gathered" */
+    font-family: var(--font-work);
+    font-size: var(--fs-body);
+    color: var(--ink-62);               /* §2.1 secondary ink on cream */
+  }
+  .osh-week { justify-content: center; width: 100%; margin-bottom: var(--sp-4); }
+  .osh-note {                           /* the verbatim note — a quiet centred body line */
+    font-size: var(--fs-body); line-height: 1.6;
+    color: var(--ink-62); text-align: center;   /* §2.1 secondary ink on cream */
+  }
+
+  /* the course-switcher rows — a scene icon + name + a status pill. The active row's pill is the
+     olive "sound/verified" ink; the coming-soon rows carry a calm neutral pill on a --rule hairline
+     (never disabled-dead grey). Layout only — the press is the shipped .sheet-row. */
+  .osw-row {
+    display: flex; align-items: center; gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-2s);
+    border-bottom: 1px solid var(--rule);
+  }
+  .osw-row:last-child { border-bottom: none; }
+  .osw-ic { display: inline-flex; flex-shrink: 0; color: var(--madder); }   /* §2.1 --madder scene mark on cream */
+  .osw-ic svg { width: 24px; height: auto; }
+  .osw-name { flex: 1; font-family: var(--font-work); font-size: var(--fs-body); color: var(--ink); }
+  .osw-row.off .osw-name { color: var(--ink-85); }   /* still fully legible — status lives in the pill, not a grey-out */
+  .osw-pill {                           /* COMING SOON — calm neutral, a hairline capsule (never grey-dead) */
+    font-family: var(--font-marg); font-size: var(--fs-marg);
+    letter-spacing: .04em;
+    padding: var(--sp-2) var(--sp-2s);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-pill);
+    color: var(--ink-62);               /* §2.1 secondary ink on cream */
+  }
+  .osw-pill.on {                        /* ACTIVE — the olive sound/verified ink (D-A9) */
+    color: var(--olive);                /* §2.1 --olive 4.95:1 on cream */
+    border-color: color-mix(in srgb, var(--olive) 40%, transparent);
+  }
+
+  /* the HUD stats + course chip carry a full 44px tap target on the learn front door (§S4). */
+  #app.reg-orbit .ls-hud .hstat,
+  #app.reg-orbit .oh-chip { min-height: 44px; }
 }
 
 @layer motion {

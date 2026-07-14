@@ -353,6 +353,62 @@
     window.addEventListener('resize', function () { if (openPop && popNode) placePop(openPop, popNode); });
   }
 
+  /* ============================================================================================
+     The ONE shared sheet family (§S4 · D-60 / LRN-06) — streak / noor / course-switcher, each a
+     SINGLE AW.sheet(html) call on the shipped singleton (append-to-body, outside-tap + Esc close,
+     scroll-lock — all shipped). No bespoke sheet DOM: the streak sheet is ONE implementation opened
+     from the HUD returns stat, the streak strip AND the Returns tab; the noor sheet from the HUD noor
+     stat; the switcher from the course chip. Reads via AW.state() only; copy ports VERBATIM from
+     Gen-3 _MVP-BUILD/learn.html (never edited — 'thread'/'break' live inside authored strings only).
+     ============================================================================================ */
+
+  /* the streak sheet — a Marcellus returns count + day/days copy (N===1 vs not), the AW.weekCal()
+     week row as presence dots (never a gap/miss), and the verbatim never-breaks note. */
+  function openStreakSheet() {
+    var st = AW.state(), n = st.returns;
+    var wk = AW.weekCal(), dots = '';
+    wk.forEach(function (d) { dots += '<span class="day' + (d.on ? ' here' : '') + '"></span>'; });
+    AW.sheet(
+      '<div class="grip"></div>' +
+      '<div class="osh-hero">' +
+        '<div class="osh-big">' + n + '</div>' +
+        '<div class="osh-sub">' + (n === 1 ? 'day you came back' : 'days you came back') + '</div>' +
+      '</div>' +
+      '<div class="weekcal osh-week">' + dots + '</div>' +
+      '<div class="osh-note">This number can never break and never reset. Every return adds to it, however long the gap. That is the point of this place.</div>');
+  }
+
+  /* the noor sheet — a gold-filled Marcellus noor count + "noor gathered" + the verbatim noor note. */
+  function openNoorSheet() {
+    var st = AW.state();
+    AW.sheet(
+      '<div class="grip"></div>' +
+      '<div class="osh-hero">' +
+        '<div class="osh-big osh-gold">' + st.noor + '</div>' +
+        '<div class="osh-sub">noor gathered</div>' +
+      '</div>' +
+      '<div class="osh-note">Light you collect as you learn. It is never spent against you, never dangled, and it never runs out.</div>');
+  }
+
+  /* the course switcher — Aqeedah ACTIVE (an olive "sound/verified" pill) + Fiqh/Seerah/Qur'an as
+     polished COMING SOON rows (a calm neutral pill on a --rule hairline; never disabled-dead grey).
+     Each row rides the shipped .sheet-row press; .off carries the coming-soon state. Copy VERBATIM. */
+  function openSwitcher() {
+    function row(off, scene, name, pill, on) {
+      return '<div class="sheet-row osw-row' + (off ? ' off' : '') + '">' +
+        '<span class="osw-ic">' + AW.icon(scene, { size: '24px' }) + '</span>' +
+        '<span class="osw-name">' + name + '</span>' +
+        '<span class="osw-pill' + (on ? ' on' : '') + '">' + pill + '</span>' +
+      '</div>';
+    }
+    AW.sheet(
+      '<div class="grip"></div>' +
+      row(false, 'lantern', 'Aqeedah · Level 1', 'ACTIVE', true) +
+      row(true, 'open', 'Fiqh · Level 1', 'COMING SOON', false) +
+      row(true, 'crescent', 'Seerah', 'COMING SOON', false) +
+      row(true, 'cite', 'Qur’an', 'COMING SOON', false));
+  }
+
   function render() {
     closePop();                                  // an app.innerHTML rebuild detaches node buttons — drop any open slip
     var st = AW.state();
@@ -378,8 +434,8 @@
           '<span class="oh-chip-sq">' + AW.icon(courseIcon, { size: '22px' }) + '</span>' +
         '</button>' +
         '<span class="ls-stats">' +
-          '<span class="hstat">' + AW.icon('flame') + '<span>' + st.returns + '</span></span>' +
-          '<span class="hstat">' + AW.icon('spark') + '<span>' + st.noor + '</span></span>' +
+          '<button class="hstat" id="hudReturns" type="button" aria-label="' + st.returns + ' returns — open your streak">' + AW.icon('flame') + '<span>' + st.returns + '</span></button>' +
+          '<button class="hstat" id="hudNoor" type="button" aria-label="' + st.noor + ' noor — open your light">' + AW.icon('spark') + '<span>' + st.noor + '</span></button>' +
           AW.muteBtnHtml() +
         '</span>' +
       '</div>';
@@ -399,7 +455,7 @@
     var dots = '';
     wk.forEach(function (d) { dots += '<span class="day' + (d.on ? ' here' : '') + '"></span>'; });
     var streak =
-      '<div class="ob-streak">' +
+      '<div class="ob-streak" id="streakStrip" role="button" tabindex="0" aria-label="' + st.returns + ' returns — open your streak">' +
         '<div class="ss-line">' + st.returns + ' returns · your streak never breaks</div>' +
         '<div class="weekcal ss-const">' + dots + '</div>' +
       '</div>';
@@ -548,6 +604,18 @@
 
     /* the one shared mute pattern (D-60) — re-render on toggle so the glyph + aria swap */
     AW.bindMuteBtn(render);
+
+    /* HUD + streak-strip taps come alive (§S4 · D-60 / LRN-01) — the course chip opens the switcher,
+       the returns stat AND the whole streak strip open the ONE streak sheet, the noor stat opens the
+       noor sheet. Re-wired each render (the HUD is rebuilt); the opener functions are the singletons. */
+    var chip = document.getElementById('courseChip');
+    if (chip) chip.addEventListener('click', openSwitcher);
+    var hudReturns = document.getElementById('hudReturns');
+    if (hudReturns) hudReturns.addEventListener('click', openStreakSheet);
+    var hudNoor = document.getElementById('hudNoor');
+    if (hudNoor) hudNoor.addEventListener('click', openNoorSheet);
+    var streakStrip = document.getElementById('streakStrip');
+    if (streakStrip) streakStrip.addEventListener('click', openStreakSheet);
 
     /* the continue card carries the same morph (§S6): its chapter-term square is the source, handed
        to the shared engine at click time; the <a href> then navigates and the guarded stamp tweens it. */
