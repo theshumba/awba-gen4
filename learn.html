@@ -260,12 +260,20 @@
      resolves to the default Page-crimson .btn rather than the invisible .reg-orbit cream-on-cream
      key (Pitfall 3). Anchored to the tapped station via getBoundingClientRect with edge-clamping +
      an arrow offset (--ax); singleton (opening one closes any other); outside-tap + Esc close. */
-  var openPop = null, popNode = null, popWired = false;
+  var openPop = null, popNode = null, popWired = false, popUntrap = null;
   var stCur = null, stByIdCur = {};   /* the live snapshot + id→state, refreshed each render (popup reads them) */
 
   function closePop() {
+    if (popUntrap) { popUntrap(); popUntrap = null; }   /* dispose the shared containment trap first (D-63) */
     if (openPop) { openPop.remove(); openPop = null; }
-    if (popNode) { popNode.setAttribute('aria-expanded', 'false'); popNode = null; }
+    if (popNode) {
+      popNode.setAttribute('aria-expanded', 'false');
+      var trigger = popNode;
+      popNode = null;
+      /* return focus to the station that opened the slip — but ONLY when it is still connected. In the
+         render() detach path the node is being rebuilt, so skip (render's own flow re-lands focus). */
+      if (trigger.isConnected) trigger.focus();
+    }
   }
 
   function placePop(pop, node) {
@@ -293,12 +301,22 @@
     var pop = document.createElement('div');
     pop.className = 'npop';
     pop.setAttribute('role', 'dialog');
+    pop.setAttribute('aria-modal', 'true');              /* D-63 — the dialog contract; the trap below closes the reachable background (Pitfall 8) */
     pop.innerHTML = popContent(node);
     document.body.appendChild(pop);                      /* MOUNT ON BODY (R-4 / Pitfall 3) — never in .reg-orbit */
+    /* name the dialog from its own heading (aria-labelledby → the .np-label, given an id here — the
+       slip is a singleton so a fixed id is unique) and make the plain div dialog focusable. */
+    var lbl = pop.querySelector('.np-label');
+    if (lbl) { if (!lbl.id) lbl.id = 'npLabel'; pop.setAttribute('aria-labelledby', lbl.id); }
+    pop.tabIndex = -1;                                   /* a plain div ignores .focus() without this (S4) */
     node.setAttribute('aria-expanded', 'true');
     openPop = pop; popNode = node;
     wireCta(pop, node);                                  /* CTA nav + morph + chest-claim wiring (below) */
     placePop(pop, node);                                 /* measure + anchor AFTER contents are in the DOM */
+    /* move focus onto the dialog itself — a locked slip has NO CTA (D-54), so the dialog is the focus
+       target — then contain Tab within it via the ONE shared helper (disposed in closePop). */
+    pop.focus();
+    popUntrap = AW._trapFocus(pop);
   }
 
   /* nodeAtomCount(id) — the station's taught-atom count for its seed-row, WITHOUT exposing the

@@ -258,32 +258,32 @@ test('D-63: AW.sheet carries an accessible name — lands in 06-04', () => {
   assert.ok(result.sheet.ariaLabel, 'AW.sheet(html, label) must set an aria-label on the sheet (default "Details")');
 });
 
-test('D-63: the popup trap wraps Tab focus within itself — lands in 06-06', { todo: 'D-63: popup containment-wrap lands in 06-06' }, () => {
+test('D-63: the popup trap wraps Tab focus within itself — lands in 06-06', () => {
   if (chromeMissing) return;
   assert.ok(result, 'the driver produced a run');
   assert.equal(result.popup.wrap.defaultPrevented, true, 'a Tab dispatched at the popup boundary must be intercepted by the shared focus-trap helper');
 });
 
-test('D-63: the popup carries aria-modal="true" — lands in 06-06', { todo: 'D-63: popup aria-modal lands in 06-06' }, () => {
+test('D-63: the popup carries aria-modal="true" — lands in 06-06', () => {
   if (chromeMissing) return;
   assert.ok(result, 'the driver produced a run');
   assert.equal(result.popup.ariaModal, 'true', 'the .npop element must carry aria-modal="true"');
 });
 
-test('D-63: the popup carries an accessible name (aria-labelledby → .np-label) — lands in 06-06', { todo: 'D-63: popup accessible-name lands in 06-06' }, () => {
+test('D-63: the popup carries an accessible name (aria-labelledby → .np-label) — lands in 06-06', () => {
   if (chromeMissing) return;
   assert.ok(result, 'the driver produced a run');
   assert.ok(result.popup.labelledby, 'the popup must carry aria-labelledby pointing at .np-label');
   assert.equal(result.popup.labelHasId, true, '.np-label must carry the id the aria-labelledby reference targets');
 });
 
-test('D-63: focus moves onto the popup dialog on open — lands in 06-06', { todo: 'D-63: popup focus-move-on-open lands in 06-06' }, () => {
+test('D-63: focus moves onto the popup dialog on open — lands in 06-06', () => {
   if (chromeMissing) return;
   assert.ok(result, 'the driver produced a run');
   assert.equal(result.popup.focusMovedIn, true, 'opening the popup must move focus onto the dialog (tabindex="-1" self-focus per S4, since a locked popup has no CTA)');
 });
 
-test('D-63: focus returns to the triggering node when the popup closes — lands in 06-06', { todo: 'D-63: popup focus-return lands in 06-06' }, () => {
+test('D-63: focus returns to the triggering node when the popup closes — lands in 06-06', () => {
   if (chromeMissing) return;
   assert.ok(result, 'the driver produced a run');
   assert.equal(result.popup.focusReturnedToTrigger, true, 'closing the popup must restore focus to the .onode that opened it');
