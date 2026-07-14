@@ -240,19 +240,19 @@ test('claim-before-open ordering: an immediate Escape after a chest claim keeps 
 
 /* ---------- TODO (exactly TEN — the phase's residue ledger depends on this exact count) ---------- */
 
-test('D-63: the sheet trap wraps Tab focus within itself — lands in 06-04', { todo: 'D-63: sheet containment-wrap lands in 06-04' }, () => {
+test('D-63: the sheet trap wraps Tab focus within itself — lands in 06-04', () => {
   if (chromeMissing) return;
   assert.ok(result, 'the driver produced a run');
   assert.equal(result.sheet.wrap.defaultPrevented, true, 'a Tab dispatched at the sheet boundary must be intercepted by the shared focus-trap helper');
 });
 
-test('D-63: focus moves into the sheet on open (.sheet-x) — lands in 06-04', { todo: 'D-63: sheet focus-into lands in 06-04' }, () => {
+test('D-63: focus moves into the sheet on open (.sheet-x) — lands in 06-04', () => {
   if (chromeMissing) return;
   assert.ok(result, 'the driver produced a run');
   assert.equal(result.sheet.focusedIntoCloseBtn, true, 'opening the sheet must move focus onto .sheet-x');
 });
 
-test('D-63: AW.sheet carries an accessible name — lands in 06-04', { todo: 'D-63: sheet accessible-name lands in 06-04' }, () => {
+test('D-63: AW.sheet carries an accessible name — lands in 06-04', () => {
   if (chromeMissing) return;
   assert.ok(result, 'the driver produced a run');
   assert.ok(result.sheet.ariaLabel, 'AW.sheet(html, label) must set an aria-label on the sheet (default "Details")');

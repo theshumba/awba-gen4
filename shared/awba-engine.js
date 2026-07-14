@@ -1086,17 +1086,60 @@ AW.reducedMotion = function () {
   );
 };
 
-/* ---------- AW.sheet(html) — ONE lazily-created singleton bottom-sheet (D-35). Mirrors the
-   AW.prefs/AW.S closure idiom: private scrim/sheet/invoker, an ensure() that builds the scrim +
-   role="dialog"/aria-modal sheet on <body> once and wires outside-tap + Escape close, and an
-   `api` with open(html)/close(). Opening REPLACES content (singleton — one element), captures the
-   invoker for Phase-6 focus-restore, adds the in-sheet close button (D-35) and the <html>
-   .sheet-lock scroll-lock. close() is idempotent. All DOM access is inside functions, so the IIFE
-   is parse-time-safe (no DOM touched at definition). DEFERRED to Phase 6 (deliberately NOT built
-   here): focus-trap, inert/aria-hidden on the background, full iOS position-fixed scroll lock —
-   the scrim-wraps-sheet structure leaves room for the trap. */
+/* ---------- AW._trapFocus(overlayEl) — the ONE shared Tab-cycle containment helper (D-63),
+   applied to all three overlay families (AW.sheet below; the .npop popup + .ofest Festival land
+   in 06-06). Returns an untrap() disposer. A keydown listener ON THE OVERLAY (never document —
+   06-RESEARCH §Focus Containment) that, on Tab, recomputes the visible focusable list LIVE
+   (popup content is static but sheet content varies) and wraps first<->last (shift+Tab reverses).
+   The focusable selector is verbatim from 06-RESEARCH, filtered by getClientRects().length > 0
+   rather than offsetParent — robust for the fixed-position sheet, whose offsetParent is null.
+   Never reaches outside the overlay or mutates content (T-06-04b); aria-modal already instructs
+   SRs to ignore the background (Pitfall 8 — no `inert`). */
+AW._trapFocus = function (overlayEl) {
+  function focusables() {
+    var list = overlayEl.querySelectorAll(
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    );
+    var out = [];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].getClientRects().length > 0) out.push(list[i]);
+    }
+    return out;
+  }
+  function onKeydown(e) {
+    if (e.key !== 'Tab') return;
+    var f = focusables();
+    if (!f.length) return;
+    var first = f[0];
+    var last = f[f.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first || f.indexOf(document.activeElement) === -1) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else if (document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+  overlayEl.addEventListener('keydown', onKeydown);
+  return function untrap() {
+    overlayEl.removeEventListener('keydown', onKeydown);
+  };
+};
+
+/* ---------- AW.sheet(html, label) — ONE lazily-created singleton bottom-sheet (D-35, D-63/R-10).
+   Mirrors the AW.prefs/AW.S closure idiom: private scrim/sheet/invoker/trap, an ensure() that
+   builds the scrim + role="dialog"/aria-modal sheet on <body> once and wires outside-tap +
+   Escape close, and an `api` with open(html, label)/close(). Opening REPLACES content (singleton
+   — one element), captures the invoker for focus-restore (shipped, PRESERVED unchanged), sets a
+   backwards-compatible accessible name (`label` arg, default "Details" — `AW.sheet(html)` still
+   works), adds the in-sheet close button (D-35) and the <html> .sheet-lock scroll-lock, moves
+   focus into `.sheet-x`, and attaches the shared `AW._trapFocus` containment. close() disposes
+   the trap then restores focus to the invoker (idempotent — safe before any open). All DOM access
+   is inside functions, so the IIFE is parse-time-safe (no DOM touched at definition). */
 AW.sheet = (function () {
-  var scrim, sheet, invoker;
+  var scrim, sheet, invoker, trap;
   function ensure() {
     if (scrim) return;
     scrim = document.createElement('div');
@@ -1115,23 +1158,27 @@ AW.sheet = (function () {
     });
   }
   var api = {
-    open: function (html) {
+    open: function (html, label) {
       ensure();
-      invoker = document.activeElement; // Phase-6 hook: restore focus on close
+      invoker = document.activeElement; // Phase-6 hook: restore focus on close (shipped, PRESERVED)
+      sheet.setAttribute('aria-label', label || 'Details'); // D-63/R-10 — backwards-compatible name
       sheet.innerHTML = '<button class="sheet-x" aria-label="Close">×</button>' + html;
       sheet.querySelector('.sheet-x').addEventListener('click', api.close);
       scrim.classList.add('open'); // singleton: one element ⇒ opening replaces any open content
       document.documentElement.classList.add('sheet-lock'); // scroll-lock while open
+      sheet.querySelector('.sheet-x').focus(); // D-63 — focus-into the sheet on open
+      trap = AW._trapFocus(sheet); // D-63 — Tab containment, disposed on close
     },
     close: function () {
       if (!scrim) return; // idempotent — safe before any open
+      if (trap) { trap(); trap = null; } // dispose the containment trap first
       scrim.classList.remove('open');
       document.documentElement.classList.remove('sheet-lock');
-      if (invoker && invoker.focus) invoker.focus(); // Phase-6-ready focus restore
+      if (invoker && invoker.focus) invoker.focus(); // Phase-6-ready focus restore (shipped, unchanged)
     },
   };
-  var open = function (html) {
-    api.open(html);
+  var open = function (html, label) {
+    api.open(html, label);
     return api;
   };
   open.close = api.close; // AW.sheet.close()
@@ -1164,7 +1211,7 @@ AW.sheetRef = function (refs, id) {
     '<span class="r-pill">unverified · pending review</span>' +
     gradePill +
     '</div>';
-  return AW.sheet(html);
+  return AW.sheet(html, r.ref); // D-63/R-10 — the citation's own reference is the sheet's accessible name
 };
 
 /* ---------- AW.sheetTerm(terms, id) — the term gloss sheet (ENG-06 / D-36). Unknown id → no-op.
@@ -1180,7 +1227,7 @@ AW.sheetTerm = function (terms, id) {
     '<div class="g-wd">' + t.word + '</div>' +
     '<div class="g-df">' + t.def + '</div>' +
     '<div class="g-cx">' + t.ctx + '</div>';
-  return AW.sheet(html);
+  return AW.sheet(html, t.word); // D-63/R-10 — the gloss word is the sheet's accessible name
 };
 
 /* ---------- AW.animate(el, keyframes, durToken, easeToken) — the WAAPI orchestration exemplar
