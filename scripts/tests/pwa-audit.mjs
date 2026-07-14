@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* ============================================================================================
-   pwa-audit.mjs  ·  Awba Gen-4 — permanent PWA manifest/icon/redirect gate (07-01, PLT-02)
+   pwa-audit.mjs  ·  Awba Gen-4 — permanent PWA manifest/icon/redirect/SW gate (07-01/07-02, PLT-02)
    --------------------------------------------------------------------------------------------
    Not a node:test file — an explicit exit-code-first tool invoked directly, joining the full
    standing gate set alongside render-smoke/port-audit/contrast/rtl/glyph:
@@ -18,12 +18,20 @@
      6. index.html contains the learn.html redirect (meta-refresh or location.replace target)
         and links the manifest.
      7. learn.html links the manifest and the apple-touch-icon.
+     8. sw.js (D-71/07-02): exists, `node --check`-parses, declares a versioned `awba-cache-vN`
+        cache constant, has an activate-time purge (cache-key delete loop) + `clients.claim()`,
+        and a navigate/`text/html` network-first branch. Every re-derived PRECACHE path (the same
+        quoted-string extraction the Task-1 verify used) resolves to a real file on disk — no
+        404 could ever be cached, which would otherwise fail the whole `addAll()` install.
+     9. learn.html + index.html both carry the file://-guarded registration
+        (`serviceWorker.register('sw.js')` behind `protocol !== 'file:'`).
 
    Prints `PWA OK` + exits 0 on success; prints a specific reason + exits 1 on any failure.
-   Zero-dependency: Node core only (fs/path/url).
+   Zero-dependency: Node core only (fs/path/url/child_process).
    ============================================================================================ */
 'use strict';
 
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -111,6 +119,45 @@ function main() {
   const learnHtml = readFileSync(learnPath, 'utf8');
   if (!/rel="manifest"/.test(learnHtml)) fail('learn.html does not link the manifest');
   if (!/apple-touch-icon/.test(learnHtml)) fail('learn.html does not link the apple-touch-icon');
+
+  // --- D-71/07-02: sw.js shape + precache-list integrity -----------------------------------
+  const swPath = path.join(ROOT, 'sw.js');
+  if (!existsSync(swPath)) fail('sw.js missing');
+
+  try {
+    execFileSync(process.execPath, ['--check', swPath], { stdio: 'pipe' });
+  } catch (e) {
+    fail(`sw.js does not parse — ${e.message}`);
+  }
+
+  const swSrc = readFileSync(swPath, 'utf8');
+  if (!/awba-cache-v\d+/.test(swSrc)) fail('sw.js does not declare a versioned awba-cache-vN cache constant');
+  if (!/caches\.delete/.test(swSrc)) fail('sw.js has no activate-time cache-key delete (purge)');
+  if (!/clients\.claim/.test(swSrc)) fail('sw.js activate does not call clients.claim()');
+  if (!/skipWaiting/.test(swSrc)) fail('sw.js install does not call skipWaiting()');
+  if (!/mode\s*===\s*['"]navigate['"]/.test(swSrc) && !/text\/html/.test(swSrc)) {
+    fail('sw.js has no navigate/text-html network-first branch');
+  }
+
+  const arrayMatch = swSrc.match(/\[([\s\S]*?)\]/);
+  if (!arrayMatch) fail('sw.js has no PRECACHE array literal');
+  const precachePaths = (arrayMatch[1].match(/'[^']+'|"[^"]+"/g) || [])
+    .map((s) => s.slice(1, -1))
+    .filter((p) => !/^https?:/.test(p));
+  if (precachePaths.length === 0) fail('sw.js PRECACHE array is empty');
+  for (const p of precachePaths) {
+    if (p[0] === '/') fail(`sw.js PRECACHE entry is absolute (leading slash): ${p}`);
+    const absPrecachePath = path.join(ROOT, p);
+    if (!existsSync(absPrecachePath)) fail(`sw.js PRECACHE entry does not resolve to a file: ${p}`);
+  }
+
+  // --- D-71/07-02: file://-guarded registration on learn.html + index.html ------------------
+  const registerRe = /serviceWorker\.register\(\s*['"]sw\.js['"]\s*\)/;
+  const guardRe = /protocol\s*!==\s*['"]file:['"]/;
+  if (!registerRe.test(learnHtml)) fail('learn.html does not register sw.js');
+  if (!guardRe.test(learnHtml)) fail('learn.html SW registration is not guarded off file://');
+  if (!registerRe.test(indexHtml)) fail('index.html does not register sw.js');
+  if (!guardRe.test(indexHtml)) fail('index.html SW registration is not guarded off file://');
 
   console.log('PWA OK');
   process.exit(0);
