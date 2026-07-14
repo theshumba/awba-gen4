@@ -131,7 +131,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Quiz verdicts, noor changes, combo, and screen changes are announced via `aria-live` / `role=status`; icon-only controls carry accessible names and the reflect textarea is properly labelled.
   3. Amber, green, and gold state colours pass WCAG AA contrast, and correct/incorrect states carry a non-colour signal (icon/shape), verified against the standard.
   4. A final typography/RTL stress-test (verifying FND-03 and CNT-04 at full-app scale) confirms transliteration diacritics (ʿ ʾ ā ī ū ḥ ṣ ṭ ẓ ḍ ġ) and Khattab `˹˺` brackets display correctly, and Arabic containers use `unicode-bidi: isolate` so mixed Arabic/Latin lines never scramble.
-**Plans**: TBD
+**Plans**: 7 plans (3 Wave-0 foundation gates -> 3 narrow-seam implementation plans -> the two-stage gate; sequential waves, one executor at a time on main)
+  - [ ] 06-01-PLAN.md — a11y probe harness: keyboard/dialogs/announce probes (shipped baseline pinned ACTIVE, gaps { todo }-gated so the suite holds fail 0) (ACC-01/02)
+  - [ ] 06-02-PLAN.md — typography/RTL gate: rewrite the broken glyph gate (14-face roster, real-string harvest) + rtl-audit.mjs + the neutral-copy typo-stress fixture (ACC-03 / FND-03 / CNT-04 re-verify, D-66)
+  - [ ] 06-03-PLAN.md — contrast-audit.mjs: WCAG computed-style sweep over 20 pages + the full interaction-state forcing table (ACC-03, D-65)
+  - [ ] 06-04-PLAN.md — engine a11y primitives: AW.announce + .aw-sr live region + AW._trapFocus + AW.sheet(html,label) name/focus-into + focus-ring unify (ACC-01/02, D-63/D-64)
+  - [ ] 06-05-PLAN.md — runner a11y: composed announce + focus-to-heading + 10s/timeout narration + non-colour selection cue + real disabled states (ACC-01/02/03, D-64/D-65)
+  - [ ] 06-06-PLAN.md — learn.html a11y: node state-in-name + streak/ayah conversions (R-9) + popup/Festival dialog contract + sheet-caller labels (ACC-01/02, D-62/D-63)
+  - [ ] 06-07-PLAN.md — two-stage phase gate: automated prechecks (suite + the 3 new permanent audits + standing gates) then the BLOCKING human keyboard/VoiceOver/tofu/bidi walk (autonomous:false, D-68)
 **UI hint**: yes
 
 ### Phase 7: PWA Shell, Offline & Delivery
@@ -159,5 +166,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Components, Icon Kit & Motion | 10/12 | In Progress|  |
 | 4. Lesson & Review Engine Port | 6/7 | In Progress | - |
 | 5. Learn Page & View Transitions | 4/6 | In Progress | - |
-| 6. Accessibility, RTL & Typography | 0/TBD | Not started | - |
+| 6. Accessibility, RTL & Typography | 0/7 | Planned | - |
 | 7. PWA Shell, Offline & Delivery | 0/TBD | Not started | - |

@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: milestone
 status: executing
-stopped_at: "PHASE 5 CLOSED 2026-07-14 verified 5/5 (review 4 warnings fixed 5873fa9; verifier blocker — dead VT morph reveal selector — fixed 47cf7d2, re-verified PASS; suite 114/114). Next: /gsd:discuss-phase 6 (a11y/RTL/typography hardening)"
-last_updated: "2026-07-14T00:00:00.000Z"
+stopped_at: "PHASE 5 CLOSED 2026-07-14 verified 5/5 (review 4 warnings fixed 5873fa9; verifier blocker — dead VT morph reveal selector — fixed 47cf7d2, re-verified PASS; suite 114/114). Next: /gsd:discuss-phase 6 (a11y/RTL/typography hardening). PHASE 6 PLANNED 2026-07-14 — 7 plans / 7 sequential waves (one executor at a time on main). Next: /gsd:execute-phase 6"
+last_updated: "2026-07-14T12:00:00.000Z"
 last_activity: 2026-07-14
 progress:
   total_phases: 7
   completed_phases: 5
-  total_plans: 31
+  total_plans: 38
   completed_plans: 31
   percent: 71
 ---
@@ -24,6 +24,11 @@ See: .planning/PROJECT.md (updated 2026-07-11)
 **Current focus:** Phase 05 — Learn Page & Cross-Page View Transitions (Phase 04 CLOSED 2026-07-13: all 19 files render end-to-end verbatim, review-fixed at c7a1396, verified 5/5)
 
 ## Current Position
+
+Phase: 06 (Accessibility, RTL & Typography Hardening) — PLANNED 2026-07-14 (7 plans / 7 sequential waves, one executor at a time on main). ACC-01/02/03; D-62..D-68 all cited literally across must_haves.truths.
+- Wave structure: 06-01 sonnet (a11y probe harness: keyboard/dialogs/announce — shipped baseline ACTIVE, gaps `{ todo }`-gated so suite holds fail 0 while the contract is written) · 06-02 opus (typography/RTL gate: rewrite the BROKEN glyph gate [exit 1 on the retired Poppins ref] for the 14-face Athar roster + real-string codepoint harvest incl. Ḥ U+1E24/Ḏ U+1E0E/Courier ā, rtl-audit.mjs, the neutral-copy typo-stress fixture) · 06-03 sonnet (contrast-audit.mjs: WCAG computed-style sweep over 20 pages + the full interaction-state forcing table) · 06-04 sonnet (engine primitives: AW.announce + .aw-sr live region + AW._trapFocus + AW.sheet(html,label) name/focus-into + focus-ring unify) · 06-05 opus (runner a11y: composed announce + focus-to-heading + 10s/timeout narration + non-colour selection cue [aria-pressed + 2→3px held press] + real disabled states) · 06-06 opus (learn.html a11y: node state-in-name + streak/ayah conversions [R-9] + popup/Festival dialog contract + sheet-caller labels) · 06-07 sonnet (two-stage gate: prechecks + the 3 new permanent audits + standing gates, then the BLOCKING human keyboard/VoiceOver/tofu/bidi walk, autonomous:false).
+- Interface-first + suite-green mechanism: the a11y probes (06-01) are permanent suite members whose not-yet-built assertions are node:test `{ todo }`-gated (a failing todo reports fail 0 — verified this session); each impl plan un-todos exactly its assertions with a RED→GREEN flip across the plan boundary. Baseline 114/114 never shrinks; the 3 new .mjs/.py audits are separate exit-code gates joining the full-suite command.
+- Hardening scope (D-67): fixes at the narrowest seam only; no mechanics/copy/schema/layout redesign; zero new hex (token-only); localStorage 13 (engine)/0 (learn); @layer order line ×1; glyphCount 13; render-smoke 21 checks stay green. Owner-ledger gate item added: R-8 (review timer announcement-only; a visible Courier seconds readout stays a deferred owner choice).
 
 Phase: 05 (Learn Page & Cross-Page View Transitions) — PLANNED (6 plans / 6 sequential waves), waves 1–5 (05-01, 05-02, 05-03, 05-04, 05-05) COMPLETE, wave 6 (05-06 — prechecks + BLOCKING human gate) next
 - Wave routing: 05-01 sonnet (engine seams: NODE_ATOMS/atomsDone/dailyIndex/mute exports + atomic 65→61 re-wire + learn-state tests) · 05-02 opus (Orbit shell: HUD/Ring/continue/streak/daily ayah) · 05-03 opus (unit headers + winding path + node grammar + gold thread) · 05-04 opus (popup + nav wiring + View Transitions) · 05-05 opus (sheets + tabs + chest→circuit-plate Festival claim) · 05-06 sonnet prechecks + BLOCKING human gate (autonomous:false)
