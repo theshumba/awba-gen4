@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba Gen-4 · typographic specimen (typo-stress)</title>
+<meta name="description" content="A neutral-copy typographic specimen: every rationed Athar face, the full transliteration diacritic set, the editorial corner brackets, the honorific, and mixed bidi lines — the human tofu walk for FND-03 / CNT-04. Neutral copy only; no scripture.">
+
+<!-- Zero-CDN, page-relative (from scripts/fixtures/ up to the app root). The engine stylesheet
+     carries every @font-face and every --font-* / --token used below; no face is redefined here.
+     The subset .woff2 files resolve via the stylesheet's own relative fonts/ path. -->
+<link rel="preload" as="font" type="font/woff2" href="../../shared/fonts/readex-pro-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../../shared/fonts/amiri-quran-400.woff2" crossorigin>
+<link rel="stylesheet" href="../../shared/awba-engine.css">
+
+<style>
+  /* --------------------------------------------------------------------------------------------
+     Specimen chrome ONLY — a reading document, not an app screen. It consumes the Athar token
+     layer (every colour / size / face below is a var(--…)); it declares no new design system.
+     Rules are unlayered so the body override neutralises the engine's >=600px centred-column
+     shell (meant for real phone pages, not this long reference sheet).
+     -------------------------------------------------------------------------------------------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  body { background: var(--cream); color: var(--ink); margin: 0; }
+  @media (min-width: 600px) {
+    body { display: block; align-items: initial; justify-content: initial; padding: 0; }
+  }
+
+  .ts-shell { max-width: 980px; margin-inline: auto; padding: var(--sp-8) var(--sp-4) var(--sp-16); }
+  @media (min-width: 600px) { .ts-shell { padding-inline: var(--sp-8); } }
+
+  /* Masthead */
+  .ts-kick {
+    margin: 0 0 var(--sp-2); font-family: var(--font-marg); font-size: var(--fs-marg);
+    letter-spacing: .22em; text-transform: uppercase; color: var(--ink-62);
+  }
+  .ts-title {
+    margin: 0 0 var(--sp-3); font-family: var(--font-display); font-weight: 400;
+    font-size: var(--fs-h1); line-height: 1.1; color: var(--ink);
+  }
+  .ts-lede {
+    margin: 0 0 var(--sp-2); font-family: var(--font-work); font-size: var(--fs-body);
+    line-height: 1.7; color: var(--ink-85); max-width: 62ch;
+  }
+  .ts-note {
+    margin: 0; font-family: var(--font-marg); font-size: var(--fs-marg);
+    color: var(--ink-62); letter-spacing: .02em;
+  }
+
+  /* Section headings */
+  .ts-h {
+    margin: var(--sp-12) 0 var(--sp-2); font-family: var(--font-display); font-weight: 400;
+    font-size: var(--fs-h2); color: var(--ink);
+  }
+  .ts-h + .ts-sub {
+    margin: 0 0 var(--sp-5); font-family: var(--font-marg); font-size: var(--fs-marg);
+    color: var(--ink-62);
+  }
+
+  /* Face specimen rows */
+  .ts-spec { padding: var(--sp-4) 0; border-top: 1px solid var(--rule); }
+  .ts-spec:first-of-type { border-top: 0; }
+  .ts-role {
+    margin: 0 0 var(--sp-2); font-family: var(--font-marg); font-size: var(--fs-marg);
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ink-62);
+  }
+  .ts-line {
+    margin: 0; font-size: clamp(1.15rem, 4.4vw, 1.75rem); line-height: 1.6;
+    color: var(--ink); overflow-wrap: anywhere;
+  }
+  .ts-line[dir="rtl"] { line-height: 1.9; }
+
+  /* Diacritic reference grid */
+  .ts-grid {
+    display: grid; gap: var(--sp-2);
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    margin: 0;
+  }
+  .ts-cell {
+    display: flex; flex-direction: column; align-items: center; gap: var(--sp-1);
+    padding: var(--sp-3) var(--sp-2); border: 1px solid var(--keyline);
+    border-radius: var(--r-2); background: var(--cream);
+  }
+  .ts-glyph { font-family: var(--font-work); font-size: var(--fs-h2); line-height: 1; color: var(--ink); }
+  .ts-cp { font-family: var(--font-marg); font-size: var(--fs-marg); color: var(--ink-62); letter-spacing: .04em; }
+
+  /* Marks / brackets panel */
+  .ts-panel {
+    margin-top: var(--sp-4); padding: var(--sp-5) var(--sp-4);
+    border: 1px solid var(--keyline); border-radius: var(--r-3); background: var(--cream);
+  }
+  .ts-panel + .ts-panel { margin-top: var(--sp-3); }
+  .ts-mark { margin: 0; font-size: clamp(1.3rem, 5vw, 2rem); line-height: 1.5; color: var(--ink); overflow-wrap: anywhere; }
+  .ts-cap { margin: var(--sp-2) 0 0; font-family: var(--font-marg); font-size: var(--fs-marg); color: var(--ink-62); }
+
+  /* Mixed-bidi block */
+  .ts-bidi {
+    margin: 0 0 var(--sp-3); font-family: var(--font-work); font-size: clamp(1.05rem, 4vw, 1.4rem);
+    line-height: 1.8; color: var(--ink); overflow-wrap: anywhere;
+  }
+  .ts-bidi:last-child { margin-bottom: 0; }
+  .ts-bidi [lang="ar"] { font-family: var(--font-scrip); }
+
+  /* Dark contrast strip — the diacritics read on a Kiswah ground too */
+  .ts-dark { margin-top: var(--sp-4); padding: var(--sp-5) var(--sp-4); border-radius: var(--r-3);
+    background: var(--kiswah); color: var(--moonmilk); }
+  .ts-dark .ts-role { color: var(--paper-62); }
+  .ts-dark .ts-line { color: var(--moonmilk); }
+
+  .ts-foot {
+    margin-top: var(--sp-16); padding-top: var(--sp-4); border-top: 1px solid var(--rule);
+    font-family: var(--font-marg); font-size: var(--fs-marg); color: var(--ink-62); line-height: 1.7;
+  }
+</style>
+</head>
+
+<body>
+<main class="ts-shell">
+
+  <header>
+    <p class="ts-kick">Typographic specimen · neutral copy</p>
+    <h1 class="ts-title">The Athar type system, edge to edge</h1>
+    <p class="ts-lede">
+      Every rationed face, the full transliteration diacritic set, the editorial corner brackets,
+      the honorific and mixed Arabic/Latin bidi lines — laid out for the human tofu walk that
+      finishes the FND-03 / CNT-04 proof at full render scale (320px and desktop). The automated
+      glyph gate proves coverage; this sheet is where a person confirms the marks are legible.
+    </p>
+    <p class="ts-note">
+      Fixture law: neutral copy only. Every Arabic sample is a common dictionary word or the
+      28-letter alphabet — never an ayah, hadith or du&rsquo;a. The specimen carries no scripture.
+    </p>
+  </header>
+
+  <!-- ============================================================================================
+       1 · Face specimens — one row per declared subset weight, each rendering a neutral phrase
+       plus (for the Latin/dual-script faces) the diacritic set the app relies on.
+       ============================================================================================ -->
+  <h2 class="ts-h">Face specimens</h2>
+  <p class="ts-sub">Fourteen subset faces · the rationed Athar roster</p>
+
+  <section class="ts-spec">
+    <p class="ts-role">Workhorse · Readex Pro · 300</p>
+    <p class="ts-line" style="font-family:var(--font-work);font-weight:300">A calm, winding path — kitāb, qamar, madrasa · ʿ ʾ ā ī ū ḥ ṣ ṭ ẓ ḍ ġ Ḥ Ḏ</p>
+  </section>
+  <section class="ts-spec">
+    <p class="ts-role">Workhorse · Readex Pro · 400</p>
+    <p class="ts-line" style="font-family:var(--font-work);font-weight:400">A calm, winding path — kitāb, qamar, madrasa · ʿ ʾ ā ī ū ḥ ṣ ṭ ẓ ḍ ġ Ḥ Ḏ</p>
+  </section>
+  <section class="ts-spec">
+    <p class="ts-role">Workhorse · Readex Pro · 500</p>
+    <p class="ts-line" style="font-family:var(--font-work);font-weight:500">A calm, winding path — kitāb, qamar, madrasa · ʿ ʾ ā ī ū ḥ ṣ ṭ ẓ ḍ ġ Ḥ Ḏ</p>
+  </section>
+  <section class="ts-spec">
+    <p class="ts-role">Workhorse · Readex Pro · 600</p>
+    <p class="ts-line" style="font-family:var(--font-work);font-weight:600">A calm, winding path — kitāb, qamar, madrasa · ʿ ʾ ā ī ū ḥ ṣ ṭ ẓ ḍ ġ Ḥ Ḏ</p>
+  </section>
+  <section class="ts-spec">
+    <p class="ts-role">Workhorse · Readex Pro · 700</p>
+    <p class="ts-line" style="font-family:var(--font-work);font-weight:700">A calm, winding path — kitāb, qamar, madrasa · ʿ ʾ ā ī ū ḥ ṣ ṭ ẓ ḍ ġ Ḥ Ḏ</p>
+  </section>
+
+  <section class="ts-spec">
+    <p class="ts-role">Workhorse (Arabic) · Readex Pro · 400</p>
+    <p class="ts-line" lang="ar" dir="rtl" style="font-family:var(--font-work);font-weight:400">ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي · كِتَاب قَمَر مَدْرَسَة</p>
+  </section>
+
+  <section class="ts-spec">
+    <p class="ts-role">Scripture (general) · Amiri · 400</p>
+    <p class="ts-line" lang="ar" dir="rtl" style="font-family:'Amiri',serif;font-weight:400">ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي · قَلَم شَمْس بَيْت</p>
+  </section>
+  <section class="ts-spec">
+    <p class="ts-role">Scripture (general) · Amiri · 700</p>
+    <p class="ts-line" lang="ar" dir="rtl" style="font-family:'Amiri',serif;font-weight:700">ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي · قَلَم شَمْس بَيْت</p>
+  </section>
+  <section class="ts-spec">
+    <p class="ts-role">Scripture (Qur&rsquo;an face) · Amiri Quran · 400</p>
+    <p class="ts-line" lang="ar" dir="rtl" style="font-family:'Amiri Quran','Amiri',serif;font-weight:400">ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي · كِتَاب قَمَر مَدْرَسَة</p>
+  </section>
+
+  <section class="ts-spec">
+    <p class="ts-role">English display · Marcellus · 400</p>
+    <p class="ts-line" style="font-family:var(--font-display);font-weight:400">A quiet doorway into the lesson — ā ī ū · Ḥ Ḏ</p>
+  </section>
+  <section class="ts-spec">
+    <p class="ts-role">Term display · Aref Ruqaa · 400</p>
+    <p class="ts-line" lang="ar" dir="rtl" style="font-family:'Aref Ruqaa','Amiri',serif;font-weight:400">كِتَاب · قَمَر · مَدْرَسَة · قَلَم</p>
+  </section>
+  <section class="ts-spec">
+    <p class="ts-role">Term display · Aref Ruqaa · 700</p>
+    <p class="ts-line" lang="ar" dir="rtl" style="font-family:'Aref Ruqaa','Amiri',serif;font-weight:700">كِتَاب · قَمَر · مَدْرَسَة · قَلَم</p>
+  </section>
+  <section class="ts-spec">
+    <p class="ts-role">Festival signage · Rakkas · 400</p>
+    <p class="ts-line" lang="ar" dir="rtl" style="font-family:'Rakkas','Marcellus',serif;font-weight:400">نُور · ضَوْء · فَجْر · مَسَاء</p>
+  </section>
+  <section class="ts-spec">
+    <p class="ts-role">Marginalia · Courier Prime · 400 — the Courier ā case</p>
+    <p class="ts-line" style="font-family:var(--font-marg);font-weight:400">Ibrāhīm · Madīnah · kitāb · 14:24 · pending review · ā ī ū</p>
+  </section>
+  <section class="ts-spec">
+    <p class="ts-role">Silent corner-bracket fallback · Inter · 400</p>
+    <p class="ts-line" style="font-family:'Inter',sans-serif;font-weight:400">The editor&rsquo;s clarifying insert ˹like so˺ — ˹ U+02F9 · ˺ U+02FA</p>
+  </section>
+
+  <!-- ============================================================================================
+       2 · Diacritic reference grid — each mark large, with its codepoint, lowercase then upper.
+       ============================================================================================ -->
+  <h2 class="ts-h">Transliteration diacritics</h2>
+  <p class="ts-sub">The full set the workhorse carries · plus the two uppercase forms the app uses</p>
+  <div class="ts-grid">
+    <div class="ts-cell"><span class="ts-glyph">ʿ</span><span class="ts-cp">U+02BF</span></div>
+    <div class="ts-cell"><span class="ts-glyph">ʾ</span><span class="ts-cp">U+02BE</span></div>
+    <div class="ts-cell"><span class="ts-glyph">ā</span><span class="ts-cp">U+0101</span></div>
+    <div class="ts-cell"><span class="ts-glyph">ī</span><span class="ts-cp">U+012B</span></div>
+    <div class="ts-cell"><span class="ts-glyph">ū</span><span class="ts-cp">U+016B</span></div>
+    <div class="ts-cell"><span class="ts-glyph">ḥ</span><span class="ts-cp">U+1E25</span></div>
+    <div class="ts-cell"><span class="ts-glyph">ṣ</span><span class="ts-cp">U+1E63</span></div>
+    <div class="ts-cell"><span class="ts-glyph">ṭ</span><span class="ts-cp">U+1E6D</span></div>
+    <div class="ts-cell"><span class="ts-glyph">ẓ</span><span class="ts-cp">U+1E93</span></div>
+    <div class="ts-cell"><span class="ts-glyph">ḍ</span><span class="ts-cp">U+1E0D</span></div>
+    <div class="ts-cell"><span class="ts-glyph">ġ</span><span class="ts-cp">U+0121</span></div>
+    <div class="ts-cell"><span class="ts-glyph">Ḥ</span><span class="ts-cp">U+1E24</span></div>
+    <div class="ts-cell"><span class="ts-glyph">Ḏ</span><span class="ts-cp">U+1E0E</span></div>
+  </div>
+
+  <div class="ts-dark">
+    <p class="ts-role">The same set on a Kiswah ground</p>
+    <p class="ts-line" style="font-family:var(--font-work);font-weight:400">ʿ ʾ ā ī ū ḥ ṣ ṭ ẓ ḍ ġ · Ḥ Ḏ</p>
+  </div>
+
+  <!-- ============================================================================================
+       3 · Editorial brackets, honorific and ornate frame marks.
+       ============================================================================================ -->
+  <h2 class="ts-h">Brackets, honorific &amp; frame marks</h2>
+  <p class="ts-sub">Where each glyph lives in the roster</p>
+
+  <div class="ts-panel">
+    <p class="ts-mark" style="font-family:var(--font-work);font-weight:400">˹ a clarifying insert ˺</p>
+    <p class="ts-cap">Corner brackets ˹ U+02F9 / ˺ U+02FA. The workhorse Readex lacks them by design; Inter
+      catches them silently in the stack. Shown here in Readex (rendered via the Inter fallback).</p>
+  </div>
+  <div class="ts-panel">
+    <p class="ts-mark" lang="ar" dir="rtl" style="font-family:'Amiri Quran','Amiri',serif">ﷺ</p>
+    <p class="ts-cap">Honorific ligature ﷺ U+FDFA — an Amiri / Amiri Quran glyph. Shown as a standalone
+      typographic mark, not scripture.</p>
+  </div>
+  <div class="ts-panel">
+    <p class="ts-mark" lang="ar" dir="rtl" style="font-family:'Amiri Quran','Amiri',serif">﴾ &#160; ﴿</p>
+    <p class="ts-cap">Ornate frame ﴾ U+FD3E / ﴿ U+FD3F — decorative parentheses. The shipped subset omits
+      them (they are not used by the app), so they render via the declared system-Arabic fallback;
+      that is expected, and a note for the 06-07 gate walk, not a failure.</p>
+  </div>
+
+  <!-- ============================================================================================
+       4 · Mixed Arabic / Latin bidi lines — isolation keeps the runs from scrambling.
+       ============================================================================================ -->
+  <h2 class="ts-h">Mixed bidi lines</h2>
+  <p class="ts-sub">Each Arabic run is isolated (unicode-bidi:isolate via lang="ar")</p>
+
+  <div class="ts-panel">
+    <p class="ts-bidi">The word <span lang="ar" dir="rtl">قَلَم</span> means &ldquo;pen&rdquo;, and it is entry 12 of 28 in the neutral list.</p>
+    <p class="ts-bidi"><span lang="ar" dir="rtl">مَدْرَسَة</span> then the Latin sentence continues cleanly, digits 2026 and all.</p>
+    <p class="ts-bidi">A source-style line: Madīnah · kitāb · ḥ ṣ ṭ — Latin, diacritics and an isolated <span lang="ar" dir="rtl">قَمَر</span> together.</p>
+  </div>
+
+  <p class="ts-foot">
+    Neutral-copy typographic specimen (typo-stress) · Awba Gen-4 · FND-03 / CNT-04. Rendered at
+    320px and desktop for the no-overflow check; walked by a person for the final tofu confirmation.
+    No scripture, no gated literals, out of any precache by location (scripts/fixtures/).
+  </p>
+
+</main>
+</body>
+</html>
