@@ -12,6 +12,12 @@
 <meta name="theme-color" content="#131013">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+<!-- D-71: register the SW, guarded off file:// — relative path, no storage touched. -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js'); });
+  }
+</script>
 <script>location.replace('learn.html');</script>
 </head>
 <body>

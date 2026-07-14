@@ -10,6 +10,13 @@
 <!-- D-70: the install head trio — learn.html is itself the installable app; index.html carries the same trio. -->
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+<!-- D-71: register the SW, guarded off file:// (double-click review + the file:// render-smoke
+     harness stay a no-op) — relative path, no storage touched. -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js'); });
+  }
+</script>
 <!-- learn.html sits at repo ROOT: every asset path is root-relative (shared/…), NEVER ../ — it mirrors
      preview.html's head, not the lessons/ head one level down. Preload the two critical faces only. -->
 <link rel="preload" as="font" type="font/woff2" href="shared/fonts/readex-pro-400.woff2" crossorigin>
