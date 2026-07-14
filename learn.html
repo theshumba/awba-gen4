@@ -409,6 +409,17 @@
       row(true, 'cite', 'Qur’an', 'COMING SOON', false));
   }
 
+  /* a designed coming-soon sheet for the Practice / Profile / More tabs (§S4 · LRN-07) — a scene
+     icon + one calm line; warm, never a dead tap and never "locked"/"upgrade"/"unavailable". */
+  function comingSoonSheet(scene, line) {
+    AW.sheet(
+      '<div class="grip"></div>' +
+      '<div class="ocs-body">' +
+        '<span class="ocs-ic">' + AW.icon(scene, { size: '40px' }) + '</span>' +
+        '<p class="ocs-line">' + line + '</p>' +
+      '</div>');
+  }
+
   function render() {
     closePop();                                  // an app.innerHTML rebuild detaches node buttons — drop any open slip
     var st = AW.state();
@@ -600,7 +611,27 @@
        daily ayah → the winding journey (4 unit sections) → the Ibrahim 14:24 epigraph. */
     var body = '<div class="ob-hero">' + ring + streak + '</div>' + cont + ayah + journeyWrap + ibrahim;
 
-    app.innerHTML = '<div class="ob-shell">' + hud + '<div class="ob-wrap">' + body + '</div></div>';
+    /* Tab bar (§S4 · R-5 · LRN-07) — Learn active with the GOLD active cue on Orbit (crimson is
+       2.65:1 on Kiswah — banned; the @layer screens .reg-orbit .tab.active override re-inks it gold,
+       mirroring the shipped .rv-shell precedent). Every inactive tab opens a designed AW.sheet —
+       never a dead tap; Returns → the ONE streak sheet (Task 1's implementation). Fixed to the bottom
+       edge (a direct child of #app so no animated/transformed ancestor breaks position:fixed), 44px
+       min per tab, safe-area inset bottom. */
+    function tab(id, active, scene, label) {
+      return '<button class="tab' + (active ? ' active' : '') + '" type="button" id="' + id + '"' +
+        (active ? ' aria-current="page"' : '') + '>' +
+        '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</button>';
+    }
+    var tabs =
+      '<nav class="otabs" aria-label="Sections">' +
+        tab('tabLearn', true, 'lamp', 'Learn') +
+        tab('tabPractice', false, 'beads', 'Practice') +
+        tab('tabReturns', false, 'flame', 'Returns') +
+        tab('tabProfile', false, 'man', 'Profile') +
+        tab('tabMore', false, 'pattern', 'More') +
+      '</nav>';
+
+    app.innerHTML = '<div class="ob-shell">' + hud + '<div class="ob-wrap">' + body + '</div></div>' + tabs;
 
     /* the one shared mute pattern (D-60) — re-render on toggle so the glyph + aria swap */
     AW.bindMuteBtn(render);
@@ -616,6 +647,28 @@
     if (hudNoor) hudNoor.addEventListener('click', openNoorSheet);
     var streakStrip = document.getElementById('streakStrip');
     if (streakStrip) streakStrip.addEventListener('click', openStreakSheet);
+
+    /* Tab bar wiring (§S4 · LRN-07) — no dead taps. Learn is the active page (tap scrolls home);
+       Practice/Profile/More open their designed coming-soon sheets; Returns opens the ONE streak
+       sheet (the SAME implementation from Task 1 — not a second sheet). */
+    var tL = document.getElementById('tabLearn');
+    if (tL) tL.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: AW.reducedMotion() ? 'auto' : 'smooth' });
+    });
+    var tP = document.getElementById('tabPractice');
+    if (tP) tP.addEventListener('click', function () {
+      comingSoonSheet('beads', 'Practice is on its way. For now, keep walking the path.');
+    });
+    var tR = document.getElementById('tabReturns');
+    if (tR) tR.addEventListener('click', openStreakSheet);
+    var tPr = document.getElementById('tabProfile');
+    if (tPr) tPr.addEventListener('click', function () {
+      comingSoonSheet('man', 'Your corner is on its way. For now, keep walking the path.');
+    });
+    var tM = document.getElementById('tabMore');
+    if (tM) tM.addEventListener('click', function () {
+      comingSoonSheet('pattern', 'There is more to come. For now, keep walking the path.');
+    });
 
     /* the continue card carries the same morph (§S6): its chapter-term square is the source, handed
        to the shared engine at click time; the <a href> then navigates and the guarded stamp tweens it. */

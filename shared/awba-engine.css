@@ -2135,6 +2135,44 @@
   /* the HUD stats + course chip carry a full 44px tap target on the learn front door (§S4). */
   #app.reg-orbit .ls-hud .hstat,
   #app.reg-orbit .oh-chip { min-height: 44px; }
+
+  /* -- Tab bar (§S4 · R-5 · LRN-07) — a bottom nav ruled on the Orbit ground; Learn active, every
+     other tab a designed coming-soon (never a dead tap). The shipped crimson .tab.active is 2.65:1
+     on Kiswah (banned §2.1), so on Orbit the active cue is GOLD (8.40:1): a gold label + a 2px gold
+     top-rule that OVERRIDE — never edit — the shipped crimson rule, mirroring the .rv-shell gold
+     precedent (the components-layer crimson rule survives untouched for cream pages). ----------- */
+  .otabs {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    display: flex; justify-content: space-around; align-items: stretch;
+    max-width: 480px; margin-inline: auto;                       /* pin to the shell column on desktop */
+    padding: var(--sp-1) var(--sp-2s);
+    padding-bottom: max(var(--sp-1), env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--kiswah) 90%, transparent);
+    border-top: 2px solid var(--navy);                           /* a quiet keyline on the dark bar */
+    backdrop-filter: blur(8px);
+  }
+  .otabs .tab { flex: 1; }
+  .otab-ic { display: inline-flex; line-height: 0; }
+  .reg-orbit .tab { color: var(--paper-62); }                    /* inactive label — marginalia on dark */
+  .reg-orbit .tab svg { color: var(--icon-accent); }            /* the tab icon — gold on Orbit */
+  .reg-orbit .tab.active { color: var(--gold); }                /* R-5: the active label is GOLD, not crimson */
+  .reg-orbit .tab.active { box-shadow: inset 0 2px 0 var(--gold); }   /* the 2px top-rule, re-inked gold */
+
+  /* keep the winding path + Ibrahim line clear of the fixed bar (its own height + the safe area). */
+  #app.reg-orbit .ob-wrap { padding-bottom: calc(var(--sp-16) + env(safe-area-inset-bottom)); }
+
+  /* the coming-soon sheet body (Practice/Profile/More) — a scene icon + one calm line, centred. */
+  .ocs-body {
+    display: flex; flex-direction: column; align-items: center; gap: var(--sp-4);
+    padding: var(--sp-4) 0 var(--sp-2s); text-align: center;
+  }
+  .ocs-ic { display: inline-flex; line-height: 0; color: var(--crimson); }   /* §2.1 Page accent on cream */
+  .ocs-ic svg { width: 40px; height: auto; }
+  .ocs-line {
+    margin: 0; max-width: 22rem;
+    font-family: var(--font-work); font-size: var(--fs-body); line-height: 1.6;
+    color: var(--ink-62);                                        /* §2.1 secondary ink on cream */
+  }
 }
 
 @layer motion {
