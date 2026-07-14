@@ -510,7 +510,8 @@
     var nd = byId[nodeId];
     if (!nd || !nd.chest) return;                       // only real chest nodes
     var st = AW.state();
-    var chests = st.chests;                              // defensive copy (AW.S.get returns a clone)
+    var chests = st.chests;                              // AW.S.get returns a defensive clone (or the stored value as-is)
+    if (!chests || typeof chests !== 'object') chests = {};   // WR-01 — a corrupted/null/non-object chests blob → {}, never index a bad read
     if (chests[nodeId]) return;                          // write-once — a second claim is a NO-OP
     var states = AW.deriveNodeState(flat, st), derived = null;
     for (var i = 0; i < states.length; i++) { if (states[i].id === nodeId) { derived = states[i].state; break; } }
