@@ -11,21 +11,28 @@
               shell — when offline); everything else (CSS/JS/fonts/img/icons) is CACHE-FIRST
               with a network fill-through on miss.
 
-   PRECACHE is generated from the real on-disk file list (relative, no leading slash) so it
-   can never drift: the 20 app pages (learn.html + the 15 lessons + the 4 reviews) + the engine
-   CSS/JS + the 17 self-hosted fonts + grain.png + the 4 icon PNGs + manifest.webmanifest +
-   index.html. preview.html is dev-only and deliberately excluded.
+   PRECACHE lists the real on-disk file paths (relative, no leading slash) so it can never drift;
+   pwa-audit.mjs re-derives + disk-checks every entry. 52 entries: the 25 app pages (learn.html +
+   the v2 surfaces onboarding/practice/profile/more.html + practice/session.html + the 15 lessons +
+   the 4 reviews) + the engine CSS/JS + shared/practice-pool.js + the 17 self-hosted fonts +
+   grain.png + the 4 icon PNGs + manifest.webmanifest + index.html. preview.html is dev-only and
+   deliberately excluded. CACHE bumps v1 → v2 on every precache-list change so installs refresh.
    ============================================================================================ */
 'use strict';
 
-var CACHE = 'awba-cache-v1';
+var CACHE = 'awba-cache-v2';
 
 var PRECACHE = [
   'learn.html',
+  'onboarding.html',
+  'practice.html',
+  'profile.html',
+  'more.html',
   'index.html',
   'manifest.webmanifest',
   'shared/awba-engine.css',
   'shared/awba-engine.js',
+  'shared/practice-pool.js',
   'shared/img/grain.png',
   'lessons/u1-m1.html',
   'lessons/u1-m2.html',
@@ -46,6 +53,7 @@ var PRECACHE = [
   'reviews/u2-review.html',
   'reviews/u3-review.html',
   'reviews/u4-review.html',
+  'practice/session.html',
   'shared/fonts/amiri-400.woff2',
   'shared/fonts/amiri-700.woff2',
   'shared/fonts/amiri-quran-400.woff2',
