@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- viewport-fit=cover is the safe-area prerequisite (env(safe-area-inset-*) resolves to 0 without it). -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba · More</title>
+<!-- Haram Cream — the Page ground (more.html is the quiet back room, the least-registered surface). -->
+<meta name="theme-color" content="#F3EDE2">
+<!-- The install head trio (root page) — cloned from learn.html; the manifest's start_url stays learn.html. -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+<!-- Register the worker, guarded off file:// (double-click review + the file:// render harness stay a no-op) —
+     relative path, no on-device state touched here. -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js'); });
+  }
+</script>
+<!-- more.html sits at repo ROOT: every asset path is root-relative (shared/…), never ../. Preload the
+     workhorse (Readex 400) + the Page-title weight (Readex 600) this surface leans on. -->
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/readex-pro-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/readex-pro-600.woff2" crossorigin>
+<link rel="stylesheet" href="shared/awba-engine.css">
+<script src="shared/awba-engine.js"></script>
+<!-- The one page-authored block: a content block for the already-declared `screens` layer (never the
+     name-list order line). Composition only — every value is a shipped var(--token), zero new hex, zero
+     new glyph (the chevron + switch-knob are inline aria-hidden SVG, the doodle precedent). The register
+     :focus-visible ring (crimson on the Page ground) rides in automatically from the engine grammar. -->
+<style>
+  @layer screens {
+    /* the quiet back-room column — pinned to the shell width, cleared of the fixed bar by its own
+       height + the safe-area inset, and lifted above the grain tile (z-index:1 over the ::after 0). */
+    .mr-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin-inline: auto;
+      padding: var(--sp-8) var(--sp-4)
+               calc(var(--sp-16) + env(safe-area-inset-bottom));
+    }
+
+    .mr-kick {
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-62);                 /* §2.1 secondary ink on cream */
+    }
+    .mr-title {
+      margin: var(--sp-1) 0 0;
+      font-family: var(--font-work);        /* law 5 — Page titles are Readex, not Marcellus */
+      font-weight: 600;
+      font-size: var(--fs-h1);
+      line-height: 1.18;
+      color: var(--ink);                    /* §2.1 --kiswah on cream, 16.22:1 */
+    }
+
+    .mr-sec { margin-top: var(--sp-8); }
+    .mr-sec-h {
+      margin: 0 0 var(--sp-1);
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-62);                 /* §2.1 secondary ink on cream */
+    }
+
+    /* one row grammar for every entry — a hairline-ruled list line. Actionable rows (links/buttons)
+       reset the UA control chrome and carry the shipped .sheet-row press; static rows are plain divs. */
+    .mr-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+      width: 100%;
+      min-height: 44px;                     /* the 44px tap target */
+      padding: var(--sp-3) 0;
+      border: 0;
+      border-bottom: 1px solid var(--rule); /* jadwal hairline between rows */
+    }
+    .mr-sec .mr-row:last-child { border-bottom: 0; }
+    a.mr-row, button.mr-row {
+      appearance: none;
+      -webkit-appearance: none;
+      background: none;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .mr-rowtext { display: flex; flex-direction: column; gap: var(--sp-2); min-width: 0; }
+    .mr-label {
+      font-family: var(--font-work);
+      font-weight: 600;
+      font-size: var(--fs-body);
+      color: var(--ink);                    /* §2.1 --kiswah on cream */
+    }
+    .mr-sub {
+      font-family: var(--font-work);
+      font-size: var(--fs-ui);
+      line-height: 1.45;
+      color: var(--ink-62);                 /* §2.1 secondary ink on cream, 5.02:1 */
+    }
+    .mr-ctl { display: inline-flex; align-items: center; flex: 0 0 auto; }
+
+    /* the chevron — a quiet inline aria-hidden mark (no new glyph), inks the muted-ink budget. */
+    .mr-chev { display: inline-flex; flex: 0 0 auto; color: var(--ink-40); }
+    .mr-chev svg { width: 20px; height: 20px; }
+
+    /* the reduce-motion switch (native role="switch") — a ruled track that inks crimson when on;
+       the knob (inline aria-hidden SVG) slides on the one paper-press duration. 44px hit target. */
+    .mr-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2s);
+      min-height: 44px;
+      padding: var(--sp-2) 0;
+      border: 0;
+      background: none;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--ink-62);                 /* §2.1 secondary ink on cream */
+      cursor: pointer;
+    }
+    .mr-sw-txt { min-width: 2.2em; text-align: right; }
+    .mr-sw-track {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex: 0 0 auto;
+      border-radius: var(--r-pill);         /* the switch capsule */
+      background: var(--rule);              /* off — a quiet hairline fill */
+      transition: background var(--dur-press) var(--ease);
+    }
+    .mr-switch[aria-checked="true"] .mr-sw-track { background: var(--crimson); }  /* on — Page accent */
+    .mr-sw-knob {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      color: var(--cream);                  /* the knob rides cream on both ends */
+      transition: transform var(--dur-press) var(--ease);
+    }
+    .mr-switch[aria-checked="true"] .mr-sw-knob { transform: translateX(20px); }
+
+    /* the colophon foot — Courier marginalia, quiet and centred. */
+    .mr-about {
+      margin-top: var(--sp-8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-1);
+      text-align: center;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      line-height: 1.5;
+      color: var(--ink-62);                 /* §2.1 secondary ink on cream */
+    }
+
+    /* -- sheet prose (the four explainer sheets ride the shipped cream AW.sheet singleton) -------- */
+    .mr-sheet { display: flex; flex-direction: column; gap: var(--sp-4); }
+    .mr-sheet-h {
+      margin: 0;
+      font-family: var(--font-work);
+      font-weight: 600;
+      font-size: var(--fs-h2);
+      line-height: 1.3;
+      color: var(--ink);
+    }
+    .mr-sheet-p {
+      margin: 0;
+      font-family: var(--font-work);
+      font-size: var(--fs-body);
+      line-height: 1.6;
+      color: var(--ink-85);                 /* §2.1 strong body ink on cream */
+    }
+    .mr-pill-row { display: flex; justify-content: center; }
+    .mr-sheet-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2s);
+      margin-top: var(--sp-2s);
+    }
+
+    /* On the cream Page ground the engine ships no .btn.ghost treatment (it is authored for the dark
+       Orbit/Sky grounds only), so the destroy control would otherwise fall through to the prominent
+       crimson primary — backwards for a mercy double-confirm. Scope a quiet neutral-outline ghost to
+       the sheet, so keep stays the prominent .btn and destroy reads as the calm, secondary choice —
+       never rose, never red. Composition only: transparent fill, secondary ink, the shipped --rule
+       keyline. (Flagged: this Page-ground ghost belongs in the engine grammar, not per-page.) */
+    .sheet .btn.ghost {
+      background: transparent;
+      color: var(--ink-62);                 /* §2.1 secondary ink on cream — quiet, not alarming */
+      box-shadow: var(--keyline);           /* the manuscript hairline separation */
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .sheet .btn.ghost:hover { color: var(--ink); }
+    }
+  }
+</style>
+</head>
+<body>
+<main class="reg-page grain" id="app"></main>
+<script>
+(function () {
+  'use strict';
+
+  var app = document.getElementById('app');
+
+  /* ---- small helpers (no on-device state touched on this page — every read/write goes through AW) ---- */
+  function wire(id, fn) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('click', fn);
+  }
+  function motionReduced() {
+    return AW.prefs.get('motion', 'system') === 'reduce';
+  }
+
+  /* ---- the four explainer sheets (shipped cream AW.sheet; each carries its label as its a11y name) ---- */
+  function sheetHowItWorks() {
+    var html =
+      '<div class="grip"></div>' +
+      '<div class="mr-sheet">' +
+        '<p class="mr-sheet-p">Awba teaches the foundations of belief in small steps — fifteen lessons and four reviews, walked at your own pace.</p>' +
+        '<p class="mr-sheet-p">Noor is light you gather as you learn. It is never spent against you, and it never runs out.</p>' +
+        '<p class="mr-sheet-p">Returns counts the days you come back. It only grows, and it can never break.</p>' +
+        '<p class="mr-sheet-p">A wrong answer is never punished — a gentle word, and a chance to look again.</p>' +
+        '<p class="mr-sheet-p">No accounts, no streaks to lose, nothing to buy. Just a path, and light to walk it by.</p>' +
+      '</div>';
+    AW.sheet(html, 'How Awba works');
+  }
+
+  function sheetSources() {
+    var html =
+      '<div class="grip"></div>' +
+      '<div class="mr-sheet">' +
+        '<p class="mr-sheet-p">Every verse and hadith in Awba is shown word-for-word from its source — we never paraphrase, and we hold anything sensitive back until it\'s checked. Each one carries a quiet mark:</p>' +
+        '<div class="mr-pill-row"><span class="r-pill">unverified · pending review</span></div>' +
+        '<p class="mr-sheet-p">Nothing here has been signed off by a scholar yet. When it is, this note will change.</p>' +
+      '</div>';
+    AW.sheet(html, 'Where our words come from');
+  }
+
+  function sheetInstall() {
+    /* feature-detect the platform line — iOS/Safari exposes navigator.standalone; everything else
+       gets the browser-menu line. No dependence on a captured install-prompt event. */
+    var iosLike = ('standalone' in navigator);
+    var line = iosLike
+      ? 'On iPhone or iPad: tap Share, then Add to Home Screen.'
+      : 'On Android or desktop: open your browser menu, then Install (or Add to Home Screen).';
+    var html =
+      '<div class="grip"></div>' +
+      '<div class="mr-sheet">' +
+        '<p class="mr-sheet-p">' + line + '</p>' +
+        '<p class="mr-sheet-p">Add it once, and your path is always here.</p>' +
+      '</div>';
+    AW.sheet(html, 'Add to your home screen');
+  }
+
+  /* ---- Start over — the calm two-sheet double-confirm (keep = prominent .btn; destroy = quiet ghost,
+         never rose/red). Two fresh sheets make a rapid double-tap impossible to blow through; Escape
+         closes any step (= keep). On confirm: AW.S.reset() (clears progress, PRESERVES ringSeed +
+         every pref/name/onboarding flag), then the fresh-path confirmation + the announce. ---- */
+  function startOver1() {
+    var html =
+      '<div class="grip"></div>' +
+      '<div class="mr-sheet">' +
+        '<h2 class="mr-sheet-h">Start over?</h2>' +
+        '<p class="mr-sheet-p">This clears your noor, your returns, and every star — and begins the path anew. Your settings and your name stay, and your ring keeps its own hand. It can\'t be undone.</p>' +
+        '<div class="mr-sheet-actions">' +
+          '<button class="btn" type="button" id="soKeep1">Keep everything</button>' +
+          '<button class="btn ghost" type="button" id="soNext">Start over</button>' +
+        '</div>' +
+      '</div>';
+    AW.sheet(html, 'Start over?');
+    wire('soKeep1', function () { AW.sheet.close(); });
+    wire('soNext', startOver2);
+  }
+
+  function startOver2() {
+    var html =
+      '<div class="grip"></div>' +
+      '<div class="mr-sheet">' +
+        '<h2 class="mr-sheet-h">One more time — are you sure?</h2>' +
+        '<p class="mr-sheet-p">Once cleared, your light and your returns can\'t be brought back. You can always begin again from here.</p>' +
+        '<div class="mr-sheet-actions">' +
+          '<button class="btn" type="button" id="soKeep2">No, keep it</button>' +
+          '<button class="btn ghost" type="button" id="soClear">Yes, clear it</button>' +
+        '</div>' +
+      '</div>';
+    AW.sheet(html, 'One more time');
+    wire('soKeep2', function () { AW.sheet.close(); });
+    wire('soClear', startOverConfirm);
+  }
+
+  function startOverConfirm() {
+    AW.S.reset();                          /* clears progress, preserves ringSeed + prefs (Wave-A seam) */
+    var html =
+      '<div class="grip"></div>' +
+      '<div class="mr-sheet">' +
+        '<h2 class="mr-sheet-h">A fresh path begins.</h2>' +
+        '<p class="mr-sheet-p">Your light and returns are cleared. The same ring is waiting to be inked again.</p>' +
+        '<div class="mr-sheet-actions">' +
+          '<button class="btn" type="button" id="soBack">Back to the path</button>' +
+        '</div>' +
+      '</div>';
+    AW.sheet(html, 'A fresh path begins.');
+    wire('soBack', function () { window.location.href = 'learn.html'; });
+    AW.announce('Your progress has been cleared. A fresh path begins.');
+  }
+
+  /* ---- the reduce-motion switch — writes the awba prefs motion key, stamps/removes the <html>
+         reduce attribute so the engine's @layer motion collapse rides in, and narrates both ways ---- */
+  function toggleMotion() {
+    var sw = document.getElementById('motionSwitch');
+    var on = sw.getAttribute('aria-checked') !== 'true';
+    AW.prefs.set('motion', on ? 'reduce' : 'system');
+    if (on) {
+      document.documentElement.setAttribute('data-motion', 'reduce');
+    } else {
+      document.documentElement.removeAttribute('data-motion');
+    }
+    sw.setAttribute('aria-checked', on ? 'true' : 'false');
+    sw.querySelector('.mr-sw-txt').textContent = on ? 'On' : 'Off';
+    AW.announce(on ? 'Reduced motion on.' : 'Reduced motion off.');
+  }
+
+  /* ---- the shared 44px mute pattern — re-mounted on toggle so the glyph + aria-pressed swap ---- */
+  function mountMute() {
+    var host = document.getElementById('soundCtl');
+    if (!host) return;
+    host.innerHTML = AW.muteBtnHtml();
+    AW.bindMuteBtn(mountMute);
+  }
+
+  /* ---- the tab bar (§E) — inactive tabs are real <a href> links, More is the active scroll-to-top
+         button, Returns opens the ONE streak sheet everywhere (never navigates) ---- */
+  function tab(id, active, scene, label, href) {
+    if (active) {
+      return '<button class="tab active" type="button" id="' + id + '" aria-current="page">' +
+        '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</button>';
+    }
+    if (href) {
+      return '<a class="tab" id="' + id + '" href="' + href + '">' +
+        '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</a>';
+    }
+    return '<button class="tab" type="button" id="' + id + '">' +
+      '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</button>';
+  }
+
+  var CHEV = '<svg class="mr-chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    '<path d="M9 6 L15 12 L9 18" fill="none" stroke="currentColor" stroke-width="2" ' +
+    'stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+
+  var KNOB = '<svg class="mr-sw-knob" viewBox="0 0 20 20" aria-hidden="true" focusable="false">' +
+    '<circle cx="10" cy="10" r="9" fill="currentColor"></circle></svg>';
+
+  function render() {
+    var reduced = motionReduced();
+
+    /* install row — a live static row when already on the home screen, else a sheet-opening button. */
+    var installed =
+      (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+      navigator.standalone === true;
+    var installRow = installed
+      ? '<div class="mr-row">' +
+          '<span class="mr-rowtext"><span class="mr-label">On your home screen ✓</span></span>' +
+        '</div>'
+      : '<button class="mr-row sheet-row" type="button" id="rowInstall">' +
+          '<span class="mr-rowtext"><span class="mr-label">Add to your home screen</span></span>' +
+          CHEV +
+        '</button>';
+
+    var header =
+      '<header>' +
+        '<p class="mr-kick">More</p>' +
+        '<h1 class="mr-title">Settings &amp; about</h1>' +
+      '</header>';
+
+    var secSoundMotion =
+      '<section class="mr-sec">' +
+        '<h2 class="mr-sec-h">Sound &amp; motion</h2>' +
+        '<div class="mr-row">' +
+          '<span class="mr-rowtext">' +
+            '<span class="mr-label">Sound</span>' +
+            '<span class="mr-sub">Calm cues as you learn.</span>' +
+          '</span>' +
+          '<span class="mr-ctl" id="soundCtl"></span>' +
+        '</div>' +
+        '<div class="mr-row">' +
+          '<span class="mr-rowtext">' +
+            '<span class="mr-label" id="motionLbl">Reduce motion</span>' +
+            '<span class="mr-sub">Calms animations across Awba. Your device setting is always respected too.</span>' +
+          '</span>' +
+          '<button class="mr-switch" type="button" id="motionSwitch" role="switch" ' +
+            'aria-checked="' + (reduced ? 'true' : 'false') + '" aria-labelledby="motionLbl">' +
+            '<span class="mr-sw-txt" aria-hidden="true">' + (reduced ? 'On' : 'Off') + '</span>' +
+            '<span class="mr-sw-track" aria-hidden="true">' + KNOB + '</span>' +
+          '</button>' +
+        '</div>' +
+      '</section>';
+
+    var secPath =
+      '<section class="mr-sec">' +
+        '<h2 class="mr-sec-h">The path</h2>' +
+        '<a class="mr-row sheet-row" id="rowWelcome" href="onboarding.html">' +
+          '<span class="mr-rowtext"><span class="mr-label">See the welcome again</span></span>' +
+          CHEV +
+        '</a>' +
+        '<button class="mr-row sheet-row" type="button" id="rowHow">' +
+          '<span class="mr-rowtext"><span class="mr-label">How Awba works</span></span>' +
+          CHEV +
+        '</button>' +
+      '</section>';
+
+    var secHonesty =
+      '<section class="mr-sec">' +
+        '<h2 class="mr-sec-h">Honesty</h2>' +
+        '<button class="mr-row sheet-row" type="button" id="rowSources">' +
+          '<span class="mr-rowtext"><span class="mr-label">Where our words come from</span></span>' +
+          CHEV +
+        '</button>' +
+      '</section>';
+
+    var secDevice =
+      '<section class="mr-sec">' +
+        '<h2 class="mr-sec-h">Your device</h2>' +
+        installRow +
+        '<button class="mr-row sheet-row" type="button" id="rowStartOver">' +
+          '<span class="mr-rowtext">' +
+            '<span class="mr-label">Start over</span>' +
+            '<span class="mr-sub">Clear your progress and begin the path anew.</span>' +
+          '</span>' +
+          CHEV +
+        '</button>' +
+      '</section>';
+
+    var about =
+      '<footer class="mr-about">' +
+        '<span>Awba · version 2.0</span>' +
+        '<span>A companion, not a cop.</span>' +
+        '<span>Every citation is pending scholarly review.</span>' +
+      '</footer>';
+
+    var tabs =
+      '<nav class="otabs" aria-label="Sections">' +
+        tab('tabLearn', false, 'lamp', 'Learn', 'learn.html') +
+        tab('tabPractice', false, 'beads', 'Practice', 'practice.html') +
+        tab('tabReturns', false, 'flame', 'Returns', null) +
+        tab('tabProfile', false, 'man', 'Profile', 'profile.html') +
+        tab('tabMore', true, 'pattern', 'More', null) +
+      '</nav>';
+
+    app.innerHTML =
+      '<div class="mr-wrap">' +
+        header + secSoundMotion + secPath + secHonesty + secDevice + about +
+      '</div>' + tabs;
+
+    /* ---- wiring (re-attached after the single innerHTML build) ---- */
+    mountMute();
+    wire('motionSwitch', toggleMotion);
+    wire('rowHow', sheetHowItWorks);
+    wire('rowSources', sheetSources);
+    wire('rowInstall', sheetInstall);
+    wire('rowStartOver', startOver1);
+
+    /* tab bar: More scrolls home; Returns opens the ONE streak sheet (never a second sheet). */
+    wire('tabMore', function () {
+      window.scrollTo({ top: 0, behavior: AW.reducedMotion() ? 'auto' : 'smooth' });
+    });
+    var tR = document.getElementById('tabReturns');
+    if (tR) {
+      tR.setAttribute('aria-label', 'Open your streak');
+      tR.addEventListener('click', function () { AW.streakSheet(); });
+    }
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
