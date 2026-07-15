@@ -190,6 +190,25 @@
     /* The cream-ground destroy-ghost (start-over confirm) now rides the shipped engine grammar:
        .sheet .btn.ghost is styled in awba-engine.css @layer components (quiet transparent key,
        --ink-62 label, --keyline separation, hover → full --ink) — no per-page rule needed. */
+
+    /* -- the travel-code field + a hairline rule (E1.6) — composition only, zero new hex/token/glyph.
+       A code reads as marginalia, so it wears the sanctioned Courier mono; the long readonly token
+       scrolls in place rather than wrapping the sheet. The crimson :focus-visible ring rides in from
+       the engine grammar (cream Page ground). ---- */
+    .mr-code-field {
+      width: 100%;
+      padding: var(--sp-2s) var(--sp-3);
+      border: 1px solid var(--rule);
+      border-radius: var(--r-2);
+      background: var(--cream);
+      min-height: 44px;                  /* the tap-target bar every control meets (E1.7) */
+      color: var(--ink);                 /* §2.1 --kiswah on cream, 16.22:1 */
+      font: var(--fs-ui) var(--font-marg);  /* a code reads as marginalia — the sanctioned mono */
+      white-space: nowrap;
+      overflow-x: auto;                  /* the long readonly token scrolls in place, never wraps the sheet */
+    }
+    .mr-code-field:read-only { color: var(--ink-85); }   /* §2.1 strong body ink on cream */
+    .mr-rule { height: 1px; background: var(--rule); margin: var(--sp-2s) 0; border: 0; }
   }
 </style>
 </head>
@@ -249,6 +268,118 @@
         '<p class="mr-sheet-p">Add it once, and your path is always here.</p>' +
       '</div>';
     AW.sheet(html, 'Add to your home screen');
+  }
+
+  /* ---- Move to a new device (E1) — "take your light with you." The ONE two-half sheet: the top half
+         hands out a travel code (AW.S.exportToken), the bottom half brings one in (AW.S.importToken).
+         All progress logic lives in the engine seam; this is thin native wiring (input/button +
+         AW.sheet + AW.announce). The words export/import/token/base64 never surface — it is "a travel
+         code." A valid check → the keep/replace confirm (keep = primary, Escape = keep). ---- */
+  function openMoveSheet() {
+    /* The first navigation after an update can briefly pair this fresh page with the previous
+       cached engine (HTML is network-first, the engine cache-first) — the seam may not exist yet.
+       Refuse calmly; a full close-and-reopen self-heals (the practice.html guard pattern). */
+    if (!AW.S.exportToken || !AW.S.importToken) {
+      AW.sheet(
+        '<div class="grip"></div><div class="mr-sheet">' +
+          '<h2 class="mr-sheet-h">One moment</h2>' +
+          '<p class="mr-sheet-p">Awba has just updated underneath this page. Close it fully, reopen it, and this will be ready.</p>' +
+        '</div>', 'One moment');
+      return;
+    }
+    var code = AW.S.exportToken();
+    var html =
+      '<div class="grip"></div>' +
+      '<div class="mr-sheet">' +
+        '<h2 class="mr-sheet-h">Take it with you</h2>' +
+        '<p class="mr-sheet-p">This code holds your whole path. Open Awba on your new device, come back here, and paste it under “Bring it here.”</p>' +
+        '<input class="mr-code-field" id="moveCode" type="text" readonly aria-label="Your travel code" spellcheck="false" autocomplete="off">' +
+        '<button class="btn" type="button" id="moveCopy">Copy the code</button>' +
+        '<div class="mr-rule" aria-hidden="true"></div>' +
+        '<h2 class="mr-sheet-h">Bring it here</h2>' +
+        '<p class="mr-sheet-p">Paste a code from your other device to carry its path onto this one.</p>' +
+        '<input class="mr-code-field" id="moveIn" type="text" aria-label="Paste your travel code" spellcheck="false" autocomplete="off">' +
+        '<button class="btn" type="button" id="moveCheck">Check the code</button>' +
+        '<p class="mr-sub" id="moveWhy" role="alert" hidden></p>' +
+      '</div>';
+    AW.sheet(html, 'Move to a new device');
+    var f = document.getElementById('moveCode');
+    if (f) f.value = code;                 // set the readonly token via .value (never an HTML attribute)
+    wire('moveCopy', copyCode);
+    wire('moveCheck', checkCode);
+  }
+
+  /* copy the readonly code — clipboard API with an execCommand select-fallback; never a dead end. */
+  function copyCode() {
+    var f = document.getElementById('moveCode');
+    if (!f) return;
+    var done = function () { AW.announce('Copied.'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(f.value).then(done, selectFallback);
+    } else { selectFallback(); }
+    function selectFallback() {
+      f.focus(); f.select();
+      try { if (document.execCommand && document.execCommand('copy')) { done(); return; } } catch (e) {}
+      AW.announce('Select the code, then copy it.');    // leaves it selected — never a dead end
+    }
+  }
+
+  /* check a pasted code — an invalid one shows its gentle reason in-place (role="alert", never
+     stealing focus); a valid one advances to the keep/replace confirm. */
+  function checkCode() {
+    var res = AW.S.importToken(document.getElementById('moveIn').value);
+    var why = document.getElementById('moveWhy');
+    if (!res.ok) { why.textContent = res.why; why.hidden = false; AW.announce(res.why); return; }
+    why.hidden = true;
+    moveConfirm(res);                                   // valid → the keep/replace confirm (below)
+  }
+
+  /* the keep/replace confirm (Start-over pattern) — a valid code REPLACES the local blob wholesale,
+     never a silent merge (E1.4). keep = primary + first in source; replace = quiet ghost; focus lands
+     on the heading so the SR reads the preview before the choice; Escape closes (= keep). */
+  function moveConfirm(res) {
+    var noor = res.preview.noor, returns = res.preview.returns, n = res.preview.lessonsDone;
+    var retS = returns + (returns === 1 ? ' return' : ' returns');
+    var lesS = n + (n === 1 ? ' lesson finished' : ' lessons finished');
+    var previewLine = 'This code carries ' + noor + ' noor, ' + retS + ', ' + lesS + '.';
+    var droppedLine = res.preview.dropped > 0
+      ? '<p class="mr-sub">A few unrecognised marks were left out.</p>' : '';
+    var html =
+      '<div class="grip"></div>' +
+      '<div class="mr-sheet">' +
+        '<h2 class="mr-sheet-h" id="moveConfirmH" tabindex="-1">Bring this path here?</h2>' +
+        '<p class="mr-sheet-p">' + previewLine + '</p>' +
+        '<p class="mr-sheet-p">It will replace what\'s on this device — the light here steps aside for the light that\'s arriving. This can\'t be undone.</p>' +
+        droppedLine +
+        '<div class="mr-sheet-actions">' +
+          '<button class="btn" type="button" id="moveKeep">Keep what\'s here</button>' +
+          '<button class="btn ghost" type="button" id="moveApply">Bring it in</button>' +
+        '</div>' +
+      '</div>';
+    AW.sheet(html, 'Bring this path here?');
+    var h = document.getElementById('moveConfirmH');
+    if (h) h.focus();                                   // preview announced before the keep/replace choice
+    wire('moveKeep', function () { AW.sheet.close(); });
+    wire('moveApply', function () { applyMove(res); });
+  }
+
+  /* Bring it in — REPLACE via the persist seam, narrate the arrival, re-render More (idempotent), then
+     the arrival confirmation. */
+  function applyMove(res) {
+    res.apply();                                        // REPLACE via the persist seam
+    AW.announce('Your light has arrived.');
+    render();                                           // re-render More (idempotent; keeps state coherent)
+    var doneHtml =
+      '<div class="grip"></div>' +
+      '<div class="mr-sheet">' +
+        '<h2 class="mr-sheet-h">Your light has arrived.</h2>' +
+        '<p class="mr-sheet-p">Your path is now here, exactly as it was. Welcome back.</p>' +
+        '<div class="mr-sheet-actions">' +
+          '<button class="btn" type="button" id="moveBack">Back to the path</button>' +
+        '</div>' +
+      '</div>';
+    AW.sheet(doneHtml, 'Your light has arrived.');      // the arrival confirmation
+    wire('moveBack', function () { window.location.href = 'learn.html'; });
   }
 
   /* ---- Start over — the calm two-sheet double-confirm (keep = prominent .btn; destroy = quiet ghost,
@@ -420,6 +551,13 @@
       '<section class="mr-sec">' +
         '<h2 class="mr-sec-h">Your device</h2>' +
         installRow +
+        '<button class="mr-row sheet-row" type="button" id="rowMove">' +
+          '<span class="mr-rowtext">' +
+            '<span class="mr-label">Move to a new device</span>' +
+            '<span class="mr-sub">Carry your light — your noor, returns and finished lessons — to another phone.</span>' +
+          '</span>' +
+          CHEV +
+        '</button>' +
         '<button class="mr-row sheet-row" type="button" id="rowStartOver">' +
           '<span class="mr-rowtext">' +
             '<span class="mr-label">Start over</span>' +
@@ -431,7 +569,7 @@
 
     var about =
       '<footer class="mr-about">' +
-        '<span>Awba · version 2.1</span>' +
+        '<span>Awba · version 2.2</span>' +
         '<span>A companion, not a cop.</span>' +
         '<span>Every citation is pending scholarly review.</span>' +
       '</footer>';
@@ -456,6 +594,7 @@
     wire('rowHow', sheetHowItWorks);
     wire('rowSources', sheetSources);
     wire('rowInstall', sheetInstall);
+    wire('rowMove', openMoveSheet);
     wire('rowStartOver', startOver1);
 
     /* tab bar: More scrolls home; Returns opens the ONE streak sheet (never a second sheet). */

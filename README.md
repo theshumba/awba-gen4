@@ -75,7 +75,8 @@ python3 scripts/check-glyph-coverage.py    # every rendered codepoint has a real
 node scripts/tests/pwa-audit.mjs           # manifest / icons / service-worker shape / precache integrity
 node scripts/tests/contrast-audit.mjs      # WCAG contrast swept from real rendered pages (run LAST, alone)
 
-# The unit + interaction suite (always run via the glob)
+# The unit + interaction suite (always run via the glob — incl. state-token.test.js,
+# the travel-code seam: export/import round-trip, tamper + future-schema refusals)
 node --test scripts/tests/*.test.js
 ```
 
