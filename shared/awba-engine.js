@@ -277,6 +277,22 @@ AW.S = (function () {
       if (!mem) mem = load();
       return memFallback;
     },
+    /* reset (S2 · More Start-over, D.4) — rebuild awba_state to defaults, clearing noor/returns/
+       lastDay/days/stars/chests, but PRESERVE ringSeed (law 10 — the maker's mark is minted once and
+       NEVER regenerated; the same fingerprint re-inks the fresh path, keeping "the same ring… inked
+       again" honest). Lazily loads first (same contract as get/set) so an on-disk ringSeed is captured
+       even before any other AW.S access. Reuses defaultState()/persist — adds NO new storage-API
+       literal (the count stays 13) — and no-ops the write under memFallback exactly like set(), so a
+       newer-schema blob is never clobbered. Persisting a defaultState() blob (schemaVersion CURRENT)
+       also blocks legacy re-migration on the next load(): a recognized awba_state blob short-circuits
+       migrateFromLegacy, leaving the orphaned Gen-3 keys untouched (D-15). */
+    reset: function () {
+      if (!mem) mem = load();
+      var seed = mem.ringSeed;
+      mem = defaultState();
+      if (seed != null) mem.ringSeed = seed;
+      if (!memFallback) persist(mem);
+    },
   };
 })();
 
