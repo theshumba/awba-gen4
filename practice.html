@@ -114,8 +114,8 @@
       return '<a class="tab" id="' + id + '" href="' + href + '">' +
         '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</a>';
     }
-    return '<button class="tab" type="button" id="' + id + '" aria-label="Open your streak">' +
-      '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</button>';   // Returns
+    return '<button class="tab" type="button" id="' + id + '">' +
+      '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</button>';   // Returns — name = visible label (WCAG 2.5.3)
   }
 
   function tabsHtml() {

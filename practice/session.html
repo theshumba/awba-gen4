@@ -161,7 +161,7 @@
       '</div>';
     var h = document.querySelector('.se-done');
     if (h && h.focus) h.focus();
-    if (AW.announce) AW.announce('Nothing to practise yet.');
+    /* no announce — focus already reads the identical heading (no double-speak) */
   }
 
   function renderDone(res) {

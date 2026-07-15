@@ -36,8 +36,9 @@
       max-width: 480px;
       margin-inline: auto;
       padding: var(--sp-8) var(--sp-5) calc(var(--sp-16) + env(safe-area-inset-bottom));
-      animation: settle var(--dur-draw) var(--ease) both;   /* the Orbit ink-reveal on mount */
     }
+    .pf-wrap.pf-mount { animation: settle var(--dur-draw) var(--ease) both; }  /* the Orbit ink-reveal — FIRST render only, never on editor re-renders (law 9's no-replay spirit) */
+    .pf-name-form { animation: settle var(--dur-fade) var(--ease) both; }      /* the editor's own scoped reveal (§C.7) */
 
     /* ---- Greeting + optional on-device name ------------------------------------------------------ */
     .pf-head { margin-bottom: var(--sp-8); }
@@ -213,6 +214,7 @@
 
   var app = document.getElementById('app');
   var editing = false;                          // is the name editor open? (in-memory only)
+  var mounted = false;                          // first render done? (mount animation plays once)
 
   /* Per-unit grouping — page-private, lessons only (§C.2; 4+4+3+4 = 15). Structure, not SHA-gated
      content: the deferred S6 hoist (shared/course-structure.js) removes this duplication later. */
@@ -306,11 +308,11 @@
     // Stat rail — noor + returns are native <button>s opening the shipped sheets (§C.3).
     var stats =
       '<div class="pf-stats">' +
-        '<button type="button" class="pf-stat pf-stat-tap" id="pfNoor" aria-label="' + noor + ' noor — open your light">' +
+        '<button type="button" class="pf-stat pf-stat-tap" id="pfNoor" aria-label="' + noor + ' noor gathered — open your light">' +
           '<span class="pf-stat-val"><span class="pf-stat-num pf-stat-gold">' + noor + '</span></span>' +
           '<span class="pf-stat-lab">noor gathered</span>' +
         '</button>' +
-        '<button type="button" class="pf-stat pf-stat-tap" id="pfReturns" aria-label="' + returns + ' returns — open your streak">' +
+        '<button type="button" class="pf-stat pf-stat-tap" id="pfReturns" aria-label="' + returns + ' days you came back — open your streak">' +
           '<span class="pf-stat-val"><span class="pf-stat-num">' + returns + '</span></span>' +
           '<span class="pf-stat-lab">days you came back</span>' +
         '</button>' +
@@ -355,7 +357,8 @@
     var priv = '<p class="pf-priv">Everything here lives on this device only — no account, no sign-in, ' +
       'nothing sent anywhere. You can clear it any time from More.</p>';
 
-    app.innerHTML = '<div class="pf-wrap">' + head + hero + stats + week + units + complete + priv + '</div>' + tabBar();
+    app.innerHTML = '<div class="pf-wrap' + (mounted ? '' : ' pf-mount') + '">' + head + hero + stats + week + units + complete + priv + '</div>' + tabBar();
+    mounted = true;
 
     // the name renders via textContent ONLY — XSS-safe by construction (never innerHTML).
     if (name && !editing) {

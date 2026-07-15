@@ -137,6 +137,7 @@
       background: var(--rule);              /* off — a quiet hairline fill */
       transition: background var(--dur-press) var(--ease);
     }
+    .mr-switch[aria-checked="false"] .mr-sw-track { box-shadow: inset 0 0 0 1px var(--ink-62); }  /* off — a perceivable boundary (≥3:1) */
     .mr-switch[aria-checked="true"] .mr-sw-track { background: var(--crimson); }  /* on — Page accent */
     .mr-sw-knob {
       position: absolute;
@@ -357,7 +358,7 @@
       navigator.standalone === true;
     var installRow = installed
       ? '<div class="mr-row">' +
-          '<span class="mr-rowtext"><span class="mr-label">Added to your home screen</span></span>' +
+          '<span class="mr-rowtext"><span class="mr-label">On your home screen</span></span>' +
         '</div>'
       : '<button class="mr-row sheet-row" type="button" id="rowInstall">' +
           '<span class="mr-rowtext"><span class="mr-label">Add to your home screen</span></span>' +
@@ -463,7 +464,7 @@
     });
     var tR = document.getElementById('tabReturns');
     if (tR) {
-      tR.setAttribute('aria-label', 'Open your streak');
+      /* no aria-label override — the accessible name stays the visible "Returns" (WCAG 2.5.3) */
       tR.addEventListener('click', function () { AW.streakSheet(); });
     }
   }
