@@ -2186,6 +2186,17 @@
   .reg-orbit .tab.active { color: var(--gold); }                /* R-5: the active label is GOLD, not crimson */
   .reg-orbit .tab.active { box-shadow: inset 0 2px 0 var(--gold); }   /* the 2px top-rule, re-inked gold */
 
+  /* S1 (§E.3) — the cream-ground bar variant for Page-register pages (practice/more): the base
+     .otabs above hardcodes the Kiswah container bg + navy keyline, wrong over cream. This override
+     re-inks ONLY the container (the base .tab.active already gives the correct crimson label + 2px
+     top-rule on cream). Token-only, zero new hex. NOTE: placed in @layer screens beside the base
+     .otabs — which lives HERE, not in @layer components — so layer order lets it win; specificity
+     .reg-page .otabs (0,2,0) then beats base .otabs (0,1,0) within the layer. */
+  .reg-page .otabs {
+    background: color-mix(in srgb, var(--cream) 92%, transparent);
+    border-top: 1px solid var(--rule);
+  }
+
   /* keep the winding path + Ibrahim line clear of the fixed bar (its own height + the safe area). */
   #app.reg-orbit .ob-wrap { padding-bottom: calc(var(--sp-16) + env(safe-area-inset-bottom)); }
 
