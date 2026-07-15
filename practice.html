@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- viewport-fit=cover is the safe-area prerequisite (env(safe-area-inset-*) resolves to 0 without it). -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba · Practice</title>
+<!-- Haram Cream — the Page ground (quizzes live on Page; the hub shares its session's ground). -->
+<meta name="theme-color" content="#F3EDE2">
+<!-- The install head trio (root page) — same manifest whose start_url stays learn.html. -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+<!-- Register the SW, guarded off file:// (double-click review + the file:// render-smoke harness
+     stay a no-op) — relative path, no storage touched. -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js'); });
+  }
+</script>
+<!-- practice.html sits at repo ROOT: every asset path is root-relative (shared/…), NEVER ../.
+     Preload the workhorse (readex-pro-400) + the Page-title weight (readex-pro-600). -->
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/readex-pro-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/readex-pro-600.woff2" crossorigin>
+<link rel="stylesheet" href="shared/awba-engine.css">
+<script src="shared/awba-engine.js"></script>
+<!-- the dev-generated, byte-verbatim item pool (classic global assign; file://-safe, no fetch). Its
+     presence drives the honest hub count; if absent the guard below falls to the empty state. -->
+<script src="shared/practice-pool.js"></script>
+<!-- The only page-authored CSS: a content block for the already-declared `screens` layer (never the
+     name-list order line). Composition only — every value a shipped token, zero new hex. The register
+     :focus-visible ring (crimson on cream) rides in automatically from the engine grammar. -->
+<style>
+  @layer screens {
+    /* the hub column — one calm, focused landing; the safe-area pad keeps the fixed bar off content. */
+    .pr-hub {
+      position: relative;
+      z-index: 1;                       /* sit above the .grain::after tile */
+      max-width: 480px;
+      margin-inline: auto;
+      padding: var(--sp-12) var(--sp-6) calc(var(--sp-16) + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-5);
+      animation: settle var(--dur-settle) var(--ease) both;   /* Page reveal on mount */
+    }
+    .pr-kick {                          /* Courier kicker — marginalia only */
+      margin: 0;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      letter-spacing: .04em;
+      color: var(--ink-62);             /* §2.1 --ink-62 on cream, 5.02:1 */
+    }
+    .pr-title {                         /* Page titles are Readex 600, not Marcellus (law 5) */
+      margin: 0;
+      font-family: var(--font-work);
+      font-weight: 600;
+      font-size: var(--fs-h1);
+      line-height: 1.25;
+      color: var(--ink);
+    }
+    .pr-lede {
+      margin: 0;
+      font-family: var(--font-work);
+      font-size: var(--fs-body);
+      line-height: 1.6;
+      color: var(--ink-85);            /* §2.1 --ink-85 on cream */
+    }
+    .pr-count {                         /* honest pool count — Courier marginalia */
+      margin: 0;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      color: var(--ink-62);            /* §2.1 --ink-62 on cream, 5.02:1 */
+    }
+    .pr-cta {                           /* the CTA + its calm sub-line, held tight together */
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+    .pr-sub {                           /* reward/qualifier text as a calm Courier sub-line, never a button label */
+      margin: 0;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      color: var(--ink-62);            /* §2.1 --ink-62 on cream, 5.02:1 */
+    }
+    .pr-note {                          /* the no-noor honesty line */
+      margin: var(--sp-2s) 0 0;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      color: var(--ink-62);            /* §2.1 --ink-62 on cream, 5.02:1 */
+    }
+    .pr-hub.pr-empty {                  /* the gentle nudge state — centred icon + one calm line */
+      text-align: center;
+      align-items: center;
+    }
+  }
+</style>
+</head>
+<body>
+<main class="reg-page grain" id="app"></main>
+<script>
+(function () {
+  'use strict';
+  if (typeof AW === 'undefined') return;   // engine failed to load — leave the inert shell
+  var app = document.getElementById('app');
+
+  /* the §E tab builder: inactive tabs are real <a href> links (file://-safe, free page morph);
+     the active tab is a scroll-to-top <button>; Returns is a <button> opening the streak sheet. */
+  function tab(id, active, scene, label, href) {
+    if (active) {
+      return '<button class="tab active" type="button" id="' + id + '" aria-current="page">' +
+        '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</button>';
+    }
+    if (href) {
+      return '<a class="tab" id="' + id + '" href="' + href + '">' +
+        '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</a>';
+    }
+    return '<button class="tab" type="button" id="' + id + '" aria-label="Open your streak">' +
+      '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</button>';   // Returns
+  }
+
+  function tabsHtml() {
+    return '<nav class="otabs" aria-label="Sections">' +
+      tab('tabLearn', false, 'lamp', 'Learn', 'learn.html') +
+      tab('tabPractice', true, 'beads', 'Practice', null) +
+      tab('tabReturns', false, 'flame', 'Returns', null) +
+      tab('tabProfile', false, 'man', 'Profile', 'profile.html') +
+      tab('tabMore', false, 'pattern', 'More', 'more.html') +
+      '</nav>';
+  }
+
+  function hubHtml() {
+    var st = AW.state();
+    var pool = (window.PRACTICE_POOL && PRACTICE_POOL.items) || [];
+    var eligible = pool.filter(function (it) { return st.stars[it.lesson]; });
+    var N = eligible.length;
+
+    if (N < 1) {
+      // State 2 — nothing completed yet: a designed, gentle nudge to the path (never a dead end).
+      return '<div class="pr-hub pr-empty">' +
+        '<p class="pr-kick">Practice</p>' +
+        '<h1 class="pr-title">Practice opens as you go.</h1>' +
+        '<div class="ocs-body">' +
+          '<span class="ocs-ic">' + AW.icon('beads', { size: '40px' }) + '</span>' +
+          '<p class="ocs-line">Once you’ve finished your first lesson, its questions gather here — ready whenever you’d like to look again. Your path is the place to start.</p>' +
+        '</div>' +
+        '<a class="btn ghost" href="learn.html">Back to the path</a>' +
+        '</div>';
+    }
+
+    // State 1 — has completed content (eligible >= 1).
+    var lessonSet = {};
+    eligible.forEach(function (it) { lessonSet[it.lesson] = 1; });
+    var M = 0; for (var k in lessonSet) { if (lessonSet.hasOwnProperty(k)) M++; }
+
+    var countLine = (N === 1 ? '1 question ready' : N + ' questions ready') +
+      ' · from ' + (M === 1 ? '1 lesson finished' : M + ' lessons finished');
+    var subLine = (N < 8 ? N : 8) + ' questions, drawn from what you’ve finished.';
+
+    return '<div class="pr-hub">' +
+      '<p class="pr-kick">Practice</p>' +
+      '<h1 class="pr-title">Walk a path you’ve already walked.</h1>' +
+      '<p class="pr-lede">Practice brings back questions from the lessons you’ve finished — the same words, nothing new. Nothing here is scored, and nothing is ever lost. It’s just for you.</p>' +
+      '<p class="pr-count">' + countLine + '</p>' +
+      '<div class="pr-cta">' +
+        '<a class="btn" href="practice/session.html">Begin a set</a>' +
+        '<p class="pr-sub">' + subLine + '</p>' +
+      '</div>' +
+      '<p class="pr-note">No noor here — practice is just for you.</p>' +
+      '</div>';
+  }
+
+  function render() {
+    app.innerHTML = hubHtml() + tabsHtml();
+
+    // active Practice tab → scroll to top (the shipped Learn-tab behaviour generalised).
+    var tP = document.getElementById('tabPractice');
+    if (tP) tP.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: AW.reducedMotion() ? 'auto' : 'smooth' });
+    });
+    // Returns → the streak sheet everywhere (Wave-A seam; guarded so a pre-merge tree never throws).
+    var tR = document.getElementById('tabReturns');
+    if (tR) tR.addEventListener('click', function () { if (AW.streakSheet) AW.streakSheet(); });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
