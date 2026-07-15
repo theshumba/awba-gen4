@@ -169,3 +169,17 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 5. Learn Page & View Transitions | 6/6 | Complete | 2026-07-14 |
 | 6. Accessibility, RTL & Typography | 7/7 | Complete | 2026-07-14 |
 | 7. PWA Shell, Offline & Delivery | 3/3 | Complete | 2026-07-14 |
+
+---
+
+# Milestone v2.0: Complete the Shell (started 2026-07-15)
+
+**Owner directive:** build out everything the coming-soon stubs promised — a first-run onboarding experience, a real Practice tab, a real Profile tab, a real More tab — plus splice the one piece of religious content his source docs actually contain (the Ibn Hibban 974 closing du'a, per `.planning/v2-intel/CONTENT-DECISIONS.md`); deploy when done. Fiqh/Seerah/Qur'an courses stay coming-soon (no scholar-approved content exists). No login/accounts — the app stays passwordless and on-device.
+
+**Method:** ultracode workflow orchestration (recon → 2-draft judged design → 3 build waves → adversarial review → full gate board → one deploy push). Binding docs: `.planning/v2-intel/R0-orchestrator-brief.md` (scope + hard laws), `DESIGN-V2.md` (design contract), `CONTENT-DECISIONS.md` (content rulings).
+
+- [x] **V2-P0: Recon + content mining** — 6 codebase intel files + 6 source-folder inventories + provenance-judged content rulings (completed 2026-07-15)
+- [ ] **V2-P1 (Wave A): Engine seams + du'a splice** — smallest true engine diff per DESIGN-V2 seams list; default du'a in duaClose(); practice-pool extractor + pool file + byte-fidelity gate; invariant counts re-pinned honestly
+- [ ] **V2-P2 (Wave B): The four pages** — onboarding.html / practice.html (+ session) / profile.html / more.html, built in parallel isolated worktrees, new files only
+- [ ] **V2-P3 (Wave C): Integration** — learn.html tab rewiring + first-run redirect, sw.js precache + cache v2 bump, all 5 gate discovery lists extended, new tests, README
+- [ ] **V2-P4: Review + gates + deploy** — multi-lens adversarial review, fixes, full gate board run isolated by the orchestrator, single push to main (auto-deploys GitHub Pages)
