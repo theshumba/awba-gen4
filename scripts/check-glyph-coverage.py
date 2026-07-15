@@ -161,7 +161,8 @@ def harvest():
     """Return (printing_codepoints, control_codepoints) rendered by the real app."""
     sources = ["learn.html", "onboarding.html", "practice.html", "profile.html", "more.html"] \
         + sorted(glob.glob("lessons/*.html")) + sorted(glob.glob("reviews/*.html")) \
-        + ["practice/session.html", "shared/practice-pool.js", "shared/awba-engine.js"]
+        + ["practice/session.html", "shared/practice-pool.js", "shared/awba-engine.js",
+           "shared/course-structure.js"]
     printing, control = set(), set()
     for path in sources:
         if not os.path.exists(path):

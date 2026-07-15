@@ -12,15 +12,16 @@
               with a network fill-through on miss.
 
    PRECACHE lists the real on-disk file paths (relative, no leading slash) so it can never drift;
-   pwa-audit.mjs re-derives + disk-checks every entry. 52 entries: the 25 app pages (learn.html +
+   pwa-audit.mjs re-derives + disk-checks every entry. 53 entries: the 25 app pages (learn.html +
    the v2 surfaces onboarding/practice/profile/more.html + practice/session.html + the 15 lessons +
-   the 4 reviews) + the engine CSS/JS + shared/practice-pool.js + the 17 self-hosted fonts +
-   grain.png + the 4 icon PNGs + manifest.webmanifest + index.html. preview.html is dev-only and
-   deliberately excluded. CACHE bumps v1 → v2 on every precache-list change so installs refresh.
+   the 4 reviews) + the engine CSS/JS + shared/course-structure.js + shared/practice-pool.js + the
+   17 self-hosted fonts + grain.png + the 4 icon PNGs + manifest.webmanifest + index.html.
+   preview.html is dev-only and deliberately excluded. CACHE bumps on every precache-list change so
+   installs refresh.
    ============================================================================================ */
 'use strict';
 
-var CACHE = 'awba-cache-v2';
+var CACHE = 'awba-cache-v3';
 
 var PRECACHE = [
   'learn.html',
@@ -32,6 +33,7 @@ var PRECACHE = [
   'manifest.webmanifest',
   'shared/awba-engine.css',
   'shared/awba-engine.js',
+  'shared/course-structure.js',
   'shared/practice-pool.js',
   'shared/img/grain.png',
   'lessons/u1-m1.html',
