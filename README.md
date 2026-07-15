@@ -15,20 +15,34 @@ per-page data file. The repo *is* the deploy artifact.
 ```
 index.html                 → a tiny redirect to learn.html (the base URL, still installable)
 learn.html                 → the front door: the Orbit "path" home screen
+onboarding.html            → first-run welcome (skippable, replayable); a fresh visitor to learn.html
+                             is sent here once, then "Begin" lands them back on the path
+practice.html              → Practice hub: re-walk questions from lessons you've finished (no scoring)
+profile.html               → a private, on-device ledger: noor, returns, stars, the Ring, per-unit
+more.html                  → settings & about: sound / motion toggles, replay onboarding, start-over
+practice/
+  session.html             → the practice drill (deterministic 8-item set, driven by AW.practiceRun)
 lessons/                   → 15 lesson pages; each calls AwbaLesson({...}) with its own content
 reviews/                   → 4 review pages; each calls AwbaReview({...}) with its own content
 shared/
   awba-engine.css          → the ONE stylesheet (design tokens, registers, components, motion)
   awba-engine.js           → the ONE engine (state, storage, icon kit, runners, sheets, a11y)
+  practice-pool.js         → the dev-generated, byte-verbatim practice item pool (see below)
   fonts/                   → self-hosted, subset .woff2 faces (no third-party font network calls)
   img/                     → grain texture + raster art
   sfx/                     → sound cues
 icons/                     → generated PWA icons (192 / 512 / 512-maskable / 180 apple-touch) + sources
 manifest.webmanifest       → the Web App Manifest (start_url = learn.html, scope = ./ relative)
-sw.js                      → a hand-written service worker (< 50 lines): precache + offline shell
+sw.js                      → a hand-written service worker (< 50 lines): 52-entry precache + offline shell
 preview.html               → a DEV-only reference sheet — not part of the app, never precached
 scripts/                   → the validator + the standing quality gates (see below)
 ```
+
+**The v2 surfaces** (onboarding / practice / profile / more) are plain root pages cloned from the same
+head template as `learn.html` — relative paths, classic scripts, `file://`-openable. They add no new
+religious content and read all state through `AW.*` only (zero direct storage). The practice drill
+reuses quiz items **byte-verbatim** from the lessons a learner has already finished; nothing in
+practice is scored and nothing is ever written.
 
 **How a page works:** the engine is loaded first with a classic `<script src="shared/awba-engine.js">`,
 then a lesson/review page's own inline script calls the global `AwbaLesson(cfg)` / `AwbaReview(cfg)`
@@ -55,14 +69,35 @@ node scripts/validate-content.js lessons/*.html reviews/*.html
 # The standing quality gates
 node scripts/tests/render-smoke.mjs        # every page renders with no console error (headless Chrome)
 node scripts/port-audit.mjs                # byte-fidelity of ported content + zero-CDN + retired-element gate
-node scripts/tests/contrast-audit.mjs      # WCAG contrast swept from real rendered pages
+node scripts/tests/practice-pool-audit.mjs # the practice pool is byte-verbatim vs the frozen lesson cfgs
 node scripts/tests/rtl-audit.mjs           # Arabic RTL / bidi correctness
 python3 scripts/check-glyph-coverage.py    # every rendered codepoint has a real font glyph
 node scripts/tests/pwa-audit.mjs           # manifest / icons / service-worker shape / precache integrity
+node scripts/tests/contrast-audit.mjs      # WCAG contrast swept from real rendered pages (run LAST, alone)
 
 # The unit + interaction suite (always run via the glob)
 node --test scripts/tests/*.test.js
 ```
+
+**Run the Chrome-based gates one at a time, never concurrently** — `render-smoke`, `rtl-audit`,
+`contrast-audit`, and the `node --test` glob (three of its files spawn headless Chrome) all shell out
+to system Chrome, which flakes under parallel contention. `contrast-audit` is the heaviest; run it last
+and on its own.
+
+## Regenerating the practice pool
+
+`shared/practice-pool.js` is a **dev-generated** data file (like the font-subsetting step — data
+preparation, not a build pipeline). It extracts the `mc` / `tf` / `tile` quiz items from the 15 lesson
+cfgs **byte-verbatim** so Practice can reuse them offline without fetching. Regenerate it whenever a
+lesson's quiz content changes:
+
+```sh
+node scripts/build-practice-pool.js        # rewrites shared/practice-pool.js from the lesson cfgs
+node scripts/tests/practice-pool-audit.mjs # proves the pool still byte-matches its source cfgs
+```
+
+The audit gate fails if the committed pool ever drifts from the frozen lesson content, so the two can
+never diverge silently.
 
 ## Testing the PWA locally
 
