@@ -1873,6 +1873,12 @@ function bindMuteBtn(refresh) {
 AW.muteBtnHtml = muteBtnHtml;
 AW.bindMuteBtn = bindMuteBtn;
 
+/* PRAISE (single-source, S4) — the four correct-answer praise words, cycled by the running correct
+   count. Hoisted to module scope so BOTH the lesson runner's resolve() AND AW.practiceRun read the
+   SAME const (a behaviour-preserving move; no test pinned its former in-function location). The
+   curly apostrophes are byte-preserved from the Gen-3 runner. */
+var PRAISE = ['That’s it.', 'Beautiful.', 'Exactly right.', 'Masha’Allah.'];
+
 /* ============================================================================================
    AwbaLesson(cfg) — the lesson runner (ENG-01/03/05, CNT-01/04, MOT-05). Josh's Gen-3 cfg shape is
    consumed byte-unchanged; the mechanics are byte-preserved (the numbers come from the 04-01 pure
@@ -2111,8 +2117,8 @@ function AwbaLesson(cfg) {
   /* resolve — the mechanics come from AW._resolveScore (Gen-3 numbers); the expression is Athar
      (D-45): correct → praise + a META gold .dab when comboShow, a quiet .thread flourish at
      comboPerfect; miss → law-8 "Nothing lost" + the it.gentle line + a --rose retry that advances
-     (the miss is already banked, so the star math stays byte-preserved). */
-  var PRAISE = ['That’s it.', 'Beautiful.', 'Exactly right.', 'Masha’Allah.'];
+     (the miss is already banked, so the star math stays byte-preserved). PRAISE is the module-level
+     single-source const (S4) shared with AW.practiceRun. */
   function resolve(ok, it) {
     clearTimeout(flourishTimer);   // WR-02 — cancel any 3-streak flourish still pending from a prior beat before this resolve rebuilds #lsflourish (D-45: fires once, only at combo===3)
     var st = AW._resolveScore(
@@ -2643,3 +2649,162 @@ function AwbaReview(cfg) {
 
   intro();
 }
+
+/* ============================================================================================
+   AW.practiceRun(mountEl, items, opts) — the practice mini-runner (Wave-A seam S4 · §B.8).
+   --------------------------------------------------------------------------------------------
+   A calm re-walk of quiz beats the learner has already finished. It re-authors ONLY the quiz
+   interaction (never reuses AwbaLesson/AwbaReview, which write stars/noor/touchDay + fire the full
+   reward choreography), rendering each mc/tf/tile item with the SHIPPED .opt/.tf/.tile markup (via
+   AW._beatHtml) and the SHIPPED resolve verdicts — .opt.correct gold dot / .opt.wrong grey ink-blot
+   (law 8, never red / flash / shake) / .opt-why / a --rose .btn.retry — mirroring bindChoice/bindTile
+   EXACTLY. It shares the single module-level PRAISE with the lesson runner.
+
+   IT WRITES NOTHING: no noor, no stars, no returns, no touchDay, no du'a, no Ring, no Festival, no
+   document.body wipe — it renders ONLY into mountEl (100% read-only, §B.3). A wrong answer costs
+   nothing and offers "Try again" (re-attempt the SAME item — practice protects nothing). `correct`
+   counts the items answered right on the FIRST attempt ("came right away", §B.6): because every item
+   must eventually be answered correctly to advance, counting every correct resolve would always sum
+   to `total`, so first-attempt tracking is what makes the completion count meaningful. On the last
+   item it calls opts.onDone({correct, total}). opts.refs/opts.terms → AW.wire binds .cite/.term taps
+   to the shipped sheets (the pending pill rides in). No new glyph, no authored scripture, no new
+   storage-API literal — every frozen count holds.
+   ============================================================================================ */
+AW.practiceRun = function (mountEl, items, opts) {
+  if (typeof document === 'undefined' || !mountEl) return; // DOM-driven; headless load is a no-op
+  items = items || [];
+  opts = opts || {};
+  var total = items.length;
+  var i = 0, correct = 0, answered = false, firstAttempt = true;
+
+  function foot(inner) { return '<div class="foot" id="prfoot">' + inner + '</div>'; }
+  function btn(label, cls, id) {
+    return '<button class="btn ' + (cls || '') + '" id="' + (id || 'prcont') + '" type="button">' + label + '</button>';
+  }
+  /* focusHeading — land focus on the item's .pintro (its question, tabindex=-1 so it doesn't
+     evaporate on the innerHTML swap; the [tabindex="-1"]:focus-visible ring-suppression is shipped). */
+  function focusHeading() { var h = mountEl.querySelector('.pintro'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
+
+  /* paint the current item (fresh advance OR a retry re-attempt): the SHIPPED beat markup + a
+     real-disabled Check (the ACC-01 pattern — no pick, no live control). */
+  function paint() {
+    answered = false;
+    var it = items[i];
+    mountEl.innerHTML =
+      '<p class="se-prog">Question ' + (i + 1) + ' of ' + total + '</p>' +
+      '<div class="stage">' + AW._beatHtml(it, {}) + '</div>' +
+      foot(btn('Check', 'disabled', 'prcheck'));
+    if (opts.refs || opts.terms) AW.wire(mountEl, { refs: opts.refs || {}, terms: opts.terms || {} });
+    if (it.t === 'tile') bindTile(it); else bindChoice(it);
+    focusHeading();
+  }
+
+  function advance() {
+    i++;
+    if (i >= total) { if (typeof opts.onDone === 'function') opts.onDone({ correct: correct, total: total }); return; }
+    firstAttempt = true;
+    paint();
+  }
+
+  /* resolve — mirrors the shipped bindChoice/bindTile resolve, MINUS every write. Correct → the
+     SHIPPED gold-dot verdict + single-source PRAISE + AW.sound('correct') + AW.announce('Correct.')
+     + Continue. Wrong → the SHIPPED grey ink-blot (law 8) + the "Nothing lost" explain line +
+     AW.sound('incorrect') + AW.announce + a --rose .btn.retry that re-attempts the SAME item. */
+  function resolve(ok, it) {
+    var fw = mountEl.querySelector('#prfoot');
+    if (ok) {
+      if (firstAttempt) correct++;                       // §B.6 — "came right away" = first-attempt only
+      var title = PRAISE[correct % PRAISE.length];       // single-source PRAISE, shared with the lesson runner
+      fw.innerHTML =
+        '<h2 class="pintro">' + title + '</h2>' +
+        '<p>' + (it.good || '') + '</p>' +
+        btn('Continue');
+      AW.sound('correct');
+      AW.announce('Correct.');
+      mountEl.querySelector('#prcont').addEventListener('click', advance);
+    } else {
+      firstAttempt = false;                              // a later retry-correct is no longer "right away"
+      fw.innerHTML =
+        '<h2 class="pintro">Nothing lost</h2>' +
+        '<p class="opt-why">' + (it.gentle || '') + '</p>' +
+        btn('Try again', 'retry');
+      AW.sound('incorrect');
+      AW.announce('Not quite — nothing lost. Look again.');
+      mountEl.querySelector('#prcont').addEventListener('click', paint);   // clear marks + re-enable via a fresh render of the same item
+    }
+  }
+
+  /* bindChoice — mc/tf selection + resolve, byte-mirrored from the lesson runner (crimson selection
+     cue + 3px "thicker" + aria-pressed non-colour channel; real disabled Check). No score writes. */
+  function bindChoice(it) {
+    var sel = it.t === 'mc' ? '.opt' : '.tf';
+    var nodes = mountEl.querySelectorAll(sel), chosen = null;
+    var check = mountEl.querySelector('#prcheck');
+    check.disabled = true;
+    nodes.forEach(function (n) {
+      n.addEventListener('click', function () {
+        if (answered) return;
+        nodes.forEach(function (x) { x.style.borderColor = ''; x.style.borderWidth = ''; x.style.transform = ''; x.setAttribute('aria-pressed', 'false'); });
+        n.style.borderColor = 'var(--crimson)';
+        n.style.borderWidth = '3px';
+        n.style.transform = 'translateY(1px)';
+        n.setAttribute('aria-pressed', 'true');
+        chosen = it.t === 'mc' ? +n.dataset.i : (n.dataset.v === 'true');
+        check.classList.remove('disabled'); check.disabled = false;
+      });
+    });
+    check.addEventListener('click', function () {
+      if (answered || chosen === null) return;
+      answered = true;
+      var ok = chosen === it.c;
+      nodes.forEach(function (x) { x.style.pointerEvents = 'none'; x.style.borderColor = ''; x.style.borderWidth = ''; x.style.transform = ''; x.disabled = true; });
+      if (it.t === 'mc') {
+        nodes[it.c].classList.add('correct');            // gold dot draws on the answer
+        if (!ok) nodes[chosen].classList.add('wrong');   // law-8 grey ink-blot on the miss
+      } else {
+        nodes.forEach(function (x) { if ((x.dataset.v === 'true') === it.c) x.classList.add('correct'); });
+        if (!ok) nodes.forEach(function (x) { if (x.dataset.v === String(chosen)) x.classList.add('wrong'); });
+      }
+      resolve(ok, it);
+    });
+  }
+
+  /* bindTile — word-bank assembly + resolve, byte-mirrored from the lesson runner (scoped to
+     mountEl). Correct order (JSON deep-equal to it.solution) → resolve(true). No score writes. */
+  function bindTile(it) {
+    var box = mountEl.querySelector('#lstilebox'), bankEl = mountEl.querySelector('#lsbank'),
+      check = mountEl.querySelector('#prcheck');
+    var placed = [];
+    check.disabled = true;
+    function refresh() { var empty = placed.length === 0; check.classList.toggle('disabled', empty); check.disabled = empty; }
+    bankEl.querySelectorAll('.tile').forEach(function (t) {
+      t.addEventListener('click', function () {
+        if (answered || t.classList.contains('used')) return;
+        t.classList.add('used'); t.style.opacity = '.35'; t.style.pointerEvents = 'none';
+        var bt = document.createElement('button'); bt.className = 'tile'; bt.type = 'button'; bt.textContent = t.textContent;
+        bt.setAttribute('aria-pressed', 'true');
+        bt.style.borderWidth = '3px';
+        bt.style.transform = 'translateY(1px)';
+        bt.addEventListener('click', function () {
+          if (answered) return;
+          bt.remove(); t.classList.remove('used'); t.style.opacity = ''; t.style.pointerEvents = '';
+          placed = placed.filter(function (x) { return x !== bt; });
+          refresh();
+        });
+        box.appendChild(bt); placed.push(bt); refresh();
+      });
+    });
+    check.addEventListener('click', function () {
+      if (answered || placed.length === 0) return;
+      answered = true;
+      var built = placed.map(function (b) { return b.textContent; });
+      var ok = JSON.stringify(built) === JSON.stringify(it.solution);
+      box.querySelectorAll('.tile').forEach(function (b) { b.style.pointerEvents = 'none'; b.style.transform = ''; b.style.borderColor = ok ? 'var(--gold)' : 'var(--rule)'; b.disabled = true; });
+      bankEl.querySelectorAll('.tile').forEach(function (b) { b.style.pointerEvents = 'none'; b.disabled = true; });
+      resolve(ok, it);
+    });
+  }
+
+  if (!total) { if (typeof opts.onDone === 'function') opts.onDone({ correct: 0, total: 0 }); return; }
+  paint();
+};
