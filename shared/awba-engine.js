@@ -1245,6 +1245,39 @@ AW.sheetTerm = function (terms, id) {
   return AW.sheet(html, t.word); // D-63/R-10 — the gloss word is the sheet's accessible name
 };
 
+/* ---------- AW.streakSheet() / AW.noorSheet() — the returns/noor stat sheets (Wave-A seam S3, D-60).
+   HOISTED VERBATIM from learn.html's page-private openStreakSheet/openNoorSheet: identical .osh-*
+   markup, identical copy, reading ONLY AW.state()/AW.weekCal() and rendering via AW.sheet — so the
+   Returns tab + Profile stat tiles open the exact shipped cream sheets, zero drift (D-60 requires ONE
+   implementation). learn.html adopts these in Wave C; the temporary duplication there is expected.
+   No new storage literal, no new glyph. ------------------------------------------------------------ */
+AW.streakSheet = function () {
+  var st = AW.state(), n = st.returns;
+  var wk = AW.weekCal(), dots = '';
+  wk.forEach(function (d) { dots += '<span class="day' + (d.on ? ' here' : '') + '"></span>'; });
+  AW.sheet(
+    '<div class="grip"></div>' +
+    '<div class="osh-hero">' +
+      '<div class="osh-big">' + n + '</div>' +
+      '<div class="osh-sub">' + (n === 1 ? 'day you came back' : 'days you came back') + '</div>' +
+    '</div>' +
+    '<div class="weekcal osh-week">' + dots + '</div>' +
+    '<div class="osh-note">This number can never break and never reset. Every return adds to it, however long the gap. That is the point of this place.</div>',
+    'Your streak');                    /* D-63/R-10 — a natural accessible name for the sheet */
+};
+
+AW.noorSheet = function () {
+  var st = AW.state();
+  AW.sheet(
+    '<div class="grip"></div>' +
+    '<div class="osh-hero">' +
+      '<div class="osh-big osh-gold">' + st.noor + '</div>' +
+      '<div class="osh-sub">noor gathered</div>' +
+    '</div>' +
+    '<div class="osh-note">Light you collect as you learn. It is never spent against you, never dangled, and it never runs out.</div>',
+    'Noor gathered');                  /* D-63/R-10 — a natural accessible name for the sheet */
+};
+
 /* ---------- AW.animate(el, keyframes, durToken, easeToken) — the WAAPI orchestration exemplar
    Phase 4 COPIES rather than invents (D-41). Reads the ms duration + the linear()/cubic-bezier
    easing straight off :root via getComputedStyle (`"600ms"` → 600; the linear(…) string is a
