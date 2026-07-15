@@ -24,6 +24,7 @@
 <link rel="preload" as="font" type="font/woff2" href="shared/fonts/marcellus-400.woff2" crossorigin>
 <link rel="stylesheet" href="shared/awba-engine.css">
 <script src="shared/awba-engine.js"></script>
+<script src="shared/course-structure.js"></script>
 <!-- The only page-authored CSS — a content block for the already-declared `screens` layer (never the
      name-list order line). Composition only: every colour a shipped var(--token), zero new hex, zero new
      @keyframes. The mount rides the shipped `settle` verb at --dur-draw; both reduced-motion triggers
@@ -224,14 +225,13 @@
   var editing = false;                          // is the name editor open? (in-memory only)
   var mounted = false;                          // first render done? (mount animation plays once)
 
-  /* Per-unit grouping — page-private, lessons only (§C.2; 4+4+3+4 = 15). Structure, not SHA-gated
-     content: the deferred S6 hoist (shared/course-structure.js) removes this duplication later. */
-  var PF_UNITS = [
-    { u: 1, title: 'The Foundation',          lessons: ['u1m1', 'u1m2', 'u1m3', 'u1m4'] },
-    { u: 2, title: 'The Drift',               lessons: ['u2m1', 'u2m2', 'u2m3', 'u2m3b'] },
-    { u: 3, title: 'The Heart of It: Tawhid', lessons: ['u3m1', 'u3m2', 'u3m3'] },
-    { u: 4, title: 'The Pillars',             lessons: ['u4m1', 'u4m2', 'u4m2b', 'u4m3'] }
-  ];
+  /* Per-unit grouping — lessons only (§C.2; 4+4+3+4 = 15). Derived from the ONE canonical source
+     shared/course-structure.js (S6, window.AWBA_COURSE), loaded before this script — this removes
+     the former PF_UNITS duplication. Output-identical: [{u,title,lessons:[…]}] exactly as before. */
+  var PF_UNITS = window.AWBA_COURSE.units.map(function (u) {
+    return { u: u.n, title: u.title,
+      lessons: u.nodes.filter(function (nd) { return nd.kind === 'lesson'; }).map(function (nd) { return nd.id; }) };
+  });
 
   /* The tab bar (§E) — inactive tabs are real <a href> links (file://-safe, the shipped cross-document
      morph rides free); the active Profile tab is a scroll-to-top <button aria-current>; Returns opens

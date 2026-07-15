@@ -1,11 +1,12 @@
 /* ============================================================================================
-   pf-units.test.js  ·  Awba Gen-4 v2 — profile.html PF_UNITS integrity (Wave-C §9.4)
+   pf-units.test.js  ·  Awba Gen-4 v2 — profile.html PF_UNITS integrity (Wave-C §9.4 · S6 update)
    --------------------------------------------------------------------------------------------
-   profile.html carries its own PF_UNITS map (unit → lesson ids) to lay out the per-unit progress
-   rail (an S6 fast-follow would hoist UNITS to a shared file and remove this duplication). Until
-   then, this test pins PF_UNITS against the engine's NODE_ATOMS so the two can never drift: every
-   PF_UNITS lesson id must be a real NODE_ATOMS key, and the lists must enumerate EXACTLY the 15
-   course lessons — no typo id, no missing lesson, no duplicate. Zero deps (pure-literal eval).
+   profile.html no longer carries its own PF_UNITS literal — post-S6 it DERIVES PF_UNITS from the
+   single source shared/course-structure.js (window.AWBA_COURSE). This test now reconstructs
+   PF_UNITS exactly as profile.html does (filter lesson nodes → unit → lesson-id list), then runs
+   the same three integrity assertions against the engine's NODE_ATOMS so the two can never drift:
+   every lesson id must be a real NODE_ATOMS key, and the lists must enumerate EXACTLY the 15 course
+   lessons — no typo id, no missing lesson, no duplicate. Zero deps (Node core + a window stub).
    ============================================================================================ */
 'use strict';
 
@@ -13,13 +14,13 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 
 const ROOT = path.join(__dirname, '..', '..');
-const PROFILE_SRC = fs.readFileSync(path.join(ROOT, 'profile.html'), 'utf8');
 const ENGINE_SRC = fs.readFileSync(path.join(ROOT, 'shared', 'awba-engine.js'), 'utf8');
 
-/* Extract a well-delimited `var NAME = <literal>;` block and evaluate JUST that pure literal in an
-   isolated function scope (PF_UNITS/NODE_ATOMS are plain array/object literals — no AW.*, no calls). */
+/* Evaluate a well-delimited `var NAME = <literal>;` block in an isolated scope (NODE_ATOMS is a
+   plain object literal — no AW.*, no calls). */
 function evalDecl(src, re, name) {
   const m = src.match(re);
   assert.ok(m, name + ' declaration not found in source');
@@ -27,7 +28,26 @@ function evalDecl(src, re, name) {
   return new Function(m[0] + '\nreturn ' + name + ';')();
 }
 
-const PF_UNITS = evalDecl(PROFILE_SRC, /var PF_UNITS = \[[\s\S]*?\];/, 'PF_UNITS');
+/* Load the classic single source into a window stub, then derive PF_UNITS exactly as profile.html
+   does post-S6 (§S6.2) — proving the derivation, not a copied literal. */
+function derivePfUnits() {
+  const sandbox = { window: {} };
+  vm.createContext(sandbox);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, 'shared', 'course-structure.js'), 'utf8'), sandbox, {
+    filename: 'shared/course-structure.js',
+  });
+  // JSON round-trip normalises the vm-realm object graph into this test realm (deepEqual checks
+  // Array/Object prototype identity — see ls-stub.js readOut note).
+  return JSON.parse(JSON.stringify(
+    sandbox.window.AWBA_COURSE.units.map((u) => ({
+      u: u.n,
+      title: u.title,
+      lessons: u.nodes.filter((nd) => nd.kind === 'lesson').map((nd) => nd.id),
+    }))
+  ));
+}
+
+const PF_UNITS = derivePfUnits();
 const NODE_ATOMS = evalDecl(ENGINE_SRC, /var NODE_ATOMS = \{[\s\S]*?\};/, 'NODE_ATOMS');
 
 test('PF_UNITS: every lesson id is a real NODE_ATOMS key (no stray / typo id)', () => {

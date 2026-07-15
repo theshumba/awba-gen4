@@ -23,6 +23,7 @@
 <link rel="preload" as="font" type="font/woff2" href="shared/fonts/amiri-quran-400.woff2" crossorigin>
 <link rel="stylesheet" href="shared/awba-engine.css">
 <script src="shared/awba-engine.js"></script>
+<script src="shared/course-structure.js"></script>
 <!-- The only page-authored CSS (§S6): the two D-62/R-9 conversions' seam styling — a native-button
      chrome reset for the streak strip and the quiet marginalia affordance on the daily-ayah card.
      A content block for the already-declared `screens` layer (never the name-list order line); zero
@@ -176,43 +177,21 @@
     return;
   }
 
-  /* Course structure — ported verbatim from Gen-3 _MVP-BUILD/learn.html UNITS (D-53). ids / hrefs
-     / labels / review / chest are byte-faithful; hrefs stay root-relative exactly as Gen-3 wrote
-     them (learn.html is at root, so no ../). The retired `color` field is DROPPED (no unit
-     colour-coding under Athar). English unit titles are kept (R-6 chapter-term fallback). */
-  var UNITS = [
-    { n: 1, title: 'The Foundation', desc: 'What belief is, and how to hold it',
-      nodes: [
-        { id: 'u1m1', href: 'lessons/u1-m1.html', label: 'What sound belief is' },
-        { id: 'u1m2', href: 'lessons/u1-m2.html', label: 'Why belief matters' },
-        { id: 'u1m3', href: 'lessons/u1-m3.html', label: 'Where belief comes from' },
-        { id: 'u1m4', href: 'lessons/u1-m4.html', label: 'How we keep it sound' },
-        { id: 'u1r', href: 'reviews/u1-review.html', label: 'Legendary review', review: true },
-        { id: 'u1c', chest: true, label: 'A gift' }] },
-    { n: 2, title: 'The Drift', desc: 'How belief slips, and how to guard it',
-      nodes: [
-        { id: 'u2m1', href: 'lessons/u2-m1.html', label: 'The causes within you' },
-        { id: 'u2m2', href: 'lessons/u2-m2.html', label: 'The pulls from outside' },
-        { id: 'u2m3', href: 'lessons/u2-m3.html', label: 'Protecting yourself I' },
-        { id: 'u2m3b', href: 'lessons/u2-m3b.html', label: 'Protecting yourself II' },
-        { id: 'u2r', href: 'reviews/u2-review.html', label: 'Legendary review', review: true },
-        { id: 'u2c', chest: true, label: 'A gift' }] },
-    { n: 3, title: 'The Heart of It: Tawhid', desc: 'The one word everything else serves',
-      nodes: [
-        { id: 'u3m1', href: 'lessons/u3-m1.html', label: 'What Tawhid is' },
-        { id: 'u3m2', href: 'lessons/u3-m2.html', label: 'Worth more than everything' },
-        { id: 'u3m3', href: 'lessons/u3-m3.html', label: 'One religion, one thread' },
-        { id: 'u3r', href: 'reviews/u3-review.html', label: 'Legendary review', review: true },
-        { id: 'u3c', chest: true, label: 'A gift' }] },
-    { n: 4, title: 'The Pillars', desc: 'Standing it up, and knowing it is true',
-      nodes: [
-        { id: 'u4m1', href: 'lessons/u4-m1.html', label: 'The two pillars' },
-        { id: 'u4m2', href: 'lessons/u4-m2.html', label: 'The Lord of everything' },
-        { id: 'u4m2b', href: 'lessons/u4-m2b.html', label: 'The deniers’ twist' },
-        { id: 'u4m3', href: 'lessons/u4-m3.html', label: 'How we know He is there' },
-        { id: 'u4r', href: 'reviews/u4-review.html', label: 'The final review', review: true },
-        { id: 'u4c', chest: true, label: 'The course gift' }] }
-  ];
+  /* Course structure — derived from the ONE canonical source shared/course-structure.js (S6,
+     window.AWBA_COURSE), loaded before this script. This reconstructs the exact
+     {n,title,desc,nodes:[{id,href?,label,review?,chest?}]} shape the render already reads
+     (output-identical, no downstream change); the byte-faithful ids/hrefs/labels/review/chest now
+     live in the single source (an exact byte-copy file move, R6 §5). English unit titles are kept
+     (R-6 chapter-term fallback); the retired `color` field never existed here. */
+  var UNITS = window.AWBA_COURSE.units.map(function (u) {
+    return { n: u.n, title: u.title, desc: u.desc, nodes: u.nodes.map(function (nd) {
+      var o = { id: nd.id, label: nd.label };
+      if (nd.href) o.href = nd.href;
+      if (nd.kind === 'review') o.review = true;
+      if (nd.kind === 'chest')  o.chest = true;
+      return o;
+    }) };
+  });
 
   /* Daily-ayah pool — spliced BYTE-VERBATIM from Gen-3 _MVP-BUILD/learn.html (scripture law: splice,
      never retype; the ˹ ˺ brackets intact). Rotation is AW.dailyIndex (day-of-year), never getDate().
