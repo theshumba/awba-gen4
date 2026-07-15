@@ -45,7 +45,10 @@ function makeLS(seed) {
 function loadEngine(ls, probeSrc) {
   const enginePath = path.join(__dirname, '..', '..', 'shared', 'awba-engine.js');
   const engineSrc = fs.readFileSync(enginePath, 'utf8');
-  const sandbox = { localStorage: ls, Date, Math, JSON, console };
+  // btoa/atob mirror the browser globals the S8 travel-code seam (exportToken/importToken) uses;
+  // Node provides them globally, so surfacing them into the vm realm keeps the engine's base64
+  // path exercisable headlessly. Additive — every existing suite is unaffected.
+  const sandbox = { localStorage: ls, Date, Math, JSON, console, btoa, atob };
   vm.createContext(sandbox);
   vm.runInContext(engineSrc + '\n' + (probeSrc || ''), sandbox, { filename: enginePath });
   return sandbox;

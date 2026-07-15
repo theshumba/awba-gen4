@@ -258,6 +258,27 @@ AW.S = (function () {
     return typeof structuredClone === 'function' ? structuredClone(v) : JSON.parse(JSON.stringify(v));
   }
 
+  /* ---- S8 travel-code helpers (E1) — all AW.S-private; reuse persist/defaultState/runMigrations,
+     so they add NO new storage-API literal (the count stays 13). The travel code is a single
+     copy-pasteable string "AWBA1.<base64>.<checksum>" carrying PROGRESS ONLY (never prefs); the
+     ring travels with its owner via ringSeed (law 10). "export/import/token/base64" are engine-
+     internal words that never surface in the UI — there it is "a travel code." ---- */
+  var YMD = /^\d{4}-\d{2}-\d{2}$/;
+  function own(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
+  var NOT_A_CODE = { ok: false, why: "That doesn't look like an Awba travel code." };
+  /* tokenSum — deterministic FNV-1a/32 over the base64 payload, rendered base36 (~6-7 chars). NOT
+     crypto: an accidental-corruption detector for a truncated/mangled paste. Math.imul holds the
+     multiply 32-bit-exact (a naive h*prime overflows 2^53 and silently corrupts); it is not a clock
+     or entropy source — no Math.random, no Date.now (law 6). */
+  function tokenSum(str) {
+    var h = 0x811c9dc5;                     // FNV offset basis
+    for (var i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 0x01000193) >>> 0;   // FNV prime, held to 32-bit unsigned
+    }
+    return h.toString(36);
+  }
+
   return {
     get: function (k, d) {
       if (!mem) mem = load();
@@ -292,6 +313,124 @@ AW.S = (function () {
       mem = defaultState();
       if (seed != null) mem.ringSeed = seed;
       if (!memFallback) persist(mem);
+    },
+
+    /* exportToken (S8 · E1.2) — the read-only "take it with you" seam. Serializes PROGRESS ONLY as
+       an explicit whitelist (prefs/name can NEVER leak — soundMuted/motion/skyMode/displayName live
+       in the separate awba_prefs blob and stay put), then base64 + a checksum. ringSeed rides along
+       when present so the same maker's mark re-inks on the new device (law 10). Read-only: allowed
+       even under memFallback (exporting the real on-disk blob verbatim is honest); no persist, no
+       mutation, no new storage literal. Shares mem/defaultState/persist directly from this closure. */
+    exportToken: function () {
+      if (!mem) mem = load();                                 // same lazy contract as get/set/reset
+      var blob = {                                            // explicit whitelist — prefs can NEVER leak
+        schemaVersion: mem.schemaVersion,                     // === CURRENT for a normal blob
+        noor:    (typeof mem.noor    === 'number') ? mem.noor    : 0,
+        returns: (typeof mem.returns === 'number') ? mem.returns : 0,
+        lastDay: (mem.lastDay != null) ? mem.lastDay : null,
+        days:    Array.isArray(mem.days) ? mem.days : [],
+        stars:   (mem.stars  && typeof mem.stars  === 'object') ? mem.stars  : {},
+        chests:  (mem.chests && typeof mem.chests === 'object') ? mem.chests : {}
+      };
+      if (mem.ringSeed != null) blob.ringSeed = mem.ringSeed; // the ring travels with its owner (law 10)
+      var b64 = btoa(JSON.stringify(blob));                   // blob is ASCII by construction → btoa never throws
+      return 'AWBA1.' + b64 + '.' + tokenSum(b64);
+    },
+
+    /* importToken (S8 · E1.3) — the "bring it here" seam. Validates prefix → checksum → base64 →
+       JSON → schemaVersion (a FUTURE version is refused, mirroring the memFallback law) → shape/
+       types, building a CLEAN blob (defensive whitelist; unknown ids dropped and COUNTED). Returns
+       { ok:true, preview, apply:fn } on success — apply() REPLACES the local blob wholesale via the
+       existing persist seam (never a merge — see E1.4), carrying ringSeed — or { ok:false, why:… }
+       with a single gentle line on any failure. Never throws to the console. No new storage literal. */
+    importToken: function (raw) {
+      if (!mem) mem = load();
+
+      // (0) isFallback refusal — the session is working from an un-persisted copy of a newer-schema
+      //     blob; applying could not be saved AND must not clobber the protected blob → refuse politely.
+      if (memFallback) return { ok: false,
+        why: "This copy of Awba can't take in a code right now. Reopen the app and try again." };
+
+      // (1) shape / prefix — empty & garbage paste land here
+      if (typeof raw !== 'string') return NOT_A_CODE;
+      var s = raw.trim();
+      if (!s) return { ok: false, why: 'Paste a travel code to bring your path here.' };
+      var parts = s.split('.');
+      if (parts.length !== 3 || parts[0] !== 'AWBA1')
+        return { ok: false, why: "That doesn't look like an Awba travel code." };
+      var payload = parts[1], sum = parts[2];
+
+      // (2) integrity — corruption / truncated paste
+      if (tokenSum(payload) !== sum)
+        return { ok: false, why: 'This code looks incomplete. Copy the whole code and try again.' };
+
+      // (3) base64 → JSON
+      var json; try { json = atob(payload); } catch (e) {
+        return { ok: false, why: 'This code looks incomplete. Copy the whole code and try again.' }; }
+      var blob; try { blob = JSON.parse(json); } catch (e) {
+        return { ok: false, why: 'This code looks incomplete. Copy the whole code and try again.' }; }
+      if (!blob || typeof blob !== 'object' || Array.isArray(blob))
+        return { ok: false, why: "That doesn't look like an Awba travel code." };
+
+      // (4) schemaVersion — a FUTURE version is refused (never import a shape this build can't be
+      //     trusted to understand). A missing/non-numeric version is untrustworthy → refuse.
+      var sv = blob.schemaVersion;
+      if (typeof sv !== 'number' || isNaN(sv))
+        return { ok: false, why: "That doesn't look like an Awba travel code." };
+      if (sv > CURRENT)
+        return { ok: false, why: 'This code is from a newer version of Awba. Update Awba, then bring it in.' };
+
+      // (5) shape + types → build a CLEAN blob (defensive whitelist; drop everything unrecognised, count it)
+      var dropped = 0;
+      var clean = defaultState();                 // schemaVersion CURRENT + zeroed fields
+      clean.schemaVersion = sv;                   // keep source sv; runMigrations() lifts it at apply()
+      // counters carry a defensive ceiling — far above any earnable value, keeps every renderer
+      // (incl. profile's int32 coercion) honest against a crafted token
+      clean.noor    = (typeof blob.noor    === 'number' && isFinite(blob.noor)    && blob.noor    >= 0) ? Math.min(Math.floor(blob.noor),    9999999) : 0;
+      clean.returns = (typeof blob.returns === 'number' && isFinite(blob.returns) && blob.returns >= 0) ? Math.min(Math.floor(blob.returns), 9999999) : 0;
+      clean.lastDay = (typeof blob.lastDay === 'string' && YMD.test(blob.lastDay)) ? blob.lastDay : null;
+      // days arrive sorted + unique (YMD sorts lexicographically = chronologically), so the clean
+      // blob upholds the invariant touchDay() builds naturally — a crafted token can't seed disorder
+      clean.days    = Array.isArray(blob.days)
+        ? blob.days.filter(function (d) { return typeof d === 'string' && YMD.test(d); })
+            .sort()
+            .filter(function (d, i, a) { return i === 0 || d !== a[i - 1]; })
+            .slice(-90)
+        : [];
+
+      clean.stars = {};
+      if (blob.stars && typeof blob.stars === 'object' && !Array.isArray(blob.stars)) {
+        for (var id in blob.stars) { if (!own(blob.stars, id)) continue;
+          if (isKnownStarId(id)) {                                  // lesson OR review id
+            var v = Math.round(blob.stars[id]);
+            if (isFinite(v)) clean.stars[id] = Math.min(3, Math.max(1, v));  // clamp to 1..3
+            else dropped++;
+          } else dropped++;                                          // unknown id — drop, count
+        }
+      }
+      clean.chests = {};
+      if (blob.chests && typeof blob.chests === 'object' && !Array.isArray(blob.chests)) {
+        for (var cid in blob.chests) { if (!own(blob.chests, cid)) continue;
+          if (isKnownChestId(cid) && blob.chests[cid] === true) clean.chests[cid] = true;
+          else dropped++;
+        }
+      }
+      if (typeof blob.ringSeed === 'number' && isFinite(blob.ringSeed)) clean.ringSeed = blob.ringSeed >>> 0;
+
+      // preview — lessonsDone counts ONLY the 15 lesson ids (NODE_ATOMS keys), never reviews/chests
+      var lessonsDone = 0;
+      for (var lid in clean.stars) if (own(clean.stars, lid) && NODE_ATOMS.hasOwnProperty(lid)) lessonsDone++;
+
+      return {
+        ok: true,
+        preview: { noor: clean.noor, returns: clean.returns, lessonsDone: lessonsDone, dropped: dropped },
+        apply: function () {
+          var applied = runMigrations(clean);      // no-op at v1 (schemaVersion===CURRENT); future-proof
+          mem = applied;                           // REPLACE the local blob (never a merge) — see E1.4
+          if (!memFallback) persist(mem);          // reuse the existing persist seam → NO new storage literal
+          return true;
+        }
+      };
     },
   };
 })();
@@ -494,6 +633,18 @@ AW.weekCal = function () {
     u3m1: 4, u3m2: 5, u3m3: 5,
     u4m1: 3, u4m2: 4, u4m2b: 4, u4m3: 4
   };
+
+/* S8 travel-code id registry (E1.3.1) — module-private, resolved by the AW.S closures at call-time
+   exactly as AW.atomsDone already resolves NODE_ATOMS. `stars` is a SHARED lessons+reviews namespace
+   (verified against course-structure.js + the review files: review star keys are u1r..u4r, chest keys
+   u1c..u4c; NODE_ATOMS holds the 15 lesson ids only), so importToken validates stars against
+   lessons ∪ reviews and chests against the chest ids. These mirror the existing NODE_ATOMS hardcode
+   and touch NO frozen count (not a glyph, kit, hex, or NODE_ATOMS mutation). Fast-follow (logged, not
+   built): fold these into a shared node-id registry derived from course-structure.js. */
+  var REVIEW_IDS = ['u1r', 'u2r', 'u3r', 'u4r'];   // the 4 legendary-review star keys (course-structure.js)
+  var CHEST_IDS  = ['u1c', 'u2c', 'u3c', 'u4c'];   // the 4 unit chest keys
+  function isKnownStarId(id)  { return NODE_ATOMS.hasOwnProperty(id) || REVIEW_IDS.indexOf(id) !== -1; }
+  function isKnownChestId(id) { return CHEST_IDS.indexOf(id) !== -1; }
 
 /* AW.atomsDone(progress) — PURE: Σ NODE_ATOMS[id] over every id present in progress.stars.
    Review/chest star keys contribute 0 (they are simply absent from NODE_ATOMS). One constant,

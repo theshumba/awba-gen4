@@ -21,7 +21,7 @@
    ============================================================================================ */
 'use strict';
 
-var CACHE = 'awba-cache-v3';
+var CACHE = 'awba-cache-v4';
 
 var PRECACHE = [
   'learn.html',
