@@ -113,12 +113,14 @@ function citationCard(r) {
   let meta = '';
   if (r.grade) meta += '<span class="grade">' + esc(r.grade) + '</span>';
   if (r.src) meta += '<span class="src">' + esc(r.src) + '</span>';
+  // Many verbatim src lines already end in "pending review" — never print the marker twice on one card.
+  const marker = /pending review\s*$/.test(r.src || '') ? '' : PENDING;
   return (
     '<div class="card">' +
     (head ? '<div class="card-head">' + head + '</div>' : '') +
     arBlock(r.ar) +
     (r.mean !== undefined ? '<p class="tr">' + esc(r.mean) + '</p>' : '') +
-    '<div class="card-foot">' + meta + PENDING + '</div>' +
+    '<div class="card-foot">' + meta + marker + '</div>' +
     '</div>'
   );
 }
@@ -186,6 +188,13 @@ function main() {
           part1 += '<p class="none">Recalls Unit ' + u.n + ' — this review introduces no new scripture.</p>';
         } else {
           refKeys.forEach((id) => { part1 += citationCard(cfg.refs[id]); refCount++; });
+          // Items may recall lesson citations by data-ref without carrying refs of their own —
+          // surface those pointers honestly rather than dropping them (verbatim text lives at the source lesson).
+          const recalled = [...cited].filter((id) => !(cfg.refs && cfg.refs[id]));
+          if (recalled.length) {
+            part1 += '<p class="none">Recalls citations from the lessons above: ' + recalled.map(esc).join(', ') +
+              ' — verbatim text listed at each source lesson.</p>';
+          }
         }
         part1 += '</section>';
       }

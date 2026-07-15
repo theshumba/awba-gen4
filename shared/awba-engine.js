@@ -979,7 +979,9 @@ AW.UNIT_ICON = { u1: 'compass', u2: 'lanterns', u3: 'kaaba', u4: 'mosque' };
    ATHAR-asset-kit decorative marks, NOT AW.icon glyphs (glyphCount stays frozen at 13; SPROUTS is a
    sibling decorative-art member, counted by neither the GLYPHS nor the KIT pin); token-only ink
    (var(--gold)), aria-hidden, STATIC on load (law 9). Each is a 24×24 stem-and-growth form — the
-   family is cohesive, the silhouettes vary. SPD/SPO are module-privates (concat helpers). */
+   family is cohesive, the silhouettes vary. SPD/SPO are true privates (IIFE-scoped concat helpers —
+   only AW.SPROUTS/AW.sproutFor are public; the short names can never collide with page globals). */
+(function () {
   var SPD = '" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>';   // the shared stem stroke tail
   var SPO = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">';                    // the shared svg open
   var SPROUTS = [
@@ -1012,10 +1014,11 @@ AW.UNIT_ICON = { u1: 'compass', u2: 'lanterns', u3: 'kaaba', u4: 'mosque' };
     return SPROUTS[h % SPROUTS.length];
   }
 
-/* Expose, mirroring the AW.muteBtnHtml precedent: both the learn path's path stamp and the profile
-   garden read these. NOT added to the GLYPHS(13)/KIT(20) count pins — a sibling decorative-art member. */
-AW.SPROUTS   = SPROUTS;      // the D-55 decorative doodle pool (20 aria-hidden gold-ink SVGs) — NOT a glyph/kit registry
-AW.sproutFor = sproutFor;    // stable deterministic pick per node id (unsigned string hash → pool index); no Math.random
+  /* Expose, mirroring the AW.muteBtnHtml precedent: both the learn path's path stamp and the profile
+     garden read these. NOT added to the GLYPHS(13)/KIT(20) count pins — a sibling decorative-art member. */
+  AW.SPROUTS   = SPROUTS;      // the D-55 decorative doodle pool (20 aria-hidden gold-ink SVGs) — NOT a glyph/kit registry
+  AW.sproutFor = sproutFor;    // stable deterministic pick per node id (unsigned string hash → pool index); no Math.random
+})();
 
 /* AW.GLYPHS — the 13 small UI glyphs Gen-3 scattered as standalone + per-page constants,
    re-homed into ONE ~24x24 square sub-map (D-33). Single source, no per-page constants: these
