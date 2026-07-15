@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- viewport-fit=cover is the safe-area prerequisite (env(safe-area-inset-*) resolves to 0 without it). -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba · Practice</title>
+<!-- Haram Cream — the Page ground (the drill lives on Page, with a Circle-drift opening). -->
+<meta name="theme-color" content="#F3EDE2">
+<!-- One level down like a lesson: ../shared/… paths, NO install trio, NO SW registration.
+     Preload the workhorse + Amiri Quran (reused ayah quotes render in the sacred face). -->
+<link rel="preload" as="font" type="font/woff2" href="../shared/fonts/readex-pro-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../shared/fonts/amiri-quran-400.woff2" crossorigin>
+<link rel="stylesheet" href="../shared/awba-engine.css">
+<script src="../shared/awba-engine.js"></script>
+<!-- the dev-generated, byte-verbatim item pool (classic global assign; file://-safe, no fetch). -->
+<script src="../shared/practice-pool.js"></script>
+<!-- The only page-authored CSS: a content block for the already-declared `screens` layer (never the
+     name-list order line). Composition only — every value a shipped token, zero new hex. The register
+     :focus-visible ring (crimson on cream) rides in automatically from the engine grammar. AW.practiceRun
+     owns the stage/foot/verdict; this page owns only the outer chrome + the opener + the completion. -->
+<style>
+  @layer screens {
+    .se-shell {
+      position: relative;
+      z-index: 1;                       /* sit above the .grain::after tile */
+      max-width: 480px;
+      margin-inline: auto;
+      padding: var(--sp-2s) 0 calc(var(--sp-8) + env(safe-area-inset-bottom));
+    }
+    .se-head {                          /* Leave-practice on the left, the shipped mute toggle on the right */
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+      padding: var(--sp-2s) var(--sp-6);
+    }
+    .se-head .ls-back { align-self: center; }
+    .pr-drift {                         /* the circle-gathering opener — 3 shipped .dab arriving, then still */
+      display: flex;
+      justify-content: center;
+      gap: var(--sp-2s);
+      padding: var(--sp-2s) 0 0;
+    }
+    .pr-drift .dab {                    /* faint crimson ink — shape reads, colour is secondary (Page accent) */
+      background: color-mix(in srgb, var(--crimson) 22%, transparent);   /* §2.1 Page accent on cream */
+    }
+    .se-finish {                        /* the calm completion — no Ring, no rosette, no celebration */
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-4);
+      padding: var(--sp-8) var(--sp-6) var(--sp-6);
+      animation: settle var(--dur-settle) var(--ease) both;
+    }
+    .se-done {                          /* completion / empty heading — Readex 600 on Page */
+      margin: 0;
+      font-family: var(--font-work);
+      font-weight: 600;
+      font-size: var(--fs-h1);
+      line-height: 1.25;
+      color: var(--ink);
+    }
+    .se-line {
+      margin: 0;
+      font-family: var(--font-work);
+      font-size: var(--fs-body);
+      line-height: 1.6;
+      color: var(--ink-85);            /* §2.1 --ink-85 on cream */
+    }
+    .se-tally {                         /* a quiet, neutral count — never a grade */
+      margin: 0;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      color: var(--ink-62);            /* §2.1 --ink-62 on cream, 5.02:1 */
+    }
+    .se-cta {                           /* the two calm exits */
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+      margin-top: var(--sp-2s);
+    }
+  }
+</style>
+</head>
+<body>
+<main class="reg-page grain" id="app"></main>
+<script>
+(function () {
+  'use strict';
+  if (typeof AW === 'undefined') return;   // engine failed to load — leave the inert shell
+  var app = document.getElementById('app');
+  var round = 0;                            // in-memory session counter; "Practise another set" bumps it
+
+  /* mulberry32 — a generic PRNG util (the Ring's PRNG family), page-private, not on AW.
+     Deterministic: no runtime randomness, no wall-clock nonce. */
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  /* dayNumber — day-of-year from LOCAL date parts only (the AW.dailyIndex convention; never UTC /
+     toISOString / new Date(ymdString), which shift by the reviewer's offset). Not a wall-clock nonce. */
+  function dayNumber(d) {
+    d = d || new Date();
+    var start = new Date(d.getFullYear(), 0, 0);
+    var cur = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    return Math.round((cur - start) / 86400000);
+  }
+
+  /* sampleEight — seeded, deterministic (ringSeed ^ day ^ round), Fisher-Yates, first 8 (or all). */
+  function sampleEight(eligible, rnd0) {
+    var seed = (AW.ringSeed() ^ dayNumber() ^ rnd0) >>> 0;
+    var rnd = mulberry32(seed);
+    var arr = eligible.slice();
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(rnd() * (i + 1));
+      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+    return arr.slice(0, Math.min(8, arr.length));
+  }
+
+  function eligibleItems() {
+    var pool = (window.PRACTICE_POOL && PRACTICE_POOL.items) || [];
+    var stars = AW.state().stars;
+    return pool.filter(function (it) { return stars[it.lesson]; });
+  }
+
+  function assignInto(target, src) {
+    if (!src) return;
+    for (var k in src) { if (src.hasOwnProperty(k)) target[k] = src[k]; }
+  }
+
+  /* re-bind the shipped mute toggle so its icon + aria-pressed refresh on tap without wiping the mount. */
+  function bindMute() {
+    AW.bindMuteBtn(function () {
+      var slot = document.getElementById('semutewrap');
+      if (slot) { slot.innerHTML = AW.muteBtnHtml(); bindMute(); }
+    });
+  }
+
+  function driftHtml() {
+    return '<div class="pr-drift" aria-hidden="true">' +
+      '<span class="dab" style="animation-delay:0ms"></span>' +
+      '<span class="dab" style="animation-delay:40ms"></span>' +
+      '<span class="dab" style="animation-delay:80ms"></span>' +
+      '</div>';
+  }
+
+  function renderEmpty() {
+    app.innerHTML =
+      '<div class="se-shell">' +
+        '<div class="se-finish">' +
+          '<h1 class="se-done" tabindex="-1">Nothing to practise yet</h1>' +
+          '<p class="se-line">Finish a lesson first, and its questions gather here.</p>' +
+          '<div class="se-cta"><a class="btn" href="../learn.html">Back to the path</a></div>' +
+        '</div>' +
+      '</div>';
+    var h = document.querySelector('.se-done');
+    if (h && h.focus) h.focus();
+    if (AW.announce) AW.announce('Nothing to practise yet.');
+  }
+
+  function renderDone(res) {
+    var n = res.total, c = res.correct;
+    app.innerHTML =
+      '<div class="se-shell">' +
+        '<div class="se-finish">' +
+          '<h1 class="se-done" tabindex="-1">Well walked.</h1>' +
+          '<p class="se-line">You looked again at ' + n + ' questions from the lessons you’ve finished. Nothing here is scored — this was just for you.</p>' +
+          '<p class="se-tally">' + c + ' of them came right away.</p>' +
+          '<div class="se-cta">' +
+            '<button class="btn" type="button" id="seAgain">Practise another set</button>' +
+            '<a class="btn ghost" href="../learn.html">Back to the path</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    var again = document.getElementById('seAgain');
+    if (again) again.addEventListener('click', function () { round++; start(); });
+    var h = document.querySelector('.se-done');
+    if (h && h.focus) h.focus();
+    if (AW.announce) AW.announce('Practice complete. ' + n + ' questions revisited.');
+  }
+
+  function start() {
+    var eligible = eligibleItems();
+    var items = sampleEight(eligible, round);
+    if (!items.length) { renderEmpty(); return; }        // deep-link with an empty pool
+
+    app.innerHTML =
+      '<div class="se-shell">' +
+        '<div class="se-head">' +
+          '<a class="ls-back" href="../practice.html">Leave practice</a>' +
+          '<span id="semutewrap">' + AW.muteBtnHtml() + '</span>' +
+        '</div>' +
+        driftHtml() +
+        '<div id="practiceMount"></div>' +
+      '</div>';
+    bindMute();
+
+    // union of the sampled items' source-lesson refs + terms, so .cite/.term taps open the shipped sheets.
+    var refs = {}, terms = {};
+    items.forEach(function (it) {
+      var L = (PRACTICE_POOL.lessons || {})[it.lesson];
+      if (L) { assignInto(refs, L.refs); assignInto(terms, L.terms); }
+    });
+
+    var mount = document.getElementById('practiceMount');
+    var beats = items.map(function (it) { return it.item; });
+    AW.practiceRun(mount, beats, { refs: refs, terms: terms, onDone: renderDone });
+  }
+
+  start();
+})();
+</script>
+</body>
+</html>
