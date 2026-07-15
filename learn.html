@@ -227,42 +227,6 @@
  {ref:'aḏ-Ḏāriyāt 51:56',ar:'وَمَا خَلَقْتُ ٱلْجِنَّ وَٱلْإِنسَ إِلَّا لِيَعْبُدُونِ',tr:'I did not create jinn and humans except to worship Me.'}
 ];
 
-  /* D-55 — the plant pool: 20 small hand-inked Athar doodles, one stamped DETERMINISTICALLY per done
-     LESSON node (a distinct little plant growing from each finished lesson, stable across renders via
-     an id-hash so it never flickers or changes). ATHAR-asset-kit decorative marks, NOT AW.icon glyphs
-     (glyphCount stays frozen at 13); token-only ink (var(--gold)), aria-hidden, STATIC on load (law 9).
-     Each is a 24×24 stem-and-growth form — the family is cohesive, the silhouettes vary. */
-  var SPD = '" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/>';   // the shared stem stroke tail
-  var SPO = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">';                    // the shared svg open
-  var SPROUTS = [
-    /* 0 two-leaf sprout */ SPO + '<path d="M12 21 V12' + SPD + '<path d="M12 14 C9.5 14 7.5 12 7.2 8.8 C10.4 9 12 11 12 14Z" fill="var(--gold)"/><path d="M12 12 C13.6 9.6 16.4 9 18.8 9.4 C18.4 12.4 15.2 13.4 12 12Z" fill="var(--gold)" opacity=".8"/></svg>',
-    /* 1 upright leaf */ SPO + '<path d="M12 21 V13' + SPD + '<path d="M12 13 C8.4 11.4 8.4 6.4 12 3.4 C15.6 6.4 15.6 11.4 12 13Z" fill="var(--gold)"/></svg>',
-    /* 2 three-leaf seedling */ SPO + '<path d="M12 21 V10.5' + SPD + '<path d="M12 15.5 C9 15.5 7.4 13.4 7.4 10.9 C10.5 11.4 12 13 12 15.5Z" fill="var(--gold)"/><path d="M12 13.5 C15 13.5 16.6 11.4 16.6 8.9 C13.5 9.4 12 11 12 13.5Z" fill="var(--gold)" opacity=".8"/><circle cx="12" cy="8.6" r="1.5" fill="var(--gold)"/></svg>',
-    /* 3 fern frond */ SPO + '<path d="M12 21 C12 16 13.4 11.5 16 7.5" fill="none" stroke="var(--gold)" stroke-width="1.7" stroke-linecap="round"/><path d="M12.6 16.5 C10.8 16.2 9.8 15 9.6 13.6 M13 14 C11.4 13.6 10.5 12.4 10.4 11 M13.7 11.6 C12.3 11.2 11.6 10.1 11.6 8.9 M14.6 9.2 C13.5 8.9 13 8 13.1 7" fill="none" stroke="var(--gold)" stroke-width="1.3" stroke-linecap="round" opacity=".85"/></svg>',
-    /* 4 wheat stalk */ SPO + '<path d="M12 21 V9' + SPD + '<path d="M12 9.5 C10.4 9 9.4 7.8 9.6 6.4 C11.2 6.9 12 8.1 12 9.5Z M12 12 C10.4 11.5 9.4 10.3 9.6 8.9 C11.2 9.4 12 10.6 12 12Z M12 9.5 C13.6 9 14.6 7.8 14.4 6.4 C12.8 6.9 12 8.1 12 9.5Z M12 12 C13.6 11.5 14.6 10.3 14.4 8.9 C12.8 9.4 12 10.6 12 12Z" fill="var(--gold)" opacity=".9"/><path d="M12 7 V4.5" fill="none" stroke="var(--gold)" stroke-width="1.4" stroke-linecap="round"/></svg>',
-    /* 5 tulip */ SPO + '<path d="M12 21 V13' + SPD + '<path d="M12 13 C9.4 12.6 8.2 10.3 8.4 7.2 L10.2 9.6 L12 6.4 L13.8 9.6 L15.6 7.2 C15.8 10.3 14.6 12.6 12 13Z" fill="var(--gold)"/></svg>',
-    /* 6 bloom */ SPO + '<path d="M12 21 V13.5' + SPD + '<g fill="var(--gold)" opacity=".9"><ellipse cx="12" cy="6.6" rx="1.8" ry="3"/><ellipse cx="12" cy="6.6" rx="1.8" ry="3" transform="rotate(72 12 8.6)"/><ellipse cx="12" cy="6.6" rx="1.8" ry="3" transform="rotate(144 12 8.6)"/><ellipse cx="12" cy="6.6" rx="1.8" ry="3" transform="rotate(216 12 8.6)"/><ellipse cx="12" cy="6.6" rx="1.8" ry="3" transform="rotate(288 12 8.6)"/></g><circle cx="12" cy="8.6" r="1.4" fill="var(--gold)"/></svg>',
-    /* 7 vine curl */ SPO + '<path d="M12 21 C12 16 10 13 10 10 C10 7.6 12 6.4 13.6 7.4 C15 8.3 14.6 10.4 13 10.4 C12 10.4 11.6 9.6 12 9" fill="none" stroke="var(--gold)" stroke-width="1.7" stroke-linecap="round"/><path d="M10.6 13.5 C8.6 13 7.6 11.6 7.8 10.2 C9.4 10.7 10.5 11.9 10.6 13.5Z" fill="var(--gold)" opacity=".8"/></svg>',
-    /* 8 trefoil */ SPO + '<path d="M12 21 V13' + SPD + '<g fill="var(--gold)"><path d="M12 12 C12 9.6 10.2 8 8.4 8.6 C7 9.1 7 11 8.4 11.8 C9.6 12.5 11 12.6 12 12Z"/><path d="M12 12 C12 9.6 13.8 8 15.6 8.6 C17 9.1 17 11 15.6 11.8 C14.4 12.5 13 12.6 12 12Z" opacity=".85"/><path d="M12 12 C9.8 11.4 8.6 9.4 9.2 7.6 C10.6 8 12 9.4 12 12Z"/></g></svg>',
-    /* 9 palm frond */ SPO + '<path d="M12 21 V11' + SPD + '<path d="M12 11 C12 8 11 5.5 8.4 4 M12 11 C12 8.4 11.4 6 9.8 4.2 M12 11 C12 8 13 5.5 15.6 4 M12 11 C12 8.4 12.6 6 14.2 4.2 M12 11 V4" fill="none" stroke="var(--gold)" stroke-width="1.3" stroke-linecap="round" opacity=".85"/></svg>',
-    /* 10 grass */ SPO + '<path d="M12 21 C11 16 10 12 8.4 8 M12 21 C12 15 12 11 12 6.4 M12 21 C13 16 14 12 15.6 8" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round"/></svg>',
-    /* 11 berry sprig */ SPO + '<path d="M12 21 V9' + SPD + '<path d="M12 13 L9 11 M12 11 L15 9 M12 15 L14.6 13.2" fill="none" stroke="var(--gold)" stroke-width="1.2" stroke-linecap="round" opacity=".7"/><circle cx="8.4" cy="10.6" r="1.7" fill="var(--gold)"/><circle cx="15.6" cy="8.6" r="1.7" fill="var(--gold)" opacity=".85"/><circle cx="15.2" cy="12.8" r="1.5" fill="var(--gold)"/></svg>',
-    /* 12 olive branch */ SPO + '<path d="M12 21 C12 16 13 12 15 8" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round"/><g fill="var(--gold)" opacity=".9"><ellipse cx="9.6" cy="15" rx="2.4" ry="1.2" transform="rotate(-30 9.6 15)"/><ellipse cx="15" cy="13.4" rx="2.4" ry="1.2" transform="rotate(30 15 13.4)"/><ellipse cx="11.4" cy="11" rx="2.2" ry="1.1" transform="rotate(-24 11.4 11)"/><ellipse cx="15.6" cy="9" rx="2.1" ry="1.1" transform="rotate(30 15.6 9)"/></g></svg>',
-    /* 13 rooted seedling */ SPO + '<path d="M12 18 V11' + SPD + '<path d="M12 18 C11 19.4 10 20.2 8.6 20.6 M12 18 C13 19.4 14 20.2 15.4 20.6 M12 18 V21" fill="none" stroke="var(--gold)" stroke-width="1.2" stroke-linecap="round" opacity=".55"/><path d="M12 14 C9.6 14 8 12.2 7.8 10 C10.4 10.4 12 11.8 12 14Z" fill="var(--gold)"/><path d="M12 12.4 C14.4 12.4 16 10.6 16.2 8.4 C13.6 8.8 12 10.2 12 12.4Z" fill="var(--gold)" opacity=".8"/></svg>',
-    /* 14 bud */ SPO + '<path d="M12 21 V12.5' + SPD + '<path d="M12 12.5 C10 12 9 10.2 9.2 8 C9.2 5.6 10.6 4 12 4 C13.4 4 14.8 5.6 14.8 8 C15 10.2 14 12 12 12.5Z" fill="var(--gold)"/><path d="M9.8 12 L14.2 12" fill="none" stroke="var(--gold)" stroke-width="1.4" stroke-linecap="round" opacity=".7"/></svg>',
-    /* 15 heart leaf */ SPO + '<path d="M12 21 V13' + SPD + '<path d="M12 13 C10.4 10.8 7.4 10.6 7.4 7.8 C7.4 6.2 8.8 5.4 10 6 C10.8 6.4 11.6 7.4 12 8.6 C12.4 7.4 13.2 6.4 14 6 C15.2 5.4 16.6 6.2 16.6 7.8 C16.6 10.6 13.6 10.8 12 13Z" fill="var(--gold)"/></svg>',
-    /* 16 V sprout */ SPO + '<path d="M12 21 V13.5' + SPD + '<path d="M12 14 C9.4 12.6 7.6 9.6 7.4 6 C10.6 7 12 10 12 14Z" fill="var(--gold)"/><path d="M12 14 C14.6 12.6 16.4 9.6 16.6 6 C13.4 7 12 10 12 14Z" fill="var(--gold)" opacity=".8"/></svg>',
-    /* 17 tall alternating */ SPO + '<path d="M12 21 V4.5" fill="none" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round"/><g fill="var(--gold)" opacity=".9"><path d="M12 16 C10 16 8.6 14.6 8.6 12.8 C10.6 13.2 12 14.2 12 16Z"/><path d="M12 12.4 C14 12.4 15.4 11 15.4 9.2 C13.4 9.6 12 10.6 12 12.4Z"/><path d="M12 8.8 C10 8.8 8.8 7.6 8.8 6 C10.6 6.4 12 7.2 12 8.8Z"/></g></svg>',
-    /* 18 bush cluster */ SPO + '<path d="M12 21 V15' + SPD + '<g fill="var(--gold)"><circle cx="9" cy="12.5" r="2.6" opacity=".85"/><circle cx="15" cy="12.5" r="2.6" opacity=".85"/><circle cx="12" cy="9.4" r="3"/></g></svg>',
-    /* 19 star flower */ SPO + '<path d="M12 21 V13' + SPD + '<path d="M12 3.6 L13.5 7.4 L17.6 7.6 L14.4 10.2 L15.5 14.2 L12 11.9 L8.5 14.2 L9.6 10.2 L6.4 7.6 L10.5 7.4 Z" fill="var(--gold)" opacity=".92"/></svg>'
-  ];
-  /* sproutFor(id) — a stable, deterministic pick per node id (unsigned string hash → pool index), so
-     each lesson's plant is a fixed "signature" that never changes between renders (no Math.random). */
-  function sproutFor(id) {
-    var h = 0;
-    for (var i = 0; i < id.length; i++) { h = (h * 31 + id.charCodeAt(i)) >>> 0; }
-    return SPROUTS[h % SPROUTS.length];
-  }
 
   /* Flatten into the CNT-03 reveal sequence + a parallel per-node unit meta (number + English
      title) for the continue card + course chip. Never mutate the node objects. */
@@ -837,7 +801,7 @@
         var starsN = st.stars[nd.id] || 0, stars = '';
         for (var s = 0; s < starsN; s++) stars += AW.icon('star');
         meta = '<span class="onode-stars">' + stars + '</span>';
-        if (kind === 'lesson') meta += '<span class="onode-sprout">' + sproutFor(nd.id) + '</span>';
+        if (kind === 'lesson') meta += '<span class="onode-sprout">' + AW.sproutFor(nd.id) + '</span>';
       }
       /* state-in-name (D-64 / ACC-02) — compose the accessible name "{label}, {state phrase}" from the
          shipped data-kind + data-nstate per the UI-SPEC node state-phrase table, so a blind learner
