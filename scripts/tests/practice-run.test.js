@@ -129,7 +129,12 @@ function runHarness() {
     try {
       stdout = execFileSync(
         CHROME,
-        ['--headless', '--disable-gpu', '--virtual-time-budget=5000', '--dump-dom', 'file://' + probe],
+        // memory-lean flags: this file adds one more concurrent Chrome to the node --test glob (which
+        // already spawns several at module load) — keeping its footprint small avoids starving the
+        // other Chrome harnesses on a memory-constrained machine.
+        ['--headless', '--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage',
+         '--disable-software-rasterizer', '--renderer-process-limit=1', '--js-flags=--max-old-space-size=128',
+         '--virtual-time-budget=5000', '--dump-dom', 'file://' + probe],
         { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000, maxBuffer: 1024 * 1024 * 64 }
       );
     } catch (e) {
