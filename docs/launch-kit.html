@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Awba · Owner launch kit</title>
+<style>
+:root{color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:#ffffff;color:#111111;font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55}
+.wrap{max-width:820px;margin:0 auto;padding:40px 28px 80px}
+h1{font-size:30px;margin:0 0 6px;line-height:1.15}
+h2{font-size:21px;margin:44px 0 10px;padding-top:14px;border-top:2px solid #111111}
+h3{font-size:16px;margin:26px 0 8px;color:#333333}
+.gen{color:#777777;font-size:13px;margin:2px 0 0}
+.posture{background:#f4f4f2;border:1px solid #dddddd;padding:12px 16px;border-radius:6px;color:#333333}
+.warn{background:#fdf6ec;border:1px solid #e0cfa8;padding:12px 16px;border-radius:6px;color:#5a4a22}
+a{color:#111111}
+code,pre{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px}
+pre{background:#f4f4f2;border:1px solid #dddddd;border-radius:6px;padding:12px 16px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}
+th,td{border:1px solid #d8d8d8;padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#f4f4f2}
+.count{font-weight:600;margin:14px 0 6px}
+ul.walk{list-style:none;padding:0;margin:0}
+ul.walk li{border:1px solid #d8d8d8;border-radius:8px;padding:12px 14px;margin:10px 0;page-break-inside:avoid;break-inside:avoid}
+ul.walk label{display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-weight:600}
+ul.walk input[type=checkbox]{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:#111111}
+ul.walk .good{display:block;margin:6px 0 0 34px;font-weight:400;color:#555555;font-size:14px}
+button.reset{font:inherit;font-size:14px;padding:8px 14px;border:1px solid #d8d8d8;border-radius:6px;background:#f4f4f2;color:#333333;cursor:pointer;min-height:44px}
+button.reset:hover{background:#eaeae7}
+.note{font-size:12px;color:#777777;margin:8px 0 0}
+.slot{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px;background:#f4f4f2;border:1px solid #dddddd;border-radius:6px;padding:12px 16px;white-space:pre-wrap}
+@media print{
+  body{font-size:12px}
+  .wrap{padding:0}
+  h2{border-top-color:#000000}
+  button.reset{display:none}
+  a{text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Awba · Owner launch kit</h1>
+<p class="gen">Generated 2026-07-16 · for the owner's eyes — everything left before launch, on one page.</p>
+<p class="posture">The app is <strong>finished and live</strong> at
+<a href="https://theshumba.github.io/awba-gen4/">theshumba.github.io/awba-gen4</a>. What remains is
+yours: walk it on a real phone (§1), cut over the domain when ready (§2), settle the rights and the
+scholar gate (§3), and make the open product calls (§4). Nothing on this page is a code task.</p>
+
+<h2 id="walk">1 · The on-phone device walk</h2>
+<p>Do this on a real phone (iPhone and, if you can, one Android). Tick each item as it passes —
+this page remembers your ticks on this device. Each item says what <em>good</em> looks like.</p>
+
+<p class="count" id="lkCount" aria-live="polite">0 of 12 steps done</p>
+
+<ul class="walk" id="lkList">
+  <li><label><input type="checkbox" id="lk1"><span>Install to the home screen</span></label>
+    <span class="good">The Add-to-Home-Screen prompt/menu works; Awba opens full-screen from its own icon, no browser chrome.</span></li>
+  <li><label><input type="checkbox" id="lk2"><span>Offline airplane-mode walk</span></label>
+    <span class="good">Turn on airplane mode, reopen Awba from the home screen, walk a lesson end to end — every screen, font and icon loads; nothing 404s.</span></li>
+  <li><label><input type="checkbox" id="lk3"><span>Keyboard-only lesson walk</span></label>
+    <span class="good">Tab / Enter / Space / Escape move through a whole lesson — reach every option, Check, Continue and the sheets — with no mouse and a visible focus ring on each stop.</span></li>
+  <li><label><input type="checkbox" id="lk4"><span>Screen-reader (VoiceOver) pass</span></label>
+    <span class="good">Turn on VoiceOver and walk a lesson: headings read in order; each verdict speaks ("Correct." / "Not quite — nothing lost. Look again."); noor and returns are announced; the travel-code "Copied." and "Your light has arrived." announce; the name-saved announce fires.</span></li>
+  <li><label><input type="checkbox" id="lk5"><span>320px typography glance</span></label>
+    <span class="good">At 320px width nothing overflows sideways; Marcellus headlines clamp to their floor; Arabic keeps its line-height and never collides.</span></li>
+  <li><label><input type="checkbox" id="lk6"><span>Icon-scale glance</span></label>
+    <span class="good">Scene icons and glyphs stay crisp and centred at their rendered sizes — no clipping, no blur, no stray keyline.</span></li>
+  <li><label><input type="checkbox" id="lk7"><span>Reduced-motion toggle</span></label>
+    <span class="good">More → Reduce motion On: animations settle instantly across Awba; the Ring never redraws; turning it off restores motion; the device's own Reduce-Motion setting is honoured on its own.</span></li>
+  <li><label><input type="checkbox" id="lk8"><span>Practice tap-walk</span></label>
+    <span class="good">Practice opens, a set runs, a wrong answer is a grey blot + "Nothing lost." with Try again, the calm completion reads — and no noor/stars are awarded.</span></li>
+  <li><label><input type="checkbox" id="lk9"><span>Profile tap-walk</span></label>
+    <span class="good">The Ring renders (static), stats read true, the week never shows a gap or red, adding/editing/removing a name works and stays on-device.</span></li>
+  <li><label><input type="checkbox" id="lk10"><span>More tap-walk</span></label>
+    <span class="good">Every row works: sound toggle, reduce-motion switch, the explainer sheets, install help, and Start over's calm two-step (keep is always the default).</span></li>
+  <li><label><input type="checkbox" id="lk11"><span>Onboarding tap-walk</span></label>
+    <span class="good">Both Begin and Skip land on the path (learn.html); the back button never loops back into onboarding.</span></li>
+  <li><label><input type="checkbox" id="lk12"><span>Move-to-a-new-device round-trip</span></label>
+    <span class="good">On device A: More → Move to a new device → Copy the code. On device B: paste under "Bring it here" → Check → Bring it in → "Your light has arrived." — the path arrives intact (noor, returns, finished lessons, the same ring).</span></li>
+</ul>
+
+<button class="reset" type="button" id="lkReset">Reset checklist</button>
+<p class="note">Ticks are saved on this device only. If storage is off, the walk still works — the ticks just won't survive a reload.</p>
+
+<h2 id="dns">2 · The <code>awba.app</code> cutover</h2>
+<div class="warn"><strong>Do this only after the site is live at
+<code>theshumba.github.io/awba-gen4/</code> and you're ready to switch the custom domain.</strong>
+Adding the <code>CNAME</code> file before DNS resolves triggers GitHub's "domain not properly
+configured" error.</div>
+
+<h3>Step 1 — at the <code>awba.app</code> DNS host, add four <code>A</code> records for the apex (<code>@</code>)</h3>
+<pre>@   A   185.199.108.153
+@   A   185.199.109.153
+@   A   185.199.110.153
+@   A   185.199.111.153</pre>
+
+<h3>Step 2 — add the <code>www</code> subdomain as a <code>CNAME</code></h3>
+<pre>www CNAME theshumba.github.io</pre>
+
+<h3>Step 3 — tell GitHub Pages the domain (one command, from the repo root)</h3>
+<pre>printf 'awba.app\n' &gt; CNAME &amp;&amp; git add CNAME &amp;&amp; git commit -m "Point Pages at awba.app" &amp;&amp; git push</pre>
+<p>Then in the repo: Settings → Pages → Custom domain = <code>awba.app</code>, and tick
+<strong>Enforce HTTPS</strong> once the certificate provisions — it can take a few minutes to an hour.</p>
+
+<h3>Step 4 — propagation check</h3>
+<pre>dig +short awba.app            # → the four 185.199.x.153 addresses above
+dig +short www.awba.app        # → theshumba.github.io (then the same four IPs)
+curl -sI https://awba.app/     # → HTTP/2 200, and a valid TLS cert (no warning)</pre>
+<p class="note">Every path in the app is relative, so the exact same commit serves correctly at the
+Pages subpath <em>and</em> at the <code>awba.app</code> root — no code change accompanies the cutover.
+The manifest's <code>start_url</code>/<code>scope</code> stay relative too.</p>
+
+<h2 id="rights">3 · Licensing &amp; the scholar gate</h2>
+
+<h3>Clear Quran translation licensing — unresolved (yours; not a build blocker, never silently cleared)</h3>
+<p>Awba shows the Clear Quran (Dr. Mustafa Khattab) <em>translation of the meaning</em>
+<strong>verbatim</strong>, with the fixed source line and an <em>unverified · pending review</em> pill
+on every citation. The launch text was drawn against the quran.com / quranapi.pages.dev API, whose
+public translation endpoints have signalled <strong>withdrawal/deprecation for third-party
+redistribution</strong> — so relying on that API as a live source is not safe for a commercial launch,
+and redistributing the Clear Quran text itself likely needs a <strong>publisher licence from the
+rights holder</strong>. <em>Before commercial launch:</em> confirm a licence (or an explicitly
+permitted source) for the Clear Quran text, and stop depending on the withdrawn API. The app is
+already self-contained (the text is embedded verbatim, not fetched), so this is a rights question,
+not a technical one.</p>
+
+<h3>Scholar sign-off — the pack and what it unlocks</h3>
+<p><a href="scholar-pack.html">docs/scholar-pack.html</a> is the printable, verbatim, fully-sourced
+review document — every verse, every hadith and the engine du'a, each marked <em>pending review</em>.
+Hand the scholar that one file. When it is signed off:</p>
+<p>Removing the <em>unverified · pending review</em> pills is a <strong>future code change</strong>,
+listed here as such — it is <em>not</em> part of this release. Today the pill is a blanket, global
+posture (every citation, unconditionally). A signed pack would motivate either a global "reviewed"
+flip or a finer per-citation verified state; either way it is an engine/CSS change gated behind the
+actual sign-off. Until then, <strong>no surface may imply scripture has been cleared.</strong></p>
+
+<h3>The Arabic chapter-terms slot (R-6) — what to ask the scholar for</h3>
+<p>The 4 unit "chapter-term" squares currently render an <strong>English fallback</strong> pending
+owner-supplied Arabic. Ask the scholar (or supply yourself), per unit, exactly this shape — it drops
+straight into the term registry:</p>
+<div class="slot">Unit 1  ·  Arabic term: «………» (fully vowelled / tashkeel)  ·  transliteration: «………»  ·  English gloss: «………»
+Unit 2  ·  …
+Unit 3  ·  …
+Unit 4  ·  …</div>
+<p class="note">These Arabic terms are never invented in-house; each square stays on its English
+fallback until the vowelled Arabic arrives. (Same law for the Ibrahim 14:24 epigraph posture — a
+verified verbatim line, never paraphrased.)</p>
+
+<h2 id="decisions">4 · Open product decisions (recorded, not resolved)</h2>
+<table>
+  <tr><th>Decision</th><th>Status / recommendation</th></tr>
+  <tr><td><strong>Practice noor</strong></td>
+      <td>Practice awards <strong>none</strong> (read-only). <em>Recommend keep none</em> — matches the
+      review circle-back precedent, can't distort the shipped economy, un-farmable.</td></tr>
+  <tr><td><strong>Visible review timer (R-8)</strong></td>
+      <td>Whether the 14s review timer shows a <em>numeric</em> readout is an owner call —
+      <strong>unresolved</strong>; don't redesign the review timer without deciding this. Today the
+      timer bar drains visibly and quietly deepens when time runs low, plus a single
+      "10 seconds" announcement — but there is no numeric countdown.</td></tr>
+  <tr><td><strong>Reviews in the practice pool</strong></td>
+      <td>The pool is <strong>lessons-only</strong>. Adding review items needs item-shape normalisation
+      (review items differ from lesson mc/tf/tile) — <strong>deferred fast-follow</strong>.</td></tr>
+  <tr><td><strong>Sound</strong></td>
+      <td>The app ships <strong>silent</strong>. Pick a family from
+      <a href="sound-audition.html">docs/sound-audition.html</a> <strong>or reject all</strong>; wiring
+      the chosen cues is a later step. Sound <em>effects</em>, not music.</td></tr>
+  <tr><td><em>Also open</em></td>
+      <td>61-vs-65 denominator (the app shows <strong>61</strong>; a change is a one-line
+      <code>structure.atoms</code> engine edit) · compound reward-clause CTAs kept as calm sub-lines,
+      not shouty labels · default du'a undecided (never invented — Ibn Hibban 974 ships as the sourced
+      default).</td></tr>
+</table>
+
+<script>
+  /* launch-kit.html is a DOCS ARTIFACT, deliberately outside the app's storage laws: it is never
+     precached and never in any gate's page discovery, so this single localStorage key is legitimate
+     here and does NOT count against the app's storage-word gate (which covers app surfaces only).
+     Key is namespaced to avoid ever colliding with awba_state / awba_prefs. */
+  var LK_KEY = 'awba_launchkit_v1';
+  (function () {
+    var boxes = document.querySelectorAll('#lkList input[type=checkbox]');
+    var count = document.getElementById('lkCount');
+    var reset = document.getElementById('lkReset');
+
+    /* load → check the boxes; on change → save the id→bool map; Reset → clear the key. Try/catch-
+       guarded so a storage-off browser still lets the owner walk (state just won't persist). */
+    function loadTicks() {
+      try {
+        var saved = JSON.parse(localStorage.getItem(LK_KEY) || '{}');
+        for (var i = 0; i < boxes.length; i++) boxes[i].checked = saved[boxes[i].id] === true;
+      } catch (e) { /* storage off / corrupt — start unticked */ }
+    }
+    function saveTicks() {
+      try {
+        var map = {};
+        for (var i = 0; i < boxes.length; i++) map[boxes[i].id] = boxes[i].checked;
+        localStorage.setItem(LK_KEY, JSON.stringify(map));
+      } catch (e) { /* storage off — the walk still works, ticks just don't persist */ }
+    }
+    function renderCount() {
+      var done = 0;
+      for (var i = 0; i < boxes.length; i++) if (boxes[i].checked) done++;
+      count.textContent = done + ' of ' + boxes.length + ' steps done';
+    }
+    for (var i = 0; i < boxes.length; i++) {
+      boxes[i].addEventListener('change', function () { saveTicks(); renderCount(); });
+    }
+    reset.addEventListener('click', function () {
+      for (var i = 0; i < boxes.length; i++) boxes[i].checked = false;
+      try { localStorage.removeItem(LK_KEY); } catch (e) {}
+      renderCount();
+    });
+    loadTicks();
+    renderCount();
+  })();
+</script>
+
+</div>
+</body>
+</html>
