@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- viewport-fit=cover is the safe-area prerequisite (env(safe-area-inset-*) resolves to 0 without it). -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba · Profile</title>
+<!-- Kiswah Black — the Orbit ground (Profile foregrounds the Ring + macro ledger; §C register = ORBIT). -->
+<meta name="theme-color" content="#131013">
+<!-- The install head trio (§0.2, uniform on the four root pages) — same manifest/icon as learn.html;
+     start_url stays learn.html, this page is a real installable surface too. -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+<!-- Register the SW, guarded off file:// (double-click review + the file:// render-smoke harness stay
+     a no-op) — relative path, no storage touched. -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js'); });
+  }
+</script>
+<!-- profile.html sits at repo ROOT: every asset path is root-relative (shared/…), NEVER ../. Preload the
+     two critical faces: the workhorse, then Marcellus (the Orbit display face this page leans on). -->
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/readex-pro-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/marcellus-400.woff2" crossorigin>
+<link rel="stylesheet" href="shared/awba-engine.css">
+<script src="shared/awba-engine.js"></script>
+<!-- The only page-authored CSS — a content block for the already-declared `screens` layer (never the
+     name-list order line). Composition only: every colour a shipped var(--token), zero new hex, zero new
+     @keyframes. The mount rides the shipped `settle` verb at --dur-draw; both reduced-motion triggers
+     collapse the finite durations from the engine. The Ring itself is mounted static (law 9). The register
+     :focus-visible ring (gold on the Orbit ground) rides in automatically from the engine grammar. -->
+<style>
+  @layer screens {
+    /* ---- Column + Orbit-draw mount --------------------------------------------------------------- */
+    .pf-wrap {
+      max-width: 480px;
+      margin-inline: auto;
+      padding: var(--sp-8) var(--sp-5) calc(var(--sp-16) + env(safe-area-inset-bottom));
+      animation: settle var(--dur-draw) var(--ease) both;   /* the Orbit ink-reveal on mount */
+    }
+
+    /* ---- Greeting + optional on-device name ------------------------------------------------------ */
+    .pf-head { margin-bottom: var(--sp-8); }
+    .pf-greet {
+      margin: 0;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      letter-spacing: .09em;
+      color: var(--paper-62);                 /* §2.1 marginalia on Kiswah ~6.7:1 */
+    }
+    .pf-nameline { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-1); }
+    .pf-name {
+      font-family: var(--font-display);
+      font-size: var(--fs-display);           /* Marcellus, ≥28px floor (law 5) */
+      line-height: 1.08;
+      color: var(--cream);                    /* §2.1 16.22:1 */
+    }
+    .pf-addname,
+    .pf-edit {
+      appearance: none; -webkit-appearance: none;
+      display: inline-flex; align-items: center;
+      min-height: 44px;
+      margin-top: var(--sp-1);
+      padding: 0;
+      background: none; border: 0;
+      font-family: var(--font-work);
+      font-size: var(--fs-ui);
+      color: var(--gold);                     /* §2.1 8.40:1 — the gold-thread affordance */
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+      text-decoration-color: color-mix(in srgb, var(--gold) 55%, transparent);
+      cursor: pointer;
+    }
+
+    /* ---- Name editor (dark-ground, dignified field per §C.4) ------------------------------------- */
+    .pf-name-form { margin-top: var(--sp-3); display: flex; flex-direction: column; gap: var(--sp-2s); }
+    .pf-name-form label {
+      font-family: var(--font-work);
+      font-size: var(--fs-ui);
+      color: var(--paper-85);
+    }
+    .pf-name-input {
+      width: 100%;
+      box-sizing: border-box;
+      background: var(--navy);
+      color: var(--cream);                    /* cream on navy ≥13:1 */
+      border: 1px solid var(--edge);
+      border-radius: var(--r-2);
+      padding: var(--sp-2s) var(--sp-3);
+      font: var(--fs-body) var(--font-work);
+    }
+    .pf-name-actions { display: flex; align-items: center; gap: var(--sp-3); }
+    .pf-name-actions .btn { width: auto; }    /* Save is a quiet ghost key, not a full-width block here */
+    .pf-name-quiet {
+      appearance: none; -webkit-appearance: none;
+      min-height: 44px;
+      padding: 0 var(--sp-2s);
+      background: none; border: 0;
+      font-family: var(--font-work);
+      font-size: var(--fs-ui);
+      color: var(--paper-62);
+      cursor: pointer;
+    }
+
+    /* ---- Ring hero (static — law 9) -------------------------------------------------------------- */
+    .pf-hero { display: flex; flex-direction: column; align-items: center; gap: var(--sp-2s); margin-bottom: var(--sp-8); }
+    .pf-ring { width: min(300px, 76vw); }     /* the width cap lives on the wrapper; .ring fills 100% */
+    .pf-mark {
+      margin: var(--sp-3) 0 0;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      letter-spacing: .06em;
+      color: var(--paper-62);
+    }
+    .pf-unique {
+      margin: 0;
+      max-width: 28ch;
+      text-align: center;
+      font-family: var(--font-work);
+      font-size: var(--fs-ui);
+      line-height: 1.6;
+      color: var(--paper-85);
+    }
+
+    /* ---- Stat rail (noor/returns tappable → the shipped sheets) ---------------------------------- */
+    .pf-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-3); margin-bottom: var(--sp-6); }
+    .pf-stat {
+      display: flex; flex-direction: column; align-items: center; gap: var(--sp-1);
+      padding: var(--sp-4) var(--sp-3);
+      border-radius: var(--r-2);
+      box-shadow: var(--edge-line);           /* a hairline on dark, never a drop shadow */
+      text-align: center;
+    }
+    .pf-stat-tap {
+      appearance: none; -webkit-appearance: none;
+      width: 100%;
+      background: none; border: 0;
+      font: inherit; color: inherit;
+      cursor: pointer;
+      transition: transform var(--dur-press) var(--ease);
+    }
+    .pf-stat-tap:active { transform: scale(.98); }   /* press feedback — the interface heard the tap */
+    .pf-stat-val { display: inline-flex; align-items: baseline; }
+    .pf-stat-num {
+      font-family: var(--font-display);
+      font-size: var(--fs-display);           /* §2.1 16.22:1 on Kiswah */
+      line-height: 1;
+      color: var(--cream);
+    }
+    .pf-stat-num.pf-stat-gold { color: var(--gold); }   /* §2.1 the noor numeral — 8.40:1 */
+    .pf-stat-qual { margin-left: var(--sp-1); font-family: var(--font-marg); font-size: var(--fs-marg); color: var(--paper-62); }
+    .pf-stat-lab {
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      letter-spacing: .04em;
+      color: var(--paper-62);                 /* §2.1 6.69:1 */
+    }
+
+    /* ---- Week constellation (dark-ground dots — never a gap/red) --------------------------------- */
+    .pf-week { display: flex; flex-direction: column; align-items: center; gap: var(--sp-2s); margin-bottom: var(--sp-8); }
+    .pf-week .weekcal { justify-content: center; }
+    .pf-week .weekcal .day { background: var(--paper-45); }                        /* un-lit day, visible on Kiswah */
+    .pf-week .weekcal .day.here { background: var(--gold); box-shadow: none; }     /* a return — lit gold 8.40:1 */
+    .pf-week-sub { margin: 0; font-family: var(--font-marg); font-size: var(--fs-marg); letter-spacing: .06em; color: var(--paper-62); }
+
+    /* ---- Per-unit ledger (shipped thermal shapes, lessons only) ---------------------------------- */
+    .pf-units { display: flex; flex-direction: column; margin-bottom: var(--sp-8); }
+    .pf-unit {
+      display: flex; align-items: center; gap: var(--sp-3);
+      padding: var(--sp-4) 0;
+      border-top: 1px solid var(--edge);
+    }
+    .pf-unit:last-child { border-bottom: 1px solid var(--edge); }
+    .pf-unit-ic { display: inline-flex; flex-shrink: 0; color: var(--icon-accent); }   /* gold on Orbit (auto) */
+    .pf-unit-ic svg { width: 24px; height: 24px; }
+    .pf-unit-title { flex: 1; min-width: 0; font-family: var(--font-work); font-size: var(--fs-body); color: var(--cream); }
+    .pf-unit-count { font-family: var(--font-marg); font-size: var(--fs-marg); color: var(--paper-62); white-space: nowrap; }
+    .pf-dab {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: var(--sp-5); height: var(--sp-5);     /* 20px — the shipped dab footprint */
+      border-radius: var(--r-round);
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+    .pf-dab svg { width: var(--sp-3); height: var(--sp-3); }   /* 12px check, inked dark on the gold fill */
+
+    /* ---- Foot: the closed-path note + the privacy line ------------------------------------------ */
+    .pf-note-complete {
+      margin: 0 0 var(--sp-4);
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      letter-spacing: .04em;
+      color: var(--gold);                     /* the earned thread — quiet, calm, not Festival */
+    }
+    .pf-priv {
+      margin: 0;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      line-height: 1.7;
+      color: var(--paper-62);
+    }
+  }
+</style>
+</head>
+<body>
+<main class="reg-orbit grain" id="app"></main>
+
+<script>
+(function () {
+  'use strict';
+  if (!window.AW) return;                       // the engine loads first (classic, in order)
+
+  var app = document.getElementById('app');
+  var editing = false;                          // is the name editor open? (in-memory only)
+
+  /* Per-unit grouping — page-private, lessons only (§C.2; 4+4+3+4 = 15). Structure, not SHA-gated
+     content: the deferred S6 hoist (shared/course-structure.js) removes this duplication later. */
+  var PF_UNITS = [
+    { u: 1, title: 'The Foundation',          lessons: ['u1m1', 'u1m2', 'u1m3', 'u1m4'] },
+    { u: 2, title: 'The Drift',               lessons: ['u2m1', 'u2m2', 'u2m3', 'u2m3b'] },
+    { u: 3, title: 'The Heart of It: Tawhid', lessons: ['u3m1', 'u3m2', 'u3m3'] },
+    { u: 4, title: 'The Pillars',             lessons: ['u4m1', 'u4m2', 'u4m2b', 'u4m3'] }
+  ];
+
+  /* The tab bar (§E) — inactive tabs are real <a href> links (file://-safe, the shipped cross-document
+     morph rides free); the active Profile tab is a scroll-to-top <button aria-current>; Returns opens
+     the shipped streak sheet everywhere (never navigates). Mirrors the shipped tab() builder. */
+  function tab(id, active, scene, label, href) {
+    if (active) {
+      return '<button class="tab active" type="button" id="' + id + '" aria-current="page">' +
+        '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</button>';
+    }
+    if (href) {
+      return '<a class="tab" id="' + id + '" href="' + href + '">' +
+        '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</a>';
+    }
+    return '<button class="tab" type="button" id="' + id + '">' +
+      '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</button>';   // Returns
+  }
+  function tabBar() {
+    return '<nav class="otabs" aria-label="Sections">' +
+      tab('tabLearn', false, 'lamp', 'Learn', 'learn.html') +
+      tab('tabPractice', false, 'beads', 'Practice', 'practice.html') +
+      tab('tabReturns', false, 'flame', 'Returns', null) +
+      tab('tabProfile', true, 'man', 'Profile', null) +
+      tab('tabMore', false, 'pattern', 'More', 'more.html') +
+    '</nav>';
+  }
+
+  function render() {
+    var st = AW.state();
+    var stars = (st && st.stars) || {};
+    var atoms = AW.atomsDone(st);
+    var noor = st.noor | 0;
+    var returns = st.returns | 0;
+    var name = AW.prefs.get('displayName', '') || '';
+
+    // lessons finished = the 15 lesson ids present in stars; stars total = Σ of every star value.
+    var doneCount = 0;
+    PF_UNITS.forEach(function (u) {
+      u.lessons.forEach(function (id) { if (stars[id]) doneCount++; });
+    });
+    var starsTotal = 0;
+    Object.keys(stars).forEach(function (k) { starsTotal += (stars[k] | 0); });
+
+    // the Ring — STATIC (no animateFrom → law 9); denominator 61 (§0.5), carries its shipped aria-label.
+    var ring = AW.ringSVG({ atomsDone: atoms, size: 300 });
+
+    // the week — presence dots, never a gap (dark-ground fill via .pf-week override).
+    var wk = AW.weekCal(), dots = '';
+    wk.forEach(function (d) { dots += '<span class="day' + (d.on ? ' here' : '') + '"></span>'; });
+
+    // greeting + name area (editor / name+Edit / Add-your-name)
+    var nameArea;
+    if (editing) {
+      nameArea =
+        '<form class="pf-name-form" id="pfNameForm" novalidate>' +
+          '<label for="pfName">Your name — shown only on this device</label>' +
+          '<input id="pfName" class="pf-name-input" type="text" maxlength="40" dir="auto" autocomplete="off">' +
+          '<div class="pf-name-actions">' +
+            '<button type="submit" class="btn ghost">Save</button>' +
+            '<button type="button" class="pf-name-quiet" id="pfCancel">Cancel</button>' +
+            (name ? '<button type="button" class="pf-name-quiet" id="pfRemove">Remove</button>' : '') +
+          '</div>' +
+        '</form>';
+    } else if (name) {
+      nameArea =
+        '<div class="pf-nameline">' +
+          '<span class="pf-name" id="pfNameShow"></span>' +
+          '<button type="button" class="pf-edit" id="pfEdit">Edit</button>' +
+        '</div>';
+    } else {
+      nameArea = '<button type="button" class="pf-addname" id="pfAdd">Add your name</button>';
+    }
+    var head = '<header class="pf-head"><p class="pf-greet">Assalamu alaikum</p>' + nameArea + '</header>';
+
+    // Ring hero + maker's mark + the uniqueness line
+    var hero =
+      '<div class="pf-hero">' +
+        '<div class="pf-ring">' + ring + '</div>' +
+        '<p class="pf-mark">your ring · ' + atoms + ' of 61 inked</p>' +
+        '<p class="pf-unique">No two paths are inked the same. This one is yours.</p>' +
+      '</div>';
+
+    // Stat rail — noor + returns are native <button>s opening the shipped sheets (§C.3).
+    var stats =
+      '<div class="pf-stats">' +
+        '<button type="button" class="pf-stat pf-stat-tap" id="pfNoor" aria-label="' + noor + ' noor — open your light">' +
+          '<span class="pf-stat-val"><span class="pf-stat-num pf-stat-gold">' + noor + '</span></span>' +
+          '<span class="pf-stat-lab">noor gathered</span>' +
+        '</button>' +
+        '<button type="button" class="pf-stat pf-stat-tap" id="pfReturns" aria-label="' + returns + ' returns — open your streak">' +
+          '<span class="pf-stat-val"><span class="pf-stat-num">' + returns + '</span></span>' +
+          '<span class="pf-stat-lab">days you came back</span>' +
+        '</button>' +
+        '<div class="pf-stat">' +
+          '<span class="pf-stat-val"><span class="pf-stat-num">' + doneCount + '</span><span class="pf-stat-qual">of 15</span></span>' +
+          '<span class="pf-stat-lab">lessons finished</span>' +
+        '</div>' +
+        '<div class="pf-stat">' +
+          '<span class="pf-stat-val"><span class="pf-stat-num">' + starsTotal + '</span></span>' +
+          '<span class="pf-stat-lab">stars earned</span>' +
+        '</div>' +
+      '</div>';
+
+    // Week constellation under the returns tile
+    var week = '<div class="pf-week"><div class="weekcal">' + dots + '</div><p class="pf-week-sub">this week</p></div>';
+
+    // Per-unit rows — completion by star presence; dab is the shipped thermal shape (mastered/not-yet).
+    var units = '<div class="pf-units">';
+    PF_UNITS.forEach(function (u) {
+      var d = 0, t = u.lessons.length;
+      u.lessons.forEach(function (id) { if (stars[id]) d++; });
+      var mastered = d === t;
+      var stateWord = mastered ? 'complete' : 'not yet complete';
+      var dab = mastered
+        ? '<span class="pf-dab" data-state="mastered" aria-hidden="true">' + AW.icon('check') + '</span>'
+        : '<span class="pf-dab" data-state="not-yet" aria-hidden="true"></span>';
+      var icon = AW.icon(AW.UNIT_ICON['u' + u.u] || 'lantern', { size: '24px' });
+      units +=
+        '<div class="pf-unit" role="group" aria-label="Unit ' + u.u + ', ' + u.title +
+          ' — ' + d + ' of ' + t + ' lessons, ' + stateWord + '">' +
+          '<span class="pf-unit-ic" aria-hidden="true">' + icon + '</span>' +
+          '<span class="pf-unit-title">' + u.title + '</span>' +
+          '<span class="pf-unit-count">' + d + ' / ' + t + ' lessons</span>' +
+          dab +
+        '</div>';
+    });
+    units += '</div>';
+
+    var complete = (doneCount === 15)
+      ? '<p class="pf-note-complete">You’ve walked the whole path. The ring is closed.</p>'
+      : '';
+    var priv = '<p class="pf-priv">Everything here lives on this device only — no account, no sign-in, ' +
+      'nothing sent anywhere. You can clear it any time from More.</p>';
+
+    app.innerHTML = '<div class="pf-wrap">' + head + hero + stats + week + units + complete + priv + '</div>' + tabBar();
+
+    // the name renders via textContent ONLY — XSS-safe by construction (never innerHTML).
+    if (name && !editing) {
+      var ns = document.getElementById('pfNameShow');
+      if (ns) ns.textContent = name;
+    }
+
+    wire(name);
+  }
+
+  function focusAffordance() {
+    var el = document.getElementById('pfEdit') || document.getElementById('pfAdd');
+    if (el) el.focus();
+  }
+  function openEditor() { editing = true; render(); }
+  function closeEditor() { editing = false; render(); focusAffordance(); }
+  function saveName(raw) {
+    var v = (raw || '').trim().slice(0, 40);
+    AW.prefs.set('displayName', v);
+    editing = false;
+    render();
+    AW.announce(v ? 'Name saved.' : 'Name removed.');
+    focusAffordance();
+  }
+  function removeName() {
+    AW.prefs.set('displayName', '');
+    editing = false;
+    render();
+    AW.announce('Name removed.');
+    focusAffordance();
+  }
+
+  function wire(name) {
+    // Active Profile tab → scroll to top (the shipped Learn-tab behaviour generalised).
+    var tPr = document.getElementById('tabProfile');
+    if (tPr) tPr.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: AW.reducedMotion() ? 'auto' : 'smooth' });
+    });
+    // Returns tab → the shipped streak sheet (S3), everywhere, never navigates.
+    var tR = document.getElementById('tabReturns');
+    if (tR) tR.addEventListener('click', function () { AW.streakSheet(); });
+
+    // noor / returns stat tiles → the shipped noor / streak sheets (S3).
+    var noorBtn = document.getElementById('pfNoor');
+    if (noorBtn) noorBtn.addEventListener('click', function () { AW.noorSheet(); });
+    var retBtn = document.getElementById('pfReturns');
+    if (retBtn) retBtn.addEventListener('click', function () { AW.streakSheet(); });
+
+    if (editing) {
+      var form = document.getElementById('pfNameForm');
+      var input = document.getElementById('pfName');
+      if (input) {
+        input.value = name;                     // pre-fill current name; caret to end on reveal
+        input.focus();
+        try { input.setSelectionRange(input.value.length, input.value.length); } catch (e) {}
+        input.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') { e.preventDefault(); closeEditor(); }
+        });
+      }
+      if (form) form.addEventListener('submit', function (e) { e.preventDefault(); saveName(input ? input.value : ''); });
+      var cancel = document.getElementById('pfCancel');
+      if (cancel) cancel.addEventListener('click', function () { closeEditor(); });
+      var remove = document.getElementById('pfRemove');
+      if (remove) remove.addEventListener('click', function () { removeName(); });
+    } else {
+      var add = document.getElementById('pfAdd');
+      if (add) add.addEventListener('click', function () { openEditor(); });
+      var edit = document.getElementById('pfEdit');
+      if (edit) edit.addEventListener('click', function () { openEditor(); });
+    }
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
