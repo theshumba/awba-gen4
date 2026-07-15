@@ -165,6 +165,17 @@
 (function () {
   'use strict';
 
+  /* First-run redirect (§0.4, loop-proof, storage-off-safe) — before any data literal or render():
+     a fresh visitor (onboardingDone unset) with no ?begin=1 loop-breaker is sent to the welcome and
+     we bail out of the IIFE before #app is touched (no flash of learn UI). location.replace() leaves
+     no history entry, so Back never loops. onboarding's Begin/Skip set the flag AND append ?begin=1,
+     which short-circuits this guard for that one navigation even if the pref write no-oped. */
+  if (window.AW && AW.prefs && !AW.prefs.get('onboardingDone', false)
+      && location.search.indexOf('begin=1') === -1) {
+    location.replace('onboarding.html');
+    return;
+  }
+
   /* Course structure — ported verbatim from Gen-3 _MVP-BUILD/learn.html UNITS (D-53). ids / hrefs
      / labels / review / chest are byte-faithful; hrefs stay root-relative exactly as Gen-3 wrote
      them (learn.html is at root, so no ../). The retired `color` field is DROPPED (no unit
@@ -545,35 +556,11 @@
      Gen-3 _MVP-BUILD/learn.html (never edited — 'thread'/'break' live inside authored strings only).
      ============================================================================================ */
 
-  /* the streak sheet — a Marcellus returns count + day/days copy (N===1 vs not), the AW.weekCal()
-     week row as presence dots (never a gap/miss), and the verbatim never-breaks note. */
-  function openStreakSheet() {
-    var st = AW.state(), n = st.returns;
-    var wk = AW.weekCal(), dots = '';
-    wk.forEach(function (d) { dots += '<span class="day' + (d.on ? ' here' : '') + '"></span>'; });
-    AW.sheet(
-      '<div class="grip"></div>' +
-      '<div class="osh-hero">' +
-        '<div class="osh-big">' + n + '</div>' +
-        '<div class="osh-sub">' + (n === 1 ? 'day you came back' : 'days you came back') + '</div>' +
-      '</div>' +
-      '<div class="weekcal osh-week">' + dots + '</div>' +
-      '<div class="osh-note">This number can never break and never reset. Every return adds to it, however long the gap. That is the point of this place.</div>',
-      'Your streak');                    /* D-63/R-10 — a natural accessible name for the sheet */
-  }
-
-  /* the noor sheet — a gold-filled Marcellus noor count + "noor gathered" + the verbatim noor note. */
-  function openNoorSheet() {
-    var st = AW.state();
-    AW.sheet(
-      '<div class="grip"></div>' +
-      '<div class="osh-hero">' +
-        '<div class="osh-big osh-gold">' + st.noor + '</div>' +
-        '<div class="osh-sub">noor gathered</div>' +
-      '</div>' +
-      '<div class="osh-note">Light you collect as you learn. It is never spent against you, never dangled, and it never runs out.</div>',
-      'Noor gathered');                  /* D-63/R-10 — a natural accessible name for the sheet */
-  }
+  /* the streak + noor stat sheets — HOISTED to the engine as AW.streakSheet()/AW.noorSheet() (Wave-A
+     seam S3 / D-60: exactly ONE implementation). Wave-C adopts them: the page-private inline builders
+     are gone and the HUD / streak-strip / Returns-tab wiring below calls AW.streakSheet / AW.noorSheet
+     directly, so the .osh-* markup + copy live in one place (awba-engine.js). No storage word enters
+     this page; the zero-storage count stays 0. */
 
   /* the course switcher — Aqeedah ACTIVE (an olive "sound/verified" pill) + Fiqh/Seerah/Qur'an as
      polished COMING SOON rows (a calm neutral pill on a --rule hairline; never disabled-dead grey).
@@ -595,17 +582,9 @@
       'Switch course');                  /* D-63/R-10 — a natural accessible name for the sheet */
   }
 
-  /* a designed coming-soon sheet for the Practice / Profile / More tabs (§S4 · LRN-07) — a scene
-     icon + one calm line; warm, never a dead tap and never a cold "unavailable" wall. */
-  function comingSoonSheet(scene, line, label) {
-    var html =
-      '<div class="grip"></div>' +
-      '<div class="ocs-body">' +
-        '<span class="ocs-ic">' + AW.icon(scene, { size: '40px' }) + '</span>' +
-        '<p class="ocs-line">' + line + '</p>' +
-      '</div>';
-    AW.sheet(html, label);               /* D-63/R-10 — the tab name is the sheet's accessible name */
-  }
+  /* (The Practice / Profile / More coming-soon sheet was removed in the §E.2 Wave-C rewire — those
+     three tabs are now real <a href> navigation. The course-switcher's COMING SOON rows above are a
+     separate feature and stay untouched.) */
 
   /* ============================================================================================
      S5 · the chest claim (+25 once, idempotent) + the Festival circuit-plate interstitial
@@ -935,7 +914,14 @@
        never a dead tap; Returns → the ONE streak sheet (Task 1's implementation). Fixed to the bottom
        edge (a direct child of #app so no animated/transformed ancestor breaks position:fixed), 44px
        min per tab, safe-area inset bottom. */
-    function tab(id, active, scene, label) {
+    function tab(id, active, scene, label, href) {
+      // inactive tabs with a destination are real <a href> links (§E.2 — file://-safe, the shipped
+      // cross-document morph rides free); Learn (active, scroll-to-top) and Returns (streak sheet)
+      // stay <button> exactly as shipped.
+      if (href && !active) {
+        return '<a class="tab" id="' + id + '" href="' + href + '">' +
+          '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</a>';
+      }
       return '<button class="tab' + (active ? ' active' : '') + '" type="button" id="' + id + '"' +
         (active ? ' aria-current="page"' : '') + '>' +
         '<span class="otab-ic">' + AW.icon(scene) + '</span>' + label + '</button>';
@@ -943,10 +929,10 @@
     var tabs =
       '<nav class="otabs" aria-label="Sections">' +
         tab('tabLearn', true, 'lamp', 'Learn') +
-        tab('tabPractice', false, 'beads', 'Practice') +
+        tab('tabPractice', false, 'beads', 'Practice', 'practice.html') +
         tab('tabReturns', false, 'flame', 'Returns') +
-        tab('tabProfile', false, 'man', 'Profile') +
-        tab('tabMore', false, 'pattern', 'More') +
+        tab('tabProfile', false, 'man', 'Profile', 'profile.html') +
+        tab('tabMore', false, 'pattern', 'More', 'more.html') +
       '</nav>';
 
     app.innerHTML = '<div class="ob-shell">' + hud + '<div class="ob-wrap">' + body + '</div></div>' + tabs;
@@ -960,33 +946,21 @@
     var chip = document.getElementById('courseChip');
     if (chip) chip.addEventListener('click', openSwitcher);
     var hudReturns = document.getElementById('hudReturns');
-    if (hudReturns) hudReturns.addEventListener('click', openStreakSheet);
+    if (hudReturns) hudReturns.addEventListener('click', AW.streakSheet);
     var hudNoor = document.getElementById('hudNoor');
-    if (hudNoor) hudNoor.addEventListener('click', openNoorSheet);
+    if (hudNoor) hudNoor.addEventListener('click', AW.noorSheet);
     var streakStrip = document.getElementById('streakStrip');
-    if (streakStrip) streakStrip.addEventListener('click', openStreakSheet);
+    if (streakStrip) streakStrip.addEventListener('click', AW.streakSheet);
 
-    /* Tab bar wiring (§S4 · LRN-07) — no dead taps. Learn is the active page (tap scrolls home);
-       Practice/Profile/More open their designed coming-soon sheets; Returns opens the ONE streak
-       sheet (the SAME implementation from Task 1 — not a second sheet). */
+    /* Tab bar wiring (§E.2 · Wave-C rewire) — no dead taps. Learn is the active page (tap scrolls
+       home); Practice/Profile/More are now REAL <a href> links (wired in the markup above, no JS);
+       Returns opens the ONE streak sheet (the SAME S3 singleton — not a second sheet). */
     var tL = document.getElementById('tabLearn');
     if (tL) tL.addEventListener('click', function () {
       window.scrollTo({ top: 0, behavior: AW.reducedMotion() ? 'auto' : 'smooth' });
     });
-    var tP = document.getElementById('tabPractice');
-    if (tP) tP.addEventListener('click', function () {
-      comingSoonSheet('beads', 'Practice is on its way. For now, keep walking the path.', 'Practice');
-    });
     var tR = document.getElementById('tabReturns');
-    if (tR) tR.addEventListener('click', openStreakSheet);
-    var tPr = document.getElementById('tabProfile');
-    if (tPr) tPr.addEventListener('click', function () {
-      comingSoonSheet('man', 'Your corner is on its way. For now, keep walking the path.', 'Profile');
-    });
-    var tM = document.getElementById('tabMore');
-    if (tM) tM.addEventListener('click', function () {
-      comingSoonSheet('pattern', 'There is more to come. For now, keep walking the path.', 'More');
-    });
+    if (tR) tR.addEventListener('click', AW.streakSheet);
 
     /* the continue card carries the same morph (§S6): its chapter-term square is the source, handed
        to the shared engine at click time; the <a href> then navigates and the guarded stamp tweens it. */

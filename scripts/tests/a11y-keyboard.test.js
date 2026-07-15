@@ -211,7 +211,9 @@ function runProbe(sourcePath, driver, probePath, resultId, doneTitle) {
     try {
       stdout = execFileSync(
         CHROME,
-        ['--headless', '--disable-gpu', '--enable-logging=stderr', '--v=1', '--virtual-time-budget=5000', '--dump-dom', 'file://' + probePath],
+        // ?begin=1 short-circuits learn.html's §0.4 first-run redirect guard so the probe renders the
+        // real page instead of bouncing to onboarding.html (harmless for the lesson probe, which has no guard).
+        ['--headless', '--disable-gpu', '--enable-logging=stderr', '--v=1', '--virtual-time-budget=5000', '--dump-dom', 'file://' + probePath + '?begin=1'],
         { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000, maxBuffer: 1024 * 1024 * 64 }
       );
     } catch (e) {

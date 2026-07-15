@@ -174,7 +174,9 @@ function runProbe() {
     try {
       stdout = execFileSync(
         CHROME,
-        ['--headless', '--disable-gpu', '--enable-logging=stderr', '--v=1', '--virtual-time-budget=5000', '--dump-dom', 'file://' + probe],
+        // ?begin=1 short-circuits learn.html's §0.4 first-run redirect guard so the probe renders learn,
+        // not the onboarding bounce.
+        ['--headless', '--disable-gpu', '--enable-logging=stderr', '--v=1', '--virtual-time-budget=5000', '--dump-dom', 'file://' + probe + '?begin=1'],
         { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000, maxBuffer: 1024 * 1024 * 64 }
       );
     } catch (e) {

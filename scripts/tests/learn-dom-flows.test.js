@@ -117,7 +117,9 @@ function runHarness(html, tag) {
           '--v=1',
           '--virtual-time-budget=5000',
           '--dump-dom',
-          'file://' + probe,
+          // ?begin=1 short-circuits learn.html's §0.4 first-run redirect guard (else the probe bounces
+          // to onboarding.html before the injected driver runs).
+          'file://' + probe + '?begin=1',
         ],
         { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000, maxBuffer: 1024 * 1024 * 64 }
       );
