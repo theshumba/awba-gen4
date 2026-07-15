@@ -1879,6 +1879,42 @@ AW.bindMuteBtn = bindMuteBtn;
    curly apostrophes are byte-preserved from the Gen-3 runner. */
 var PRAISE = ['That’s it.', 'Beautiful.', 'Exactly right.', 'Masha’Allah.'];
 
+/* DUA_DEFAULT (G3 · CONTENT-DECISIONS §G3) — the engine-level default closing du'a, used ONLY when a
+   lesson omits cfg.dua (a per-lesson cfg.dua overrides it entirely). Provenance: class-b, corroborated
+   byte-identical across two of the owner's own prior collections (awba-app find.ts + handoff Zone E9),
+   Ibn Ḥibbān 974, graded Sahih — spliced from the owner's documents, never generated. The pending-review
+   honesty posture rides until scholar sign-off (the " · pending review" suffix is appended by _duaBlock).
+   `tr` is the corroborated English translation, rendered as a quiet workhorse line — never the Amiri
+   Quran face, and no transliteration is surfaced. No SHA-frozen content file is touched (splice law). */
+var DUA_DEFAULT = {
+  ar: 'اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا',
+  tr: 'O Allah, nothing is easy except what You make easy — and You make the hard thing, when You will, easy.',
+  source: 'Ibn Ḥibbān 974 · Sahih',
+};
+
+/* AW._duaBlock(dua) — the du'a-close scripture-block builder (pure test seam, like AW._beatHtml). With
+   no per-lesson `dua`, the engine default (DUA_DEFAULT) is used and its English translation rides as a
+   quiet .close line UNDER the Arabic (Arabic→translation→source order, in the du'a-close screen's own
+   type/tokens — not the Quran face). A per-lesson `dua` (string or {ar,source}) overrides the default
+   entirely (Arabic + source only — Josh's asset, splice-not-retype). The engine auto-appends
+   " · pending review" to the source; do not double it. */
+AW._duaBlock = function (dua) {
+  var ar, tr, source;
+  if (dua) {
+    ar = typeof dua === 'string' ? dua : (dua.ar || '');
+    tr = '';
+    source = (dua && dua.source) ? dua.source : '';
+  } else {
+    ar = DUA_DEFAULT.ar;
+    tr = DUA_DEFAULT.tr;
+    source = DUA_DEFAULT.source;
+  }
+  if (!ar) return '';
+  return '<p class="scripture" lang="ar" dir="rtl">' + ar + '</p>' +
+    (tr ? '<p class="close">' + tr + '</p>' : '') +
+    (source ? '<p class="close">' + source + ' · pending review</p>' : '');
+};
+
 /* ============================================================================================
    AwbaLesson(cfg) — the lesson runner (ENG-01/03/05, CNT-01/04, MOT-05). Josh's Gen-3 cfg shape is
    consumed byte-unchanged; the mechanics are byte-preserved (the numbers come from the 04-01 pure
@@ -2346,15 +2382,9 @@ function AwbaLesson(cfg) {
     setGround('reg-sky-night');
     setHUD(false);
     progEl.innerHTML = '';
-    var duaBlock = '';
-    if (cfg.dua) {
-      var ar = typeof cfg.dua === 'string' ? cfg.dua : (cfg.dua.ar || '');
-      var source = (cfg.dua && cfg.dua.source) ? cfg.dua.source : '';
-      if (ar) {
-        duaBlock = '<p class="scripture" lang="ar" dir="rtl">' + ar + '</p>' +
-          (source ? '<p class="close">' + source + ' · pending review</p>' : '');
-      }
-    }
+    /* G3 — a per-lesson cfg.dua overrides entirely; absent one, AW._duaBlock renders the engine-level
+       default du'a (class-b, Ibn Ḥibbān 974 · Sahih, pending review) + its quiet translation line. */
+    var duaBlock = AW._duaBlock(cfg.dua);
     var nextBtn = cfg.next ? '<a class="btn" href="' + cfg.next.href + '">Next: ' + cfg.next.label + '</a>' : '';
     root.innerHTML =
       '<div class="rw-dua">' +
