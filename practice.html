@@ -154,7 +154,9 @@
 
     var countLine = (N === 1 ? '1 question ready' : N + ' questions ready') +
       ' · from ' + (M === 1 ? '1 lesson finished' : M + ' lessons finished');
-    var subLine = (N < 8 ? N : 8) + ' questions, drawn from what you’ve finished.';
+    var setCount = (N < 8 ? N : 8);
+    var subLine = setCount + (setCount === 1 ? ' question' : ' questions') +
+      ', drawn from what you’ve finished.';   // singular when exactly 1 (matches the pool-count line)
 
     return '<div class="pr-hub">' +
       '<p class="pr-kick">Practice</p>' +

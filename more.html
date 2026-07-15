@@ -133,7 +133,7 @@
       width: 44px;
       height: 24px;
       flex: 0 0 auto;
-      border-radius: var(--r-pill);         /* the switch capsule */
+      border-radius: var(--r-1);            /* the switch track — a barely-eased edge (--r-pill is rationed) */
       background: var(--rule);              /* off — a quiet hairline fill */
       transition: background var(--dur-press) var(--ease);
     }
@@ -186,21 +186,9 @@
       gap: var(--sp-2s);
       margin-top: var(--sp-2s);
     }
-
-    /* On the cream Page ground the engine ships no .btn.ghost treatment (it is authored for the dark
-       Orbit/Sky grounds only), so the destroy control would otherwise fall through to the prominent
-       crimson primary — backwards for a mercy double-confirm. Scope a quiet neutral-outline ghost to
-       the sheet, so keep stays the prominent .btn and destroy reads as the calm, secondary choice —
-       never rose, never red. Composition only: transparent fill, secondary ink, the shipped --rule
-       keyline. (Flagged: this Page-ground ghost belongs in the engine grammar, not per-page.) */
-    .sheet .btn.ghost {
-      background: transparent;
-      color: var(--ink-62);                 /* §2.1 secondary ink on cream — quiet, not alarming */
-      box-shadow: var(--keyline);           /* the manuscript hairline separation */
-    }
-    @media (hover: hover) and (pointer: fine) {
-      .sheet .btn.ghost:hover { color: var(--ink); }
-    }
+    /* The cream-ground destroy-ghost (start-over confirm) now rides the shipped engine grammar:
+       .sheet .btn.ghost is styled in awba-engine.css @layer components (quiet transparent key,
+       --ink-62 label, --keyline separation, hover → full --ink) — no per-page rule needed. */
   }
 </style>
 </head>
