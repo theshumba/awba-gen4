@@ -709,6 +709,12 @@
     color: var(--gold);
     box-shadow: var(--edge-line);
   }
+  .reg-page .btn.ghost,           /* the cream-ground mirror — a quiet, secondary key on cream */
+  .sheet .btn.ghost {             /* the cream AW.sheet singleton has no register ancestor of its own */
+    background: transparent;
+    color: var(--ink-62);
+    box-shadow: var(--keyline);   /* --rule hairline separation, the cream-ground analog of --edge-line */
+  }
   .btn:disabled,
   .btn.disabled {                 /* v1 has few disabled states — the un-loseable promise keeps actions live */
     opacity: .5;
@@ -873,6 +879,8 @@
     .btn:hover { filter: brightness(1.04); }
     .reg-orbit .btn.ghost:hover,
     .reg-sky-night .btn.ghost:hover { background: rgba(217,164,65,.12); }
+    .reg-page .btn.ghost:hover,
+    .sheet .btn.ghost:hover { color: var(--ink); }   /* cream-ground ghost — the label deepens to full ink */
     .opt:hover, .tf:hover, .tile:hover { border-color: var(--ink-40); }
     .cite:hover { background: rgba(163,44,33,.08); }
     .term:hover { text-decoration-style: solid; }
@@ -1017,6 +1025,15 @@
     letter-spacing: .08em;
     color: var(--ink-62);           /* §2.1 --ink-62 on cream */
     white-space: nowrap;
+  }
+  .se-prog {                        /* practice "Question N of M" progress line (AW.practiceRun) — the
+                                       same Courier counter marginalia as .ls-count, as a stage-heading block */
+    margin: 0;
+    padding: var(--sp-4) var(--sp-6) 0;   /* clear the drift above; align the label with the .stage body */
+    font-family: var(--font-marg);
+    font-size: var(--fs-marg);
+    letter-spacing: .08em;
+    color: var(--ink-62);           /* §2.1 --ink-62 on cream */
   }
 
   /* Opener hero (§S1) — the greeting, the journey chapter-term in a Farag square, the unit scene
