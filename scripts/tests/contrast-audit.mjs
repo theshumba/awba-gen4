@@ -93,10 +93,12 @@
        swept across the 15-lesson corpus; the combo chip itself reuses already-swept `.ls-count`
        ink-62-on-cream text and the `.thread` gold-stroke SVG flourish is a decorative accent, not a
        separately-gated pairing.
-     - `duaClose` never renders scripture in the current corpus (no shipped lesson cfg carries a
-       `dua` block yet — RESEARCH's own finding) — the audit cannot sweep a populated `.scripture`
-       node inside `duaClose` until a lesson ships one; the "Alhamdulillah — continue." close line and
-       the register swap to Sky (Last Third) ARE swept.
+     - `duaClose` NOW renders scripture on every lesson: Wave A's default du'a (AW._duaBlock — the
+       Ibn Ḥibbān 974 splice) fills the `.scripture` node whenever a lesson omits its own `cfg.dua`,
+       which every current lesson does. So the per-lesson walker's du'a-close terminal sweep DOES
+       cover the du'a Arabic + its quiet translation/source lines — it rides the existing #cont reward
+       chain (verdict → noor → returns → done → ring → du'a) to that terminal. The "Alhamdulillah —
+       continue." close line and the register swap to Sky (Last Third) are swept too.
 
    Zero-dependency: Node core + system Chrome via CLI (the render-smoke/rtl-audit precedent). Never
    mutates a real page: every probe is a THROWAWAY copy written next to the source page and removed in
@@ -373,6 +375,17 @@ const PRE_IIFE_SEED_LEARN = [
   "  AW.S.set('stars', { u1m1: 3, u1m2: 3, u1m3: 3, u1m4: 3, u1r: 3 });", // seeds done/stars/gold-thread/review-rosette/chest-available — a throwaway copy only, never real storage
   "  AW.S.set('chests', {});",
   "  AW.S.set('noor', 0);",
+  "  AW.prefs.set('onboardingDone', true);", // bypass the §0.4 first-run redirect so learn renders itself (throwaway prefs)
+  '} catch (e) {}',
+  '</scr' + 'ipt>',
+].join('\n');
+
+/* pre-IIFE seed for practice/session.html — stars every lesson so the whole practice pool is eligible
+   and the drill has real items to drive (a THROWAWAY copy only, never a real user's storage). */
+const PRE_IIFE_SEED_SESSION = [
+  '<script>',
+  'try {',
+  "  AW.S.set('stars', { u1m1:3,u1m2:3,u1m3:3,u1m4:3, u2m1:3,u2m2:3,u2m3:3,u2m3b:3, u3m1:3,u3m2:3,u3m3:3, u4m1:3,u4m2:3,u4m2b:3,u4m3:3 });",
   '} catch (e) {}',
   '</scr' + 'ipt>',
 ].join('\n');
@@ -451,7 +464,18 @@ ${DRIVER_CORE}
         break;
       }
       var contBtn = document.getElementById('cont');
-      if (contBtn) { contBtn.click(); sweepCurrentDOM('lesson-step-' + step); continue; }
+      if (contBtn) {
+        contBtn.click();
+        // Headless getComputedStyle caches an element's computed style across a SAME-BURST classList
+        // change (the reflect reveal's classList.remove('ghost') on #cont, once .reg-page .btn.ghost is
+        // a real transparent treatment). A display toggle forces a fresh recompute so the sweep reads
+        // the button's true post-reveal crimson background, not the stale ghost value (real browsers
+        // recompute at the frame boundary — verified: the revealed button is stably crimson).
+        var cc = document.getElementById('cont');
+        if (cc) { cc.style.display = 'none'; void cc.offsetHeight; cc.style.display = ''; }
+        sweepCurrentDOM('lesson-step-' + step);
+        continue;
+      }
       sweepCurrentDOM('lesson-terminal-' + step); // verdict/noor/returns/done/ring/dua, whichever is current
       break;
     }
@@ -512,10 +536,94 @@ ${DRIVER_CORE}
 });
 `;
 
+/* ---------------------------------------------------------------------------------------------
+   onboarding.html — advance the in-place step machine across all three panes (Orbit ground) and
+   sweep each. Begin/Skip are NEVER clicked (they location.replace away); onbNext at the last pane
+   is a no-op, so two clicks reach panes 1 → 2 → 3 safely.
+   --------------------------------------------------------------------------------------------- */
+const ONBOARDING_LOAD_DRIVER = `
+window.addEventListener('load', function () {
+${DRIVER_CORE}
+  try {
+    sweepCurrentDOM('onboarding-pane-1');   // the welcome pane
+    var n1 = document.getElementById('onbNext');
+    if (n1) n1.click();
+    sweepCurrentDOM('onboarding-pane-2');   // the three worth-knowing rows (glyph + name + line)
+    var n2 = document.getElementById('onbNext');
+    if (n2) n2.click();
+    sweepCurrentDOM('onboarding-pane-3');   // the empty Ring hero + maker's mark
+    R.done = true;
+    publish();
+  } catch (e) { R.driverError = String((e && e.message) || e); publish(); }
+  document.title = 'CONTRAST-DONE';
+});
+`;
+
+/* ---------------------------------------------------------------------------------------------
+   practice/session.html — with the pre-IIFE star seed the pool is eligible, so AW.practiceRun mounts
+   a real item. Drive ONE item through its states: fresh → selected → resolved; on a miss, sweep the
+   law-8 grey verdict + "Nothing lost" + rose retry, then retry into the KNOWN-correct answer (tracked
+   from the .correct marker before the repaint) and sweep the correct verdict; on a first-attempt hit,
+   sweep the PRAISE/gold verdict then advance. Robust for mc/tf; tile falls back to best-effort. Every
+   step is null-guarded so it never throws (which would set driverError).
+   --------------------------------------------------------------------------------------------- */
+const SESSION_LOAD_DRIVER = `
+window.addEventListener('load', function () {
+${DRIVER_CORE}
+  function pick() {
+    var o = document.querySelector('.opt'), t = document.querySelector('.tf'), b = document.querySelector('#lsbank .tile');
+    if (o) { o.click(); return; } if (t) { t.click(); return; } if (b) { b.click(); }
+  }
+  try {
+    sweepCurrentDOM('session-fresh');                 // se-shell/se-head/pr-drift/se-prog + fresh .opt on cream
+    pick();
+    sweepCurrentDOM('session-selected-precheck');
+    var chk = document.getElementById('prcheck');
+    if (chk) chk.click();
+    sweepCurrentDOM('session-resolved-1');            // .opt.correct + (on a miss) .opt.wrong/.opt-why
+    var retry = document.querySelector('.btn.retry');
+    if (retry) {
+      sweepCurrentDOM('session-wrong');               // law-8 grey miss + "Nothing lost" + rose retry
+      var cOpt = document.querySelector('.opt.correct'), cTf = document.querySelector('.tf.correct');
+      var cI = cOpt ? cOpt.getAttribute('data-i') : null;
+      var cV = cTf ? cTf.getAttribute('data-v') : null;
+      retry.click();                                  // repaint the SAME item, fresh
+      var got = null;
+      if (cI !== null) got = document.querySelector('.opt[data-i="' + cI + '"]');
+      else if (cV !== null) got = document.querySelector('.tf[data-v="' + cV + '"]');
+      if (got) got.click(); else pick();
+      var chk2 = document.getElementById('prcheck');
+      if (chk2) chk2.click();
+      sweepCurrentDOM('session-retry-resolved');      // the correct verdict on retry (mc/tf)
+    } else {
+      sweepCurrentDOM('session-correct');             // PRAISE .pintro + gold .opt.correct
+      var cont = document.getElementById('prcont');
+      if (cont) cont.click();
+      sweepCurrentDOM('session-advanced');            // next item, or the .se-finish completion
+    }
+    R.done = true;
+    publish();
+  } catch (e) { R.driverError = String((e && e.message) || e); publish(); }
+  document.title = 'CONTRAST-DONE';
+});
+`;
+
 function findPages() {
   const pages = [];
-  const learn = path.join(ROOT, 'learn.html');
-  if (existsSync(learn)) pages.push({ file: learn, type: 'learn' });
+  // learn.html + the four v2 surfaces (§9.3.2). learn/onboarding get bespoke drivers; the cream Page
+  // hubs (practice/more) reuse the LESSON driver; profile (Orbit) reuses the LEARN driver; the drill
+  // (practice/session.html) gets the session driver + a pre-IIFE star seed (see buildProbe).
+  const roots = [
+    ['learn.html', 'learn'],
+    ['onboarding.html', 'onboarding'],
+    ['practice.html', 'page'],
+    ['profile.html', 'orbit'],
+    ['more.html', 'page'],
+  ];
+  for (const [f, type] of roots) {
+    const abs = path.join(ROOT, f);
+    if (existsSync(abs)) pages.push({ file: abs, type });
+  }
   const lessonsDir = path.join(ROOT, 'lessons');
   if (existsSync(lessonsDir)) {
     for (const f of readdirSync(lessonsDir)) {
@@ -528,18 +636,26 @@ function findPages() {
       if (f.endsWith('.html')) pages.push({ file: path.join(reviewsDir, f), type: 'review' });
     }
   }
+  const practiceDir = path.join(ROOT, 'practice');
+  if (existsSync(practiceDir)) {
+    for (const f of readdirSync(practiceDir)) {
+      if (f.endsWith('.html')) pages.push({ file: path.join(practiceDir, f), type: 'session' });
+    }
+  }
   return pages;
 }
 
 function driverFor(type) {
-  if (type === 'learn') return LEARN_LOAD_DRIVER;
+  if (type === 'learn' || type === 'orbit') return LEARN_LOAD_DRIVER;    // learn.html + profile.html (Orbit)
   if (type === 'review') return REVIEW_LOAD_DRIVER;
-  return LESSON_LOAD_DRIVER;
+  if (type === 'onboarding') return ONBOARDING_LOAD_DRIVER;
+  if (type === 'session') return SESSION_LOAD_DRIVER;
+  return LESSON_LOAD_DRIVER;                                             // lesson + page (practice/more, cream hubs)
 }
 function budgetFor(type) {
   if (type === 'review') return 28000;
-  if (type === 'lesson') return 12000;
-  return 8000;
+  if (type === 'lesson' || type === 'page' || type === 'session') return 12000;
+  return 8000;                                                          // learn, orbit, onboarding
 }
 function timeoutFor(type) {
   if (type === 'review') return 45000;
@@ -548,12 +664,14 @@ function timeoutFor(type) {
 
 function buildProbe(pageFile, type) {
   let html = readFileSync(pageFile, 'utf8');
-  if (type === 'learn') {
-    // pre-IIFE seed: insert right after the FIRST engine <script src=...awba-engine.js"></script>,
-    // which is BEFORE the learn IIFE's own <script> tag (method / forcing-table note above).
+  // pre-IIFE seed: insert right after the FIRST engine <script src=...awba-engine.js"></script>, which
+  // is BEFORE the page's own IIFE <script> tag (method / forcing-table note above). learn needs it to
+  // seed progress + bypass the §0.4 redirect; session needs it to make the practice pool eligible.
+  const seed = type === 'learn' ? PRE_IIFE_SEED_LEARN : (type === 'session' ? PRE_IIFE_SEED_SESSION : null);
+  if (seed) {
     const engineTagRe = /<script src="[^"]*awba-engine\.js"><\/script>/;
     if (engineTagRe.test(html)) {
-      html = html.replace(engineTagRe, (m) => m + '\n' + PRE_IIFE_SEED_LEARN);
+      html = html.replace(engineTagRe, (m) => m + '\n' + seed);
     }
   }
   const driver = driverFor(type);

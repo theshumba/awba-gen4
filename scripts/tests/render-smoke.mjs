@@ -34,11 +34,16 @@ const REGISTER_ROOT_RE = /class="[^"]*\breg-(page|orbit)\b[^"]*"/;
 
 function findPages() {
   const pages = [];
-  const rootLearn = path.join(ROOT, 'learn.html');
-  if (existsSync(rootLearn)) pages.push(rootLearn); // Pitfall 7 — the root front door joins the
-  // smoke set the moment 05-02 creates it; skipped (not yet present) until then. Register-root
-  // regex already matches reg-orbit — no regex change needed.
-  for (const dir of ['lessons', 'reviews']) {
+  // Root pages: the front door + the four v2 surfaces (§9.3.1). learn.html carries the §0.4 first-run
+  // redirect guard — loadInChrome appends ?begin=1 for it so it smokes as itself, not the onboarding
+  // bounce; onboarding.html renders as itself (it is the redirect destination and carries no guard).
+  // The reg-(page|orbit) register-root regex already matches both grounds — no regex change needed.
+  for (const f of ['learn.html', 'onboarding.html', 'practice.html', 'profile.html', 'more.html']) {
+    const abs = path.join(ROOT, f);
+    if (existsSync(abs)) pages.push(abs);
+  }
+  // lessons/, reviews/ AND practice/ (the drill session.html) are fully auto-discovered by directory.
+  for (const dir of ['lessons', 'reviews', 'practice']) {
     const abs = path.join(ROOT, dir);
     if (!existsSync(abs)) continue;
     for (const f of readdirSync(abs)) {
@@ -49,7 +54,10 @@ function findPages() {
 }
 
 function loadInChrome(pagePath) {
-  const fileUrl = 'file://' + pagePath;
+  // learn.html's §0.4 first-run guard bounces a fresh profile to onboarding.html; ?begin=1
+  // short-circuits it so learn smokes as itself. No other page carries the guard.
+  const query = path.basename(pagePath) === 'learn.html' ? '?begin=1' : '';
+  const fileUrl = 'file://' + pagePath + query;
   try {
     const stdout = execFileSync(
       CHROME,

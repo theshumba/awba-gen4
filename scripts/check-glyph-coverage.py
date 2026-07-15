@@ -136,6 +136,16 @@ def _html_text_nodes(html):
     return re.sub(r"<[^>]+>", " ", html)
 
 
+def _script_block_js(html):
+    """Concatenate the JS of every inline (non-src) <script> block — the only real JS an HTML page
+    holds. Running the JS-string tokenizer over the WHOLE raw file desyncs its quote state on HTML
+    attribute / CSS / prose quote parity, which can swallow comment notation (arrows, §, …) into
+    pseudo-strings and wrongly harvest it; scoping to real <script> bodies keeps the comment-skipping
+    correct (the documented intent above). HTML text nodes are still harvested separately."""
+    return "\n".join(m.group(1) for m in re.finditer(
+        r"<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)</script>", html, flags=re.I))
+
+
 def _bucket(chars, printing, control):
     for ch in chars:
         cp = ord(ch)
@@ -149,14 +159,18 @@ def _bucket(chars, printing, control):
 
 def harvest():
     """Return (printing_codepoints, control_codepoints) rendered by the real app."""
-    sources = ["learn.html"] + sorted(glob.glob("lessons/*.html")) \
-        + sorted(glob.glob("reviews/*.html")) + ["shared/awba-engine.js"]
+    sources = ["learn.html", "onboarding.html", "practice.html", "profile.html", "more.html"] \
+        + sorted(glob.glob("lessons/*.html")) + sorted(glob.glob("reviews/*.html")) \
+        + ["practice/session.html", "shared/practice-pool.js", "shared/awba-engine.js"]
     printing, control = set(), set()
     for path in sources:
         if not os.path.exists(path):
             continue
         raw = open(path, encoding="utf-8").read()
-        for literal in _js_string_contents(raw):
+        # JS string literals: the whole file for a .js source; only the inline <script> bodies for an
+        # HTML page (so the tokenizer never desyncs on HTML/CSS quote parity — see _script_block_js).
+        js_src = _script_block_js(raw) if path.endswith(".html") else raw
+        for literal in _js_string_contents(js_src):
             _bucket(literal, printing, control)
         if path.endswith(".html"):
             _bucket(_html_text_nodes(raw), printing, control)

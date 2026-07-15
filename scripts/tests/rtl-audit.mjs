@@ -123,20 +123,25 @@ const DRIVER = [
 
 function findPages() {
   const pages = [];
-  const learn = path.join(ROOT, 'learn.html');
-  if (existsSync(learn)) pages.push(learn);
-  for (const dir of ['lessons', 'reviews']) {
+  // learn.html (front door) + the four v2 surfaces (§9.3.3). learn.html carries the §0.4 first-run
+  // guard — auditOne loads its probe with ?begin=1 so it audits as itself, not the onboarding bounce.
+  for (const f of ['learn.html', 'onboarding.html', 'practice.html', 'profile.html', 'more.html']) {
+    const abs = path.join(ROOT, f);
+    if (existsSync(abs)) pages.push(abs);
+  }
+  // lessons/, reviews/ AND practice/ (session.html — reused ayah rides shipped .ayah/.trans markup).
+  for (const dir of ['lessons', 'reviews', 'practice']) {
     const abs = path.join(ROOT, dir);
     if (!existsSync(abs)) continue;
     for (const f of readdirSync(abs)) {
       if (f.endsWith('.html')) pages.push(path.join(abs, f));
     }
   }
-  if (existsSync(FIXTURE)) pages.push(FIXTURE); // the 21st target — overflow + mixed-bidi
+  if (existsSync(FIXTURE)) pages.push(FIXTURE); // the fixture target — overflow + mixed-bidi
   return pages;
 }
 
-function runOnce(probePath, windowSize) {
+function runOnce(probePath, windowSize, query) {
   try {
     const stdout = execFileSync(
       CHROME,
@@ -146,7 +151,7 @@ function runOnce(probePath, windowSize) {
         '--window-size=' + windowSize,
         '--virtual-time-budget=5000',
         '--dump-dom',
-        'file://' + probePath,
+        'file://' + probePath + (query || ''),
       ],
       { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 25000, maxBuffer: 1024 * 1024 * 48 }
     );
@@ -172,9 +177,11 @@ function auditOne(pagePath) {
     ? html.replace(/<\/body>(?![\s\S]*<\/body>)/, DRIVER + '\n</body>')
     : html + DRIVER;
   writeFileSync(probe, html);
+  // ?begin=1 short-circuits learn.html's §0.4 first-run redirect guard (no-op for every other page).
+  const query = path.basename(pagePath) === 'learn.html' ? '?begin=1' : '';
   try {
-    const desk = runOnce(probe, DESKTOP);   // canonical DOM checks + desktop overflow
-    const narrow = runOnce(probe, NARROW);  // narrow overflow
+    const desk = runOnce(probe, DESKTOP, query);   // canonical DOM checks + desktop overflow
+    const narrow = runOnce(probe, NARROW, query);  // narrow overflow
     if (!desk.ok) { console.log('RTL FAIL ' + name + ' ' + desk.reason); return false; }
     if (!narrow.ok) { console.log('RTL FAIL ' + name + ' (narrow) ' + narrow.reason); return false; }
     const d = desk.data, na = narrow.data;

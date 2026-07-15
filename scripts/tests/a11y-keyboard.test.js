@@ -38,6 +38,11 @@ const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const LEARN = path.join(ROOT, 'learn.html');
 const ENGINE_JS = path.join(ROOT, 'shared', 'awba-engine.js');
 const LESSON_SOURCE = path.join(ROOT, 'lessons', 'u1-m1.html');
+// v2 surfaces (Wave-C §9.3.5) — swept for native controls + zero positive tabindex alongside the shipped set.
+const ONBOARDING = path.join(ROOT, 'onboarding.html');
+const PRACTICE = path.join(ROOT, 'practice.html');
+const PROFILE = path.join(ROOT, 'profile.html');
+const MORE = path.join(ROOT, 'more.html');
 
 /* the canonical CNT-03 unlock-sequence — the .onode DOM-order assertion (interfaces block,
    cross-checked against learn-state.test.js's own FLAT list). */
@@ -87,13 +92,25 @@ test('every shipped click/interaction control across learn.html + the engine emi
   });
 });
 
-test('zero positive tabindex exists anywhere in the shipped surface (learn.html, the engine, every lesson, every review)', () => {
+test('zero positive tabindex exists anywhere in the shipped surface (learn.html, the v2 surfaces, the engine, every lesson, every review, the drill)', () => {
   const POSITIVE_TABINDEX_RE = /tabindex="[1-9][0-9]*"/;
-  const files = [LEARN, ENGINE_JS, ...listHtml('lessons'), ...listHtml('reviews')];
-  assert.ok(files.length > 3, 'the sweep found lesson/review pages to scan');
+  const files = [LEARN, ONBOARDING, PRACTICE, PROFILE, MORE, ENGINE_JS, ...listHtml('lessons'), ...listHtml('reviews'), ...listHtml('practice')];
+  assert.ok(files.length > 3, 'the sweep found lesson/review/practice pages to scan');
   files.forEach((f) => {
     const src = readFileSync(f, 'utf8');
     assert.doesNotMatch(src, POSITIVE_TABINDEX_RE, path.relative(ROOT, f) + ' must never carry a positive tabindex (DOM order = tab order, D-62)');
+  });
+});
+
+test('the v2 surfaces (onboarding/practice/profile/more + the drill) use native controls only — no div/span-with-handler or role="button" retrofit', () => {
+  const v2 = [ONBOARDING, PRACTICE, PROFILE, MORE, ...listHtml('practice')];
+  assert.ok(v2.length >= 5, 'the v2 surface sweep found its pages (4 root + the drill session)');
+  const INLINE_HANDLER_RE = /<(?:div|span|li|p|section|nav)\b[^>]*\son(?:click|keydown|keyup|keypress)=/i;
+  const DIV_ROLE_BUTTON_RE = /<(?:div|span|li|p)\b[^>]*\brole="button"/i;
+  v2.forEach((f) => {
+    const src = readFileSync(f, 'utf8');
+    assert.doesNotMatch(src, INLINE_HANDLER_RE, path.relative(ROOT, f) + ' must not wire a non-native element with an inline click/key handler (use a native <button>/<a>)');
+    assert.doesNotMatch(src, DIV_ROLE_BUTTON_RE, path.relative(ROOT, f) + ' must not retrofit a div/span as role="button" — use a native <button>');
   });
 });
 
