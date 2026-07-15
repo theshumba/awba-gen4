@@ -173,3 +173,21 @@ The only Arabic that exists is **individual technical-term glosses**, and only *
 | **G6** — Other reusable religious content | **CANNOT FILL** (informational) | No v2 slot needs it (onboarding/practice/profile/more add no religious content). Glossaries, hadith-grading metadata, Names-of-Allah set, conventions, and the sensitive-atom HOLD list are logged for the owner's future scholar-gated pipeline. |
 
 **Net for v2:** exactly **one** authorized splice (G3 du'a, class-b, pending-review), landed as an engine-level default in `duaClose()` without touching any SHA-frozen content file. G1/G2/G4/G5/G6 stay on the owner ledger with their honest placeholders intact. No fabrication, no training-memory recall, no translation-mixing.
+
+---
+
+## ADDENDUM 2026-07-16 — G1 re-ruled: FILLED by owner-authorized web fetch
+
+The owner explicitly authorized the fetch ("yes fetch the 14:24 verse and add it", 2026-07-16). This is a NEW provenance class — owner-authorized canonical-source fetch — outside the original owner-docs-only mandate, used exactly once, on explicit instruction.
+
+**Spliced text (learn.html epigraph, `oib-line`):**
+`Do you not see how Allah compares a good word to a good tree? Its root is firm and its branches reach the sky,`
+**Reference line (`oib-ref`):** `Ibrāhīm 14:24 · The Clear Quran · translation pending review`
+
+**Verification performed (three independent mirrors, fetched 2026-07-16):**
+1. `quranapi.pages.dev/api/14/24.json` (`english` field — Josh's own documented route) — words identical, no trailing comma.
+2. `cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/editions/eng-mustafakhattaba/14/24.json` — words identical, no trailing comma.
+3. `quran.com/14/24` rendered page (the Clear Quran's official digital home; site default translation is Khattab) — words identical, **with** the trailing comma (the sentence continues into 14:25).
+**Ruling on the one-character variance:** the trailing comma is kept, following quran.com as the authoritative rendering; flagged in the scholar pack for the reviewer to confirm. Notable: quran.com's public **API** no longer serves the Khattab translation (only the rendered site does) — consistent with the Clear Quran's commercial-licensing posture, which remains an open owner-ledger item.
+
+**Protections:** the exact bytes are SHA-pinned in `scripts/port-audit.mjs` (`checkEpigraphFidelity`, `EPIGRAPH BYTES OK`); the `pending review` marker stays until scholar sign-off; the scholar pack extracts the line LIVE from learn.html (no second copy) and records this provenance in full.

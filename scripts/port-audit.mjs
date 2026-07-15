@@ -96,6 +96,34 @@ function checkDailyFidelity() {
   return true;
 }
 
+/* checkEpigraphFidelity — the R-7 Ibrahim 14:24 splice gate (owner-authorized fetch, 2026-07-16).
+   The Clear Quran (Dr. Mustafa Khattab) 14:24 line in learn.html's epigraph has NO in-repo source
+   file to diff against — it was fetched verbatim and triple-cross-verified (quranapi.pages.dev ·
+   the-quran-project eng-mustafakhattaba mirror · quran.com/14/24 rendered page; trailing comma per
+   quran.com, the translation's official digital home; variance logged in CONTENT-DECISIONS G1
+   addendum). This constant SHA pins those exact bytes so the verse can never silently drift or be
+   retyped; it stays "pending review" until scholar sign-off. Prints `EPIGRAPH BYTES OK` / `DRIFT`. */
+const EPIGRAPH_SHA = '6ff788c6e3f24fa85cf4879a6095180d0d8e323e007ca0bce28da9eccf3c267e';
+function checkEpigraphFidelity() {
+  const learnPath = path.join(ROOT, 'learn.html');
+  if (!existsSync(learnPath)) {
+    console.log('EPIGRAPH BYTES OK — no root learn.html yet');
+    return true;
+  }
+  const src = readFileSync(learnPath, 'utf8');
+  const m = src.match(/<p class="oib-line">([^<]*)<\/p>/);
+  if (!m) {
+    console.log('EPIGRAPH BYTES DRIFT — no oib-line epigraph found in learn.html');
+    return false;
+  }
+  if (sha256(m[1]) !== EPIGRAPH_SHA) {
+    console.log('EPIGRAPH BYTES DRIFT learn.html — the 14:24 line does not match its pinned bytes');
+    return false;
+  }
+  console.log('EPIGRAPH BYTES OK');
+  return true;
+}
+
 function checkByteFidelity(pages) {
   let ok = true;
   for (const page of pages) {
@@ -140,17 +168,18 @@ function grepFindsMatch(pattern, dirs) {
 }
 
 function main() {
-  /* The DAILY-pool gate is a root-file compare, independent of the lessons/reviews page set, so it
-     runs first and always — even before any lesson has been ported. */
+  /* The DAILY-pool + epigraph gates are root-file compares, independent of the lessons/reviews page
+     set, so they run first and always — even before any lesson has been ported. */
   const dailyOk = checkDailyFidelity();
+  const epigraphOk = checkEpigraphFidelity();
 
   const pages = [...listPages('lessons'), ...listPages('reviews')];
   if (pages.length === 0) {
     console.log('no pages yet');
-    process.exit(dailyOk ? 0 : 1);
+    process.exit(dailyOk && epigraphOk ? 0 : 1);
   }
 
-  let allOk = dailyOk;
+  let allOk = dailyOk && epigraphOk;
 
   if (!checkByteFidelity(pages)) allOk = false;
 

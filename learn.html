@@ -835,16 +835,19 @@
     var journeyWrap = '<div class="ojourney">' + journey + '</div>';
 
     /* Ibrahim 14:24 epigraph (S3 / R-7) — a quiet Courier marginalia line beneath the path (the
-       orchard's reason for existing), NOT a second Amiri scripture panel. Content integrity: the
-       verbatim Clear-Quran Ibrahim 14:24 ("good word / good tree") line is NOT in Josh's corpus, so
-       per R-7 the verse text is NEVER generated here — this renders the owner-ledger fallback: an
-       authorial framing line (the app's own voice about the path, carrying no scripture) + the
-       reference + an honest "translation pending review" marker. When the owner supplies the verified
-       14:24 splice, it replaces the framing line. Nothing celebratory adjacent; never a VT name. */
+       orchard's reason for existing), NOT a second Amiri scripture panel. R-7 SPLICE LANDED 2026-07-16
+       on the owner's explicit fetch authorization: the verse line below is the Clear Quran
+       (Dr. Mustafa Khattab) rendering of 14:24, fetched verbatim and TRIPLE-CROSS-VERIFIED
+       (quranapi.pages.dev api/14/24 · the-quran-project mirror eng-mustafakhattaba · quran.com/14/24
+       rendered page — words byte-identical across all three; the trailing comma follows quran.com,
+       the translation's official digital home; variance logged in CONTENT-DECISIONS G1 addendum for
+       the scholar). NEVER edit this string by hand — it is pinned by SHA in scripts/port-audit.mjs;
+       the "translation pending review" marker stays until scholar sign-off. Nothing celebratory
+       adjacent; never a VT name. */
     var ibrahim =
       '<div class="oibrahim">' +
-        '<p class="oib-line">A place to learn the one word, and let it settle in.</p>' +
-        '<p class="oib-ref">Ibrāhīm 14:24 · translation pending review</p>' +
+        '<p class="oib-line">Do you not see how Allah compares a good word to a good tree? Its root is firm and its branches reach the sky,</p>' +
+        '<p class="oib-ref">Ibrāhīm 14:24 · The Clear Quran · translation pending review</p>' +
       '</div>';
 
     /* Composition body (top→bottom): Ring hero → streak strip + constellation → continue card →

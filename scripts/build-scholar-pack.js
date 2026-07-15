@@ -225,11 +225,21 @@ function main() {
     'u3-m3 — refs entry imran-3-19 is carried but never directly cited (intentional).',
     'u4-m2 — terms entry rububiyah is carried but never directly referenced (intentional).',
   ];
+  /* R-7 epigraph — extracted LIVE from learn.html (never a second copy in this generator). */
+  const learnSrc = fs.readFileSync(LEARN, 'utf8');
+  const epiLine = learnSrc.match(/<p class="oib-line">([^<]*)<\/p>/);
+  const epiRef = learnSrc.match(/<p class="oib-ref">([^<]*)<\/p>/);
+  must(epiLine && epiRef, 'could not locate the oib-line/oib-ref epigraph in learn.html');
   const part4 =
-    '<h3 class="unit">The pending epigraph (R-7)</h3>' +
-    '<p>The Ibrāhīm 14:24 epigraph slot renders a Courier fallback line — ' + PENDING +
-    '. Verbatim Khattab text is not yet in hand, so <strong>no verse text is shown or invented here</strong>; ' +
-    'the owner supplies it at sign-off. This is the honest placeholder status only.</p>' +
+    '<h3 class="unit">The learn-page epigraph (R-7 — spliced, pending review)</h3>' +
+    '<div class="card"><p class="tr">' + esc(epiLine[1]) + '</p>' +
+    '<div class="card-foot"><span class="src">' + esc(epiRef[1]) + '</span></div>' +
+    '<p class="note">Qur\'an 14:24, The Clear Quran (Dr. Mustafa Khattab). Spliced 2026-07-16 on the ' +
+    'owner\'s explicit fetch authorization — not from the owner\'s document corpus. Cross-verified ' +
+    'word-identical across three independent mirrors (quranapi.pages.dev, the-quran-project ' +
+    'eng-mustafakhattaba, quran.com/14/24); the trailing comma follows quran.com, the translation\'s ' +
+    'official digital home — the two API mirrors omit it (one-character variance for the reviewer to ' +
+    'confirm). Byte-pinned by SHA in scripts/port-audit.mjs. Not labelled verified.</p></div>' +
     '<h3 class="unit">The English unit terms (R-6)</h3>' +
     '<p>The four chapter key-terms currently render an English fallback, ' + PENDING +
     ', pending an owner-supplied, scholar-checked Arabic set:</p><ul>' +
