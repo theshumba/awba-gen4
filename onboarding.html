@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- viewport-fit=cover is the safe-area prerequisite (env(safe-area-inset-*) resolves to 0 without it). -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Awba · Welcome</title>
+<!-- Kiswah Black — the Orbit ground (the doorway INTO the sacred centre; §A register = ORBIT throughout). -->
+<meta name="theme-color" content="#131013">
+<!-- The install head trio (§0.2, uniform on the four root pages) — same manifest/icon as learn.html;
+     start_url stays learn.html, this welcome is a real installable surface too. -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+<!-- Register the SW, guarded off file:// (double-click review + the file:// render-smoke harness stay
+     a no-op) — relative path, nothing persisted here. -->
+<script>
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js'); });
+  }
+</script>
+<!-- onboarding.html sits at repo ROOT: every asset path is root-relative (shared/…), NEVER ../. Preload
+     the two critical faces: the workhorse, then Marcellus (the Orbit display face the headlines lean on). -->
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/readex-pro-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="shared/fonts/marcellus-400.woff2" crossorigin>
+<link rel="stylesheet" href="shared/awba-engine.css">
+<script src="shared/awba-engine.js"></script>
+<!-- The only page-authored CSS — a content block for the already-declared `screens` layer (never the
+     name-list order line). Composition only: every colour a shipped var(--token), zero new hex, zero new
+     @keyframes. The pane mount rides the shipped `settle` verb at --dur-draw on the headline + body only;
+     both reduced-motion triggers collapse the finite durations from the engine (--dur-draw → 1ms). The
+     empty Ring is mounted static (law 9). The register :focus-visible ring (gold on the Orbit ground)
+     rides in automatically from the engine grammar. -->
+<style>
+  @layer screens {
+    /* ---- Column: one centred 480px threshold, foot pinned low, dots pinned lower ------------------ */
+    .onb-wrap {
+      box-sizing: border-box;
+      max-width: 480px;
+      min-height: 100dvh;
+      margin-inline: auto;
+      padding: var(--sp-8) var(--sp-5) calc(var(--sp-6) + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+    }
+    .onb-pane { flex: 1 1 auto; display: flex; flex-direction: column; }
+
+    /* ---- Kicker (Courier marginalia) → headline (Marcellus) → body ------------------------------- */
+    .onb-kick {
+      margin: 0;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      letter-spacing: .09em;
+      color: var(--paper-62);                 /* §2.1 marginalia on Kiswah ~6.7:1 */
+    }
+    .onb-head {
+      margin: var(--sp-3) 0 0;
+      font: 400 var(--fs-display) var(--font-display);   /* Marcellus, ≥28px floor (law 5), lh 1.08 */
+      line-height: 1.08;
+      color: var(--cream);                    /* §2.1 16.22:1 on Kiswah */
+      animation: settle var(--dur-draw) var(--ease) both;   /* the Orbit ink-reveal on each pane render */
+    }
+    .onb-head:focus { outline: none; }        /* -1 focus is a reading cursor move, not a visible ring */
+    .onb-body {
+      margin: var(--sp-5) 0 0;
+      animation: settle var(--dur-draw) var(--ease) both;   /* head + body are the only things that move */
+    }
+    .onb-lede {
+      margin: 0;
+      max-width: 34ch;
+      font-family: var(--font-work);
+      font-size: var(--fs-body);
+      line-height: 1.6;
+      color: var(--paper-85);                 /* §2.1 primary reading prose on Kiswah */
+    }
+
+    /* ---- Pane 2: the three worth-knowing rows (glyph + name + line) ------------------------------ */
+    .onb-rows { display: flex; flex-direction: column; gap: var(--sp-6); }
+    .onb-row { display: flex; align-items: flex-start; gap: var(--sp-3); }
+    .onb-row-ic {
+      display: inline-flex;
+      flex-shrink: 0;
+      line-height: 0;
+      margin-top: var(--sp-1);
+      color: var(--icon-accent);              /* gold on Orbit (auto) — carries the currentColor glyphs */
+    }
+    .onb-row-txt { min-width: 0; }
+    .onb-row-name {
+      margin: 0;
+      font-family: var(--font-work);
+      font-weight: 600;
+      font-size: var(--fs-body);
+      line-height: 1.35;
+      color: var(--cream);                    /* §2.1 16.22:1 */
+    }
+    .onb-row-line {
+      margin: var(--sp-1) 0 0;
+      font-family: var(--font-work);
+      font-size: var(--fs-ui);
+      line-height: 1.55;
+      color: var(--paper-62);                 /* §2.1 secondary line ~6.7:1 on Kiswah */
+    }
+
+    /* ---- Pane 3: the empty Ring hero (static, law 9) + maker's mark ------------------------------ */
+    .onb-ring {
+      width: min(280px, 70vw);                /* the width cap lives on the wrapper; .ring fills 100% */
+      margin-inline: auto;
+    }
+    .onb-mark {
+      margin: var(--sp-3) 0 0;
+      text-align: center;
+      font-family: var(--font-marg);
+      font-size: var(--fs-marg);
+      letter-spacing: .06em;
+      color: var(--paper-62);
+    }
+    .onb-ring-body {
+      margin: var(--sp-5) auto 0;
+      max-width: 34ch;
+      text-align: center;
+      font-family: var(--font-work);
+      font-size: var(--fs-body);
+      line-height: 1.6;
+      color: var(--paper-85);
+    }
+
+    /* ---- Foot: primary CTA (before Skip in source), then the quiet ghost row -------------------- */
+    .onb-foot {
+      margin-top: auto;                        /* pin the action cluster to a consistent thumb zone */
+      padding-top: var(--sp-8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+    .onb-quiet { display: flex; gap: var(--sp-3); }
+    .onb-quiet .btn { flex: 1 1 0; width: auto; }   /* Back / Skip share the row as equal gold-ghost keys */
+
+    /* ---- Step indicator (decorative, pinned low) ------------------------------------------------ */
+    .onb-dots {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: var(--sp-2s);
+      padding-top: var(--sp-6);
+    }
+    .onb-dot {
+      width: var(--sp-2s);
+      height: var(--sp-2s);
+      border-radius: var(--r-round);
+      background: var(--paper-45);             /* an un-reached step — faint, never a gap/red */
+    }
+    .onb-dot.is-here { background: var(--gold); }   /* §2.1 the current step — lit gold 8.40:1 */
+  }
+</style>
+</head>
+<body>
+<main class="reg-orbit grain" id="app"></main>
+
+<script>
+(function () {
+  'use strict';
+  if (!window.AW) return;                       // the engine loads first (classic, in order)
+
+  var app = document.getElementById('app');
+  var step = 0;                                 // 0 / 1 / 2 — the in-place step machine, in memory only
+
+  /* Begin AND Skip both close the threshold identically: stamp the first-run flag through AW.prefs, then
+     land on the path. The ?begin=1 loop-breaker (§0.4) short-circuits learn.html's first-run guard for
+     this one navigation even if the pref write no-oped — so this can never trap. location.replace leaves
+     no history entry, so Back never loops back onto the welcome. */
+  function finish() {
+    AW.prefs.set('onboardingDone', true);
+    location.replace('learn.html?begin=1');
+  }
+
+  /* A step indicator — aria-hidden (the SR arc is carried by the heading focus + the step announce). */
+  function dots() {
+    var out = '';
+    for (var i = 0; i < 3; i++) out += '<span class="onb-dot' + (i === step ? ' is-here' : '') + '"></span>';
+    return '<div class="onb-dots" aria-hidden="true">' + out + '</div>';
+  }
+
+  /* Pane bodies — copy is verbatim from DESIGN-V2 §A.2. Glyphs are shipped GLYPHS (spark/flame/angle). */
+  function paneBody() {
+    if (step === 0) {
+      return '<div class="onb-body">' +
+        '<p class="onb-lede">Awba walks the Aqeedah course with you — one small step at a time. ' +
+        'No rush, no punishment, nothing to lose. Only a path, and your own light gathering as you go.</p>' +
+      '</div>';
+    }
+    if (step === 1) {
+      return '<div class="onb-body"><div class="onb-rows">' +
+        row('spark', 'Noor — light you gather',
+          'Every answer you get right adds a little. It is never spent against you, and it never runs out.') +
+        row('flame', 'Returns — the days you come back',
+          'The count only grows. Miss a day, a week, a year — it never breaks, and it never shows a gap.') +
+        row('angle', 'A wrong answer costs nothing',
+          'A gentle word, and a chance to look again. No red, no buzzer, nothing lost.') +
+      '</div></div>';
+    }
+    // step 2 — the empty Ring: atomsDone 0, static (no animateFrom → law 9); carries its shipped aria-label.
+    var ring = AW.ringSVG({ atomsDone: 0, size: 280 });
+    return '<div class="onb-body">' +
+      '<div class="onb-ring">' + ring + '</div>' +
+      '<p class="onb-mark">your ring · 0 of 61 inked</p>' +
+      '<p class="onb-ring-body">Fifteen short lessons and four gentle reviews are waiting. ' +
+      'Each one you finish inks one more mark into this ring — a drawing that becomes yours alone. ' +
+      'Come as often, or as rarely, as you like.</p>' +
+    '</div>';
+  }
+
+  function row(glyph, name, line) {
+    return '<div class="onb-row">' +
+      '<span class="onb-row-ic">' + AW.icon(glyph, { size: '28px' }) + '</span>' +
+      '<div class="onb-row-txt">' +
+        '<p class="onb-row-name">' + name + '</p>' +
+        '<p class="onb-row-line">' + line + '</p>' +
+      '</div>' +
+    '</div>';
+  }
+
+  /* Foot — the primary CTA is authored BEFORE Skip in source order (§A.6) so Tab reaches the forward
+     action first. Back and Skip are the quieter gold-ghost keys sharing the row beneath. */
+  function foot() {
+    if (step === 0) {
+      return '<div class="onb-foot">' +
+        '<button type="button" class="btn" id="onbNext">Show me how it works</button>' +
+        '<div class="onb-quiet">' +
+          '<button type="button" class="btn ghost" id="onbSkip">Skip — take me in</button>' +
+        '</div>' +
+      '</div>';
+    }
+    if (step === 1) {
+      return '<div class="onb-foot">' +
+        '<button type="button" class="btn" id="onbNext">And the path?</button>' +
+        '<div class="onb-quiet">' +
+          '<button type="button" class="btn ghost" id="onbBack">Back</button>' +
+          '<button type="button" class="btn ghost" id="onbSkip">Skip — take me in</button>' +
+        '</div>' +
+      '</div>';
+    }
+    return '<div class="onb-foot">' +
+      '<button type="button" class="btn" id="onbBegin">Begin, gently</button>' +
+      '<div class="onb-quiet">' +
+        '<button type="button" class="btn ghost" id="onbBack">Back</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  var KICKS = ['Assalamu alaikum', 'Three things worth knowing', "Where you're headed"];
+  var HEADS = ['A companion, not a cop.', 'A gentler way to learn.', 'Your path, traced in ink.'];
+  var LABELS = ['Welcome', 'How it works', 'Your path'];
+
+  function render() {
+    app.innerHTML =
+      '<div class="onb-wrap">' +
+        '<section class="onb-pane" aria-label="' + LABELS[step] + '">' +
+          '<p class="onb-kick">' + KICKS[step] + '</p>' +
+          '<h1 class="onb-head" tabindex="-1">' + HEADS[step] + '</h1>' +
+          paneBody() +
+          foot() +
+        '</section>' +
+        dots() +
+      '</div>';
+    wire();
+    // focus-first, then announce — the runner's focusHeading pattern; no double-speak (§A.6).
+    var h = app.querySelector('.onb-head');
+    if (h) h.focus();
+    AW.announce('Step ' + (step + 1) + ' of 3');
+  }
+
+  function wire() {
+    var next = document.getElementById('onbNext');
+    if (next) next.addEventListener('click', function () { step = Math.min(2, step + 1); render(); });
+    var back = document.getElementById('onbBack');
+    if (back) back.addEventListener('click', function () { step = Math.max(0, step - 1); render(); });
+    var skip = document.getElementById('onbSkip');
+    if (skip) skip.addEventListener('click', finish);
+    var begin = document.getElementById('onbBegin');
+    if (begin) begin.addEventListener('click', finish);
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
