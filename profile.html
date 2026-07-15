@@ -186,6 +186,14 @@
     }
     .pf-dab svg { width: var(--sp-3); height: var(--sp-3); }   /* 12px check, inked dark on the gold fill */
 
+    /* ---- The garden (S5): a flat shelf of finished lessons' signature plants — never a 2nd map ---- */
+    .pf-garden       { display: flex; flex-direction: column; align-items: center; gap: var(--sp-2s); margin-bottom: var(--sp-8); }
+    .pf-garden-shelf { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--sp-3); max-width: 100%; }  /* the shelf — wraps, never scrolls; a gathering, not a route */
+    .pf-sprout       { display: inline-flex; color: var(--gold); }        /* §2.1 gold on Kiswah 8.40:1 — the plant, decorative */
+    .pf-sprout svg   { width: 30px; height: 30px; }                       /* a touch larger than the 14px path stamp — this is where the collection is displayed */
+    .pf-garden-cap   { margin: 0; font-family: var(--font-marg); font-size: var(--fs-marg); letter-spacing: .06em; color: var(--paper-62); }   /* §2.1 6.69:1 — the maker's-mark caption */
+    .pf-garden-empty { margin: 0; text-align: center; font-family: var(--font-marg); font-size: var(--fs-marg); line-height: 1.7; color: var(--paper-62); }
+
     /* ---- Foot: the closed-path note + the privacy line ------------------------------------------ */
     .pf-note-complete {
       margin: 0 0 var(--sp-4);
@@ -351,13 +359,35 @@
     });
     units += '</div>';
 
+    // The garden — a flat shelf of the FINISHED lessons' signature plants (course order, ungrouped →
+    // never a map). Reads the same `stars` map; the ≤15 plants are AW.sproutFor picks, aria-hidden.
+    var grown = [];
+    PF_UNITS.forEach(function (u) { u.lessons.forEach(function (id) { if (stars[id]) grown.push(id); }); });
+    var garden;
+    if (grown.length) {
+      var shelf = '';
+      grown.forEach(function (id) { shelf += '<span class="pf-sprout" aria-hidden="true">' + AW.sproutFor(id) + '</span>'; });
+      var plural = grown.length === 1 ? ' of 15 lesson grown' : ' of 15 lessons grown';
+      garden =
+        '<section class="pf-garden" role="group" aria-label="Your garden — ' + grown.length + plural +
+          ', each finished lesson its own plant.">' +
+          '<div class="pf-garden-shelf">' + shelf + '</div>' +
+          '<p class="pf-garden-cap" aria-hidden="true">your garden · ' + grown.length + ' of 15 grown</p>' +
+        '</section>';
+    } else {
+      garden =
+        '<section class="pf-garden" role="group" aria-label="Your garden — no lessons grown yet.">' +
+          '<p class="pf-garden-empty" aria-hidden="true">Your garden fills as you finish lessons.</p>' +
+        '</section>';
+    }
+
     var complete = (doneCount === 15)
       ? '<p class="pf-note-complete">You’ve walked the whole path. The ring is closed.</p>'
       : '';
     var priv = '<p class="pf-priv">Everything here lives on this device only — no account, no sign-in, ' +
       'nothing sent anywhere. You can clear it any time from More.</p>';
 
-    app.innerHTML = '<div class="pf-wrap' + (mounted ? '' : ' pf-mount') + '">' + head + hero + stats + week + units + complete + priv + '</div>' + tabBar();
+    app.innerHTML = '<div class="pf-wrap' + (mounted ? '' : ' pf-mount') + '">' + head + hero + stats + week + units + garden + complete + priv + '</div>' + tabBar();
     mounted = true;
 
     // the name renders via textContent ONLY — XSS-safe by construction (never innerHTML).
