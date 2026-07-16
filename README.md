@@ -100,6 +100,18 @@ node scripts/tests/practice-pool-audit.mjs # proves the pool still byte-matches 
 The audit gate fails if the committed pool ever drifts from the frozen lesson content, so the two can
 never diverge silently.
 
+## Sound cues
+
+`shared/sfx/` holds the four live cues (`correct` / `incorrect` / `complete` / `streak`), resolved by
+`AW.sound(cue)` and precached for offline. They are free, public-domain sounds — **CC0, from the
+[Kenney "Interface Sounds" pack](https://kenney.nl/assets/interface-sounds)** (no attribution
+required; credited here anyway) — converted to mono 44.1 kHz MP3 and levelled to the app's laws:
+peaks at −12 dBFS, the incorrect cue lowest in pitch and quietest (−16 dBFS — a soft acknowledgement,
+never a buzzer), no melodies, no music. The learner mutes everything via More → Sound. To swap a cue,
+replace its file and bump the `sw.js` cache version (the engine needs zero change). The synthesized
+alternative families live in `docs/sound-audition.html` (generator:
+`scripts/build-sound-candidates.js`).
+
 ## Testing the PWA locally
 
 The installable / offline behaviour needs a real origin — a **service worker never registers over

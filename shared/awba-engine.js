@@ -1809,9 +1809,13 @@ AW.reviewStars = function (correct, total, allInTime) {
   return correct === total ? (allInTime ? 3 : 2) : 1;
 };
 
-/* ---------- AW.sound — silent no-op sound plumbing (MOT-05 / D-52) ----------
-   Full plumbing now, ships v1 silent: a missing cue file (or an autoplay block) resolves to a
-   clean no-op with zero console errors. cue in {correct, incorrect, complete, streak}. Reads the
+/* ---------- AW.sound — the sound seam (MOT-05 / D-52 → CUES LIVE 2026-07-16) ----------
+   Shipped v1 silent as pure plumbing; the owner chose to wire sound on 2026-07-16 and the four
+   cue files now live in shared/sfx/ (free CC0 sounds — Kenney "Interface Sounds" — levelled to
+   the mercy laws: peaks −12 dBFS, incorrect lowest + quietest at −16, nothing is music; see
+   docs/sound-audition.html + README). Exactly as designed, this function needed ZERO change: a
+   missing cue file (or an autoplay block) still resolves to a clean no-op with zero console
+   errors. cue in {correct, incorrect, complete, streak}. Reads the
    existing awba_prefs.soundMuted slot via AW.prefs.get (no schema bump); the mute-toggle UI itself
    lands in the lesson/review HUD (04-03/04-05), not here. Path is page-relative to where
    lesson/review pages actually live (`lessons/`/`reviews/`, one level below `shared/` — the same

@@ -27,15 +27,24 @@ code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px}
 <div class="wrap">
 
 <h1>Awba · Sound audition</h1>
-<p class="gen">Generated 2026-07-16 · 9 candidates: 3 families × correct / incorrect / complete. Tap to hear.</p>
+<p class="gen">Updated 2026-07-16 · the four LIVE cues now shipping, plus the 9 synthesized candidates kept for reference. Tap to hear.</p>
 
-<p class="posture"><strong>Awba is silent today, on purpose.</strong> Nothing here is connected to
-the app. These are candidates only — pick a family, or reject them all. If a family is chosen, its
-three cues would later be converted and placed at <code>shared/sfx/correct.mp3</code>,
-<code>shared/sfx/incorrect.mp3</code> and <code>shared/sfx/complete.mp3</code> — the exact slots
-<code>AW.sound(cue)</code> already resolves — and only then would sound reach a learner.
-(<code>AW.sound</code> also has a <code>streak</code> slot; it can reuse the chosen
-<em>complete</em>, or gain a softer variant later — out of scope for this audition.)</p>
+<p class="posture"><strong>Sound is live (owner decision, 2026-07-16).</strong> The four cues below
+ship at <code>shared/sfx/</code> and play in lessons, reviews and practice — free, public-domain
+(CC0) sounds from the Kenney “Interface Sounds” pack, levelled to Awba's laws: everything is quiet
+(peaks −12 dBFS), the wrong-answer cue is the <em>lowest and quietest</em> (−16 dBFS — a soft
+acknowledgement, never a buzzer), and nothing is music. The learner can silence all of it with
+More → Sound. To swap any cue, replace its file in <code>shared/sfx/</code> and bump the
+service-worker cache version.</p>
+
+<h2>The live cues (shipping)</h2>
+<p class="fam-desc">correct — a warm soft note (290&thinsp;ms) · incorrect — a low quiet bong (120&thinsp;ms) · complete — a fuller settle (490&thinsp;ms) · streak — a gentle warm drop (190&thinsp;ms)</p>
+<div class="cues">
+  <button class="cue" type="button" data-live="correct">Correct</button>
+  <button class="cue" type="button" data-live="incorrect">Incorrect</button>
+  <button class="cue" type="button" data-live="complete">Complete</button>
+  <button class="cue" type="button" data-live="streak">Streak</button>
+</div>
 
 <h2>Wood</h2>
 <p class="fam-desc">A soft wooden tap: dry, close, unhurried.</p>
@@ -61,22 +70,27 @@ three cues would later be converted and placed at <code>shared/sfx/correct.mp3</
   <button class="cue" type="button" data-cue="thump-complete">Complete</button>
 </div>
 
-<p class="rec">If one must be chosen: <strong>Wood</strong> — its <em>correct</em> is the calmest,
-its <em>incorrect</em> the least like a buzzer, and its <em>complete</em> stays a single soft note
-rather than a flourish. But all three are candidates; rejecting every one is a valid answer.</p>
+<p class="rec">The three families above are the earlier <em>synthesized</em> candidates, kept for
+reference and comparison — the shipped cues (top of the page) were chosen instead, from a free CC0
+sound library, for their warmer real-world character. Swapping back to a synthesized family is a
+four-file replacement any time.</p>
 
 <p class="note">Every cue is a single dignified sound event — no melodies, no fanfares. All are
 normalized low (peak −12 dBFS; incorrect quieter and lower still, a soft downward acknowledgement,
-never a buzzer). Regenerate the set any time with
+never a buzzer). Regenerate the synthesized set any time with
 <code>node scripts/build-sound-candidates.js</code> — the output is deterministic, byte-identical
 every run.</p>
 
 <script>
-  /* tap to hear — no autoplay, ever. The WAVs sit beside this page in sound-audition/. */
+  /* tap to hear — no autoplay, ever. Candidates sit beside this page in sound-audition/;
+     the live cues are the app's own files at ../shared/sfx/. */
   document.addEventListener('click', function (e) {
-    var b = e.target && e.target.closest ? e.target.closest('button[data-cue]') : null;
-    if (!b) return;
-    new Audio('sound-audition/' + b.getAttribute('data-cue') + '.wav').play();
+    var t = e.target && e.target.closest ? e.target : null;
+    if (!t) return;
+    var live = t.closest('button[data-live]');
+    if (live) { new Audio('../shared/sfx/' + live.getAttribute('data-live') + '.mp3').play(); return; }
+    var b = t.closest('button[data-cue]');
+    if (b) new Audio('sound-audition/' + b.getAttribute('data-cue') + '.wav').play();
   });
 </script>
 
