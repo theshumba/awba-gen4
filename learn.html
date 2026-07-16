@@ -184,7 +184,7 @@
      live in the single source (an exact byte-copy file move, R6 §5). English unit titles are kept
      (R-6 chapter-term fallback); the retired `color` field never existed here. */
   var UNITS = window.AWBA_COURSE.units.map(function (u) {
-    return { n: u.n, title: u.title, desc: u.desc, nodes: u.nodes.map(function (nd) {
+    return { n: u.n, title: u.title, desc: u.desc, term: u.term, nodes: u.nodes.map(function (nd) {
       var o = { id: nd.id, label: nd.label };
       if (nd.href) o.href = nd.href;
       if (nd.kind === 'review') o.review = true;
@@ -212,8 +212,8 @@
   var flat = [], meta = [], byId = {}, metaById = {};
   UNITS.forEach(function (u) {
     u.nodes.forEach(function (nd) {
-      flat.push(nd); meta.push({ un: u.n, ut: u.title });
-      byId[nd.id] = nd; metaById[nd.id] = { un: u.n, ut: u.title };
+      flat.push(nd); meta.push({ un: u.n, ut: u.title, term: u.term });
+      byId[nd.id] = nd; metaById[nd.id] = { un: u.n, ut: u.title, term: u.term };
     });
   });
 
@@ -705,7 +705,11 @@
       cont =
         '<div class="cc">' +
           '<div class="cc-kick">Continue</div>' +
-          '<div class="cc-circuit">Circuit ' + am.un + ' · <span class="cc-term">' + am.ut + '</span></div>' +
+          /* R-6 filled: the square wears the verified Arabic chapter-term (lang/dir so bidi +
+             the rtl gate read it truly); the English title stays the fallback if a term is absent */
+          '<div class="cc-circuit">Circuit ' + am.un + ' · ' + (am.term
+            ? '<span class="cc-term" lang="ar" dir="rtl">' + am.term.ar + '</span>'
+            : '<span class="cc-term">' + am.ut + '</span>') + '</div>' +
           '<div class="cc-next">' + an.label + '</div>' +
           '<a class="btn ghost cc-go" href="' + an.href + '">Continue the path</a>' +
         '</div>';
@@ -817,7 +821,12 @@
         '<section class="ounit">' +
           '<div class="ounit-head">' +
             '<span class="ounit-ic">' + AW.icon(uicon, { size: '34px' }) + '</span>' +
-            '<span class="ounit-term">' + u.title + '</span>' +
+            /* R-6 filled: Arabic chapter-term in the Farag square + the English title beside it;
+               absent a term, the square holds the English title exactly as shipped (fallback) */
+            (u.term
+              ? '<span class="ounit-term" lang="ar" dir="rtl">' + u.term.ar + '</span>' +
+                '<span class="ounit-title">' + u.title + '</span>'
+              : '<span class="ounit-term">' + u.title + '</span>') +
             '<p class="ounit-desc">' + u.desc + '</p>' +
           '</div>' +
           '<div class="opath">' +

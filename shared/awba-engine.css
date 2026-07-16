@@ -1950,6 +1950,25 @@
     font-size: var(--fs-h2);
     line-height: 1.3;
   }
+  .ounit-term[lang="ar"], .cc-term[lang="ar"] {   /* R-6 FILLED — the verified Arabic chapter-term
+    in the same cream Farag square (unit header + continue card), Aref Ruqaa at --fs-term per the
+    §3 type scale; crimson ink on cream (the .g-ar.chapter precedent); a connected script is never
+    letter-spaced (§3 law) */
+    font-family: var(--font-term);
+    font-size: var(--fs-term);
+    line-height: 1.1;
+    font-weight: 400;
+    color: var(--crimson);            /* §2.1 --crimson on cream, 5.02:1 */
+    letter-spacing: 0;
+    padding: var(--sp-1) var(--sp-4);
+  }
+  .ounit-title {                      /* the English title beside a FILLED square — plain --fs-h2
+    ink on the dark unit card (the square no longer carries it) */
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    color: var(--cream);              /* §2.1 cream on Kiswah */
+    line-height: 1.3;
+  }
   .ounit-desc {                       /* the unit description — quiet reading prose */
     flex-basis: 100%; margin: 0;
     font-size: var(--fs-body);

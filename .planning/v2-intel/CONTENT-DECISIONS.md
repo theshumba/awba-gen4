@@ -191,3 +191,24 @@ The owner explicitly authorized the fetch ("yes fetch the 14:24 verse and add it
 **Ruling on the one-character variance:** the trailing comma is kept, following quran.com as the authoritative rendering; flagged in the scholar pack for the reviewer to confirm. Notable: quran.com's public **API** no longer serves the Khattab translation (only the rendered site does) — consistent with the Clear Quran's commercial-licensing posture, which remains an open owner-ledger item.
 
 **Protections:** the exact bytes are SHA-pinned in `scripts/port-audit.mjs` (`checkEpigraphFidelity`, `EPIGRAPH BYTES OK`); the `pending review` marker stays until scholar sign-off; the scholar pack extracts the line LIVE from learn.html (no second copy) and records this provenance in full.
+
+## ADDENDUM 2026-07-16 — G2 re-ruled: FILLED under owner authorization ("include everything that you can include there")
+
+The owner explicitly authorized maximal fill of the R-6 slot (2026-07-16). This removes the original
+ruling's "can't half-fill the row" constraint and sanctions the second use of the owner-authorized
+provenance classes. **What was filled is each unit's KEY TERM as its Farag-square emblem — honestly
+NOT an attested Arabic unit NAME (none exists in any source, per the original G2 finding).**
+
+**The four terms (now in `shared/course-structure.js`, rendered by `learn.html` unit headers + continue card):**
+| Unit | Term | Provenance class | Source |
+|---|---|---|---|
+| u1 The Foundation | `عَقِيدَة` (ʿaqīdah) | class-a: owner content, BYTE-VERBATIM | `lessons/u1-m1.html` terms.aqeedah — the unit's own opening lesson defines the word |
+| u2 The Drift | `زَيْغ` (zaygh) | class-b: owner-authorized sourced fetch (the G1/R-7 precedent) | Qur'anic vocabulary for the swerving of hearts: 3:7 `فِي قُلُوبِهِمْ زَيْغٌ`, 3:8 `رَبَّنَا لَا تُزِغْ قُلُوبَنَا`; triple-mirror-verified 2026-07-16 (quran.com/3/7, quran.com/3/8, quranapi.pages.dev/api/3/8 — Arabic byte-identical) |
+| u3 The Heart of It: Tawhid | `تَوْحِيد` (tawḥīd) | class-a: owner content, BYTE-VERBATIM | `lessons/u3-m1.html` terms.tawhid |
+| u4 The Pillars | `رُبُوبِيَّة` (rubūbiyyah) | class-a: owner content, BYTE-VERBATIM | `lessons/u4-m1.html` terms.rububiyah — u4's recurring key term (defined in 2 of its 4 lessons) |
+
+**Guards:** the three class-a terms are pinned byte-identical to their lesson entries by
+`course-structure.test.js`; the zaygh pin is exact-string with a never-edit-without-reverification
+comment. All four are presented to the scholar in `docs/launch-kit.html` §3 for sign-off (the
+emblem-vs-name framing is stated there); English titles remain in place beside the squares and stay
+the full fallback wherever a term is absent. The 19 SHA-frozen files are untouched.

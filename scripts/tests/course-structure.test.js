@@ -127,3 +127,34 @@ test('AWBA_COURSE: icon parity with AW.UNIT_ICON — no icon drift', () => {
     assert.equal(u.icon, unitIcon['u' + u.n], 'unit ' + u.n + ' icon must mirror AW.UNIT_ICON');
   });
 });
+
+/* ---------- R-6 chapter-terms (filled 2026-07-16, owner-authorized) ---------- */
+
+test('R-6: the three owner-content chapter-terms are BYTE-IDENTICAL to their lesson term entries', () => {
+  // {unit index, lesson file, term key} — the provenance ledger, pinned as bytes
+  const sources = [
+    { u: 0, file: 'lessons/u1-m1.html', key: 'aqeedah' },
+    { u: 2, file: 'lessons/u3-m1.html', key: 'tawhid' },
+    { u: 3, file: 'lessons/u4-m1.html', key: 'rububiyah' },
+  ];
+  sources.forEach(({ u, file, key }) => {
+    const src = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    const m = src.match(new RegExp(key + ":\\{ar:'([^']*)',tl:'([^']*)'"));
+    assert.ok(m, key + ' term entry not found in ' + file);
+    assert.equal(AWBA_COURSE.units[u].term.ar, m[1],
+      'unit ' + (u + 1) + ' Arabic must be byte-verbatim from ' + file);
+    assert.equal(AWBA_COURSE.units[u].term.tl, m[2],
+      'unit ' + (u + 1) + ' transliteration must be byte-verbatim from ' + file);
+  });
+});
+
+test('R-6: the sourced u2 term is exactly the verified zaygh — and every unit has a term', () => {
+  // زَيْغ — Qur'an 3:7 (قُلُوبِهِمْ زَيْغٌ) / 3:8 (لَا تُزِغْ قُلُوبَنَا); triple-mirror-verified
+  // 2026-07-16 (quran.com + quranapi.pages.dev, byte-identical Arabic). NEVER edit this pin
+  // without re-verification — it guards against silent drift in the one non-owner-content term.
+  assert.equal(AWBA_COURSE.units[1].term.ar, 'زَيْغ');
+  assert.equal(AWBA_COURSE.units[1].term.tl, 'zaygh');
+  AWBA_COURSE.units.forEach((u) => {
+    assert.ok(u.term && u.term.ar && u.term.tl, 'unit ' + u.n + ' carries a chapter-term');
+  });
+});
