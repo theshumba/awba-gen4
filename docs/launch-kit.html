@@ -54,7 +54,7 @@ scholar gate (§3), and make the open product calls (§4). Nothing on this page 
 <p>Do this on a real phone (iPhone and, if you can, one Android). Tick each item as it passes —
 this page remembers your ticks on this device. Each item says what <em>good</em> looks like.</p>
 
-<p class="count" id="lkCount" aria-live="polite">0 of 12 steps done</p>
+<p class="count" id="lkCount" aria-live="polite">0 of 13 steps done</p>
 
 <ul class="walk" id="lkList">
   <li><label><input type="checkbox" id="lk1"><span>Install to the home screen</span></label>
@@ -81,6 +81,8 @@ this page remembers your ticks on this device. Each item says what <em>good</em>
     <span class="good">Both Begin and Skip land on the path (learn.html); the back button never loops back into onboarding.</span></li>
   <li><label><input type="checkbox" id="lk12"><span>Move-to-a-new-device round-trip</span></label>
     <span class="good">On device A: More → Move to a new device → Copy the code. On device B: paste under "Bring it here" → Check → Bring it in → "Your light has arrived." — the path arrives intact (noor, returns, finished lessons, the same ring).</span></li>
+  <li><label><input type="checkbox" id="lk13"><span>Sound tap-walk</span></label>
+    <span class="good">In a lesson, a correct answer gives one soft note; a wrong answer a lower, quieter one (never a buzzer); finishing gives a fuller settle. More → Sound Off silences all of it; offline, the sounds still play.</span></li>
 </ul>
 
 <button class="reset" type="button" id="lkReset">Reset checklist</button>
@@ -138,42 +140,49 @@ posture (every citation, unconditionally). A signed pack would motivate either a
 flip or a finer per-citation verified state; either way it is an engine/CSS change gated behind the
 actual sign-off. Until then, <strong>no surface may imply scripture has been cleared.</strong></p>
 
-<h3>The Arabic chapter-terms slot (R-6) — what to ask the scholar for</h3>
-<p>The 4 unit "chapter-term" squares currently render an <strong>English fallback</strong> pending
-owner-supplied Arabic. Ask the scholar (or supply yourself), per unit, exactly this shape — it drops
-straight into the term registry:</p>
-<div class="slot">Unit 1  ·  Arabic term: «………» (fully vowelled / tashkeel)  ·  transliteration: «………»  ·  English gloss: «………»
-Unit 2  ·  …
-Unit 3  ·  …
-Unit 4  ·  …</div>
-<p class="note">These Arabic terms are never invented in-house; each square stays on its English
-fallback until the vowelled Arabic arrives. (Same law for the Ibrahim 14:24 epigraph posture — a
-verified verbatim line, never paraphrased.)</p>
+<h3>The Arabic chapter-terms (R-6) — FILLED 2026-07-16, please have the scholar confirm</h3>
+<p>On your instruction ("include everything that you can include there") the four unit squares now
+wear a verified Arabic term. <strong>Each is the unit's key term — its emblem — not an attested
+Arabic unit name</strong> (no source ever named the units in Arabic). Three are copied
+byte-for-byte from the course's own lesson vocabulary; one is sourced Qur'anic vocabulary,
+triple-checked against independent mirrors. Ask the scholar to confirm all four (spelling,
+vowelling, and fit):</p>
+<div class="slot">Unit 1 · The Foundation  ·  عَقِيدَة  (ʿaqīdah)   — from the course's own lesson 1 vocabulary, byte-verbatim
+Unit 2 · The Drift       ·  زَيْغ    (zaygh)     — sourced: the Qur'anic swerving of hearts (3:7 فِي قُلُوبِهِمْ زَيْغٌ · 3:8 لَا تُزِغْ قُلُوبَنَا), verified across quran.com and a second mirror
+Unit 3 · Tawhid          ·  تَوْحِيد  (tawḥīd)    — from the course's own vocabulary, byte-verbatim
+Unit 4 · The Pillars     ·  رُبُوبِيَّة (rubūbiyyah) — the unit's recurring key term, byte-verbatim</div>
+<p class="note">Nothing was invented: every string is either the course's own bytes or
+mirror-verified Qur'anic vocabulary, and all four are pending the scholar's confirmation. If the
+scholar prefers a different term for any unit, it is a one-line change in
+<code>shared/course-structure.js</code>. (Same law as the Ibrahim 14:24 epigraph — verified
+verbatim, never paraphrased.)</p>
 
-<h2 id="decisions">4 · Open product decisions (recorded, not resolved)</h2>
+<h2 id="decisions">4 · Product decisions — CLOSED 2026-07-16 (you delegated the calls; here is each one, and why)</h2>
 <table>
-  <tr><th>Decision</th><th>Status / recommendation</th></tr>
+  <tr><th>Decision</th><th>Ruling</th></tr>
   <tr><td><strong>Practice noor</strong></td>
-      <td>Practice awards <strong>none</strong> (read-only). <em>Recommend keep none</em> — matches the
-      review circle-back precedent, can't distort the shipped economy, un-farmable.</td></tr>
+      <td><strong>DECIDED: none.</strong> Practice stays read-only — matches the review circle-back
+      precedent, can't distort the shipped economy, un-farmable.</td></tr>
   <tr><td><strong>Visible review timer (R-8)</strong></td>
-      <td>Whether the 14s review timer shows a <em>numeric</em> readout is an owner call —
-      <strong>unresolved</strong>; don't redesign the review timer without deciding this. Today the
-      timer bar drains visibly and quietly deepens when time runs low, plus a single
-      "10 seconds" announcement — but there is no numeric countdown.</td></tr>
+      <td><strong>DECIDED: no numeric countdown.</strong> The bar already drains visibly and quietly
+      deepens when time runs low, plus a single "10 seconds" announcement. A ticking number adds
+      anxiety, not information — against the mercy voice.</td></tr>
   <tr><td><strong>Reviews in the practice pool</strong></td>
-      <td>The pool is <strong>lessons-only</strong>. Adding review items needs item-shape normalisation
-      (review items differ from lesson mc/tf/tile) — <strong>deferred fast-follow</strong>.</td></tr>
+      <td><strong>DECIDED: lessons-only stands.</strong> Review items are built for the timed review
+      moment; flattening them into untimed practice needs shape normalisation and would dilute what
+      makes reviews special. Revisit only if learners ask for it.</td></tr>
   <tr><td><strong>Sound</strong></td>
-      <td>The app ships <strong>silent</strong>. Pick a family from
-      <a href="sound-audition.html">docs/sound-audition.html</a> <strong>or reject all</strong>; wiring
-      the chosen cues is a later step. Sound <em>effects</em>, not music.</td></tr>
-  <tr><td><em>Also open</em></td>
-      <td>61-vs-65 denominator (the app shows <strong>61</strong>; a change is a one-line
-      <code>structure.atoms</code> engine edit) · compound reward-clause CTAs kept as calm sub-lines,
-      not shouty labels · default du'a undecided (never invented — Ibn Hibban 974 ships as the sourced
-      default).</td></tr>
+      <td><strong>DECIDED &amp; DONE: sound is live.</strong> Four real cues (correct / incorrect /
+      complete / streak) now ship at <code>shared/sfx/</code> — free CC0 sounds (Kenney Interface
+      Sounds pack), chosen and levelled to the mercy laws: the wrong-answer cue is the lowest and
+      quietest, nothing is music. Hear them on <a href="sound-audition.html">the audition page</a>;
+      silence everything any time with More → Sound.</td></tr>
+  <tr><td><em>Also closed</em></td>
+      <td>Denominator stays <strong>61</strong> (only taught atoms count — honest) · reward-clause
+      CTAs stay calm sub-lines · the default du'a stays Ibn Hibban 974 (the one sourced splice).</td></tr>
 </table>
+<p class="note">Any of these can be reopened with a word — each is a small, isolated change. They are
+recorded as decided so nothing silently blocks launch.</p>
 
 <script>
   /* launch-kit.html is a DOCS ARTIFACT, deliberately outside the app's storage laws: it is never
