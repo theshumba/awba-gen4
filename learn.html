@@ -247,6 +247,11 @@
   flat.forEach(function (nd) { idSet[nd.id] = true; });
 
   var booted = false, observing = false, curActiveId = null;
+  var lastDrawW = -1;                       /* viewport width at the last thread draw (URL-bar gate) */
+  var ringCacheAtoms = -1, ringCacheHtml = ''; /* the Ring hero memo — AW.ringSVG is pinned deterministic
+                                                  (ring.test.js), so the same (seed, atomsDone, 300) tuple
+                                                  always yields these exact bytes; regenerate only when
+                                                  the taught-atom frontier actually moves */
 
   /* smoothPath — a Catmull-Rom spline (as cubic béziers) that passes THROUGH every node centre, so
      the ink thread reads as one flowing hand-drawn line rather than straight segments. */
@@ -281,18 +286,17 @@
      the draw verb belongs to lesson-complete on the reward page, never a home visit). */
   function drawThreads() {
     if (!app) return;
+    lastDrawW = window.innerWidth;   /* remember the width this draw was laid out at (URL-bar gate) */
+    /* PASS 1 — reads only. Interleaving each section's rect reads with the previous section's
+       viewBox/d writes forced a synchronous reflow per section (~8 per invocation); batching all
+       getBoundingClientRect calls first leaves ONE layout pass however many sections there are.
+       Output bytes are identical — this is a reorder of the same reads and writes. */
+    var jobs = [];
     app.querySelectorAll('.opath').forEach(function (sec) {
       var svg = sec.querySelector('.op-thread-svg');
       if (!svg) return;
-      var base = svg.querySelector('.op-thread-base'), gold = svg.querySelector('.op-thread');
-      var marks = sec.querySelectorAll('.onode-mark');
       var pr = sec.getBoundingClientRect();
-      svg.setAttribute('viewBox', '0 0 ' + (pr.width || 1) + ' ' + (pr.height || 1));
-      if (!pr.width || marks.length < 2) {
-        if (base) base.removeAttribute('d');
-        if (gold) { gold.removeAttribute('d'); gold.style.display = 'none'; }
-        return;
-      }
+      var marks = sec.querySelectorAll('.onode-mark');
       var pts = [], lastEarned = -1;
       marks.forEach(function (m, i) {
         var r = m.getBoundingClientRect();
@@ -300,13 +304,26 @@
         var btn = m.closest('.onode');
         if (btn && btn.getAttribute('data-nstate') === 'done') lastEarned = i;
       });
+      jobs.push({ svg: svg, pr: pr, count: marks.length, pts: pts, lastEarned: lastEarned });
+    });
+    /* PASS 2 — writes. getTotalLength/getPointAtLength operate on path geometry, not document
+       layout, so running them here (after `d` is set) forces no further document reflow. */
+    jobs.forEach(function (job) {
+      var svg = job.svg, pr = job.pr, pts = job.pts;
+      var base = svg.querySelector('.op-thread-base'), gold = svg.querySelector('.op-thread');
+      svg.setAttribute('viewBox', '0 0 ' + (pr.width || 1) + ' ' + (pr.height || 1));
+      if (!pr.width || job.count < 2) {
+        if (base) base.removeAttribute('d');
+        if (gold) { gold.removeAttribute('d'); gold.style.display = 'none'; }
+        return;
+      }
       var d = smoothPath(pts);
       base.setAttribute('d', d);
       gold.setAttribute('d', d);
-      if (lastEarned < 1) { gold.style.display = 'none'; return; }   // nothing earned within this section yet
+      if (job.lastEarned < 1) { gold.style.display = 'none'; return; }   // nothing earned within this section yet
       gold.style.display = '';
       var total = gold.getTotalLength();
-      var earnedLen = arcLenAtPoint(gold, total, pts[lastEarned]);
+      var earnedLen = arcLenAtPoint(gold, total, pts[job.lastEarned]);
       gold.style.setProperty('--len', earnedLen);                    // parity with the shipped .thread contract
       gold.style.strokeDasharray = earnedLen + ' ' + (total + 1);    // reveal only the earned road
       gold.style.strokeDashoffset = '0';                             // STATIC to its final extent (no replay)
@@ -323,7 +340,15 @@
      and after fonts settle. Attached once; the observed #app persists across re-renders. */
   function setupObservers() {
     if (observing) return; observing = true;
-    window.addEventListener('resize', scheduleDraw);
+    window.addEventListener('resize', function () {
+      /* mobile URL-bar collapse/expand fires resize with only the viewport HEIGHT changed — the
+         document doesn't reflow, node positions hold, and a full spline recompute mid-scroll is
+         pure jank. Width is the only input that moves the nodes; height-driven content changes
+         are caught by the ResizeObserver below (which watches #app's own box, untouched by the
+         URL bar). */
+      if (window.innerWidth === lastDrawW) return;
+      scheduleDraw();
+    });
     window.addEventListener('load', scheduleDraw);
     if (typeof ResizeObserver !== 'undefined') { new ResizeObserver(scheduleDraw).observe(app); }
   }
@@ -510,6 +535,10 @@
     });
     /* re-anchor an open slip when the world shifts under it (resize / font settle) */
     window.addEventListener('resize', function () { if (openPop && popNode) placePop(openPop, popNode); });
+    /* …and as the path scrolls beneath it — the slip is position:fixed, so without this it
+       visually detaches from its station on the first scroll gesture. Passive: never blocks
+       the scroll; the two rect reads run only while a slip is actually open. */
+    window.addEventListener('scroll', function () { if (openPop && popNode) placePop(openPop, popNode); }, { passive: true });
   }
 
   /* ============================================================================================
@@ -691,17 +720,22 @@
         '<span class="ls-stats">' +
           '<button class="hstat" id="hudReturns" type="button" aria-label="' + st.returns + ' returns — open your streak">' + AW.icon('flame') + '<span>' + st.returns + '</span></button>' +
           '<button class="hstat" id="hudNoor" type="button" aria-label="' + st.noor + ' noor — open your light">' + AW.icon('spark') + '<span>' + st.noor + '</span></button>' +
-          AW.muteBtnHtml() +
+          '<span id="lrnMuteWrap">' + AW.muteBtnHtml() + '</span>' +
         '</span>' +
       '</div>';
 
     /* Ring hero (THE macro map, STATIC on load — law 9): omit animateFrom so the established ring
        renders fully static (the draw belongs to lesson-complete only, never a home-visit replay).
-       It is the only element at this scale; nothing below competes (no second ring, no progress bar). */
-    var ring =
-      '<div class="ob-ring"><div class="ob-ringcap">' +
-        AW.ringSVG({ atomsDone: AW.atomsDone(AW.state()), size: 300 }) +
-      '</div></div>';
+       It is the only element at this scale; nothing below competes (no second ring, no progress bar).
+       Memoised on the taught-atom frontier: the generator is pinned deterministic, so re-renders at
+       unchanged progress (chest claims, festival closes) reuse the exact bytes for free — and the
+       one-read-per-render-pass rule holds (st, never a second AW.state()). */
+    var atomsNow = AW.atomsDone(st);
+    if (atomsNow !== ringCacheAtoms) {
+      ringCacheAtoms = atomsNow;
+      ringCacheHtml = AW.ringSVG({ atomsDone: atomsNow, size: 300 });
+    }
+    var ring = '<div class="ob-ring"><div class="ob-ringcap">' + ringCacheHtml + '</div></div>';
 
     /* Streak strip + constellation (re-voiced from the Gen-3 band, D-60) — a quiet Courier line
        directly under the Ring + a row of return-day dots from AW.weekCal(): on = lit gold, off =
@@ -914,8 +948,14 @@
 
     app.innerHTML = '<div class="ob-shell">' + hud + '<div class="ob-wrap">' + body + '</div></div>' + tabs;
 
-    /* the one shared mute pattern (D-60) — re-render on toggle so the glyph + aria swap */
-    AW.bindMuteBtn(render);
+    /* the one shared mute pattern (D-60) — refresh ONLY the toggle in place (the session.html
+       wrapper precedent): a mute tap must never rebuild the whole path, which replayed the node
+       entrance stagger and dropped any open slip (law-9 calm). */
+    function refreshMute() {
+      var wrap = document.getElementById('lrnMuteWrap');
+      if (wrap) { wrap.innerHTML = AW.muteBtnHtml(); AW.bindMuteBtn(refreshMute); }
+    }
+    AW.bindMuteBtn(refreshMute);
 
     /* HUD + streak-strip taps come alive (§S4 · D-60 / LRN-01) — the course chip opens the switcher,
        the returns stat AND the whole streak strip open the ONE streak sheet, the noor stat opens the
