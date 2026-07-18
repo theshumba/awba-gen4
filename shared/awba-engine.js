@@ -1825,10 +1825,25 @@ AW.reviewStars = function (correct, total, allInTime) {
    relativity as their `<script src="../shared/awba-engine.js">` include). Cue asset format/set is
    an owner decision (Assumption A5); when files land in `shared/sfx/`, zero code change is
    required here. */
+var soundCues = {};   // one Audio per cue, created on first use — a tap's feedback never re-fetches/decodes
+/* AW._soundWarm — pre-create the four cue players with preload only (never play(), so autoplay
+   policy is untouched). Called from the runner boots — which only ever execute on one-level-down
+   pages, so the '../shared/sfx/' relativity holds — the FIRST answer's cue then never pays
+   construction + fetch at the tap. Muted sessions skip the warm; AW.sound's lazy path still
+   self-fills if the learner unmutes mid-run. Same no-op guarantees as AW.sound. */
+AW._soundWarm = function () {
+  if (AW.prefs.get('soundMuted', false)) return;
+  try {
+    ['correct', 'incorrect', 'complete', 'streak'].forEach(function (c) {
+      if (!soundCues[c]) { var a = new Audio('../shared/sfx/' + c + '.mp3'); a.preload = 'auto'; soundCues[c] = a; }
+    });
+  } catch (e) { /* no Audio support — AW.sound's own guards still hold */ }
+};
 AW.sound = function (cue) {
   if (AW.prefs.get('soundMuted', false)) return;
   try {
-    var a = new Audio('../shared/sfx/' + cue + '.mp3');
+    var a = soundCues[cue] || (soundCues[cue] = new Audio('../shared/sfx/' + cue + '.mp3'));
+    try { a.currentTime = 0; } catch (e2) { /* pre-metadata rewind can throw on old Safari — play from wherever */ }
     a.play().catch(function () {});
   } catch (e) {
     /* no-op — missing Audio support / blocked playback never surfaces to the learner */
@@ -2069,7 +2084,9 @@ function bindMuteBtn(refresh) {
     AW.prefs.set('soundMuted', now);
     if (now) document.documentElement.setAttribute('data-sound', 'muted');
     else document.documentElement.removeAttribute('data-sound');   // attribute-absent when unmuted — the boot-stamp convention
-    if (refresh) refresh();
+    var had = document.activeElement === m;   // every consumer's refresh replaces this button —
+    if (refresh) refresh();                    // keep a keyboard/switch user's place on the swap
+    if (had) { var nm = document.getElementById('lsmute'); if (nm && nm !== m) nm.focus(); }
   });
 }
 
@@ -2141,6 +2158,7 @@ function AwbaLesson(cfg) {
     quizN = 0, noorEarned = 0;
   var flourishTimer = null;            // WR-02 — the pending 3-streak flourish timer, closure-scoped so resolve() can clear a stale one before it writes into a later answer's #lsflourish
   var claimNoor = AW._noorClaimer();   // the noor moment persists exactly once (RWD-01 / T-04-04a)
+  AW._soundWarm();                     // the first answer's cue must land AT the tap, not after a fetch
   beats.forEach(function (b) { if (['mc', 'tf', 'tile'].indexOf(b.t) >= 0) quizN++; });
 
   /* Pitfall 7 / WR-01 — the Ring's animateFrom is captured HERE, at INIT: BEFORE the opener, BEFORE
@@ -2640,6 +2658,7 @@ function AwbaReview(cfg) {
     tleft = 0, thisInTime = true;
   var queue = CH.map(function (_, i) { return i; }), skipped = [], phase = 'main';
   var claimNoor = AW._noorClaimer();   // noor persists exactly once at result (T-04-05a)
+  AW._soundWarm();                     // the first answer's cue must land AT the tap, not after a fetch
 
   /* No back button, ever (Gen-3 348) — the review has no back affordance on any screen. */
   var rb = document.getElementById('awback'); if (rb) rb.style.display = 'none';
@@ -2913,6 +2932,7 @@ AW.practiceRun = function (mountEl, items, opts) {
   opts = opts || {};
   var total = items.length;
   var i = 0, correct = 0, answered = false, firstAttempt = true;
+  AW._soundWarm();                     // the first answer's cue must land AT the tap, not after a fetch
 
   function foot(inner) { return '<div class="foot" id="prfoot">' + inner + '</div>'; }
   function btn(label, cls, id) {
