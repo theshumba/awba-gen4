@@ -1055,20 +1055,8 @@
     color: var(--ink);              /* §2.1 --kiswah on cream, 16.22:1 */
   }
   .hero .hero-ico { line-height: 0; color: var(--icon-accent); }   /* unit scene icon — Page crimson detail */
-  .journey {                        /* the chapter key-term — Aref Ruqaa in a Farag square (§ Typography, law 5) */
-    font-family: var(--font-term);
-    font-size: var(--fs-term);
-    line-height: 1.0;
-    color: var(--crimson);          /* §2.1 --crimson on cream, 6.13:1 — the ≤10% Page accent */
-    width: fit-content;
-    margin-inline: auto;
-    padding: var(--sp-3) var(--sp-6);
-    border: var(--sp-2) solid var(--rule);   /* --sp-2 = the 2px jadwal/keyline rule width */
-    border-radius: var(--r-square);
-    direction: rtl;
-    unicode-bidi: isolate;
-    letter-spacing: 0;
-  }
+  /* (the former chapter key-term square rule was removed 2026-07-18 — Phase 4 renders cfg.journey
+     as a .kicker breadcrumb, so nothing ever carried that class; flagged orphaned at Phase-5 close) */
   .thought {                        /* optional soft intro — Readex 300, sized ≥18px (the only 300 use) */
     margin: 0;
     max-width: 46ch;
