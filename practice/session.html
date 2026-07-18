@@ -13,8 +13,6 @@
 <link rel="preload" as="font" type="font/woff2" href="../shared/fonts/amiri-quran-400.woff2" crossorigin>
 <link rel="stylesheet" href="../shared/awba-engine.css">
 <script src="../shared/awba-engine.js"></script>
-<!-- the dev-generated, byte-verbatim item pool (classic global assign; file://-safe, no fetch). -->
-<script src="../shared/practice-pool.js"></script>
 <!-- The only page-authored CSS: a content block for the already-declared `screens` layer (never the
      name-list order line). Composition only — every value a shipped token, zero new hex. The register
      :focus-visible ring (crimson on cream) rides in automatically from the engine grammar. AW.practiceRun
@@ -84,6 +82,10 @@
 </head>
 <body>
 <main class="reg-page grain" id="app"></main>
+<!-- the dev-generated, byte-verbatim item pool (classic global assign; file://-safe, no fetch).
+     Loaded HERE, not in <head>: 51KB of quiz data must never block the drill's first paint —
+     classic scripts execute in document order, so it still lands before the controller below. -->
+<script src="../shared/practice-pool.js"></script>
 <script>
 (function () {
   'use strict';

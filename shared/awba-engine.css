@@ -185,6 +185,11 @@
      stranded (the exact Gen-3 accessibility gap this base layer closes). */
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; margin: 0; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scrollbar-gutter: stable; }  /* iOS landscape must never inflate the type scale; classic-scrollbar desktops keep their gutter so the sheet scroll-lock never shifts the column */
+  /* Controls answer the finger instantly: no double-tap-zoom hesitation, no text-selection
+     flash under rapid quiz taps. Buttons and button-shaped anchors only — running text,
+     scripture and the travel-code field keep normal selection. */
+  button, .btn, .tab { touch-action: manipulation; -webkit-user-select: none; user-select: none; }
   body {
     font-family: var(--font-work);
     font-size: var(--fs-body);
