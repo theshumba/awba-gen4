@@ -12,11 +12,14 @@
               with a network fill-through on miss.
 
    PRECACHE lists the real on-disk file paths (relative, no leading slash) so it can never drift;
-   pwa-audit.mjs re-derives + disk-checks every entry. 57 entries: the 25 app pages (learn.html +
+   pwa-audit.mjs re-derives + disk-checks every entry. 54 entries: the 25 app pages (learn.html +
    the v2 surfaces onboarding/practice/profile/more.html + practice/session.html + the 15 lessons +
    the 4 reviews) + the engine CSS/JS + shared/course-structure.js + shared/practice-pool.js + the
    4 sound cues (shared/sfx/ — owner-chosen 2026-07-16, offline lessons keep their sound) + the
-   17 self-hosted fonts + grain.png + the 4 icon PNGs + manifest.webmanifest + index.html.
+   14 self-hosted fonts actually declared by the CSS (inter-500/600/700 sit on disk unreferenced —
+   the engine declares Inter 400 only, as the corner-bracket glyph fallback; precaching the other
+   three was ~87KB of pure install/update weight) + grain.png + the 4 icon PNGs +
+   manifest.webmanifest + index.html.
    preview.html is dev-only and deliberately excluded. CACHE bumps on every precache-list change so
    installs refresh.
    ============================================================================================ */
@@ -68,9 +71,6 @@ var PRECACHE = [
   'shared/fonts/aref-ruqaa-700.woff2',
   'shared/fonts/courier-prime-400.woff2',
   'shared/fonts/inter-400.woff2',
-  'shared/fonts/inter-500.woff2',
-  'shared/fonts/inter-600.woff2',
-  'shared/fonts/inter-700.woff2',
   'shared/fonts/marcellus-400.woff2',
   'shared/fonts/rakkas-400.woff2',
   'shared/fonts/readex-pro-300.woff2',
@@ -98,6 +98,13 @@ self.addEventListener('activate', function (e) {
       return Promise.all(keys.filter(function (k) { return k !== CACHE; }).map(function (k) {
         return caches.delete(k);
       }));
+    }).then(function () {
+      /* navigation preload: the browser starts the navigation's network fetch in parallel with
+         SW boot, shaving its startup cost off every page-to-page hop (feature-detected; the
+         fetch branch below consumes e.preloadResponse so the preload is never wasted). */
+      if (self.registration.navigationPreload) {
+        return self.registration.navigationPreload.enable().catch(function () {});   // never let a preload quirk block claim()
+      }
     }).then(function () { return self.clients.claim(); })
   );
 });
@@ -112,11 +119,31 @@ self.addEventListener('fetch', function (e) {
   var isNavigate = req.mode === 'navigate' || accept.indexOf('text/html') !== -1;
 
   if (isNavigate) {
+    /* Network-first with PATIENCE, not devotion: the fresh page wins when the network answers
+       inside ~2.5s (the common case); past that, an already-cached copy of THIS page is served
+       at once while the network fetch keeps running and re-fills the cache for next time —
+       a slow connection stops meaning a hung navigation. A page never cached keeps waiting on
+       the network (never a wrong-page fallback for mere slowness); actual network FAILURE falls
+       to the cached page, then the learn shell, exactly as before. e.preloadResponse (enabled at
+       activate) is the same network fetch already in flight — undefined where unsupported. */
+    var network = Promise.resolve(e.preloadResponse).then(function (pre) {
+      return pre || fetch(req);
+    }, function () {
+      return fetch(req);                  // a preload-specific failure/cancel still gets a plain fetch try
+    }).then(function (res) {
+      var copy = res.clone();
+      return caches.open(CACHE).then(function (c) { return c.put(req, copy); }).then(function () { return res; });
+    });
+    var patience = new Promise(function (resolve) { setTimeout(resolve, 2500); }).then(function () {
+      return caches.match(req);           // undefined when never cached → the race falls back to the network below
+    });
+    /* keep the event alive for the network branch even after a patience win — without this the
+       browser cancels the unconsumed preload / may stop the worker before the late response's
+       cache re-fill lands, and the slow-connection freshness promise silently under-delivers. */
+    e.waitUntil(network.catch(function () {}));
     e.respondWith(
-      fetch(req).then(function (res) {
-        var copy = res.clone();
-        caches.open(CACHE).then(function (c) { c.put(req, copy); });
-        return res;
+      Promise.race([network, patience]).then(function (winner) {
+        return winner || network;         // patience won empty-handed → the network is the only truth
       }).catch(function () {
         return caches.match(req).then(function (cached) {
           return cached || caches.match('learn.html');
