@@ -214,7 +214,7 @@ function runProbe(sourcePath, driver, probePath, resultId, doneTitle, extraArgs)
       .concat(extraArgs || ['--virtual-time-budget=8000'])
       .concat(['--dump-dom', 'file://' + probePath]);
     try {
-      stdout = execFileSync(CHROME, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 40000, maxBuffer: 1024 * 1024 * 64 });
+      stdout = execFileSync(CHROME, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 40000, killSignal: 'SIGKILL', maxBuffer: 1024 * 1024 * 64 });
     } catch (e) {
       stdout = e.stdout ? e.stdout.toString() : '';
     }

@@ -56,7 +56,9 @@ const CANONICAL_JOURNEY = [
 function listHtml(dir) {
   const abs = path.join(ROOT, dir);
   if (!existsSync(abs)) return [];
-  return readdirSync(abs).filter((f) => f.endsWith('.html')).map((f) => path.join(abs, f));
+  // dot-prefixed entries are transient harness probes (.a11yan-*/.contrast-probe-* etc.) another
+  // concurrently-running test file may write+unlink mid-sweep — never treat one as an app page
+  return readdirSync(abs).filter((f) => f.endsWith('.html') && !f.startsWith('.')).map((f) => path.join(abs, f));
 }
 
 const chromeMissing = !existsSync(CHROME) || !existsSync(LEARN) || !existsSync(LESSON_SOURCE);
@@ -231,7 +233,7 @@ function runProbe(sourcePath, driver, probePath, resultId, doneTitle) {
         // ?begin=1 short-circuits learn.html's §0.4 first-run redirect guard so the probe renders the
         // real page instead of bouncing to onboarding.html (harmless for the lesson probe, which has no guard).
         ['--headless', '--disable-gpu', '--enable-logging=stderr', '--v=1', '--virtual-time-budget=5000', '--dump-dom', 'file://' + probePath + '?begin=1'],
-        { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000, maxBuffer: 1024 * 1024 * 64 }
+        { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000, killSignal: 'SIGKILL', maxBuffer: 1024 * 1024 * 64 }
       );
     } catch (e) {
       stdout = e.stdout ? e.stdout.toString() : '';

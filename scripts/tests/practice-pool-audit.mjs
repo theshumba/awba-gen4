@@ -57,7 +57,7 @@ function nodeAtomKeys() {
 function ingestLessons() {
   const cfgs = {};
   readdirSync(LESSONS_DIR)
-    .filter((f) => f.endsWith('.html'))
+    .filter((f) => f.endsWith('.html') && !f.startsWith('.')) // dot-prefixed = transient harness probes, never content
     .sort()
     .forEach((f) => {
       const { cfg, kind } = ingest(path.join(LESSONS_DIR, f));

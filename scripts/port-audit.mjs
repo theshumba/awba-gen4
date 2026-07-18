@@ -53,7 +53,7 @@ function listPages(dir) {
   const abs = path.join(ROOT, dir);
   if (!existsSync(abs)) return [];
   return readdirSync(abs)
-    .filter((f) => f.endsWith('.html'))
+    .filter((f) => f.endsWith('.html') && !f.startsWith('.')) // dot-prefixed = transient harness probes, never content
     .map((f) => ({ name: f, dir, abs: path.join(abs, f) }));
 }
 

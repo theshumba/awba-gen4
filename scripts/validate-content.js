@@ -356,7 +356,8 @@ function defaultFiles() {
     try {
       fs.readdirSync(dir)
         .filter(function (f) {
-          return f.toLowerCase().endsWith('.html');
+          // dot-prefixed entries are transient harness probes (.rtl-probe-*/.a11yan-* etc.) — never content
+          return f.toLowerCase().endsWith('.html') && f.indexOf('.') !== 0;
         })
         .forEach(function (f) {
           files.push(path.join(dir, f));

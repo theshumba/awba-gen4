@@ -125,7 +125,7 @@ function main() {
   if (!existsSync(swPath)) fail('sw.js missing');
 
   try {
-    execFileSync(process.execPath, ['--check', swPath], { stdio: 'pipe' });
+    execFileSync(process.execPath, ['--check', swPath], { stdio: 'pipe', timeout: 30000, killSignal: 'SIGKILL' });
   } catch (e) {
     fail(`sw.js does not parse — ${e.message}`);
   }

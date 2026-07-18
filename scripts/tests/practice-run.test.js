@@ -135,7 +135,7 @@ function runHarness() {
         ['--headless', '--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage',
          '--disable-software-rasterizer', '--renderer-process-limit=1', '--js-flags=--max-old-space-size=128',
          '--virtual-time-budget=5000', '--dump-dom', 'file://' + probe],
-        { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000, maxBuffer: 1024 * 1024 * 64 }
+        { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000, killSignal: 'SIGKILL', maxBuffer: 1024 * 1024 * 64 }
       );
     } catch (e) {
       stdout = e.stdout ? e.stdout.toString() : '';

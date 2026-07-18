@@ -627,19 +627,19 @@ function findPages() {
   const lessonsDir = path.join(ROOT, 'lessons');
   if (existsSync(lessonsDir)) {
     for (const f of readdirSync(lessonsDir)) {
-      if (f.endsWith('.html')) pages.push({ file: path.join(lessonsDir, f), type: 'lesson' });
+      if (f.endsWith('.html') && !f.startsWith('.')) pages.push({ file: path.join(lessonsDir, f), type: 'lesson' }); // skip transient dot-probes
     }
   }
   const reviewsDir = path.join(ROOT, 'reviews');
   if (existsSync(reviewsDir)) {
     for (const f of readdirSync(reviewsDir)) {
-      if (f.endsWith('.html')) pages.push({ file: path.join(reviewsDir, f), type: 'review' });
+      if (f.endsWith('.html') && !f.startsWith('.')) pages.push({ file: path.join(reviewsDir, f), type: 'review' }); // skip transient dot-probes
     }
   }
   const practiceDir = path.join(ROOT, 'practice');
   if (existsSync(practiceDir)) {
     for (const f of readdirSync(practiceDir)) {
-      if (f.endsWith('.html')) pages.push({ file: path.join(practiceDir, f), type: 'session' });
+      if (f.endsWith('.html') && !f.startsWith('.')) pages.push({ file: path.join(practiceDir, f), type: 'session' }); // skip transient dot-probes
     }
   }
   return pages;
@@ -694,7 +694,7 @@ function runOnce(probePath, type) {
         '--dump-dom',
         'file://' + probePath,
       ],
-      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: timeoutFor(type), maxBuffer: 1024 * 1024 * 64 }
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: timeoutFor(type), killSignal: 'SIGKILL', maxBuffer: 1024 * 1024 * 64 }
     );
     const m = stdout.match(/<script[^>]*id="contrast-result"[^>]*>([\s\S]*?)<\/script>/);
     const done = /CONTRAST-DONE/.test(stdout);

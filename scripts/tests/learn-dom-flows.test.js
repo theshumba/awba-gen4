@@ -121,7 +121,7 @@ function runHarness(html, tag) {
           // to onboarding.html before the injected driver runs).
           'file://' + probe + '?begin=1',
         ],
-        { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000, maxBuffer: 1024 * 1024 * 64 }
+        { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000, killSignal: 'SIGKILL', maxBuffer: 1024 * 1024 * 64 }
       );
     } catch (e) {
       stdout = e.stdout ? e.stdout.toString() : '';

@@ -47,7 +47,7 @@ function findPages() {
     const abs = path.join(ROOT, dir);
     if (!existsSync(abs)) continue;
     for (const f of readdirSync(abs)) {
-      if (f.endsWith('.html')) pages.push(path.join(abs, f));
+      if (f.endsWith('.html') && !f.startsWith('.')) pages.push(path.join(abs, f)); // dot-prefixed = transient harness probes, never app pages
     }
   }
   return pages;
@@ -70,7 +70,7 @@ function loadInChrome(pagePath) {
         '--dump-dom',
         fileUrl,
       ],
-      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 20000, maxBuffer: 1024 * 1024 * 32 }
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 20000, killSignal: 'SIGKILL', maxBuffer: 1024 * 1024 * 32 }
     );
     return { stdout, stderr: '', crashed: false };
   } catch (e) {

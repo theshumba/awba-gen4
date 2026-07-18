@@ -42,7 +42,7 @@ function loadLearn(probeName, query, preIifeSeed) {
     return execFileSync(
       CHROME,
       ['--headless', '--disable-gpu', '--virtual-time-budget=4000', '--dump-dom', 'file://' + probe + (query || '')],
-      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000, maxBuffer: 1024 * 1024 * 32 }
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000, killSignal: 'SIGKILL', maxBuffer: 1024 * 1024 * 32 }
     );
   } catch (e) {
     return e.stdout ? e.stdout.toString() : '';
