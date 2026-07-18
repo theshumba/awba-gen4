@@ -220,6 +220,22 @@
 
   var app = document.getElementById('app');
 
+  /* Engine-freshness guard (the v2.2 review law, the learn.html pattern): the first post-update
+     navigation can pair this fresh page with the previous cached engine — if a seam this page
+     needs is missing (or the engine failed entirely), render a calm one-tap heal instead of a
+     half-wired settings page. Every class below is this page's own inline style or the base .btn. */
+  if (!window.AW || !AW.muteBtnHtml || !AW.bindMuteBtn || !AW.streakSheet
+      || !AW.S || !AW.S.reset || !AW.S.exportToken || !AW.S.importToken) {
+    app.innerHTML =
+      '<div class="mr-wrap">' +
+        '<header><p class="mr-kick">One moment</p>' +
+        '<h1 class="mr-title">Awba has just updated</h1></header>' +
+        '<p class="mr-sub">A newer Awba arrived underneath this page.</p>' +
+        '<a class="btn" href="more.html">Continue</a>' +
+      '</div>';
+    return;
+  }
+
   /* ---- small helpers (no on-device state touched on this page — every read/write goes through AW) ---- */
   function wire(id, fn) {
     var el = document.getElementById(id);
@@ -288,13 +304,18 @@
       return;
     }
     var code = AW.S.exportToken();
+    /* code === null: the saved blob carries a field btoa can't encode (a legacy-migrated oddity) —
+       the take-half degrades to one honest line; bringing a code IN still works below. */
+    var takeHalf = code
+      ? '<p class="mr-sheet-p">This code holds your whole path. Open Awba on your new device, come back here, and paste it under “Bring it here.”</p>' +
+        '<input class="mr-code-field" id="moveCode" type="text" readonly aria-label="Your travel code" spellcheck="false" autocomplete="off">' +
+        '<button class="btn" type="button" id="moveCopy">Copy the code</button>'
+      : '<p class="mr-sheet-p">This device\'s saved path can\'t be written out as a code. You can still bring a code in below.</p>';
     var html =
       '<div class="grip"></div>' +
       '<div class="mr-sheet">' +
         '<h2 class="mr-sheet-h">Take it with you</h2>' +
-        '<p class="mr-sheet-p">This code holds your whole path. Open Awba on your new device, come back here, and paste it under “Bring it here.”</p>' +
-        '<input class="mr-code-field" id="moveCode" type="text" readonly aria-label="Your travel code" spellcheck="false" autocomplete="off">' +
-        '<button class="btn" type="button" id="moveCopy">Copy the code</button>' +
+        takeHalf +
         '<div class="mr-rule" aria-hidden="true"></div>' +
         '<h2 class="mr-sheet-h">Bring it here</h2>' +
         '<p class="mr-sheet-p">Paste a code from your other device to carry its path onto this one.</p>' +

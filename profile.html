@@ -222,6 +222,19 @@
   if (!window.AW) return;                       // the engine loads first (classic, in order)
 
   var app = document.getElementById('app');
+
+  /* Engine-freshness guard (the v2.2 review law, the learn.html pattern): a first post-update
+     navigation can pair this fresh page with the previous cached engine — if a seam this page
+     needs is missing, render a calm one-tap heal instead of throwing into a blank profile. */
+  if (!window.AWBA_COURSE || !AW.sproutFor || !AW.streakSheet || !AW.noorSheet) {
+    app.innerHTML =
+      '<div class="pf-wrap">' +
+        '<header class="pf-head"><p class="pf-greet">One moment</p></header>' +
+        '<p class="pf-priv">Awba has just updated underneath this page.</p>' +
+        '<a class="btn ghost" href="profile.html">Continue</a>' +
+      '</div>';
+    return;
+  }
   var editing = false;                          // is the name editor open? (in-memory only)
   var mounted = false;                          // first render done? (mount animation plays once)
 

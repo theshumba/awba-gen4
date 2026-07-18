@@ -177,6 +177,28 @@
     return;
   }
 
+  /* Engine-freshness guard (the v2.2 review law: every page that leans on a newer engine seam
+     carries an absence guard). The first navigation after an update can pair this fresh page with
+     the previous cached engine (HTML travels network-first, the engine cache-first) — on that one
+     load the seams below may not exist yet. Refuse calmly with a one-tap heal instead of throwing
+     into a blank page: by the time the learner taps Continue, the new worker has taken over and the
+     reload pairs fresh with fresh. Every class used here shipped in v1.5, so the OLD stylesheet
+     renders this surface correctly too. */
+  if (!window.AW || !window.AWBA_COURSE || !AW.muteBtnHtml || !AW.bindMuteBtn || !AW.sproutFor
+      || !AW.streakSheet || !AW.noorSheet) {
+    /* the heal link keeps the §0.4 ?begin=1 loop-breaker so a storage-off browser can never be
+       bounced back to the welcome by the redirect guard above */
+    document.getElementById('app').innerHTML =
+      '<div class="ob-shell"><div class="ob-wrap">' +
+        '<div class="cc">' +
+          '<div class="cc-kick">One moment</div>' +
+          '<div class="cc-next">Awba has just updated underneath this page.</div>' +
+          '<a class="btn ghost cc-go" href="learn.html?begin=1">Continue</a>' +
+        '</div>' +
+      '</div></div>';
+    return;
+  }
+
   /* Course structure — derived from the ONE canonical source shared/course-structure.js (S6,
      window.AWBA_COURSE), loaded before this script. This reconstructs the exact
      {n,title,desc,nodes:[{id,href?,label,review?,chest?}]} shape the render already reads

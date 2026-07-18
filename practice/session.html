@@ -89,6 +89,20 @@
   'use strict';
   if (typeof AW === 'undefined') return;   // engine failed to load — leave the inert shell
   var app = document.getElementById('app');
+
+  /* Engine-freshness guard (the v2.2 review law): a first post-update navigation can pair this
+     fresh page with the previous cached engine — the drill leans on the v2 seams below. Refuse
+     calmly with a one-tap heal instead of a blank session; the classes are this page's own. */
+  if (!AW.practiceRun || !AW.muteBtnHtml || !AW.bindMuteBtn) {
+    app.innerHTML =
+      '<div class="se-shell"><div class="se-finish">' +
+        '<h1 class="se-done">One moment</h1>' +
+        '<p class="se-line">Awba has just updated underneath this page.</p>' +
+        '<div class="se-cta"><a class="btn" href="session.html">Continue</a></div>' +
+      '</div></div>';
+    return;
+  }
+
   var round = 0;                            // in-memory session counter; "Practise another set" bumps it
 
   /* mulberry32 — a generic PRNG util (the Ring's PRNG family), page-private, not on AW.
