@@ -333,7 +333,9 @@ AW.S = (function () {
         chests:  (mem.chests && typeof mem.chests === 'object') ? mem.chests : {}
       };
       if (mem.ringSeed != null) blob.ringSeed = mem.ringSeed; // the ring travels with its owner (law 10)
-      var b64 = btoa(JSON.stringify(blob));                   // blob is ASCII by construction → btoa never throws
+      var b64;
+      try { b64 = btoa(JSON.stringify(blob)); }               // ASCII by construction for app-written blobs…
+      catch (e) { return null; }                              // …but a legacy-migrated/foreign field can carry non-Latin-1 (btoa throws) — refuse with null, never throw into the caller
       return 'AWBA1.' + b64 + '.' + tokenSum(b64);
     },
 
@@ -1384,11 +1386,12 @@ AW.sheet = (function () {
       trap = AW._trapFocus(sheet); // D-63 — Tab containment, disposed on close
     },
     close: function () {
-      if (!scrim) return; // idempotent — safe before any open
+      if (!scrim || !scrim.classList.contains('open')) return; // idempotent — and inert while closed, so the document-level Escape handler can never re-run the focus restore against a sheet that isn't open
       if (trap) { trap(); trap = null; } // dispose the containment trap first
       scrim.classList.remove('open');
       document.documentElement.classList.remove('sheet-lock');
-      if (invoker && invoker.focus) invoker.focus(); // Phase-6-ready focus restore (shipped, unchanged)
+      if (invoker && invoker.focus) invoker.focus(); // focus restore — to this open's own invoker
+      invoker = null; // release the restore target so no later close can steal focus back to it
     },
   };
   var open = function (html, label) {
@@ -2064,7 +2067,8 @@ function bindMuteBtn(refresh) {
   m.addEventListener('click', function () {
     var now = !AW.prefs.get('soundMuted', false);
     AW.prefs.set('soundMuted', now);
-    document.documentElement.setAttribute('data-sound', now ? 'muted' : '');
+    if (now) document.documentElement.setAttribute('data-sound', 'muted');
+    else document.documentElement.removeAttribute('data-sound');   // attribute-absent when unmuted — the boot-stamp convention
     if (refresh) refresh();
   });
 }
@@ -2705,7 +2709,7 @@ function AwbaReview(cfg) {
     if (answered) return; answered = true;
     skipped.push(queue[qi]);
     tnote.textContent = 'time — it will wait at the end';
-    root.querySelectorAll('.opt,.tf').forEach(function (x) { x.style.pointerEvents = 'none'; x.style.borderWidth = ''; x.style.transform = ''; x.disabled = true; });   // the parked question's options leave the tab order too (real disabled — Pitfall 4)
+    root.querySelectorAll('.opt,.tf').forEach(function (x) { x.style.pointerEvents = 'none'; x.style.borderColor = ''; x.style.borderWidth = ''; x.style.transform = ''; x.disabled = true; });   // the parked question's options leave the tab order too (real disabled — Pitfall 4); the selection cue clears fully, matching bind()'s resolve
     var fw = document.getElementById('footwrap');
     fw.className = 'foot rv-timeout';
     fw.innerHTML = '<h2 class="pintro">Time — this one will wait at the end</h2>' +
