@@ -342,7 +342,7 @@ AW.S = (function () {
        mutation, no new storage literal. Shares mem/defaultState/persist directly from this closure. */
     exportToken: function () {
       if (!mem) mem = load();                                 // same lazy contract as get/set/reset
-      var blob = {                                            // explicit whitelist — prefs (and the transient v2.4 resume map) can NEVER leak
+      var blob = {                                            // explicit whitelist — prefs (and the device-local v2.4 resume/seen maps) can NEVER leak
         schemaVersion: mem.schemaVersion,                     // === CURRENT for a normal blob
         noor:    (typeof mem.noor    === 'number') ? mem.noor    : 0,
         returns: (typeof mem.returns === 'number') ? mem.returns : 0,
@@ -3038,6 +3038,61 @@ function AwbaReview(cfg) {
 
   intro();
 }
+
+/* ============================================================================================
+   AW.practiceMemory — the gentle memory loop (v2.4, owner item 1). "The reason, not the
+   reminder": nothing notifies, nothing nags — but when the learner OPENS practice, the set that
+   gathers is the one whose questions have rested longest. A deliberately simple, deterministic,
+   on-device spaced-repetition rhythm:
+     · key(it)          — a pool item's stable identity, lesson + ':' + idx (both byte-frozen by
+                          the practice-pool generator, so a rebuilt pool keeps its keys).
+     · dayStamp(d)      — the local absolute day (local-midnight epoch-days, D-16 discipline —
+                          never a UTC serialization). Day granularity IS the rhythm: no clocks,
+                          no Date.now in any ordering path.
+     · order(items, seen, rnd) — the caller's seeded Fisher-Yates shuffle first (the shipped
+                          mulberry32(ringSeed^day^round) variety), then a STABLE sort by last-seen
+                          day ascending with an EXPLICIT shuffled-index tie-break — never-seen
+                          (stamp 0) surfaces first, then the longest-rested; determinism never
+                          leans on engine sort internals.
+     · mark(items, d)   — stamps the walked items' keys with today through the ONE 'seen' map in
+                          awba_state via AW.S (D-24 — no new storage-API literal). Called by the
+                          session page at set COMPLETION only: an abandoned set stays "resting",
+                          which is the honest reading.
+   The map is bounded by the pool (~32 keys), device-local by design (excluded from the travel
+   code by exportToken's explicit whitelist — the rhythm belongs to the device's own hands), and
+   AW.practiceRun below stays byte-write-free: ordering is read-only, the mark belongs to the
+   page. Sits ABOVE practiceRun so the "no AW.S.set from practiceRun to EOF" pin keeps holding.
+   ============================================================================================ */
+AW.practiceMemory = {
+  key: function (it) { return (it && it.lesson) + ':' + ((it && it.idx) | 0); },
+  dayStamp: function (d) {
+    d = d || new Date();
+    return Math.round(new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() / 86400000);
+  },
+  order: function (items, seen, rnd) {
+    seen = (seen && typeof seen === 'object' && !Array.isArray(seen)) ? seen : {};
+    var arr = (items || []).slice();
+    for (var i = arr.length - 1; i > 0; i--) {   // the caller's seeded shuffle — deterministic variety
+      var j = Math.floor(rnd() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    var k = AW.practiceMemory.key;
+    return arr
+      .map(function (it, idx) { return { it: it, idx: idx }; })
+      .sort(function (a, b) {
+        var da = +seen[k(a.it)] || 0, db = +seen[k(b.it)] || 0;   // absent/garbage → 0 → "resting longest"
+        return (da - db) || (a.idx - b.idx);                       // explicit tie-break: the shuffle's order
+      })
+      .map(function (x) { return x.it; });
+  },
+  mark: function (items, d) {
+    var m = AW.S.get('seen', {});
+    if (!m || typeof m !== 'object' || Array.isArray(m)) m = {};
+    var stamp = AW.practiceMemory.dayStamp(d);
+    (items || []).forEach(function (it) { m[AW.practiceMemory.key(it)] = stamp; });
+    AW.S.set('seen', m);
+  },
+};
 
 /* ============================================================================================
    AW.practiceRun(mountEl, items, opts) — the practice mini-runner (Wave-A seam S4 · §B.8).

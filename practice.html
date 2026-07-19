@@ -158,7 +158,7 @@
       ' · from ' + (M === 1 ? '1 lesson finished' : M + ' lessons finished');
     var setCount = (N < 8 ? N : 8);
     var subLine = setCount + (setCount === 1 ? ' question' : ' questions') +
-      ', drawn from what you’ve finished.';   // singular when exactly 1 (matches the pool-count line)
+      ', drawn from what you’ve finished — the ones resting longest come first.';   // singular when exactly 1; the v2.4 memory loop, named honestly and calmly
 
     return '<div class="pr-hub">' +
       '<p class="pr-kick">Practice</p>' +

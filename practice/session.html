@@ -95,7 +95,7 @@
   /* Engine-freshness guard (the v2.2 review law): a first post-update navigation can pair this
      fresh page with the previous cached engine — the drill leans on the v2 seams below. Refuse
      calmly with a one-tap heal instead of a blank session; the classes are this page's own. */
-  if (!AW.practiceRun || !AW.muteBtnHtml || !AW.bindMuteBtn) {
+  if (!AW.practiceRun || !AW.muteBtnHtml || !AW.bindMuteBtn || !AW.practiceMemory) {
     app.innerHTML =
       '<div class="se-shell"><div class="se-finish">' +
         '<h1 class="se-done">One moment</h1>' +
@@ -127,15 +127,14 @@
     return Math.round((cur - start) / 86400000);
   }
 
-  /* sampleEight — seeded, deterministic (ringSeed ^ day ^ round), Fisher-Yates, first 8 (or all). */
+  /* sampleEight — seeded, deterministic (ringSeed ^ day ^ round), first 8 (or all). The shuffle is
+     the shipped Fisher-Yates variety; the engine's memory loop (AW.practiceMemory.order, v2.4) then
+     surfaces the questions that have rested longest — never-practised first, then oldest last-seen,
+     ties held in the shuffle's own order. Same day + same rhythm → the same set, always. */
   function sampleEight(eligible, rnd0) {
     var seed = (AW.ringSeed() ^ dayNumber() ^ rnd0) >>> 0;
     var rnd = mulberry32(seed);
-    var arr = eligible.slice();
-    for (var i = arr.length - 1; i > 0; i--) {
-      var j = Math.floor(rnd() * (i + 1));
-      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
-    }
+    var arr = AW.practiceMemory.order(eligible, AW.S.get('seen', {}), rnd);
     return arr.slice(0, Math.min(8, arr.length));
   }
 
@@ -226,7 +225,14 @@
 
     var mount = document.getElementById('practiceMount');
     var beats = items.map(function (it) { return it.item; });
-    AW.practiceRun(mount, beats, { refs: refs, terms: terms, onDone: renderDone });
+    AW.practiceRun(mount, beats, { refs: refs, terms: terms, onDone: function (res) {
+      /* the memory loop (v2.4) — a WALKED set stamps its items as seen today, so tomorrow's set
+         reaches for what has rested longest. Completion only: an abandoned set stays "resting"
+         (the honest reading). The write rides AW.S from this page; practiceRun itself stays
+         byte-write-free. */
+      AW.practiceMemory.mark(items);
+      renderDone(res);
+    } });
   }
 
   start();
