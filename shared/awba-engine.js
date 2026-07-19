@@ -266,6 +266,25 @@ AW.S = (function () {
   var YMD = /^\d{4}-\d{2}-\d{2}$/;
   function own(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
   var NOT_A_CODE = { ok: false, why: "That doesn't look like an Awba travel code." };
+
+  /* ---- multi-tab safety (v2.4) — two open tabs share the one on-disk blob, and a write in one
+     tab used to leave the other holding (and later re-persisting) a stale in-memory copy: pure
+     last-write-wins, so either tab could silently roll the other's progress back. The browser
+     fires a window 'storage' event in every OTHER tab when a key changes; on our key (or a full
+     clear, where e.key is null) we simply DROP the in-memory copy — the very next get/set/reset
+     lazy-reloads from disk through load(), the same path as first access, so this adds NO new
+     storage-API literal (the count stays 13). memFallback is reset here and re-derived by that
+     reload: a sibling tab writing a recognised blob lifts a stale fallback, and a still-foreign
+     blob re-trips it before any write (every entry point loads first). A runner's unclaimed
+     session tallies (correct/mistakes/noorEarned/…) live in the runner's own closure, never in
+     this blob — invalidation cannot touch them, and their eventual claim reads fresh state at
+     claim time, which is exactly the cross-tab merge we want. Guarded so the headless vm suite
+     (no window) and parse-time stay untouched. */
+  if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+    window.addEventListener('storage', function (e) {
+      if (e && (e.key === KEY || e.key === null)) { mem = null; memFallback = false; }
+    });
+  }
   /* tokenSum — deterministic FNV-1a/32 over the base64 payload, rendered base36 (~6-7 chars). NOT
      crypto: an accidental-corruption detector for a truncated/mangled paste. Math.imul holds the
      multiply 32-bit-exact (a naive h*prime overflows 2^53 and silently corrupts); it is not a clock
@@ -484,6 +503,16 @@ AW.prefs = (function () {
     var def = defaultPrefs();
     persist(def);
     return def;
+  }
+
+  /* multi-tab safety (v2.4) — the mirror of AW.S's invalidation: a sibling tab's prefs write
+     drops this tab's in-memory copy so the next read reloads from disk. Boot-stamped <html>
+     attributes (data-sound/data-motion) are re-derived on the next stamp, not retroactively —
+     deliberate: a passive tab never restyles itself mid-view (law 9). */
+  if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+    window.addEventListener('storage', function (e) {
+      if (e && (e.key === KEY || e.key === null)) mem = null;
+    });
   }
 
   return {

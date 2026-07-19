@@ -33,22 +33,26 @@ function makeLS(seed) {
 }
 
 /**
- * loadEngine(ls, probeSrc) — runs shared/awba-engine.js concatenated with probeSrc as ONE
+ * loadEngine(ls, probeSrc, extras) — runs shared/awba-engine.js concatenated with probeSrc as ONE
  * vm.runInContext call, then returns the sandbox (context) so the caller can read whatever the
- * probe assigned onto `globalThis.__out`.
+ * probe assigned onto `globalThis.__out`. `extras` (optional) merges additional globals into the
+ * sandbox before the run — e.g. a fake `window` whose addEventListener captures the engine's
+ * multi-tab 'storage' listeners so a suite can fire them by hand. Additive: omitted, the sandbox
+ * is byte-identical to before and every existing suite is unaffected.
  *
  * Mandatory concatenation: `const AW = {}` at the engine's top level is a lexical binding, NOT a
  * vm context property. Two separate runInContext calls would throw `AW is not defined` when the
  * probe tries to read AW.S — see 02-RESEARCH.md Pitfall 3 (verified this session against the
  * real _MVP-BUILD/shared/awba-engine.js).
  */
-function loadEngine(ls, probeSrc) {
+function loadEngine(ls, probeSrc, extras) {
   const enginePath = path.join(__dirname, '..', '..', 'shared', 'awba-engine.js');
   const engineSrc = fs.readFileSync(enginePath, 'utf8');
   // btoa/atob mirror the browser globals the S8 travel-code seam (exportToken/importToken) uses;
   // Node provides them globally, so surfacing them into the vm realm keeps the engine's base64
   // path exercisable headlessly. Additive — every existing suite is unaffected.
   const sandbox = { localStorage: ls, Date, Math, JSON, console, btoa, atob };
+  if (extras) Object.assign(sandbox, extras);
   vm.createContext(sandbox);
   vm.runInContext(engineSrc + '\n' + (probeSrc || ''), sandbox, { filename: enginePath });
   return sandbox;
