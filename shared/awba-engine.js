@@ -2752,6 +2752,76 @@ function AwbaLesson(cfg) {
   render(); // pos = -1 → opener
 }
 
+/* ---------- the keep-your-light offer (v2.4, owner item 2) — module-private, review-only ----------
+   Safari can tidy away a page's saved things after ~7 quiet days; the mercy answer is not a nag
+   but ONE gentle offer at a meaningful milestone. The first completed review's result screen adds
+   a quiet line + a ghost "Keep a travel code" button; tapping it opens a cream sheet holding the
+   code (AW.S.exportToken — the existing seam, nothing new-minted), a copy affordance (the
+   more.html clipboard pattern), one honest line that leans a little on install, and the standing
+   pointer to More. Offered ONCE ever: AW.prefs 'keepOffered' is stamped when the row renders, so
+   it never re-nags — dismissing is simply walking past it, and the whole feature stays reachable
+   forever under More → "Move to a new device". Skipped when standalone (an installed app's store
+   is not evicted — the offer would be noise), when the code can't mint (null), or once offered.
+   The unit-chest milestone deliberately carries NO hook: a chest only ever unlocks AFTER its
+   unit's review, so the review is always the first milestone — one seam, one moment (reopenable).
+   Words like export/token never surface — it is "a travel code". No new storage-API literal. */
+var KEEP_PREF = 'keepOffered';
+function keepOfferRow() {
+  try {
+    if (AW.prefs.get(KEEP_PREF, false)) return '';                 // the one offer was already made
+    var standalone = (typeof window !== 'undefined' && window.matchMedia
+        && window.matchMedia('(display-mode: standalone)').matches)
+      || (typeof navigator !== 'undefined' && navigator.standalone === true);
+    if (standalone) return '';                                     // installed — already held safe
+    if (!AW.S.exportToken || !AW.S.exportToken()) return '';       // no code to offer → no offer
+  } catch (e) { return ''; }
+  return '<div class="kp-offer">' +
+    '<p class="kp-line">Your path lives only on this device. A travel code keeps it in your own hands.</p>' +
+    '<button class="btn ghost" type="button" id="kpOpen">Keep a travel code</button>' +
+    '</div>';
+}
+function bindKeepOffer(rootEl) {
+  var b = rootEl.querySelector('#kpOpen');
+  if (!b) return;
+  AW.prefs.set(KEEP_PREF, true);       // the one gentle offer, made and remembered — never re-nagged
+  b.addEventListener('click', openKeepSheet);
+}
+function openKeepSheet() {
+  var code = AW.S.exportToken();
+  if (!code) {                          // the blob turned un-codeable between render and tap — degrade honestly
+    AW.sheet(
+      '<div class="grip"></div><div class="kp-sheet">' +
+        '<p class="kp-note">This device’s saved path can’t be written out as a code right now. “Move to a new device” under More will be ready when it can.</p>' +
+      '</div>', 'Keep a travel code');
+    return;
+  }
+  AW.sheet(
+    '<div class="grip"></div>' +
+    '<div class="kp-sheet">' +
+      '<h2 class="kp-h">Keep a travel code</h2>' +
+      '<p class="kp-note">This code holds your whole path — noor, returns, stars, your ring. Keep it somewhere safe; a note to yourself is enough. Pasting it back any time brings everything home.</p>' +
+      '<input class="kp-code" id="kpCode" type="text" readonly aria-label="Your travel code" spellcheck="false" autocomplete="off">' +
+      '<button class="btn" type="button" id="kpCopy">Copy the code</button>' +
+      '<p class="kp-note">Some browsers tidy away a page’s saved things after a quiet spell. Adding Awba to your home screen helps this device hold on — and the code holds it either way.</p>' +
+      '<p class="kp-sub">Any time: More · Move to a new device.</p>' +
+    '</div>', 'Keep a travel code');
+  var f = document.getElementById('kpCode');
+  if (f) f.value = code;                // set the readonly code via .value, never an HTML attribute
+  var c = document.getElementById('kpCopy');
+  if (c) c.addEventListener('click', function () {
+    var done = function () { AW.announce('Copied.'); };
+    var selectFallback = function () {
+      f.focus(); f.select();
+      try { if (document.execCommand && document.execCommand('copy')) { done(); return; } } catch (e) {}
+      AW.announce('Select the code, then copy it.');   // leaves it selected — never a dead end
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(f.value).then(done, selectFallback);
+    } else { selectFallback(); }
+  });
+}
+AW._keepOfferRow = keepOfferRow;   // pure test seam (the AW._duaBlock precedent) — the runner calls the private fn
+
 /* ============================================================================================
    AwbaReview(cfg) — the legendary review runner (ENG-02/ENG-04, CNT-01, RWD-03, MOT-05).
    cfg = { id, title, sub, mastery, items:[{q,quote?,o,c,t} | {tf:true,q,c,t}], next:{href,label} }
@@ -3026,8 +3096,10 @@ function AwbaReview(cfg) {
       '<p>' + correct + ' of ' + CH.length + ' named' + (allInTime && correct === CH.length ? ', every one in time' : '') + '.</p>' +
       '<div class="rv-mastery"><div class="kicker">What you can do now</div><p>' + (cfg.mastery || '') + '</p></div>' +
       '<div class="rv-noorline">' + AW.icon('spark') + ' <span>+' + noorEarned + ' noor gathered</span></div>' +
+      keepOfferRow() +   /* v2.4 — the ONE keep-your-light offer, at the first completed review (empty string ever after) */
       '</div>' +
       foot(nextBtn + '<a class="btn ghost" href="../learn.html">Back to the path</a>');
+    bindKeepOffer(root);   /* stamps the offered-once pref + wires the sheet; a no-op when no row rendered */
     var seal = root.querySelector('.rv-seal');
     if (seal) AW.animate(seal,
       [{ transform: 'scale(1.03)', opacity: 0 }, { opacity: 1, offset: 0.6 }, { transform: 'scale(1)', opacity: 1 }],
