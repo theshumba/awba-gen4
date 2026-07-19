@@ -1666,7 +1666,8 @@
   }
   .rv-timer-fill {
     height: 100%;
-    width: 100%;
+    width: 100%;                    /* stays 100% — the drain is a compositor scaleX (v2.4) */
+    transform-origin: left;         /* the fill shrinks from the left, matching the shipped width drain */
     border-radius: inherit;
     background: var(--gold);        /* §2.1 gold on Kiswah, 8.40:1 */
     transition: background var(--dur-fade) var(--ease);

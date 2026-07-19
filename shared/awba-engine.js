@@ -1870,6 +1870,15 @@ AW._soundWarm = function () {
 };
 AW.sound = function (cue) {
   if (AW.prefs.get('soundMuted', false)) return;
+  /* haptic ack (v2.4, owner-approved) — one tiny 8ms tick AT the correct answer only, riding the
+     same call the audio cue rides so it lands with the tap. Feature-detected (navigator.vibrate is
+     Android-only by nature — iOS/desktop silently no-op) and sitting BELOW the mute gate above, so
+     soundMuted stays the one master "quiet" switch. An incorrect answer gets NOTHING — a buzz is a
+     punishment, and law 8 has no punishments; 'complete'/'streak' stay audio-only (meta moments,
+     not answer feedback). */
+  if (cue === 'correct' && typeof navigator !== 'undefined' && navigator.vibrate) {
+    try { navigator.vibrate(8); } catch (e) { /* a blocked/odd vibrate call never surfaces */ }
+  }
   try {
     var a = soundCues[cue] || (soundCues[cue] = new Audio('../shared/sfx/' + cue + '.mp3'));
     try { a.currentTime = 0; } catch (e2) { /* pre-metadata rewind can throw on old Safari — play from wherever */ }
@@ -2737,14 +2746,18 @@ function AwbaReview(cfg) {
   function foot(inner, cls) { return '<div class="foot ' + (cls || '') + '" id="footwrap">' + inner + '</div>'; }
   function btn(label, cls, id) { return '<button class="btn ' + (cls || '') + '" id="' + (id || 'cont') + '" type="button">' + label + '</button>'; }
 
-  /* startTimer — Gen-3 364, byte-preserved via AW.QTIME: 140 deciseconds, a 100ms tick, the bar
-     width in %, .low under 28% (the quiet ember deepen — expression only, the numbers untouched);
-     tleft<=0 permanently kills allInTime and hands over to timeUp. */
+  /* startTimer — Gen-3 364, byte-preserved via AW.QTIME: 140 deciseconds, a 100ms tick, .low
+     under 28% (the quiet ember deepen — expression only, the numbers untouched); tleft<=0
+     permanently kills allInTime and hands over to timeUp. The drain is painted as a transform
+     scaleX (v2.4, owner-approved): the fill keeps its shipped width:100% and shrinks from the
+     left on the compositor — a width write forced layout+paint on the 100ms tick for the whole
+     review; the pct arithmetic and every frozen number (QTIME 14, the 100ms tick, the <28 low
+     state, the 10s announce) are byte-unchanged. */
   function startTimer() {
-    tleft = AW.QTIME * 10; thisInTime = true; tbar.classList.remove('low'); tnote.textContent = ''; tfill.style.width = '100%';
+    tleft = AW.QTIME * 10; thisInTime = true; tbar.classList.remove('low'); tnote.textContent = ''; tfill.style.transform = 'scaleX(1)';
     clearInterval(timer);
     timer = setInterval(function () {
-      tleft--; var pct = Math.max(0, tleft / (AW.QTIME * 10)) * 100; tfill.style.width = pct + '%';
+      tleft--; var pct = Math.max(0, tleft / (AW.QTIME * 10)) * 100; tfill.style.transform = 'scaleX(' + pct / 100 + ')';
       if (pct < 28) tbar.classList.add('low');
       if (tleft === 100) AW.announce('10 seconds');   // ONE soft warning at 10s left (tleft is monotonic → free single-fire); the 100ms tick itself is NEVER announced (Pitfall 3, ENG-04 byte-preserved)
       if (tleft <= 0) { clearInterval(timer); thisInTime = false; allInTime = false; timeUp(); }

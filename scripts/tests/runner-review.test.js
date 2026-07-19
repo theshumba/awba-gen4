@@ -95,3 +95,41 @@ test('review stars persist best-of: a 1-star re-run never downgrades a stored 3-
   );
   assert.equal(sandbox.__out, 3);   // stays 3 — never downgraded
 });
+
+/* ---------- the timer drain paints on the compositor (v2.4, owner-approved) ----------
+   The 100ms tick used to write style.width — a layout+paint on every tick for the whole review.
+   It now writes transform: scaleX() (transform-origin: left in the engine CSS; the fill keeps its
+   shipped width:100%), a compositor-only property. EXPRESSION ONLY: the pct arithmetic and every
+   frozen number (QTIME 14 → 140 deciseconds, the 100ms tick, the <28 low state, the 10s announce)
+   must stay byte-identical — these pins hold the drain honest against any future "improvement". */
+
+const fs = require('node:fs');
+const path = require('node:path');
+const ENGINE_SRC_RV = fs.readFileSync(path.join(__dirname, '..', '..', 'shared', 'awba-engine.js'), 'utf8');
+const ENGINE_CSS_RV = fs.readFileSync(path.join(__dirname, '..', '..', 'shared', 'awba-engine.css'), 'utf8');
+const REVIEW_SLICE = ENGINE_SRC_RV.slice(ENGINE_SRC_RV.indexOf('function AwbaReview'));
+
+test('review timer: the drain writes transform scaleX, never style.width (compositor-only)', () => {
+  assert.ok(/tfill\.style\.transform = 'scaleX\(1\)'/.test(REVIEW_SLICE),
+    'startTimer must arm the bar full via scaleX(1)');
+  assert.ok(/tfill\.style\.transform = 'scaleX\(' \+ pct \/ 100 \+ '\)'/.test(REVIEW_SLICE),
+    'the tick must paint the drain via scaleX(pct/100)');
+  assert.equal(/tfill\.style\.width/.test(REVIEW_SLICE), false,
+    'no width write may remain on the fill — width is a layout property');
+});
+
+test('review timer: the frozen numbers are byte-unchanged around the scaleX move', () => {
+  assert.ok(/tleft = AW\.QTIME \* 10;/.test(REVIEW_SLICE), 'the 140-decisecond seed (AW.QTIME * 10)');
+  assert.ok(/var pct = Math\.max\(0, tleft \/ \(AW\.QTIME \* 10\)\) \* 100;/.test(REVIEW_SLICE),
+    'the pct arithmetic line is byte-identical');
+  assert.ok(/if \(pct < 28\) tbar\.classList\.add\('low'\);/.test(REVIEW_SLICE), 'the <28% low state');
+  assert.ok(/if \(tleft === 100\) AW\.announce\('10 seconds'\);/.test(REVIEW_SLICE), 'the single 10s announce');
+  assert.ok(/}, 100\);/.test(REVIEW_SLICE), 'the 100ms tick interval');
+});
+
+test('review timer: the engine CSS keeps width:100% and gains transform-origin:left on the fill', () => {
+  const m = ENGINE_CSS_RV.match(/\.rv-timer-fill \{[\s\S]*?\}/);
+  assert.ok(m, '.rv-timer-fill block exists');
+  assert.ok(/width: 100%/.test(m[0]), 'the shipped width:100% stays — the drain is the transform');
+  assert.ok(/transform-origin: left/.test(m[0]), 'scaleX must shrink from the left, matching the shipped drain');
+});
