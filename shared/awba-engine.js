@@ -342,7 +342,7 @@ AW.S = (function () {
        mutation, no new storage literal. Shares mem/defaultState/persist directly from this closure. */
     exportToken: function () {
       if (!mem) mem = load();                                 // same lazy contract as get/set/reset
-      var blob = {                                            // explicit whitelist — prefs can NEVER leak
+      var blob = {                                            // explicit whitelist — prefs (and the transient v2.4 resume map) can NEVER leak
         schemaVersion: mem.schemaVersion,                     // === CURRENT for a normal blob
         noor:    (typeof mem.noor    === 'number') ? mem.noor    : 0,
         returns: (typeof mem.returns === 'number') ? mem.returns : 0,
@@ -2101,6 +2101,64 @@ AW._noorClaimer = function () {
   };
 };
 
+/* AW._resumeKeeper(lessonId, steps) — the lesson-resume persistence seam (v2.4, owner item 3):
+   "leaving a lesson mid-way keeps your place." One 'resume' map in awba_state ({lessonId: snap})
+   through the AW.S seam only (D-24 — no new storage-API literal, the count stays 13). The snap
+   carries the FULL session tally (p/si/correct/combo/comboBest/mistakes/noorEarned) so a resumed
+   run continues with the exact numbers it left — the Gen-3 star/combo/noor math is untouched, it
+   just picks up mid-stream. read() offers a place only when it is meaningful (p >= 1) and still
+   in range (p < steps — a re-cut lesson simply starts fresh); every field is coerced and floored
+   at 0 so a corrupted entry can never seed NaN into the tallies. Transient by design: cleared at
+   the verdict (the reward sequence is NOT resumable — Gen-3 parity: leaving mid-reward always
+   released the unclaimed run) and NEVER exported — exportToken's explicit whitelist already
+   excludes it, and importToken's clean blob never carries it (both pinned by tests). Reviews are
+   deliberately NOT resumable (the soft timer is the point of that room). Extracted DOM-free, the
+   AW._noorClaimer precedent, so the discipline is unit-testable headlessly. */
+AW._resumeKeeper = function (lessonId, steps) {
+  function map() {
+    var m = AW.S.get('resume', {});
+    return m && typeof m === 'object' && !Array.isArray(m) ? m : {};
+  }
+  function floor0(v) { var n = v | 0; return n > 0 ? n : 0; }
+  return {
+    read: function () {
+      if (!lessonId) return null;
+      var r = map()[lessonId];
+      if (!r || typeof r !== 'object' || Array.isArray(r)) return null;
+      var p = r.p | 0;
+      if (p < 1 || p >= steps) return null;   // meaningful (past the first beat) and still in range
+      return {
+        p: p,
+        si: Math.min(floor0(r.si), steps),
+        correct: floor0(r.correct),
+        combo: floor0(r.combo),
+        comboBest: floor0(r.comboBest),
+        mistakes: floor0(r.mistakes),
+        noorEarned: floor0(r.noorEarned),
+      };
+    },
+    save: function (snap) {
+      if (!lessonId || !snap) return;
+      var p = snap.p | 0;
+      if (p < 0 || p >= steps) return;        // only beat positions are a place worth keeping
+      var m = map();
+      m[lessonId] = {
+        p: p, si: floor0(snap.si),
+        correct: floor0(snap.correct), combo: floor0(snap.combo), comboBest: floor0(snap.comboBest),
+        mistakes: floor0(snap.mistakes), noorEarned: floor0(snap.noorEarned),
+      };
+      AW.S.set('resume', m);
+    },
+    clear: function () {
+      if (!lessonId) return;
+      var m = map();
+      if (!(lessonId in m)) return;
+      delete m[lessonId];
+      AW.S.set('resume', m);
+    },
+  };
+};
+
 /* ---------- the shared 44px HUD mute toggle (§S6 / MOT-05) — ONE pattern for BOTH runners.
    The speaker glyph is an inline control affordance (currentColor, inherits --icon-accent via
    .ls-mute svg — crimson on Page, gold on Orbit), NOT a KIT/GLYPHS entry: the registry has no
@@ -2196,6 +2254,7 @@ function AwbaLesson(cfg) {
     quizN = 0, noorEarned = 0;
   var flourishTimer = null;            // WR-02 — the pending 3-streak flourish timer, closure-scoped so resolve() can clear a stale one before it writes into a later answer's #lsflourish
   var claimNoor = AW._noorClaimer();   // the noor moment persists exactly once (RWD-01 / T-04-04a)
+  var keeper = AW._resumeKeeper(cfg.id, steps);   // lesson resume (v2.4) — the kept place, AW.S-only
   AW._soundWarm();                     // the first answer's cue must land AT the tap, not after a fetch
   beats.forEach(function (b) { if (['mc', 'tf', 'tile'].indexOf(b.t) >= 0) quizN++; });
 
@@ -2274,6 +2333,18 @@ function AwbaLesson(cfg) {
     var uicon = AW.UNIT_ICON[(cfg.id || '').slice(0, 2)] || 'lantern';
     var journey = cfg.journey ? '<div class="kicker">' + cfg.journey + '</div>' : '';
     var thought = cfg.opener && cfg.opener.thought ? '<p class="thought">' + cfg.opener.thought + '</p>' : '';
+    /* lesson resume (v2.4) — a kept place changes ONLY this threshold: one quiet line under the
+       hero and a two-way foot (carry on = primary, start over = ghost). Everything else about the
+       opener — greeting modes, chips, the hero — is byte-unchanged, and with no kept place the
+       original single "Begin, gently" renders exactly as shipped. Both doors fire AW.touchDay()
+       (each is a genuine lesson begin); starting over releases the kept place first. */
+    var saved = keeper.read();
+    var placeLine = saved
+      ? '<p class="thought">Your place is kept — step ' + (saved.p + 1) + ' of ' + steps + ' is waiting.</p>'
+      : '';
+    var footInner = saved
+      ? btn('Carry on where you were') + btn('Start from the beginning', 'ghost', 'lsrestart')
+      : btn('Begin, gently');
     root.innerHTML =
       '<div class="hero">' +
       journey + chip +
@@ -2281,9 +2352,24 @@ function AwbaLesson(cfg) {
       '<h1 class="greet">' + greet + '</h1>' +
       (p ? '<p>' + p + '</p>' : '') +
       thought +
+      placeLine +
       '</div>' +
-      foot(btn('Begin, gently'));
+      foot(footInner);
     document.getElementById('cont').addEventListener('click', function () {
+      AW.touchDay();
+      if (saved) {
+        pos = saved.p; stepIndex = saved.si;
+        correct = saved.correct; combo = saved.combo; comboBest = saved.comboBest;
+        mistakes = saved.mistakes; noorEarned = saved.noorEarned;
+        render();
+        return;
+      }
+      stepIndex = 0;
+      next();
+    });
+    var restart = document.getElementById('lsrestart');
+    if (restart) restart.addEventListener('click', function () {
+      keeper.clear();
       AW.touchDay();
       stepIndex = 0;
       next();
@@ -2294,6 +2380,10 @@ function AwbaLesson(cfg) {
     if (pos < 0) { opener(); return; }
     if (pos >= steps) { verdict(); return; }
     var it = beats[pos];
+    /* lesson resume (v2.4) — every beat render keeps the place: position + the full session tally,
+       so leaving mid-lesson (tab closed, back to the path, phone pocketed) loses nothing. One
+       small write per beat transition through AW.S; cleared at the verdict. */
+    keeper.save({ p: pos, si: stepIndex, correct: correct, combo: combo, comboBest: comboBest, mistakes: mistakes, noorEarned: noorEarned });
     answered = false;
     setHUD(true);
     paintProg();
@@ -2513,6 +2603,7 @@ function AwbaLesson(cfg) {
   async function verdict() {
     setGround('reg-page');
     setHUD(false);
+    keeper.clear();   // lesson resume (v2.4) — the beats are walked; the kept place is released (the reward sequence is NOT resumable, Gen-3 parity)
     paintProg();
     var acc = quizN ? Math.round((correct / quizN) * 100) : 100;
     var stars = AW.lessonStars(mistakes);
